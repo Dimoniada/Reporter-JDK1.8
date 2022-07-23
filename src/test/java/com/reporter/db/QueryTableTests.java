@@ -79,7 +79,7 @@ public class QueryTableTests extends BaseQueryDocument {
                     " rel_diff_percent as _rel_diff_percent_," +
                     " username as _username_," +
                     " password as _password_" +
-                    " from traffic_mon left join users on users.id = user_id;"
+                    " from traffic_mon left join site_users on site_users.id = user_id;"
             )
             .setNamedParameterJdbcTemplate(jdbcTemplateH2)
             .setTableHeaderRow(

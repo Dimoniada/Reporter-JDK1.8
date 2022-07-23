@@ -1,14 +1,14 @@
 -- H2 syntax --
 drop table if exists "traffic_mon";
-drop table if exists "users";
+drop table if exists "site_users";
 
-create table "users"
+create table "site_users"
 (
     "id"       integer not null auto_increment,
     "username" nvarchar(255),
     "password" nvarchar(255)
 );
-alter table "users" add primary key ("id");
+alter table "site_users" add primary key ("id");
 
 create table "traffic_mon"
 (
@@ -20,12 +20,12 @@ create table "traffic_mon"
     "login"            nvarchar(255)     null,
     "user_id"          integer default 1 null,
     "id"               integer auto_increment,
-    constraint "fk_user_id" foreign key ("user_id") references "users" ("id")
+    constraint "fk_user_id" foreign key ("user_id") references "site_users" ("id")
 );
 
 alter table "traffic_mon" add primary key ("id");
 
-insert into "users"
+insert into "site_users"
 ("id",
  "username",
  "password")

@@ -5,7 +5,7 @@ import com.google.common.base.MoreObjects;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "users")
+@Table(name = "site_users")
 public class TestUsers {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
