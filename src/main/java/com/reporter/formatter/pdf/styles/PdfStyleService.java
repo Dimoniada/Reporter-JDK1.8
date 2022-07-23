@@ -32,7 +32,6 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 
 /**
@@ -326,15 +325,7 @@ public final class PdfStyleService extends StyleService {
         final Text text = new Text(LocalizedNumberUtils.applyDecimalFormat(tableCustomCell, decimalFormat));
         final com.itextpdf.layout.element.Paragraph paragraph = new com.itextpdf.layout.element.Paragraph(text);
         final Cell cell = new Cell().add(paragraph);
-        final Optional<Style> optStyle = extractStyleFor(tableCustomCell);
-        Style style = tableCustomCell.getStyle();
-        if (optStyle.isPresent()) {
-            if (style == null) {
-                style = optStyle.get();
-            } else {
-                StyleUtils.joinWith(optStyle.get(), style);
-            }
-        }
+        final Style style = prepareStyleFrom(tableCustomCell);
         convertStyleToElement(style, text, cell);
         return cell;
     }

@@ -19,7 +19,6 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import static com.reporter.utils.LocalizedNumberUtils.applyDecimalFormat;
 
@@ -243,15 +242,7 @@ public class ExcelStyleService extends StyleService {
     public void handleTableCustomCell(TextItem<?> tableCustomCell, org.apache.poi.ss.usermodel.Cell cell)
         throws Exception {
         applyFontCharsetAndDecimalFormat(tableCustomCell, cell);
-        final Optional<Style> optStyle = extractStyleFor(tableCustomCell);
-        Style style = tableCustomCell.getStyle();
-        if (optStyle.isPresent()) {
-            if (style == null) {
-                style = optStyle.get();
-            } else {
-                StyleUtils.joinWith(optStyle.get(), style);
-            }
-        }
+        final Style style = prepareStyleFrom(tableCustomCell);
         if (style instanceof TextStyle) {
             convertTextStyleToCell(cell, (TextStyle) style);
         } else if (style instanceof LayoutStyle) {

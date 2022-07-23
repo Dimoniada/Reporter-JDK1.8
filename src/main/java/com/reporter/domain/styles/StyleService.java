@@ -59,6 +59,25 @@ public abstract class StyleService implements StyleApplier {
             .findFirst();
     }
 
+    /**
+     * Prepares (if any) style from item and StyleService's style
+     * @param item is a donor of the style for native element
+     * @return mixed style
+     * @throws Exception on joining styles
+     */
+    public Style prepareStyleFrom(DocumentItem item)  throws Exception {
+        final Optional<Style> optStyle = extractStyleFor(item);
+        Style style = item.getStyle();
+        if (optStyle.isPresent()) {
+            if (style == null) {
+                style = optStyle.get();
+            } else {
+                StyleUtils.joinWith(optStyle.get(), style);
+            }
+        }
+        return style;
+    }
+
     public Boolean contains(Style style) {
         return styles.contains(style);
     }

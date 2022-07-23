@@ -15,7 +15,10 @@ import org.springframework.web.util.HtmlUtils;
 
 import java.io.OutputStreamWriter;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -270,16 +273,7 @@ public class HtmlStyleService extends StyleService {
      * @return cell style
      */
     public Style handleTableCustomCell(DocumentItem tableCustomCell) throws Exception {
-        final Optional<Style> optStyle = extractStyleFor(tableCustomCell);
-        Style style = tableCustomCell.getStyle();
-        if (optStyle.isPresent()) {
-            if (style == null) {
-                style = optStyle.get();
-            } else {
-                StyleUtils.joinWith(optStyle.get(), style);
-            }
-        }
-        return style;
+        return prepareStyleFrom(tableCustomCell);
     }
 
     /**
