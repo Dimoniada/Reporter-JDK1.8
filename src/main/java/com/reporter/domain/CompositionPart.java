@@ -65,7 +65,7 @@ public abstract class CompositionPart<T extends CompositionPart<?, ?>, K extends
 
     @SuppressWarnings("unchecked")
     public T spreadStyleToParts(Style style, int depth) throws CloneNotSupportedException {
-        if (depth != 0 && style != null) {
+        if (depth != 0 && style != null && parts != null) {
             for (final K part : parts) {
                 final StyleCondition styleCondition = style.getCondition();
                 if (part.getStyle() == null

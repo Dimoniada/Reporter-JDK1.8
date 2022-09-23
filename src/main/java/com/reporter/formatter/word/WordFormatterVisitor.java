@@ -89,8 +89,7 @@ public class WordFormatterVisitor extends Formatter {
     public void visitHeading(Heading headingObj) throws Exception {
         final String heading = headingObj.getText();
         final int depth = headingObj.getDepth();
-        final XWPFParagraph paragraph = wordDocument
-            .createParagraph();
+        final XWPFParagraph paragraph = wordDocument.createParagraph();
         paragraph.createRun().setText(heading);
     }
 
@@ -115,6 +114,7 @@ public class WordFormatterVisitor extends Formatter {
             run.setText(label);
         }
         createEmptyTable();
+        ((WordStyleService) styleService).handleTable(style, docxTable);
         if (tableObj.getTableHeaderRow().isPresent()) {
             this.visitTableHeaderRow(tableObj.getTableHeaderRow().get());
         }

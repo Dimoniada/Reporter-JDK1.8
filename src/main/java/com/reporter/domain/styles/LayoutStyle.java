@@ -14,7 +14,7 @@ import com.reporter.domain.styles.constants.VertAlignment;
  */
 public class LayoutStyle extends Style {
     /**
-     * Content width (currently for cells in excel and pdf)
+     * Content width (currently for cells in excel, docx(inches) and pdf)
      * FIXME: Bad. This class should be independent of format and implementation details.
      */
     protected int width;

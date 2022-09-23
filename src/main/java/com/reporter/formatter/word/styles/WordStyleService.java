@@ -26,6 +26,11 @@ public class WordStyleService extends StyleService {
     private static final int XLSX_HEADING_CONST = 567;
 
     /**
+     * Reverse inch (1/1440) constant for width in inch
+     */
+    private static final int XLSX_INCH_CONST = 1440;
+
+    /**
      * Map of native xwpf border types.
      * Key - type BorderWeight, value - Border
      */
@@ -83,6 +88,25 @@ public class WordStyleService extends StyleService {
 
     public static StyleService create(FontCharset fontCharset, DecimalFormat decimalFormat) {
         return new WordStyleService(fontCharset, decimalFormat);
+    }
+
+    /**
+     * Adjusts table width
+     *
+     * @param style table LayoutStyle
+     * @param docxTable native XWPFTable table
+     */
+    public void handleTable(Style style, XWPFTable docxTable) {
+        if (style instanceof LayoutStyle) {
+            final LayoutStyle tableLayoutStyle = (LayoutStyle) style;
+            final boolean isTableAutoWidth = tableLayoutStyle.isAutoWidth();
+            if (!isTableAutoWidth && tableLayoutStyle.getWidth() != 0) {
+                final int tableWidth = tableLayoutStyle.getWidth();
+                docxTable.setWidth(tableWidth * XLSX_INCH_CONST);
+            } else {
+                docxTable.setWidth("auto");
+            }
+        }
     }
 
     /**
@@ -177,10 +201,14 @@ public class WordStyleService extends StyleService {
         final XWPFParagraph paragraph = cell.getParagraphs().get(0);
         convertHorizontalAlignment(paragraph, layoutStyle);
         convertVerticalAlignmentCell(cell, layoutStyle);
-        if (layoutStyle.getWidth() > 0) {
+        final boolean isCellAutoWidth = layoutStyle.isAutoWidth();
+        final CTTblWidth tblWidth = cell.getCTTc().addNewTcPr().addNewTcW();
+        if (!isCellAutoWidth && layoutStyle.getWidth() > 0) {
             final int width = layoutStyle.getWidth();
             cell.setWidthType(TableWidthType.DXA);
             cell.setWidth(String.valueOf(width));
+        } else {
+            tblWidth.setType(STTblWidth.AUTO);
         }
     }
 
