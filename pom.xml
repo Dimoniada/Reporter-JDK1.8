@@ -28,12 +28,12 @@
         <java.version>1.8</java.version>
         <!-- DEPENDENCY VERSIONS -->
         <guava.version>31.1-jre</guava.version>
-        <itextpdf.version>7.2.1</itextpdf.version>
-        <documents4j.version>1.1.7</documents4j.version>
+        <itextpdf.version>7.2.3</itextpdf.version>
+        <documents4j.version>1.1.10</documents4j.version>
         <apache.version>5.2.2</apache.version>
         <supercsv.version>2.4.0</supercsv.version>
-        <jdbc.version>5.3.18</jdbc.version>
-        <springjpa.version>2.6.3</springjpa.version>
+        <jdbc.version>6.0.3</jdbc.version>
+        <springjpa.version>3.0.0</springjpa.version>
         <javax.version>2.2</javax.version>
     </properties>
     <build>
