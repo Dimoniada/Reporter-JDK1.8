@@ -15,10 +15,12 @@ import org.springframework.web.util.HtmlUtils;
 
 import java.io.OutputStreamWriter;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
+import java.util.StringJoiner;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 /**
@@ -66,11 +68,25 @@ public class HtmlStyleService extends StyleService {
             put(FontFamilyStyle.SANS_SERIF, "sans-serif");
             put(FontFamilyStyle.MONOSPACED, "monospace");
         }};
+    /**
+     * If true then style will be written inside HTML4 tags
+     */
+    protected boolean useHtml4Tags;
+    /**
+     * If true then style will be written inside HTML5 tags,
+     */
+    protected boolean writeStyleInplace;
+    protected HtmlColgroupTag htmlColgroupTag;
 
-    protected Boolean useHtml4Tags;
-
-    public HtmlStyleService(Boolean useHtml4Tags, DecimalFormat decimalFormat) {
+    public HtmlStyleService(
+        boolean useHtml4Tags,
+        boolean writeStyleInplace,
+        HtmlColgroupTag htmlColgroupTag,
+        DecimalFormat decimalFormat
+    ) {
         this.useHtml4Tags = useHtml4Tags;
+        this.writeStyleInplace = writeStyleInplace;
+        this.htmlColgroupTag = htmlColgroupTag;
         this.decimalFormat = decimalFormat;
     }
 
@@ -102,16 +118,25 @@ public class HtmlStyleService extends StyleService {
         return fontFamilyHtml4Map.getOrDefault(fontFamilyStyle, "serif");
     }
 
-    public static HtmlStyleService create(Boolean useHtml4Tags, DecimalFormat decimalFormat) {
-        return new HtmlStyleService(useHtml4Tags, decimalFormat);
+    public static HtmlStyleService create(
+        boolean useHtml4Tags,
+        boolean writeTagsInplace,
+        HtmlColgroupTag useHtml4ColgroupTag,
+        DecimalFormat decimalFormat
+    ) {
+        return new HtmlStyleService(useHtml4Tags, writeTagsInplace, useHtml4ColgroupTag, decimalFormat);
     }
 
-    public static HtmlStyleService create(Boolean useHtml4Tags) {
-        return create(useHtml4Tags, null);
+    public static HtmlStyleService create(boolean useHtml4Tags, DecimalFormat decimalFormat) {
+        return create(useHtml4Tags, true, HtmlColgroupTag.create(), decimalFormat);
+    }
+
+    public static HtmlStyleService create(boolean useHtml4Tags) {
+        return create(useHtml4Tags, true, HtmlColgroupTag.create(), null);
     }
 
     public static HtmlStyleService create() {
-        return create(false, null);
+        return create(false, true, HtmlColgroupTag.create(), null);
     }
 
     public static TextStyle extractTextStyle(Style style) {
@@ -143,12 +168,6 @@ public class HtmlStyleService extends StyleService {
                 HtmlStyleService.convert(style).toCssStyleString() +
                 "}" +
                 "</style>";
-    }
-
-    public static CssStyle convert(BorderStyle borderStyle) {
-        final CssStyle cssStyle = new CssStyle();
-        fillCssStyleFromBorderStyle(cssStyle, borderStyle);
-        return cssStyle;
     }
 
     public static Html4Font convertHtml4Font(TextStyle textStyle) {
@@ -263,7 +282,10 @@ public class HtmlStyleService extends StyleService {
     }
 
     public static String formHtmlBorder(BorderStyle borderStyle, Color color) {
-        return toHtmlBorderWidth(borderStyle.getWeight()) + toHtmlColor(color);
+        final StringJoiner stringJoiner = new StringJoiner(" ");
+        stringJoiner.add(toHtmlBorderWidth(borderStyle.getWeight()));
+        stringJoiner.add(toHtmlColor(color));
+        return stringJoiner.toString().trim();
     }
 
     /**
@@ -273,6 +295,12 @@ public class HtmlStyleService extends StyleService {
      * @return cell style
      */
     public Style handleTableCustomCell(DocumentItem tableCustomCell) throws Exception {
+        final boolean skipStyleInplace = htmlColgroupTag.getEnabled()
+            && !htmlColgroupTag.getWriteInplace()
+            && tableCustomCell instanceof TableCell;
+        if (skipStyleInplace) {
+            return null;
+        }
         return prepareStyleFrom(tableCustomCell);
     }
 
@@ -285,29 +313,29 @@ public class HtmlStyleService extends StyleService {
     @Override
     public void writeStyles(Object o) throws Exception {
         final OutputStreamWriter OsWriter = (OutputStreamWriter) o;
-        if (!useHtml4Tags) {
+        if (!useHtml4Tags && !writeStyleInplace) {
+
+            BiFunction<Class<?>, Style, Boolean> checkConditionClass = (clazz, style) -> {
+                if (style.getCondition() != null) {
+                    return clazz.equals(style.getCondition().getClazz());
+                }
+                return false;
+            };
 
             final List<Style> rowStyles =
                 styles
                     .stream()
-                    .filter(styleGlue -> {
-                        if (styleGlue.getCondition() != null) {
-                            return TableRow.class.equals(styleGlue.getCondition().getClazz());
-                        }
-                        return false;
-                    }).collect(Collectors.toList());
+                    .filter(s -> checkConditionClass.apply(TableRow.class, s))
+                    .collect(Collectors.toList());
 
             final List<Style> cellStyles =
                 styles
                     .stream()
-                    .filter(styleGlue -> {
-                        if (styleGlue.getCondition() != null) {
-                            return TableCell.class.equals(styleGlue.getCondition().getClazz());
-                        }
-                        return false;
-                    }).collect(Collectors.toList());
+                    .filter(s -> checkConditionClass.apply(TableCell.class, s))
+                    .collect(Collectors.toList());
 
             final List<Style> gluedStyles = new ArrayList<>(styles);
+
             for (final Style c : cellStyles) {
                 for (final Style r : rowStyles) {
                     final Style rs = r.clone();
@@ -332,12 +360,30 @@ public class HtmlStyleService extends StyleService {
                 .toString();
     }
 
-    public Boolean getUseHtml4Tags() {
+    public boolean isUseHtml4Tags() {
         return useHtml4Tags;
     }
 
-    public HtmlStyleService setUseHtml4Tags(Boolean useHtml4Tags) {
+    public HtmlStyleService setUseHtml4Tags(boolean useHtml4Tags) {
         this.useHtml4Tags = useHtml4Tags;
+        return this;
+    }
+
+    public boolean isWriteStyleInplace() {
+        return writeStyleInplace;
+    }
+
+    public HtmlStyleService setWriteStyleInplace(boolean writeStyleInplace) {
+        this.writeStyleInplace = writeStyleInplace;
+        return this;
+    }
+
+    public HtmlColgroupTag getHtmlColgroupTag() {
+        return htmlColgroupTag;
+    }
+
+    public HtmlStyleService setHtmlColgroupTag(HtmlColgroupTag htmlColgroupTag) {
+        this.htmlColgroupTag = htmlColgroupTag;
         return this;
     }
 }

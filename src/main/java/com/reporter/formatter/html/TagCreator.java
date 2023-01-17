@@ -7,10 +7,13 @@ import com.reporter.domain.styles.LayoutStyle;
 import com.reporter.domain.styles.Style;
 import com.reporter.domain.styles.TextStyle;
 import com.reporter.formatter.html.styles.CssStyle;
+import com.reporter.formatter.html.styles.HtmlColgroupTag;
 import com.reporter.formatter.html.styles.HtmlStyleService;
 import com.reporter.formatter.html.tag.Html4Font;
 import com.reporter.formatter.html.tag.HtmlTable;
 import com.reporter.formatter.html.tag.HtmlTag;
+import com.reporter.formatter.html.tag.HtmlCol;
+import com.reporter.formatter.html.tag.HtmlTableCell;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -38,18 +41,28 @@ public class TagCreator {
         return this;
     }
 
-    public TagCreator writeTag(
-        HtmlTag tag, Style style, Boolean styleInHeader, Boolean useHtml4Tags, Boolean needCloseTag
-    ) throws IOException, ParseException
-    {
+    public void writeTag(
+        HtmlTag tag,
+        Style style,
+        boolean isUseHtml4Tags,
+        boolean isStyleInHeader,
+        HtmlColgroupTag useHtml4ColgroupTag,
+        Boolean needCloseTag
+    ) throws IOException, ParseException {
         final CssStyle cssStyle = new CssStyle();
         final boolean isHtmlTable = tag instanceof HtmlTable;
-        if (useHtml4Tags) {
-            final LayoutStyle layoutStyle = HtmlStyleService.extractLayoutStyle(style);
-            HtmlStyleService.fillHtml4StyleTagsFromStyle(tag, layoutStyle, isHtmlTable);
-            final TextStyle textStyle = HtmlStyleService.extractTextStyle(style);
+        final boolean isCol = tag instanceof HtmlCol;
+        final boolean isCell = tag instanceof HtmlTableCell;
+        if (isUseHtml4Tags) {
+            if (!(isCell && useHtml4ColgroupTag.getEnabled())) {
+                final LayoutStyle layoutStyle = HtmlStyleService.extractLayoutStyle(style);
+                HtmlStyleService.fillHtml4StyleTagsFromStyle(tag, layoutStyle, isHtmlTable);
+            }
             write(String.format("<%s%s>", tag.getTagName(), tag.attributesToHtmlString(true)));
             if (item instanceof TextItem<?>) {
+                final TextItem<?> textItem = (TextItem<?>) item;
+                final String formattedText = HtmlStyleService.escapeHtml(applyDecimalFormat(textItem, decimalFormat));
+                final TextStyle textStyle = HtmlStyleService.extractTextStyle(style);
                 if (textStyle != null) {
                     final Html4Font html4Font = HtmlStyleService.convertHtml4Font(textStyle);
                     write(
@@ -59,17 +72,26 @@ public class TagCreator {
                                 html4Font.getTagName(),
                                 html4Font.attributesToHtmlString(true)
                             )
-                            + HtmlStyleService.escapeHtml(applyDecimalFormat((TextItem<?>) item, decimalFormat))
+                            + formattedText
                             + html4Font.close()
                     );
                 } else {
-                    write(HtmlStyleService.escapeHtml(applyDecimalFormat((TextItem<?>) item, decimalFormat)));
+                    write(formattedText);
                 }
             }
         } else {
-            if (styleInHeader) {
+            if (isStyleInHeader &&
+                !(isCol && useHtml4ColgroupTag.getEnabled() && useHtml4ColgroupTag.getWriteInplace())
+            ) {
                 tag.setClass(htmlStyleId(style));
-            } else if (item != null && item.getStyle() != null) {
+            } else if (isHtmlTable && useHtml4ColgroupTag.getEnabled()) {
+                HtmlStyleService.fillCssStyleFromStyle(cssStyle, style, true, false);
+                cssStyle.setBorderCollapse("collapse");
+                tag.setStyle(cssStyle);
+            } else if (isCol && useHtml4ColgroupTag.getWriteInplace()) {
+                HtmlStyleService.fillCssStyleFromStyle(cssStyle, style, false, false);
+                tag.setStyle(cssStyle);
+            } else if (item != null && (item.getStyle() != null || style != null)) {
                 HtmlStyleService.fillCssStyleFromStyle(cssStyle, style, isHtmlTable, false);
                 tag.setStyle(cssStyle);
             }
@@ -81,7 +103,6 @@ public class TagCreator {
         if (needCloseTag) {
             write(tag.close());
         }
-        return this;
     }
 
     public OutputStreamWriter getOutputStreamWriter() {

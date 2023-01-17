@@ -2,11 +2,15 @@ package com.reporter.formatter.html;
 
 import com.google.common.base.Objects;
 import com.reporter.domain.*;
-import com.reporter.domain.styles.*;
+import com.reporter.domain.styles.LayoutStyle;
+import com.reporter.domain.styles.Style;
+import com.reporter.domain.styles.StyleCondition;
+import com.reporter.domain.styles.TextStyle;
 import com.reporter.domain.styles.constants.Color;
 import com.reporter.domain.styles.constants.FillPattern;
 import com.reporter.formatter.BaseDocument;
 import com.reporter.formatter.DocumentHolder;
+import com.reporter.formatter.html.styles.HtmlColgroupTag;
 import com.reporter.formatter.html.styles.HtmlStyleService;
 import com.reporter.formatter.html.tag.*;
 import org.apache.commons.io.FileUtils;
@@ -30,11 +34,11 @@ public class HtmlFormatterTest extends BaseDocument {
         "</title></head><body><h1>Title 1</h1><p style=\"background-color:#FFFFFF;border-bottom:#FFFFFF;" +
         "border-collapse:collapse;border-left:#FFFFFF;border-right:#FFFFFF;border-top:#FFFFFF;color:#000000;" +
         "font-family:courierNew,monospace;font-size:10pt;font-weight:bold;text-align:justify\">paragraph 1</p><table>" +
-        "<tr><th style=\"background-color:#FFFFFF;border-bottom:double#000000;border-collapse:collapse;border-left:" +
-        "double#000000;border-right:double#000000;border-top:double#000000;color:#000000;font-family:arial,monospace;" +
+        "<tr><th style=\"background-color:#FFFFFF;border-bottom:double #000000;border-collapse:collapse;border-left:" +
+        "double #000000;border-right:double #000000;border-top:double #000000;color:#000000;font-family:arial,monospace;" +
         "font-size:14pt;font-weight:bold;text-align:justify\">column1</th><th style=\"background-color:#FFFFFF;" +
-        "border-bottom:double#000000;border-collapse:collapse;border-left:double#000000;border-right:double#000000;" +
-        "border-top:double#000000;color:#000000;font-family:arial,monospace;font-size:14pt;font-weight:bold;" +
+        "border-bottom:double #000000;border-collapse:collapse;border-left:double #000000;border-right:double #000000;" +
+        "border-top:double #000000;color:#000000;font-family:arial,monospace;font-size:14pt;font-weight:bold;" +
         "text-align:justify\">column2 (столбец2)</th></tr><tr><td style=\"color:#000000;font-family:arial,monospace;" +
         "font-size:14pt;font-weight:bold\">1,000</td><td style=\"color:#000000;font-family:arial,monospace;font-size:" +
         "14pt;font-weight:bold\">2,000</td></tr><tr><td style=\"color:#000000;font-family:arial,monospace;font-size:" +
@@ -43,7 +47,7 @@ public class HtmlFormatterTest extends BaseDocument {
         "font-weight:bold\">5,000</td><td style=\"color:#000000;font-family:arial,monospace;font-size:14pt;" +
         "font-weight:bold\">6,000</td></tr></table><h1 style=\"color:#000000;font-family:monospace;font-size:20pt\">" +
         "Test document v.1</h1>" +
-        "<hr style=\"background-color:#FFFFFF;border-bottom:1px solid#008080;border-collapse:collapse;border-left:" +
+        "<hr style=\"background-color:#FFFFFF;border-bottom:1px solid #008080;border-collapse:collapse;border-left:" +
         "#FFFFFF;border-right:#FFFFFF;border-top:#FFFFFF;text-align:justify\"><h1 style=\"background-color:#FFFFFF;" +
         "border-bottom:#FFFFFF;border-collapse:collapse;border-left:#FFFFFF;border-right:#FFFFFF;border-top:#FFFFFF;" +
         "color:#000000;font-family:courierNew,monospace;font-size:10pt;font-weight:bold;text-align:justify\">Chapter " +
@@ -55,11 +59,11 @@ public class HtmlFormatterTest extends BaseDocument {
         "Chapter 1.1.1</h3><p style=\"background-color:#FFFFFF;border-bottom:#FFFFFF;border-collapse:collapse;" +
         "border-left:#FFFFFF;border-right:#FFFFFF;border-top:#FFFFFF;color:#000000;font-family:courierNew,monospace;" +
         "font-size:10pt;font-weight:bold;text-align:justify\">This is an example of text in paragraph</p><table><tr>" +
-        "<th style=\"background-color:#FFFFFF;border-bottom:double#000000;border-collapse:collapse;border-left:" +
-        "double#000000;border-right:double#000000;border-top:double#000000;color:#000000;font-family:arial,monospace;" +
+        "<th style=\"background-color:#FFFFFF;border-bottom:double #000000;border-collapse:collapse;border-left:" +
+        "double #000000;border-right:double #000000;border-top:double #000000;color:#000000;font-family:arial,monospace;" +
         "font-size:14pt;font-weight:bold;text-align:justify\">Column 1</th><th style=\"background-color:#FFFFFF;" +
-        "border-bottom:double#000000;border-collapse:collapse;border-left:double#000000;border-right:double#000000;" +
-        "border-top:double#000000;color:#000000;font-family:arial,monospace;font-size:14pt;font-weight:bold;" +
+        "border-bottom:double #000000;border-collapse:collapse;border-left:double #000000;border-right:double #000000;" +
+        "border-top:double #000000;color:#000000;font-family:arial,monospace;font-size:14pt;font-weight:bold;" +
         "text-align:justify\">Column 2</th></tr><tr><td style=\"color:#000000;font-family:courierNew,monospace;" +
         "font-size:10pt;font-weight:bold\">Cell 1.1</td><td style=\"color:#000000;font-family:courierNew,monospace;" +
         "font-size:10pt;font-weight:bold\">Cell 1.2</td></tr><tr><td style=\"color:#000000;font-family:courierNew," +
@@ -79,11 +83,11 @@ public class HtmlFormatterTest extends BaseDocument {
         "font-weight:bold;text-align:justify\">Chapter 2.1.1</h3><p style=\"background-color:#FFFFFF;border-bottom:" +
         "#FFFFFF;border-collapse:collapse;border-left:#FFFFFF;border-right:#FFFFFF;border-top:#FFFFFF;color:#000000;" +
         "font-family:courierNew,monospace;font-size:10pt;font-weight:bold;text-align:justify\">This is an example" +
-        " of text in paragraph 2</p><table><tr><th style=\"background-color:#FFFFFF;border-bottom:double#000000;" +
-        "border-collapse:collapse;border-left:double#000000;border-right:double#000000;border-top:double#000000;" +
+        " of text in paragraph 2</p><table><tr><th style=\"background-color:#FFFFFF;border-bottom:double #000000;" +
+        "border-collapse:collapse;border-left:double #000000;border-right:double #000000;border-top:double #000000;" +
         "color:#000000;font-family:arial,monospace;font-size:14pt;font-weight:bold;text-align:justify\">Column 1</th>" +
-        "<th style=\"background-color:#FFFFFF;border-bottom:double#000000;border-collapse:collapse;border-left:" +
-        "double#000000;border-right:double#000000;border-top:double#000000;color:#000000;font-family:arial,monospace;" +
+        "<th style=\"background-color:#FFFFFF;border-bottom:double #000000;border-collapse:collapse;border-left:" +
+        "double #000000;border-right:double #000000;border-top:double #000000;color:#000000;font-family:arial,monospace;" +
         "font-size:14pt;font-weight:bold;text-align:justify\">Column 2</th></tr><tr><td style=\"color:#000000;" +
         "font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">Cell 1.1</td><td style=\"color:#000000;" +
         "font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">Cell 1.2</td></tr><tr><td style=\"color:" +
@@ -128,8 +132,9 @@ public class HtmlFormatterTest extends BaseDocument {
             .setColor(Color.RED)
             .setCondition(StyleCondition.create(Paragraph.class, o -> o instanceof Paragraph));
 
-        final StyleService styleService = HtmlStyleService.create()
+        final HtmlStyleService styleService = HtmlStyleService.create()
             .addStyles(titleStyle, paragraphStyle);
+        styleService.setWriteStyleInplace(false);
 
         final Document doc1 = Document.create().setLabel("doc1")
             .addParts(Heading.create(1).setText("testHeading"),
@@ -174,6 +179,85 @@ public class HtmlFormatterTest extends BaseDocument {
 
         final String styleCode = "_" + Integer.toHexString(Objects.hashCode(textStyleCell));
         Assertions.assertEquals(MessageFormat.format(expected, styleCode), text);
+    }
+
+    /**
+     * Test on {@link HtmlFormatter#handle handle} call
+     * with styled <colgroup> tag which propagates to columns
+     * and proper saving result in "fileName"
+     *
+     * @throws Throwable Exception/IOException
+     */
+    @Test
+    public void testSaveToFileWithColgroupStyles() throws Throwable {
+        final HtmlFormatter htmlFormatter = HtmlFormatter.create();
+        final Document doc1 = Document
+            .create()
+            .setLabel("Test document")
+            .setAuthor("A1 Systems")
+            .setDescription("meta information")
+            .addParts(
+                Table
+                    .create()
+                    .setTableHeaderRow(
+                        TableHeaderRow
+                            .create()
+                            .addParts(
+                                TableHeaderCell.create().setText("Column 1"),
+                                TableHeaderCell.create().setText("Column 2")
+                            )
+                    )
+                    .addParts(
+                        TableRow
+                            .create()
+                            .addParts(
+                                TableCell.create().setText("Cell 1.1"),
+                                TableCell.create().setText("Cell 1.2")
+                            ),
+                        TableRow
+                            .create()
+                            .addParts(
+                                TableCell.create().setText("Cell 2.1"),
+                                TableCell.create().setText("Cell 2.2")
+                            ),
+                        TableRow
+                            .create()
+                            .addParts(
+                                TableCell.create().setText("Cell 3.1"),
+                                TableCell.create().setText("Cell 3.2")
+                            ),
+                        TableRow
+                            .create()
+                            .addParts(
+                                TableCell.create().setText("Cell 4.1"),
+                                TableCell.create().setText("Cell 4.2")
+                            )
+                    )
+            );
+        final Style cellStyle = layoutTextStyle.clone().getLayoutStyle().setFillBackgroundColor(Color.GREEN)
+            .setCondition(
+                StyleCondition.create(TableCell.class, null)
+            );
+        final Style headerCellstyle = layoutTextStyle.clone().getLayoutStyle().setFillBackgroundColor(Color.TEAL)
+            .setCondition(
+                StyleCondition.create(TableHeaderCell.class, null)
+            );
+        htmlFormatter.setStyleService(
+            HtmlStyleService
+                .create()
+                .setWriteStyleInplace(false)
+                .setHtmlColgroupTag(HtmlColgroupTag.create(true, false))
+                .addStyles(
+                    cellStyle,
+                    headerCellstyle
+                )
+        );
+        final DocumentHolder documentHolder = htmlFormatter.handle(doc1);
+        final String text = FileUtils.readFileToString(documentHolder.getResource().getFile(), StandardCharsets.UTF_8);
+        documentHolder.close();
+
+        Assertions.assertTrue(text.contains(Integer.toHexString(Objects.hashCode(cellStyle))));
+        Assertions.assertTrue(text.contains(Integer.toHexString(Objects.hashCode(headerCellstyle))));
     }
 
     /**
@@ -241,7 +325,10 @@ public class HtmlFormatterTest extends BaseDocument {
         final Document doc = Document.create()
             .addPart(Heading.create(1).setDepth((short) 7).setText("test"));
         final HtmlFormatter htmlFormatter = HtmlFormatter.create();
-        final Exception e = Assertions.assertThrows(Exception.class, () -> htmlFormatter.handle(doc));
+        final Exception e = Assertions.assertThrows(Exception.class, () -> {
+            final DocumentHolder documentHolder = htmlFormatter.handle(doc);
+            documentHolder.close();
+        });
         Files.deleteIfExists(htmlFormatter.getResource().getFile().toPath());
         Assertions.assertTrue("Malformed tag: h7".contains(e.getMessage()));
     }
@@ -400,11 +487,11 @@ public class HtmlFormatterTest extends BaseDocument {
 
         Assertions.assertEquals(
             "<tr><td style=\"background-color:#FFFFFF;" +
-                "border-bottom:double#000000;" +
+                "border-bottom:double #000000;" +
                 "border-collapse:collapse;" +
-                "border-left:double#000000;" +
-                "border-right:double#000000;" +
-                "border-top:double#000000;" +
+                "border-left:double #000000;" +
+                "border-right:double #000000;" +
+                "border-top:double #000000;" +
                 "text-align:justify\">test_text</td></tr>", os.toString());
         os.reset();
 
@@ -413,6 +500,7 @@ public class HtmlFormatterTest extends BaseDocument {
 
         layoutStyle1.setCondition(StyleCondition.create(TableCell.class, o -> o instanceof TableCell));
         styleService.addStyles(layoutStyle1);
+        styleService.setWriteStyleInplace(false);
 
         doc.addPart(tr);
 
@@ -448,11 +536,11 @@ public class HtmlFormatterTest extends BaseDocument {
         writer.flush();
 
         Assertions.assertEquals("<tr><th style=\"background-color:#FFFFFF;" +
-            "border-bottom:double#000000;" +
+            "border-bottom:double #000000;" +
             "border-collapse:collapse;" +
-            "border-left:double#000000;" +
-            "border-right:double#000000;" +
-            "border-top:double#000000;" +
+            "border-left:double #000000;" +
+            "border-right:double #000000;" +
+            "border-top:double #000000;" +
             "text-align:justify\">test_text</th></tr>", os.toString());
         os.reset();
 
@@ -460,6 +548,7 @@ public class HtmlFormatterTest extends BaseDocument {
         thc.setStyle(null);          // remove inner style
         layoutStyle1.setCondition(StyleCondition.create(TableHeaderCell.class, o -> o instanceof TableHeaderCell));
         styleService.addStyles(layoutStyle1);
+        styleService.setWriteStyleInplace(false);
 
         doc.addPart(thr);
 
@@ -506,11 +595,11 @@ public class HtmlFormatterTest extends BaseDocument {
         writer.flush();
 
         Assertions.assertEquals("<table><tr><th style=\"background-color:#FFFFFF;" +
-            "border-bottom:double#000000;" +
+            "border-bottom:double #000000;" +
             "border-collapse:collapse;" +
-            "border-left:double#000000;" +
-            "border-right:double#000000;" +
-            "border-top:double#000000;" +
+            "border-left:double #000000;" +
+            "border-right:double #000000;" +
+            "border-top:double #000000;" +
             "text-align:justify\">test_text1</th></tr><tr><td>test_text2</td></tr></table>", os.toString());
         os.reset();
 
@@ -518,6 +607,7 @@ public class HtmlFormatterTest extends BaseDocument {
         thc.setStyle(null);         // remove inner style
         layoutStyle1.setCondition(StyleCondition.create(TableHeaderCell.class, o -> o instanceof TableHeaderCell));
         styleService.addStyles(layoutStyle1);
+        styleService.setWriteStyleInplace(false);
 
         doc.addPart(thr);
 
@@ -559,11 +649,11 @@ public class HtmlFormatterTest extends BaseDocument {
 
         Assertions.assertEquals(
             "<" + baseTag + " style=\"background-color:#FFFFFF;" +
-                "border-bottom:double#000000;" +
+                "border-bottom:double #000000;" +
                 "border-collapse:collapse;" +
-                "border-left:double#000000;" +
-                "border-right:double#000000;" +
-                "border-top:double#000000;" +
+                "border-left:double #000000;" +
+                "border-right:double #000000;" +
+                "border-top:double #000000;" +
                 "text-align:justify\">test_text</" + baseTag + ">", os.toString());
         os.reset();
 // Case of the text style
@@ -581,6 +671,7 @@ public class HtmlFormatterTest extends BaseDocument {
         item.setStyle(null);         // remove inner style
         layoutStyle1.setCondition(StyleCondition.create(itemClass, o -> o.getClass().equals(itemClass)));
         styleService.addStyles(layoutStyle1);
+        styleService.setWriteStyleInplace(false);
 
         doc.addPart(item);
 

@@ -115,14 +115,23 @@ public class HtmlFormatterVisitor extends Formatter {
         final HtmlTable htmlTable = new HtmlTable();
         Style style = styleService.extractStyleFor(tableObj).orElse(tableObj.getStyle());
         final HtmlStyleService htmlStyleService = (HtmlStyleService) styleService;
-
-        if (style == null && htmlStyleService.getUseHtml4Tags()) {
-            style = LayoutStyle.create().setBorderBottom(BorderStyle.create(Color.BLACK, BorderWeight.THIN));
-            handleTag(htmlTable, tableObj, style, false);
-        } else if (htmlStyleService.getUseHtml4Tags()) {
-            handleTag(htmlTable, tableObj, style, false);
+        final boolean isUseColgroupTag = htmlStyleService.getHtmlColgroupTag().getEnabled();
+        final boolean isUseHtml4Tags = htmlStyleService.isUseHtml4Tags();
+        if (isUseHtml4Tags) {
+            if (style == null) {
+                style = LayoutStyle.create().setBorderBottom(BorderStyle.create(Color.BLACK, BorderWeight.THIN));
+            }
+            if (isUseColgroupTag) {
+                handleColgroupTag(tableObj, style);
+            } else {
+                handleTag(htmlTable, tableObj, style, false);
+            }
         } else {
-            outputStreamWriter.write(htmlTable.open());
+            if (isUseColgroupTag) {
+                handleColgroupTag(tableObj, style);
+            } else {
+                outputStreamWriter.write(htmlTable.open());
+            }
         }
 
         if (tableObj.getTableHeaderRow().isPresent()) {
@@ -179,8 +188,9 @@ public class HtmlFormatterVisitor extends Formatter {
             .writeTag(
                 tag,
                 style,
-                htmlStyleService.contains(style),
-                htmlStyleService.getUseHtml4Tags(),
+                htmlStyleService.isUseHtml4Tags(),
+                htmlStyleService.contains(style) && !htmlStyleService.isWriteStyleInplace(),
+                htmlStyleService.getHtmlColgroupTag(),
                 needCloseTag
             );
     }
@@ -190,6 +200,23 @@ public class HtmlFormatterVisitor extends Formatter {
         outputStreamWriter.write(htmlTableRow.open());
         this.visitComposition(row);
         outputStreamWriter.write(htmlTableRow.close());
+    }
+
+    private void handleColgroupTag(Table tableObj, Style style) throws Exception {
+        final HtmlTable htmlTable = new HtmlTable();
+        if (tableObj.getTableHeaderRow().isPresent()) {
+            handleTag(htmlTable, tableObj, style, false);
+            if (styleService.extractStyleFor(TableCell.create()).isPresent()) {
+                final Style cellStyle = styleService.extractStyleFor(TableCell.create()).get();
+                final TableHeaderRow thr = tableObj.getTableHeaderRow().get();
+                final HtmlColgroup htmlColgroup = new HtmlColgroup();
+                outputStreamWriter.write(htmlColgroup.open());
+                for (TableHeaderCell ignored : thr.getParts()) {
+                    handleTag(new HtmlCol(), null, cellStyle, true);
+                }
+                outputStreamWriter.write(htmlColgroup.close());
+            }
+        }
     }
 
     @Override
