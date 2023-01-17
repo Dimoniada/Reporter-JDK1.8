@@ -1,4 +1,4 @@
-package com.reporter.domain;
+package com.reporter.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,12 +10,16 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
-public class ReportRowMapper<T> implements RowMapper<T> {
+public class ImplRowMapper<T> implements RowMapper<T> {
 
-    private static final Logger log = LoggerFactory.getLogger(ReportRowMapper.class);
+    private static final Logger log = LoggerFactory.getLogger(ImplRowMapper.class);
     private final Class<T> clazz;
 
-    public ReportRowMapper(Class<T> clazz) {
+    public static <T> ImplRowMapper<T> create(Class<T> clazz) {
+        return new ImplRowMapper<>(clazz);
+    }
+
+    public ImplRowMapper(Class<T> clazz) {
         this.clazz = clazz;
     }
 

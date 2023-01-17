@@ -67,33 +67,36 @@ public class QueryTable extends Table {
     public QueryTable accept(FormatterVisitor visitor) throws Throwable {
         if (!StringUtils.hasText(query)) {
             throw new IllegalArgumentException("Query is empty");
-        } else if (namedParameterJdbcTemplate != null) {
-            if (isTableHeaderRowFromData) {
-                final AtomicReference<ColumnMetaDataMap> metaData = new AtomicReference<>(new ColumnMetaDataMap());
-                namedParameterJdbcTemplate.getJdbcTemplate().setMaxRows(1);
-                final RowCallbackHandler rsLambdaMeta =
-                    (ResultSet rs) -> metaData.set(
-                        ColumnMetaDataMap.create(
-                            rs.getMetaData(),
-                            query
-                        )
-                    );
-                namedParameterJdbcTemplate.query(query, mapSqlParameterSource, rsLambdaMeta);
-                tableHeaderRow = generateTableHeaderRow(metaData.get());
-            }
-
-            namedParameterJdbcTemplate.getJdbcTemplate().setMaxRows(0);
-            namedParameterJdbcTemplate.getJdbcTemplate().setFetchSize(fetchSize);
-            final RowCallbackHandler rsLambdaWork =
-                (rs) ->
-                    addPart(
-                        resultSetToTableRow(
-                            rs,
-                            getTableHeaderRow().orElse(null)
-                        )
-                    );
-            namedParameterJdbcTemplate.query(query, mapSqlParameterSource, rsLambdaWork);
         }
+        if (namedParameterJdbcTemplate == null) {
+            throw new IllegalArgumentException("namedParameterJdbcTemplate is null");
+        }
+        if (isTableHeaderRowFromData) {
+            final AtomicReference<ColumnMetaDataMap> metaData = new AtomicReference<>(new ColumnMetaDataMap());
+            namedParameterJdbcTemplate.getJdbcTemplate().setMaxRows(1);
+            final RowCallbackHandler rsLambdaMeta =
+                (ResultSet rs) -> metaData.set(
+                    ColumnMetaDataMap.create(
+                        rs.getMetaData(),
+                        query
+                    )
+                );
+            namedParameterJdbcTemplate.query(query, mapSqlParameterSource, rsLambdaMeta);
+            tableHeaderRow = generateTableHeaderRow(metaData.get());
+        }
+
+        namedParameterJdbcTemplate.getJdbcTemplate().setMaxRows(0);
+        namedParameterJdbcTemplate.getJdbcTemplate().setFetchSize(fetchSize);
+        final RowCallbackHandler rsLambdaWork =
+            (rs) ->
+                addPart(
+                    resultSetToTableRow(
+                        rs,
+                        getTableHeaderRow().orElse(null)
+                    )
+                );
+        namedParameterJdbcTemplate.query(query, mapSqlParameterSource, rsLambdaWork);
+
         super.accept(visitor);
         return this;
     }
@@ -112,22 +115,23 @@ public class QueryTable extends Table {
 
     private TableRow resultSetToTableRow(ResultSet rs, TableHeaderRow thr) throws SQLException {
         final TableRow tableRow = TableRow.create();
-        if (thr != null) {
-            int i = 0;
-            for (final TableHeaderCell hc : thr.getParts()) {
-                i++;
-                final TableCell tableCell = TableCell.create();
-                if (hc.getAliasName().isEmpty()) {
-                    tableCell.setText(rs.getObject(i, String.class));
-                } else {
-                    final String columnName =
-                        isTableHeaderRowFromData
+        if (thr == null) {
+            return tableRow;
+        }
+        int i = 0;
+        for (final TableHeaderCell hc : thr.getParts()) {
+            i++;
+            final TableCell tableCell = TableCell.create();
+            if (hc.getAliasName().isEmpty()) {
+                tableCell.setText(rs.getObject(i, String.class));
+            } else {
+                final String columnName =
+                    isTableHeaderRowFromData
                         ? hc.getText()
                         : hc.getAliasName();
-                    tableCell.setText(rs.getObject(columnName, String.class));
-                }
-                tableRow.addPart(tableCell);
+                tableCell.setText(rs.getObject(columnName, String.class));
             }
+            tableRow.addPart(tableCell);
         }
         return tableRow;
     }

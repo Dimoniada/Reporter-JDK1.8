@@ -27,7 +27,7 @@ Documentation in progress.
 public class ReporterApplication {
     public void Test() {
         //Document will be saved in a new file "Document name.xlsx"
-        final var doc =
+        final Document doc =
             Document.create()
                 .setLabel("Document name")
                 .addParts(
@@ -50,10 +50,10 @@ public class ReporterApplication {
                         )
                 );
         //Creating appropriate formatter
-        final var xlsxFormatter = XlsxFormatter.create();
+        final XlsxFormatter xlsxFormatter = XlsxFormatter.create();
         //DocumentHolder as AutoCloseable will be holding our file "Document name.xlsx"
-        try (var documentHolder = xlsxFormatter.handle(doc)) {
-            var file = documentHolder.getResource().getFile();
+        try (DocumentHolder documentHolder = xlsxFormatter.handle(doc)) {
+            final File file = documentHolder.getResource().getFile();
             //Any stuff with file here
         } catch (Throwable ignore) {
 
@@ -71,7 +71,7 @@ Let's adjust cell width for our Title:
 ```java
 public class ReporterApplication {
     public void Test() {
-        final var title =
+        final Title title =
             Title.create("Title on first page")
                 .setStyle(
                     LayoutStyle.create()
@@ -124,15 +124,17 @@ public class ReporterApplication {
 We can put Document to HtmlFormatter:
 
 ```java
-public class ReporterApplication {
-    public void Test() {
-        final var htmlFormatter = HtmlFormatter.create();
-        try (var documentHolder = htmlFormatter.handle(doc)) {
-            var file = documentHolder.getResource().getFile();
-        } catch (Throwable ignored) {
-        }
+import com.reporter.formatter.DocumentHolder;
 
-    }
+public class ReporterApplication {
+   public void Test() {
+      final HtmlFormatter htmlFormatter = HtmlFormatter.create();
+      try (DocumentHolder documentHolder = htmlFormatter.handle(doc)) {
+         final File file = documentHolder.getResource().getFile();
+      } catch (Throwable ignored) {
+      }
+
+   }
 }
 ```
 
@@ -154,7 +156,7 @@ public class ReporterApplication {
             .setBorderRight(BorderStyle.create(Color.RED, BorderWeight.MEDIUM))
             .setBorderBottom(BorderStyle.create(Color.RED, BorderWeight.MEDIUM));
 
-        final var table = Table.create(
+        final Table table = Table.create(
                 TableHeaderRow.create(
                         TableHeaderCell.create("Column1"),
                         TableHeaderCell.create("Column2")
@@ -182,68 +184,70 @@ public class ReporterApplication {
 Same result, but using StyleService:
 
 ```java
+import com.reporter.formatter.DocumentHolder;
+
 public class ReporterApplication {
-    public void Test() {
-        final LayoutStyle titleStyle =
-            LayoutStyle.create()
-                .setAutoWidth(true)
-                .setCondition(StyleCondition.create(Title.class));
+   public void Test() {
+      final LayoutStyle titleStyle =
+              LayoutStyle.create()
+                      .setAutoWidth(true)
+                      .setCondition(StyleCondition.create(Title.class));
 
-        final LayoutStyle bordersStyle =
-            LayoutStyle.create()
-                .setBorderTop(BorderStyle.create(Color.RED, BorderWeight.MEDIUM))
-                .setBorderLeft(BorderStyle.create(Color.RED, BorderWeight.MEDIUM))
-                .setBorderRight(BorderStyle.create(Color.RED, BorderWeight.MEDIUM))
-                .setBorderBottom(BorderStyle.create(Color.RED, BorderWeight.MEDIUM))
-                .setCondition(StyleCondition.create(TableHeaderCell.class));
+      final LayoutStyle bordersStyle =
+              LayoutStyle.create()
+                      .setBorderTop(BorderStyle.create(Color.RED, BorderWeight.MEDIUM))
+                      .setBorderLeft(BorderStyle.create(Color.RED, BorderWeight.MEDIUM))
+                      .setBorderRight(BorderStyle.create(Color.RED, BorderWeight.MEDIUM))
+                      .setBorderBottom(BorderStyle.create(Color.RED, BorderWeight.MEDIUM))
+                      .setCondition(StyleCondition.create(TableHeaderCell.class));
 
-        final LayoutTextStyle commonCellsStyle =
-            LayoutTextStyle.create(
-                    TextStyle.create("Times New Roman")
-                        .setBold(true)
-                        .setItalic(true)
-                        .setUnderline((byte) 1)
-                        .setFontSize((short) 15)
-                        .setColor(Color.GREY),
-                    bordersStyle.clone().setCondition(null)
-                )
-                .setCondition(StyleCondition.create(TableCell.class));
+      final LayoutTextStyle commonCellsStyle =
+              LayoutTextStyle.create(
+                              TextStyle.create("Times New Roman")
+                                      .setBold(true)
+                                      .setItalic(true)
+                                      .setUnderline((byte) 1)
+                                      .setFontSize((short) 15)
+                                      .setColor(Color.GREY),
+                              bordersStyle.clone().setCondition(null)
+                      )
+                      .setCondition(StyleCondition.create(TableCell.class));
 
-        final var styleService =
-            HtmlStyleService.create()
-                .addStyles(titleStyle, bordersStyle, commonCellsStyle);
+      final HtmlStyleService styleService =
+              HtmlStyleService.create()
+                      .addStyles(titleStyle, bordersStyle, commonCellsStyle);
 
-        doc =
-            Document.create()
-                .setLabel("Document name")
-                .addParts(
-                    Title.create("Title on first page"),
-                    Table.create(
-                            TableHeaderRow.create(
-                                TableHeaderCell.create("Column1"),
-                                TableHeaderCell.create("Column2")
-                            )
-                        )
-                        .addParts(
-                            TableRow.create(
-                                TableCell.create("cell 1 1"),
-                                TableCell.create("cell 1 2")
-                            ),
-                            TableRow.create(
-                                TableCell.create("cell 2 1"),
-                                TableCell.create("cell 2 2")
-                            )
-                        )
-                );
+      doc =
+              Document.create()
+                      .setLabel("Document name")
+                      .addParts(
+                              Title.create("Title on first page"),
+                              Table.create(
+                                              TableHeaderRow.create(
+                                                      TableHeaderCell.create("Column1"),
+                                                      TableHeaderCell.create("Column2")
+                                              )
+                                      )
+                                      .addParts(
+                                              TableRow.create(
+                                                      TableCell.create("cell 1 1"),
+                                                      TableCell.create("cell 1 2")
+                                              ),
+                                              TableRow.create(
+                                                      TableCell.create("cell 2 1"),
+                                                      TableCell.create("cell 2 2")
+                                              )
+                                      )
+                      );
 
-        final var htmlFormatter = HtmlFormatter.create().setStyleService(styleService);
+      final HtmlFormatter htmlFormatter = HtmlFormatter.create().setStyleService(styleService);
 
-        try (var documentHolder = htmlFormatter.handle(doc)) {
-            var file = documentHolder.getResource().getFile();
-        } catch (Throwable ignored) {
+      try (DocumentHolder documentHolder = htmlFormatter.handle(doc)) {
+         final File file = documentHolder.getResource().getFile();
+      } catch (Throwable ignored) {
 
-        }
-    }
+      }
+   }
 }
 ```
 
@@ -252,33 +256,35 @@ public class ReporterApplication {
 Little example on how to get data from DB:
 
 ```java
+import com.reporter.formatter.DocumentHolder;
+
 public class ReporterApplication {
-    public void Test() {
-        final NamedParameterJdbcTemplate jdbcTemplate;          //connection to db
-        // columns traffic_name_as_in_db, traffic_dir_as_in_db are present in DB
-        final TableHeaderCell th1 =
-            TableHeaderCell.create("Traffic name").setAliasName("traffic_name_as_in_db");
+   public void Test() {
+      final NamedParameterJdbcTemplate jdbcTemplate;          //connection to db
+      // columns traffic_name_as_in_db, traffic_dir_as_in_db are present in DB
+      final TableHeaderCell th1 =
+              TableHeaderCell.create("Traffic name").setAliasName("traffic_name_as_in_db");
 
-        final TableHeaderCell th2 =
-            TableHeaderCell.create("Traffic direction").setAliasName("traffic_dir_as_in_db");
+      final TableHeaderCell th2 =
+              TableHeaderCell.create("Traffic direction").setAliasName("traffic_dir_as_in_db");
 
-        final var html =
-            Document.create()
-                .setLabel("doc.html")
-                .addParts(
-                    QueryTable.create(TableHeaderRow.create(th1, th2))
-                        .setNamedParameterJdbcTemplate(jdbcTemplate)
-                );
-        //Creating appropriate formatter
-        final var htmlFormatter = HtmlFormatter.create();
-        //DocumentHolder as AutoCloseable will be holding our file "doc.html"
-        try (var documentHolder = htmlFormatter.handle(doc)) {
-            var file = documentHolder.getResource().getFile();
-            //Any stuff with file here
-        } catch (Throwable ignored) {
+      final Document html =
+              Document.create()
+                      .setLabel("doc.html")
+                      .addParts(
+                              QueryTable.create(TableHeaderRow.create(th1, th2))
+                                      .setNamedParameterJdbcTemplate(jdbcTemplate)
+                      );
+      //Creating appropriate formatter
+      final HtmlFormatter htmlFormatter = HtmlFormatter.create();
+      //DocumentHolder as AutoCloseable will be holding our file "doc.html"
+      try (DocumentHolder documentHolder = htmlFormatter.handle(doc)) {
+         final File  file = documentHolder.getResource().getFile();
+         //Any stuff with file here
+      } catch (Throwable ignored) {
 
-        }
-    }
+      }
+   }
 }
 ```
 
@@ -317,40 +323,42 @@ when exporting texts with different languages to pdf format, try to use differen
    folder and set it to text style as below:
 
 ```java
+import com.reporter.formatter.DocumentHolder;
+
 public class ReporterApplication {
-    public void Test() {
-        //read all fonts and available locales from resources
-        final var fontService = FontService.create()
-            .initializeFonts();
+   public void Test() {
+      //read all fonts and available locales from resources
+      final FontService fontService = FontService.create()
+              .initializeFonts();
 
-        final var textStyleZH = TextStyle.create()
-            //set font name 
-            .setFontNameResource("xiaolai_Monospaced_(en-zh).ttf")
-            //set fontFamily class
-            .setFontFamilyStyle(FontFamilyStyle.MONOSPACED)
-            //optionally set font locale    
-            .setFontLocale("zh");
+      final TextStyle textStyleZH = TextStyle.create()
+              //set font name 
+              .setFontNameResource("xiaolai_Monospaced_(en-zh).ttf")
+              //set fontFamily class
+              .setFontFamilyStyle(FontFamilyStyle.MONOSPACED)
+              //optionally set font locale    
+              .setFontLocale("zh");
 
 
-        final Document doc = Document
-            .create()
-            .addParts(
-                Title.create("一些文字").setStyle(textStyle1)
-            );
+      final Document doc = Document
+              .create()
+              .addParts(
+                      Title.create("一些文字").setStyle(textStyle1)
+              );
 
-        //Create appropriate formatter
-        final var pdfFormatter = PdfFormatter.create()
-                .getStyleService()
-                //Set fontService here
-                .setFontService(fontService);
-        //DocumentHolder as AutoCloseable will be holding our file "doc.pdf"
-        try (var documentHolder = pdfFormatter.handle(doc)) {
-            var file = documentHolder.getResource().getFile();
-            //Any stuff with file here
-        } catch (Throwable ignored) {
+      //Create appropriate formatter
+      final PdfFormatter pdfFormatter = PdfFormatter.create()
+              .getStyleService()
+              //Set fontService here
+              .setFontService(fontService);
+      //DocumentHolder as AutoCloseable will be holding our file "doc.pdf"
+      try (DocumentHolder documentHolder = pdfFormatter.handle(doc)) {
+         final File file = documentHolder.getResource().getFile();
+         //Any stuff with file here
+      } catch (Throwable ignored) {
 
-        }
-    }
+      }
+   }
 }
 ```
 
