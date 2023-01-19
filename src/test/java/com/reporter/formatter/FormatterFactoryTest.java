@@ -1,12 +1,14 @@
 package com.reporter.formatter;
 
-import com.reporter.formatter.csv.CsvFormatter;
-import com.reporter.formatter.excel.XlsFormatter;
-import com.reporter.formatter.excel.XlsxFormatter;
-import com.reporter.formatter.html.HtmlFormatter;
-import com.reporter.formatter.pdf.PdfFormatter;
-import com.reporter.formatter.word.DocFormatter;
-import com.reporter.formatter.word.DocxFormatter;
+import com.model.formatter.Formatter;
+import com.model.formatter.FormatterFactory;
+import com.model.formatter.csv.CsvFormatter;
+import com.model.formatter.excel.XlsFormatter;
+import com.model.formatter.excel.XlsxFormatter;
+import com.model.formatter.html.HtmlFormatter;
+import com.model.formatter.pdf.PdfFormatter;
+import com.model.formatter.word.DocFormatter;
+import com.model.formatter.word.DocxFormatter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

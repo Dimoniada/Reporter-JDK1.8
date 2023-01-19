@@ -1,9 +1,12 @@
 package com.reporter.formatter.word;
 
-import com.reporter.domain.DocumentItem;
-import com.reporter.domain.Footer;
+import com.model.domain.DocumentItem;
+import com.model.domain.Footer;
+import com.model.formatter.DocumentHolder;
+import com.model.formatter.word.DocFormatter;
+import com.model.formatter.word.DocxFormatter;
+import com.model.formatter.word.WordFormatter;
 import com.reporter.formatter.BaseDocument;
-import com.reporter.formatter.DocumentHolder;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFHeaderFooter;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;

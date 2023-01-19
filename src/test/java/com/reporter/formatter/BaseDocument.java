@@ -1,9 +1,9 @@
 package com.reporter.formatter;
 
-import com.reporter.domain.*;
-import com.reporter.domain.styles.*;
-import com.reporter.domain.styles.constants.BorderWeight;
-import com.reporter.domain.styles.constants.Color;
+import com.model.domain.*;
+import com.model.domain.styles.*;
+import com.model.domain.styles.constants.BorderWeight;
+import com.model.domain.styles.constants.Color;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
@@ -90,26 +90,26 @@ public class BaseDocument {
                     .setTableHeaderRow(
                         TableHeaderRow
                             .create().addParts(
-                            TableHeaderCell.create().setText("column1").setStyle(layoutTextStyle),
-                            TableHeaderCell.create().setText("column2 (столбец2)").setStyle(layoutTextStyle)
-                        )
+                                TableHeaderCell.create().setText("column1").setStyle(layoutTextStyle),
+                                TableHeaderCell.create().setText("column2 (столбец2)").setStyle(layoutTextStyle)
+                            )
                     )
                     .addParts(
                         TableRow
                             .create().addParts(
-                            TableCell.create().setText("1"),
-                            TableCell.create().setText("2")
-                        ),
+                                TableCell.create().setText("1"),
+                                TableCell.create().setText("2")
+                            ),
                         TableRow
                             .create().addParts(
-                            TableCell.create().setText("3"),
-                            TableCell.create().setText("4")
-                        ),
+                                TableCell.create().setText("3"),
+                                TableCell.create().setText("4")
+                            ),
                         TableRow
                             .create().addParts(
-                            TableCell.create().setText("5"),
-                            TableCell.create().setText("6")
-                        )
+                                TableCell.create().setText("5"),
+                                TableCell.create().setText("6")
+                            )
                     )
                     .spreadStyleToParts(textStyle1)
             );
@@ -208,23 +208,23 @@ public class BaseDocument {
                     .setTableHeaderRow(
                         TableHeaderRow
                             .create().addParts(
-                            TableHeaderCell.create().setText("столбец1"),
-                            TableHeaderCell.create().setText("column2")
-                        )
+                                TableHeaderCell.create().setText("столбец1"),
+                                TableHeaderCell.create().setText("column2")
+                            )
                     )
                     .addParts(
                         TableRow
                             .create().addParts(
-                            TableCell.create().setText("1"),
-                            TableCell.create().setText("2")),
+                                TableCell.create().setText("1"),
+                                TableCell.create().setText("2")),
                         TableRow
                             .create().addParts(
-                            TableCell.create().setText("3"),
-                            TableCell.create().setText("4 and some escape characters (символы) %;;;;;\\/")),
+                                TableCell.create().setText("3"),
+                                TableCell.create().setText("4 and some escape characters (символы) %;;;;;\\/")),
                         TableRow
                             .create().addParts(
-                            TableCell.create().setText("5"),
-                            TableCell.create().setText("6"))
+                                TableCell.create().setText("5"),
+                                TableCell.create().setText("6"))
                     )
                     .spreadStyleToParts(textStyleCell)
             );

@@ -2,8 +2,9 @@ package com.reporter.domain;
 
 import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.kernel.font.PdfFontFactory;
-import com.reporter.domain.styles.FontFamilyStyle;
-import com.reporter.domain.styles.TextStyle;
+import com.model.domain.FontService;
+import com.model.domain.styles.FontFamilyStyle;
+import com.model.domain.styles.TextStyle;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,8 +32,8 @@ class FontServiceTest {
         final Set<Locale> localeList = fontService.getLocaleSet();
         Assertions.assertTrue(
             localeList.contains(localeEn)
-            && localeList.contains(localeZh)
-            && localeList.contains(localeRu)
+                && localeList.contains(localeZh)
+                && localeList.contains(localeRu)
         );
     }
 

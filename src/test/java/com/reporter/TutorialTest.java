@@ -5,21 +5,21 @@ import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
 import com.itextpdf.kernel.pdf.canvas.parser.listener.ITextExtractionStrategy;
 import com.itextpdf.kernel.pdf.canvas.parser.listener.SimpleTextExtractionStrategy;
-import com.reporter.domain.*;
-import com.reporter.domain.styles.BorderStyle;
-import com.reporter.domain.styles.StyleService;
-import com.reporter.domain.styles.constants.BorderWeight;
-import com.reporter.domain.styles.constants.Color;
-import com.reporter.formatter.Formatter;
-import com.reporter.formatter.FormatterContext;
-import com.reporter.formatter.FormatterFactory;
-import com.reporter.formatter.csv.CsvFormatter;
-import com.reporter.formatter.excel.XlsFormatter;
-import com.reporter.formatter.excel.XlsxFormatter;
-import com.reporter.formatter.html.HtmlFormatter;
-import com.reporter.formatter.pdf.PdfFormatter;
-import com.reporter.formatter.word.DocFormatter;
-import com.reporter.formatter.word.DocxFormatter;
+import com.model.domain.*;
+import com.model.domain.styles.BorderStyle;
+import com.model.domain.styles.StyleService;
+import com.model.domain.styles.constants.BorderWeight;
+import com.model.domain.styles.constants.Color;
+import com.model.formatter.Formatter;
+import com.model.formatter.FormatterContext;
+import com.model.formatter.FormatterFactory;
+import com.model.formatter.csv.CsvFormatter;
+import com.model.formatter.excel.XlsFormatter;
+import com.model.formatter.excel.XlsxFormatter;
+import com.model.formatter.html.HtmlFormatter;
+import com.model.formatter.pdf.PdfFormatter;
+import com.model.formatter.word.DocFormatter;
+import com.model.formatter.word.DocxFormatter;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -67,38 +67,38 @@ public class TutorialTest {
             Arguments.of(
                 "PDF test",
                 new ExportContext()                                             //For export to pdf
-                .setFormat("pdf")
-                .setLocale("en")
-                .setColumns(Arrays.asList("id", "comment", "name"))
-                .setEncoding("UTF-8")
-                .setCsvDelimiter(';')
+                    .setFormat("pdf")
+                    .setLocale("en")
+                    .setColumns(Arrays.asList("id", "comment", "name"))
+                    .setEncoding("UTF-8")
+                    .setCsvDelimiter(';')
             ),
             Arguments.of(
                 "XLSX test",
                 new ExportContext()                                             //For export to xlsx
-                .setFormat("xlsx")
-                .setLocale("en")
-                .setColumns(Arrays.asList("id", "comment", "name"))
-                .setEncoding("UTF-8")
-                .setCsvDelimiter(';')
+                    .setFormat("xlsx")
+                    .setLocale("en")
+                    .setColumns(Arrays.asList("id", "comment", "name"))
+                    .setEncoding("UTF-8")
+                    .setCsvDelimiter(';')
             ),
             Arguments.of(
                 "HTML test",
                 new ExportContext()                                             //For export to html
-                .setFormat("html")
-                .setLocale("en")
-                .setColumns(Arrays.asList("id", "comment", "name"))
-                .setEncoding("UTF-8")
-                .setCsvDelimiter(';')
+                    .setFormat("html")
+                    .setLocale("en")
+                    .setColumns(Arrays.asList("id", "comment", "name"))
+                    .setEncoding("UTF-8")
+                    .setCsvDelimiter(';')
             ),
             Arguments.of(
                 "DOCX test",
                 new ExportContext()                                             //For export to docx
-                .setFormat("docx")
-                .setLocale("en")
-                .setColumns(Arrays.asList("id", "comment", "name"))
-                .setEncoding("UTF-8")
-                .setCsvDelimiter(';')
+                    .setFormat("docx")
+                    .setLocale("en")
+                    .setColumns(Arrays.asList("id", "comment", "name"))
+                    .setEncoding("UTF-8")
+                    .setCsvDelimiter(';')
             )
         );
     }

@@ -1,5 +1,7 @@
 package com.reporter.formatter;
 
+import com.model.formatter.FormatterContext;
+
 import java.text.DecimalFormat;
 import java.util.Locale;
 import java.util.TimeZone;

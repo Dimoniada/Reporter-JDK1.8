@@ -1,10 +1,11 @@
 package com.reporter.formatter;
 
-import com.reporter.domain.FontService;
-import com.reporter.domain.TableCell;
-import com.reporter.domain.TableHeaderCell;
-import com.reporter.domain.styles.*;
-import com.reporter.domain.styles.constants.*;
+import com.model.domain.FontService;
+import com.model.domain.TableCell;
+import com.model.domain.TableHeaderCell;
+import com.model.domain.styles.*;
+import com.model.domain.styles.constants.*;
+import com.model.formatter.FormatterContext;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

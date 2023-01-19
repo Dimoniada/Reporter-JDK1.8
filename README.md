@@ -124,7 +124,7 @@ public class ReporterApplication {
 We can put Document to HtmlFormatter:
 
 ```java
-import com.reporter.formatter.DocumentHolder;
+import com.model.formatter.DocumentHolder;
 
 public class ReporterApplication {
    public void Test() {
@@ -142,7 +142,7 @@ public class ReporterApplication {
 
 Styles are written in each html-element because we assign them directly to elements through
 setStyle() or spreadStyleToParts(). It is convenient when using html4 specification.
-But in html5 with [StyleService](src/main/java/com/reporter/domain/styles/StyleService.java)
+But in html5 with [StyleService](src/main/java/com/model/domain/styles/StyleService.java)
 using they will be written in header section with unique indexes.
 
 Ok, it seems we need some table borders:
@@ -184,70 +184,70 @@ public class ReporterApplication {
 Same result, but using StyleService:
 
 ```java
-import com.reporter.formatter.DocumentHolder;
+import com.model.formatter.DocumentHolder;
 
 public class ReporterApplication {
-   public void Test() {
-      final LayoutStyle titleStyle =
-              LayoutStyle.create()
-                      .setAutoWidth(true)
-                      .setCondition(StyleCondition.create(Title.class));
+    public void Test() {
+        final LayoutStyle titleStyle =
+            LayoutStyle.create()
+                .setAutoWidth(true)
+                .setCondition(StyleCondition.create(Title.class));
 
-      final LayoutStyle bordersStyle =
-              LayoutStyle.create()
-                      .setBorderTop(BorderStyle.create(Color.RED, BorderWeight.MEDIUM))
-                      .setBorderLeft(BorderStyle.create(Color.RED, BorderWeight.MEDIUM))
-                      .setBorderRight(BorderStyle.create(Color.RED, BorderWeight.MEDIUM))
-                      .setBorderBottom(BorderStyle.create(Color.RED, BorderWeight.MEDIUM))
-                      .setCondition(StyleCondition.create(TableHeaderCell.class));
+        final LayoutStyle bordersStyle =
+            LayoutStyle.create()
+                .setBorderTop(BorderStyle.create(Color.RED, BorderWeight.MEDIUM))
+                .setBorderLeft(BorderStyle.create(Color.RED, BorderWeight.MEDIUM))
+                .setBorderRight(BorderStyle.create(Color.RED, BorderWeight.MEDIUM))
+                .setBorderBottom(BorderStyle.create(Color.RED, BorderWeight.MEDIUM))
+                .setCondition(StyleCondition.create(TableHeaderCell.class));
 
-      final LayoutTextStyle commonCellsStyle =
-              LayoutTextStyle.create(
-                              TextStyle.create("Times New Roman")
-                                      .setBold(true)
-                                      .setItalic(true)
-                                      .setUnderline((byte) 1)
-                                      .setFontSize((short) 15)
-                                      .setColor(Color.GREY),
-                              bordersStyle.clone().setCondition(null)
-                      )
-                      .setCondition(StyleCondition.create(TableCell.class));
+        final LayoutTextStyle commonCellsStyle =
+            LayoutTextStyle.create(
+                    TextStyle.create("Times New Roman")
+                        .setBold(true)
+                        .setItalic(true)
+                        .setUnderline((byte) 1)
+                        .setFontSize((short) 15)
+                        .setColor(Color.GREY),
+                    bordersStyle.clone().setCondition(null)
+                )
+                .setCondition(StyleCondition.create(TableCell.class));
 
-      final HtmlStyleService styleService =
-              HtmlStyleService.create()
-                      .addStyles(titleStyle, bordersStyle, commonCellsStyle);
+        final HtmlStyleService styleService =
+            HtmlStyleService.create()
+                .addStyles(titleStyle, bordersStyle, commonCellsStyle);
 
-      doc =
-              Document.create()
-                      .setLabel("Document name")
-                      .addParts(
-                              Title.create("Title on first page"),
-                              Table.create(
-                                              TableHeaderRow.create(
-                                                      TableHeaderCell.create("Column1"),
-                                                      TableHeaderCell.create("Column2")
-                                              )
-                                      )
-                                      .addParts(
-                                              TableRow.create(
-                                                      TableCell.create("cell 1 1"),
-                                                      TableCell.create("cell 1 2")
-                                              ),
-                                              TableRow.create(
-                                                      TableCell.create("cell 2 1"),
-                                                      TableCell.create("cell 2 2")
-                                              )
-                                      )
-                      );
+        doc =
+            Document.create()
+                .setLabel("Document name")
+                .addParts(
+                    Title.create("Title on first page"),
+                    Table.create(
+                            TableHeaderRow.create(
+                                TableHeaderCell.create("Column1"),
+                                TableHeaderCell.create("Column2")
+                            )
+                        )
+                        .addParts(
+                            TableRow.create(
+                                TableCell.create("cell 1 1"),
+                                TableCell.create("cell 1 2")
+                            ),
+                            TableRow.create(
+                                TableCell.create("cell 2 1"),
+                                TableCell.create("cell 2 2")
+                            )
+                        )
+                );
 
-      final HtmlFormatter htmlFormatter = HtmlFormatter.create().setStyleService(styleService);
+        final HtmlFormatter htmlFormatter = HtmlFormatter.create().setStyleService(styleService);
 
-      try (DocumentHolder documentHolder = htmlFormatter.handle(doc)) {
-         final File file = documentHolder.getResource().getFile();
-      } catch (Throwable ignored) {
+        try (DocumentHolder documentHolder = htmlFormatter.handle(doc)) {
+            final File file = documentHolder.getResource().getFile();
+        } catch (Throwable ignored) {
 
-      }
-   }
+        }
+    }
 }
 ```
 
@@ -256,41 +256,41 @@ public class ReporterApplication {
 Little example on how to get data from DB:
 
 ```java
-import com.reporter.formatter.DocumentHolder;
+import com.model.formatter.DocumentHolder;
 
 public class ReporterApplication {
-   public void Test() {
-      final NamedParameterJdbcTemplate jdbcTemplate;          //connection to db
-      // columns traffic_name_as_in_db, traffic_dir_as_in_db are present in DB
-      final TableHeaderCell th1 =
-              TableHeaderCell.create("Traffic name").setAliasName("traffic_name_as_in_db");
+    public void Test() {
+        final NamedParameterJdbcTemplate jdbcTemplate;          //connection to db
+        // columns traffic_name_as_in_db, traffic_dir_as_in_db are present in DB
+        final TableHeaderCell th1 =
+            TableHeaderCell.create("Traffic name").setAliasName("traffic_name_as_in_db");
 
-      final TableHeaderCell th2 =
-              TableHeaderCell.create("Traffic direction").setAliasName("traffic_dir_as_in_db");
+        final TableHeaderCell th2 =
+            TableHeaderCell.create("Traffic direction").setAliasName("traffic_dir_as_in_db");
 
-      final Document html =
-              Document.create()
-                      .setLabel("doc.html")
-                      .addParts(
-                              QueryTable.create(TableHeaderRow.create(th1, th2))
-                                      .setNamedParameterJdbcTemplate(jdbcTemplate)
-                      );
-      //Creating appropriate formatter
-      final HtmlFormatter htmlFormatter = HtmlFormatter.create();
-      //DocumentHolder as AutoCloseable will be holding our file "doc.html"
-      try (DocumentHolder documentHolder = htmlFormatter.handle(doc)) {
-         final File  file = documentHolder.getResource().getFile();
-         //Any stuff with file here
-      } catch (Throwable ignored) {
+        final Document html =
+            Document.create()
+                .setLabel("doc.html")
+                .addParts(
+                    QueryTable.create(TableHeaderRow.create(th1, th2))
+                        .setNamedParameterJdbcTemplate(jdbcTemplate)
+                );
+        //Creating appropriate formatter
+        final HtmlFormatter htmlFormatter = HtmlFormatter.create();
+        //DocumentHolder as AutoCloseable will be holding our file "doc.html"
+        try (DocumentHolder documentHolder = htmlFormatter.handle(doc)) {
+            final File file = documentHolder.getResource().getFile();
+            //Any stuff with file here
+        } catch (Throwable ignored) {
 
-      }
-   }
+        }
+    }
 }
 ```
 
 The names of the columns in DB must be known in advance or flag isTableHeaderRowFromData
-of [QueryTable](src/main/java/com/reporter/domain/db/QueryTable.java)
-or [ReportTable](src/main/java/com/reporter/domain/ReportTable.java) must be set.
+of [QueryTable](src/main/java/com/model/domain/db/QueryTable.java)
+or [ReportTable](src/main/java/com/model/domain/ReportTable.java) must be set.
 
 For more examples see [tests](src/test/java/com/reporter/TutorialTest.java).
 
@@ -323,47 +323,47 @@ when exporting texts with different languages to pdf format, try to use differen
    folder and set it to text style as below:
 
 ```java
-import com.reporter.formatter.DocumentHolder;
+import com.model.formatter.DocumentHolder;
 
 public class ReporterApplication {
-   public void Test() {
-      //read all fonts and available locales from resources
-      final FontService fontService = FontService.create()
-              .initializeFonts();
+    public void Test() {
+        //read all fonts and available locales from resources
+        final FontService fontService = FontService.create()
+            .initializeFonts();
 
-      final TextStyle textStyleZH = TextStyle.create()
-              //set font name 
-              .setFontNameResource("xiaolai_Monospaced_(en-zh).ttf")
-              //set fontFamily class
-              .setFontFamilyStyle(FontFamilyStyle.MONOSPACED)
-              //optionally set font locale    
-              .setFontLocale("zh");
+        final TextStyle textStyleZH = TextStyle.create()
+            //set font name 
+            .setFontNameResource("xiaolai_Monospaced_(en-zh).ttf")
+            //set fontFamily class
+            .setFontFamilyStyle(FontFamilyStyle.MONOSPACED)
+            //optionally set font locale    
+            .setFontLocale("zh");
 
 
-      final Document doc = Document
-              .create()
-              .addParts(
-                      Title.create("一些文字").setStyle(textStyle1)
-              );
+        final Document doc = Document
+            .create()
+            .addParts(
+                Title.create("一些文字").setStyle(textStyle1)
+            );
 
-      //Create appropriate formatter
-      final PdfFormatter pdfFormatter = PdfFormatter.create()
-              .getStyleService()
-              //Set fontService here
-              .setFontService(fontService);
-      //DocumentHolder as AutoCloseable will be holding our file "doc.pdf"
-      try (DocumentHolder documentHolder = pdfFormatter.handle(doc)) {
-         final File file = documentHolder.getResource().getFile();
-         //Any stuff with file here
-      } catch (Throwable ignored) {
+        //Create appropriate formatter
+        final PdfFormatter pdfFormatter = PdfFormatter.create()
+            .getStyleService()
+            //Set fontService here
+            .setFontService(fontService);
+        //DocumentHolder as AutoCloseable will be holding our file "doc.pdf"
+        try (DocumentHolder documentHolder = pdfFormatter.handle(doc)) {
+            final File file = documentHolder.getResource().getFile();
+            //Any stuff with file here
+        } catch (Throwable ignored) {
 
-      }
-   }
+        }
+    }
 }
 ```
 
 The font file name should contain
-[FontFamilyStyle](src/main/java/com/reporter/domain/styles/FontFamilyStyle.java) name
+[FontFamilyStyle](src/main/java/com/model/domain/styles/FontFamilyStyle.java) name
 embracing in "_", like those in [free_fonts](src/main/resources/free_fonts) folder
 
 2) Add language (necessary) and its alphabet (optionally) to

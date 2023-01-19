@@ -1,16 +1,16 @@
 package com.reporter.db;
 
-import com.reporter.domain.*;
-import com.reporter.domain.db.QueryTable;
-import com.reporter.domain.styles.BorderStyle;
-import com.reporter.domain.styles.LayoutStyle;
-import com.reporter.domain.styles.StyleCondition;
-import com.reporter.domain.styles.constants.BorderWeight;
-import com.reporter.domain.styles.constants.Color;
-import com.reporter.formatter.DocumentHolder;
-import com.reporter.formatter.csv.CsvFormatter;
-import com.reporter.formatter.excel.XlsxFormatter;
-import com.reporter.formatter.excel.styles.ExcelStyleService;
+import com.model.domain.*;
+import com.model.domain.db.QueryTable;
+import com.model.domain.styles.BorderStyle;
+import com.model.domain.styles.LayoutStyle;
+import com.model.domain.styles.StyleCondition;
+import com.model.domain.styles.constants.BorderWeight;
+import com.model.domain.styles.constants.Color;
+import com.model.formatter.DocumentHolder;
+import com.model.formatter.csv.CsvFormatter;
+import com.model.formatter.excel.XlsxFormatter;
+import com.model.formatter.excel.styles.ExcelStyleService;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -20,7 +20,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.nio.charset.Charset;

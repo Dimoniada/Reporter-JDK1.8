@@ -1,35 +1,39 @@
 package com.reporter.domain;
 
-import com.reporter.domain.db.QueryTable;
-import com.reporter.formatter.FormatterVisitor;
+import com.model.domain.*;
+import com.model.domain.db.QueryTable;
+import com.model.formatter.FormatterVisitor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 
 //Tests to verify the contract between the visitor and domain objects
+@SpringBootTest
 @ExtendWith(MockitoExtension.class)
 public class VisitorContractTest {
 
-    public static final int DEFAULT_DEPTH = 1;
+    @Autowired
+    NamedParameterJdbcTemplate jdbcTemplateH2;
 
-    @InjectMocks
-    public FormatterVisitor mockForLog;
+    public static final int DEFAULT_DEPTH = 1;
 
     public FormatterVisitor mock;
 
     @BeforeEach
     public void initFormatter() {
         mock = Mockito.mock(FormatterVisitor.class,
-                invocationOnMock -> {
-                    throw new RuntimeException("This method " + invocationOnMock.getMethod() + " must not be called.");
-                });
+            invocationOnMock -> {
+                throw new RuntimeException("This method " + invocationOnMock.getMethod() + " must not be called.");
+            });
     }
 
     @Test
@@ -142,7 +146,9 @@ public class VisitorContractTest {
 
     @Test
     public void testQueryTableVisit() throws Throwable {
-        final QueryTable queryTable = new QueryTable().setQuery("select 1;");
+        final QueryTable queryTable = new QueryTable()
+            .setNamedParameterJdbcTemplate(jdbcTemplateH2)
+            .setQuery("select 1;");
 
         doNothing().when(mock).visitTable(queryTable);
         queryTable.accept(mock);

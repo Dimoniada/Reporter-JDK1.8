@@ -1,7 +1,8 @@
 package com.reporter.domain;
 
-import com.reporter.formatter.DocumentHolder;
-import com.reporter.formatter.excel.XlsFormatter;
+import com.model.domain.*;
+import com.model.formatter.DocumentHolder;
+import com.model.formatter.excel.XlsFormatter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -58,7 +59,7 @@ public class DomainClassesTest {
         final TableCell item2 = TableCell.create().setText("cell2");
         final CustomIterableTableCell cells = new CustomIterableTableCell();
         final Exception e = Assertions.assertThrows(IllegalStateException.class, () ->
-                TableRow.create().addPart(item2).setParts(cells).addPart(item2)
+            TableRow.create().addPart(item2).setParts(cells).addPart(item2)
         );
         Assertions.assertEquals("Parts is not a collection", e.getMessage());
     }
@@ -72,21 +73,21 @@ public class DomainClassesTest {
         final CustomIterableTableCell cells = new CustomIterableTableCell();
 
         final Table table = Table
-                .create()
-                .setTableHeaderRow(
-                        TableHeaderRow
-                                .create()
-                                .addParts(TableHeaderCell.create().setText("Column1"),
-                                        TableHeaderCell.create().setText("Column2")
-                                ))
-                .addPart(TableRow.create().addPart(TableCell.create()).addPart(TableCell.create()))
-                .addPart(TableRow.create().setParts(cells))
-                .addPart(TableRow.create().addPart(TableCell.create()).addPart(TableCell.create()));
+            .create()
+            .setTableHeaderRow(
+                TableHeaderRow
+                    .create()
+                    .addParts(TableHeaderCell.create().setText("Column1"),
+                        TableHeaderCell.create().setText("Column2")
+                    ))
+            .addPart(TableRow.create().addPart(TableCell.create()).addPart(TableCell.create()))
+            .addPart(TableRow.create().setParts(cells))
+            .addPart(TableRow.create().addPart(TableCell.create()).addPart(TableCell.create()));
 
         final Document doc = Document
-                .create()
-                .setLabel("doc1")
-                .addPart(table);
+            .create()
+            .setLabel("doc1")
+            .addPart(table);
 
         final XlsFormatter xlsFormatter = spy(XlsFormatter.class);
         xlsFormatter.handle(doc).close();

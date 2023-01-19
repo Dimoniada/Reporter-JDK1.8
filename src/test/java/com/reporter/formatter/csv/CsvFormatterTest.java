@@ -1,8 +1,9 @@
 package com.reporter.formatter.csv;
 
-import com.reporter.domain.db.QueryTable;
+import com.model.domain.db.QueryTable;
+import com.model.formatter.DocumentHolder;
+import com.model.formatter.csv.CsvFormatter;
 import com.reporter.formatter.BaseDocument;
-import com.reporter.formatter.DocumentHolder;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

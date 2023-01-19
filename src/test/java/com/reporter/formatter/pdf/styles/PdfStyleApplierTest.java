@@ -4,11 +4,12 @@ import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.properties.Background;
 import com.itextpdf.layout.properties.Property;
-import com.reporter.domain.styles.BorderStyle;
-import com.reporter.domain.styles.LayoutStyle;
-import com.reporter.domain.styles.constants.BorderWeight;
-import com.reporter.domain.styles.constants.Color;
-import com.reporter.domain.styles.constants.HorAlignment;
+import com.model.domain.styles.BorderStyle;
+import com.model.domain.styles.LayoutStyle;
+import com.model.domain.styles.constants.BorderWeight;
+import com.model.domain.styles.constants.Color;
+import com.model.domain.styles.constants.HorAlignment;
+import com.model.formatter.pdf.styles.PdfStyleService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +31,7 @@ public class PdfStyleApplierTest {
         PdfStyleService.convertGroundColor(textItem, layoutStyle);
 
         Assertions.assertEquals(PdfStyleService.toPdfColor(Color.TEAL),
-                ((Background) textItem.getProperty(Property.BACKGROUND)).getColor());
+            ((Background) textItem.getProperty(Property.BACKGROUND)).getColor());
     }
 
     @Test
@@ -38,7 +39,7 @@ public class PdfStyleApplierTest {
         PdfStyleService.convertHorizontalAlignment(textItem, layoutStyle);
 
         Assertions.assertEquals(PdfStyleService.toPdfHorAlignment(HorAlignment.RIGHT),
-                textItem.getProperty(Property.TEXT_ALIGNMENT));
+            textItem.getProperty(Property.TEXT_ALIGNMENT));
     }
 
     @Test
@@ -53,7 +54,7 @@ public class PdfStyleApplierTest {
         PdfStyleService.convertBorder(layoutStyle.getBorderLeft(), textItem::setBorderLeft, false);
 
         Assertions.assertEquals(PdfStyleService.toPdfBorder(BorderWeight.MEDIUM),
-                textItem.getProperty(Property.BORDER_LEFT));
+            textItem.getProperty(Property.BORDER_LEFT));
     }
 
 }

@@ -1,10 +1,11 @@
 package com.reporter.formatter.excel.styles;
 
-import com.reporter.domain.styles.BorderStyle;
-import com.reporter.domain.styles.LayoutStyle;
-import com.reporter.domain.styles.constants.BorderWeight;
-import com.reporter.domain.styles.constants.Color;
-import com.reporter.domain.styles.constants.FillPattern;
+import com.model.domain.styles.BorderStyle;
+import com.model.domain.styles.LayoutStyle;
+import com.model.domain.styles.constants.BorderWeight;
+import com.model.domain.styles.constants.Color;
+import com.model.domain.styles.constants.FillPattern;
+import com.model.formatter.excel.styles.ExcelStyleService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.junit.jupiter.api.AfterEach;
@@ -14,7 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static com.reporter.formatter.excel.styles.ExcelStyleService.*;
+import static com.model.formatter.excel.styles.ExcelStyleService.*;
 
 public class ExcelStyleApplierTest {
 
@@ -76,13 +77,13 @@ public class ExcelStyleApplierTest {
         ExcelStyleService.convertBorderColors(cellStyle, layoutStyle);
 
         Assertions.assertEquals(cellStyle.getTopBorderColor(),
-                toExcelColor(layoutStyle.getBorderTop().getColor()));
+            toExcelColor(layoutStyle.getBorderTop().getColor()));
         Assertions.assertEquals(cellStyle.getLeftBorderColor(),
-                toExcelColor(layoutStyle.getBorderLeft().getColor()));
+            toExcelColor(layoutStyle.getBorderLeft().getColor()));
         Assertions.assertEquals(cellStyle.getRightBorderColor(),
-                toExcelColor(layoutStyle.getBorderRight().getColor()));
+            toExcelColor(layoutStyle.getBorderRight().getColor()));
         Assertions.assertEquals(cellStyle.getBottomBorderColor(),
-                toExcelColor(layoutStyle.getBorderBottom().getColor()));
+            toExcelColor(layoutStyle.getBorderBottom().getColor()));
     }
 
     //Look https://stackoverflow.com/questions/38874115/

@@ -1,9 +1,9 @@
 package com.reporter.db;
 
-import com.reporter.domain.*;
-import com.reporter.domain.styles.*;
-import com.reporter.domain.styles.constants.*;
-import com.reporter.utils.LocalizedNumberUtils;
+import com.model.domain.*;
+import com.model.domain.styles.*;
+import com.model.domain.styles.constants.*;
+import com.model.utils.LocalizedNumberUtils;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.StringUtils;
 

@@ -1,8 +1,10 @@
 package com.reporter.formatter.excel;
 
+import com.model.formatter.DocumentHolder;
+import com.model.formatter.excel.XlsFormatter;
+import com.model.formatter.excel.XlsxFormatter;
+import com.model.formatter.excel.styles.ExcelStyleService;
 import com.reporter.formatter.BaseDocument;
-import com.reporter.formatter.DocumentHolder;
-import com.reporter.formatter.excel.styles.ExcelStyleService;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
