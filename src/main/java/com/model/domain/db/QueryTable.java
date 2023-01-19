@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * Class for mapping a SQL query to an intermediate representation of a table
+ * Class for mapping a data from DB to an intermediate representation of a table
  * <p>
  * if {@link QueryTable#isTableHeaderRowFromData} is set:
  * TableHeaderRow is formed from database data

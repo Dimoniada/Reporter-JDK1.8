@@ -115,7 +115,7 @@ public class HtmlFormatterVisitor extends Formatter {
         final HtmlTable htmlTable = new HtmlTable();
         Style style = styleService.extractStyleFor(tableObj).orElse(tableObj.getStyle());
         final HtmlStyleService htmlStyleService = (HtmlStyleService) styleService;
-        final boolean isUseColgroupTag = htmlStyleService.getHtmlColgroupTag().getEnabled();
+        final boolean isUseColgroupTag = htmlStyleService.getHtmlColgroupTag().isEnabled();
         final boolean isUseHtml4Tags = htmlStyleService.isUseHtml4Tags();
         if (isUseHtml4Tags) {
             if (style == null) {
@@ -212,7 +212,7 @@ public class HtmlFormatterVisitor extends Formatter {
                 final HtmlColgroup htmlColgroup = new HtmlColgroup();
                 outputStreamWriter.write(htmlColgroup.open());
                 for (TableHeaderCell ignored : thr.getParts()) {
-                    handleTag(new HtmlCol(), null, cellStyle, true);
+                    handleTag(new HtmlCol(), TableCell.create(), cellStyle, true);
                 }
                 outputStreamWriter.write(htmlColgroup.close());
             }

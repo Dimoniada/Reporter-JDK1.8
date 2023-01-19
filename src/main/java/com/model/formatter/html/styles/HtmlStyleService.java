@@ -120,11 +120,11 @@ public class HtmlStyleService extends StyleService {
 
     public static HtmlStyleService create(
         boolean useHtml4Tags,
-        boolean writeTagsInplace,
-        HtmlColgroupTag useHtml4ColgroupTag,
+        boolean writeStyleInplace,
+        HtmlColgroupTag useHtmlColgroupTag,
         DecimalFormat decimalFormat
     ) {
-        return new HtmlStyleService(useHtml4Tags, writeTagsInplace, useHtml4ColgroupTag, decimalFormat);
+        return new HtmlStyleService(useHtml4Tags, writeStyleInplace, useHtmlColgroupTag, decimalFormat);
     }
 
     public static HtmlStyleService create(boolean useHtml4Tags, DecimalFormat decimalFormat) {
@@ -295,8 +295,8 @@ public class HtmlStyleService extends StyleService {
      * @return cell style
      */
     public Style handleTableCustomCell(DocumentItem tableCustomCell) throws Exception {
-        final boolean skipStyleInplace = htmlColgroupTag.getEnabled()
-            && !htmlColgroupTag.getWriteInplace()
+        final boolean skipStyleInplace = htmlColgroupTag.isEnabled()
+            && !htmlColgroupTag.isWriteStyleInplace()
             && tableCustomCell instanceof TableCell;
         if (skipStyleInplace) {
             return null;
@@ -321,6 +321,10 @@ public class HtmlStyleService extends StyleService {
                 }
                 return false;
             };
+
+            if (getHtmlColgroupTag().isEnabled() && getHtmlColgroupTag().isWriteStyleInplace()) {
+                styles.removeIf(s -> !checkConditionClass.apply(TableCell.class, s));
+            }
 
             final List<Style> rowStyles =
                 styles

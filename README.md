@@ -142,10 +142,10 @@ public class ReporterApplication {
 
 Styles are written in each html-element because we assign them directly to elements through
 setStyle() or spreadStyleToParts(). It is convenient when using html4 specification.
-But in html5 with [StyleService](src/main/java/com/model/domain/styles/StyleService.java)
-using they will be written in header section with unique indexes.
+But in html5 using [StyleService](src/main/java/com/model/domain/styles/StyleService.java)
+styles can be written in header section with unique indexes. For more details see the examples below.
 
-Ok, it seems we need some table borders:
+Ok, seems we need some table borders:
 
 ```java
 public class ReporterApplication {
@@ -182,6 +182,8 @@ public class ReporterApplication {
 <img src="pic/html2.jpeg" width="200" alt=""/>
 
 Same result, but using StyleService:
+<details>
+  <summary>Code</summary>
 
 ```java
 import com.model.formatter.DocumentHolder;
@@ -250,8 +252,93 @@ public class ReporterApplication {
     }
 }
 ```
+</details>
+<br/>
 
 <img src="pic/html3.jpeg" width="400" alt=""/>
+
+If you need a single "collapsed" frame around all columns
+<details>
+<summary>Code</summary>
+
+```java
+public class ReporterApplication {
+    public void testTable() throws CloneNotSupportedException {
+        final LayoutStyle titleStyle =
+              LayoutStyle.create()
+                .setAutoWidth(true)
+                .setCondition(StyleCondition.create(Title.class));
+
+        final LayoutTextStyle headerCellsStyle =
+              LayoutTextStyle.create(
+                   TextStyle.create("Times New Roman")
+                     .setBold(true)
+                     .setItalic(true)
+                     .setUnderline((byte) 1)
+                     .setFontSize((short) 15)
+                     .setColor(Color.BLUE),
+                   LayoutStyle.create()
+                     .setBorderTop(BorderStyle.create(Color.RED, BorderWeight.DOUBLE))
+                     .setBorderLeft(BorderStyle.create(Color.RED, BorderWeight.DOUBLE))
+                     .setBorderRight(BorderStyle.create(Color.RED, BorderWeight.DOUBLE))
+                     .setBorderBottom(BorderStyle.create(Color.RED, BorderWeight.DOUBLE))
+                     .setFillBackgroundColor(Color.ORANGE)
+              );
+
+        final LayoutTextStyle commonCellsStyle =
+              LayoutTextStyle.create(
+                  TextStyle.create(),
+                  LayoutStyle.create()
+                    .setBorderTop(BorderStyle.create(Color.BLACK, BorderWeight.THIN))
+                    .setBorderLeft(BorderStyle.create(Color.BLACK, BorderWeight.THIN))
+                    .setBorderRight(BorderStyle.create(Color.BLACK, BorderWeight.THIN))
+                    .setBorderBottom(BorderStyle.create(Color.BLACK, BorderWeight.THIN))
+                    .setFillBackgroundColor(Color.YELLOW)
+             ).setCondition(StyleCondition.create(TableCell.class));
+
+        final HtmlStyleService styleService = HtmlStyleService.create()
+              .setHtmlColgroupTag(HtmlColgroupTag.create().setEnabled(true))
+              .addStyles(titleStyle, commonCellsStyle);
+
+        doc =
+              Document.create()
+                   .setLabel("Document name")
+                   .addParts(
+                        Title.create("Title on first page"),
+                        Table.create(
+                            TableHeaderRow.create(
+                                TableHeaderCell.create("Column1"),
+                                TableHeaderCell.create("Column2")
+                            )
+                            .spreadStyleToParts(headerCellsStyle)
+                        )
+                        .addParts(
+                            TableRow.create(
+                                 TableCell.create("cell 1 1"),
+                                 TableCell.create("cell 1 2")
+                            ), 
+                            TableRow.create(
+                                 TableCell.create("cell 2 1"),
+                                 TableCell.create("cell 2 2")
+                            )
+                        )
+                   );
+
+        final HtmlFormatter htmlFormatter = HtmlFormatter.create().setStyleService(styleService);
+
+        try (DocumentHolder documentHolder = htmlFormatter.handle(doc)) {
+            final File file = documentHolder.getResource().getFile();
+        } catch (Throwable ignored) {
+
+        }
+    }
+}
+```
+
+</details>
+
+<img src="pic/html4.jpeg" width="800" alt=""/>
+
 
 Little example on how to get data from DB:
 
@@ -298,7 +385,6 @@ What reporter can't do yet:
 
 1) Render pictures
 2) Render any nested elements in any elements (for example table in table cell not available now)
-3) E.t.c.)
 
 #### Inner structure
 
@@ -364,12 +450,12 @@ public class ReporterApplication {
 
 The font file name should contain
 [FontFamilyStyle](src/main/java/com/model/domain/styles/FontFamilyStyle.java) name
-embracing in "_", like those in [free_fonts](src/main/resources/free_fonts) folder
+embracing in "_", like file names in [free_fonts](src/main/resources/free_fonts) folder
 
 2) Add language (necessary) and its alphabet (optionally) to
    [free_fonts/alphabets.properties](src/main/resources/free_fonts/alphabets.properties), for instance:
 
-```java 
+```java
 pl=aąbcćdeęfghijklłmnńoópqrsśtuvwxyzźż
 zh=
 ```

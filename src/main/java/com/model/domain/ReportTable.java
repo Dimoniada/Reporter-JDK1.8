@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
- * Class for mapping {@link ReportTable#dataItems} to an intermediate representation of a table,
+ * Class for mapping custom items {@link ReportTable#dataItems} to an intermediate representation of a table,
  * <p>
  * if {@link ReportTable#isTableHeaderRowFromData} is set:
  * TableHeaderRow is formed from {@link ReportTable#dataItems} data

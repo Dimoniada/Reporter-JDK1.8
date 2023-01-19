@@ -6,9 +6,9 @@ public class HtmlColgroupTag {
      */
     protected boolean enabled;
     /**
-     * In-place style or not (write here or somewhere else if enabled)
+     * In-place style in <col> tag or move it to <header> and provide only class reference
      */
-    protected boolean writeInplace = true;
+    protected boolean writeStyleInplace = true;
 
     public static HtmlColgroupTag create() {
         return new HtmlColgroupTag();
@@ -19,10 +19,10 @@ public class HtmlColgroupTag {
     }
 
     public static HtmlColgroupTag create(Boolean enabled, Boolean writeInplace) {
-        return new HtmlColgroupTag().setEnabled(enabled).setWriteInplace(writeInplace);
+        return new HtmlColgroupTag().setEnabled(enabled).setWriteStyleInplace(writeInplace);
     }
 
-    public Boolean getEnabled() {
+    public boolean isEnabled() {
         return enabled;
     }
 
@@ -31,12 +31,12 @@ public class HtmlColgroupTag {
         return this;
     }
 
-    public Boolean getWriteInplace() {
-        return writeInplace;
+    public boolean isWriteStyleInplace() {
+        return writeStyleInplace;
     }
 
-    public HtmlColgroupTag setWriteInplace(Boolean writeInplace) {
-        this.writeInplace = writeInplace;
+    public HtmlColgroupTag setWriteStyleInplace(Boolean writeInplace) {
+        this.writeStyleInplace = writeInplace;
         return this;
     }
 }

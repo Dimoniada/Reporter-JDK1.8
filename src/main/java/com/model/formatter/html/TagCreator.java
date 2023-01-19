@@ -42,7 +42,7 @@ public class TagCreator {
         Style style,
         boolean isUseHtml4Tags,
         boolean isStyleInHeader,
-        HtmlColgroupTag useHtml4ColgroupTag,
+        HtmlColgroupTag useHtmlColgroupTag,
         Boolean needCloseTag
     ) throws IOException, ParseException {
         final CssStyle cssStyle = new CssStyle();
@@ -50,7 +50,7 @@ public class TagCreator {
         final boolean isCol = tag instanceof HtmlCol;
         final boolean isCell = tag instanceof HtmlTableCell;
         if (isUseHtml4Tags) {
-            if (!(isCell && useHtml4ColgroupTag.getEnabled())) {
+            if (!(isCell && useHtmlColgroupTag.isEnabled())) {
                 final LayoutStyle layoutStyle = HtmlStyleService.extractLayoutStyle(style);
                 HtmlStyleService.fillHtml4StyleTagsFromStyle(tag, layoutStyle, isHtmlTable);
             }
@@ -76,18 +76,21 @@ public class TagCreator {
                 }
             }
         } else {
-            if (isStyleInHeader &&
-                !(isCol && useHtml4ColgroupTag.getEnabled() && useHtml4ColgroupTag.getWriteInplace())
-            ) {
-                tag.setClass(htmlStyleId(style));
-            } else if (isHtmlTable && useHtml4ColgroupTag.getEnabled()) {
+            if (isStyleInHeader) {
+                if (isCol && useHtmlColgroupTag.isWriteStyleInplace()) {
+                    HtmlStyleService.fillCssStyleFromStyle(cssStyle, style, false, false);
+                    tag.setStyle(cssStyle);
+                } else if (!(isCell && useHtmlColgroupTag.isEnabled())) {
+                    tag.setClass(htmlStyleId(style));
+                }
+            } else if (isHtmlTable && useHtmlColgroupTag.isEnabled()) {
                 HtmlStyleService.fillCssStyleFromStyle(cssStyle, style, true, false);
                 cssStyle.setBorderCollapse("collapse");
                 tag.setStyle(cssStyle);
-            } else if (isCol && useHtml4ColgroupTag.getWriteInplace()) {
+            } else if (isCol) {
                 HtmlStyleService.fillCssStyleFromStyle(cssStyle, style, false, false);
                 tag.setStyle(cssStyle);
-            } else if (item != null && (item.getStyle() != null || style != null)) {
+            } else if (style != null && !(isCell && useHtmlColgroupTag.isEnabled())) {
                 HtmlStyleService.fillCssStyleFromStyle(cssStyle, style, isHtmlTable, false);
                 tag.setStyle(cssStyle);
             }

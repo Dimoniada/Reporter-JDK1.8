@@ -4,7 +4,7 @@ import com.google.common.base.MoreObjects;
 import com.model.formatter.FormatterVisitor;
 
 /**
- * Table column,
+ * Table row,
  * consists of {@link TableCell cells}
  */
 public class TableRow extends CompositionPart<TableRow, TableCell> {
