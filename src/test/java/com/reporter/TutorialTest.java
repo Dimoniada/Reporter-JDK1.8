@@ -178,14 +178,14 @@ public class TutorialTest {
                 );
         /*Time to stylize our report =)*/
 
-        //We can do it in 3 ways (from simplest to hardest):
+        //We can do it in 3 ways (from simpler to complex):
 
         //1) By assigning a Style to a separate DocumentItem, like item.setStyle(Style)
         //2) By spreading a Style to all parts of some DocumentItem, like item.spreadStyleToParts(Style)
         //3) By adding Style-s to Formatter's StyleService, like shown below
-        //   styles from StyleService will be applied to elements by the rules of styles (look Style.class)
+        //   styles from StyleService will be applied to elements using rules of styles (look Style.class)
         try {
-            final StyleService styleService = formatter.getStyleService(); //If we need styled report
+            final StyleService styleService = formatter.getStyleService();
             if (styleService != null) {
                 styleService.addStyles(
                     formatterContext.createHeaderCellStyle(),
@@ -195,8 +195,8 @@ public class TutorialTest {
 
 //                ((HtmlStyleService) styleService).setUseHtml4Tags(true);
             }
-
-            final StreamingResponseBody responseBody =                      //Write report to StreamingResponseBody
+            //Write report to StreamingResponseBody
+            final StreamingResponseBody responseBody =
                 out -> {
                     formatter.setOutputStream(out);
                     try {
@@ -222,7 +222,7 @@ public class TutorialTest {
                 .contentType(formatter.getContentMediaType())
                 .body(responseBody);
 
-
+            //Let's read and check ResponseBody on "other" side
             final StreamingResponseBody testedBody = res.getBody();
             assert testedBody != null;
             final ByteArrayOutputStream os = new ByteArrayOutputStream();

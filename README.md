@@ -15,7 +15,7 @@ To start just add folder "Reporter-JDK1.8" to your project.
 |       com.itextpdf       |       pdf       |
 |      org.apache.poi      | xls, xlsx, docx |
 |     com.documents4j      |       doc       |
-|     net.sf.supercsv      |       scv       |
+|     net.sf.supercsv      |       csv       |
 |        org.slf4j         |     logging     |
 |     com.google.guava     |   toString()    |
 
@@ -259,7 +259,7 @@ public class ReporterApplication {
 
 If you need a single "collapsed" frame around all columns
 <details>
-<summary>Code</summary>
+   <summary>Code</summary>
 
 ```java
 public class ReporterApplication {

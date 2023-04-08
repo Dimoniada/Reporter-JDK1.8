@@ -108,7 +108,7 @@ public class WordFormatterTest extends BaseDocument {
      *
      * @throws Throwable Exception/IOException
      */
-//    @Test
+    @Test
     public void testSaveTextToDocFile() throws Throwable {
         final WordFormatter docFormatter = DocFormatter.create();
         final DocumentHolder documentHolder = docFormatter.handle(doc);

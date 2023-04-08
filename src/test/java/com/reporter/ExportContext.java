@@ -10,13 +10,13 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * The class stores the parameters passed in the request
+ * The class stores parameters passed in the request to produce an export
  */
 public class ExportContext {
     private static final String FORMAT_PATTERN = "^[a-z0-9]{1,255}$";
 
     /**
-     * Export format, now is ["pdf", "xls", "xlsx", "html", "csv"]
+     * Export format, now is ["pdf", "xls", "xlsx", "html", "csv", "doc", "docx"]
      */
     protected @Pattern(regexp = FORMAT_PATTERN) @NotEmpty String format;
 
@@ -26,7 +26,7 @@ public class ExportContext {
     protected Locale locale;
 
     /**
-     * The name of the columns of the DB table for export
+     * Names of columns of the DB table for export
      */
     protected List<String> columns = new ArrayList<>();
 
