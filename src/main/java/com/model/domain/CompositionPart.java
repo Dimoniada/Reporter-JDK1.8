@@ -9,8 +9,8 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * The compositional part of the presentation of the document,
- * consists of Iterable(K extends {@link DocumentItem}) elements
+ * The compositional part of the document's presentation,
+ * contains Iterable(K extends {@link DocumentItem}) elements
  */
 public abstract class CompositionPart<T extends CompositionPart<?, ?>, K extends DocumentItem> extends DocumentItem {
     protected Iterable<K> parts;
@@ -52,7 +52,7 @@ public abstract class CompositionPart<T extends CompositionPart<?, ?>, K extends
     }
 
     /**
-     * Method allows you to apply style to all nested parts of
+     * Applies style to all nested parts of
      * {@link CompositionPart} with checking only clazz of {@link StyleCondition}
      *
      * @param style style that will be applied to parts

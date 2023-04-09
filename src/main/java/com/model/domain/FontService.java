@@ -99,16 +99,16 @@ public class FontService {
     }
 
     /**
-     * Populates from internal resources map {@link FontService#fonts}(font_file, its_attributes)
+     * Populates from internal resources a map {@link FontService#fonts}(font_file, its_attributes)
      * P.S.: since the TextAttribute.FAMILY property of the font file is the name of the font,
      * not the name of the font class as it should be (see.{@link TextAttribute#FAMILY}),
      * therefore the name of the font class is added to the .ttf file names of the resource
      * imprisoned "_", which is stored in TextAttribute.FAMILY
      *
      * @return FontService
-     * @throws IOException              The font resource can't be read
+     * @throws IOException              the font resource could not be read
      * @throws FontFormatException      invalid font entry format
-     * @throws IllegalArgumentException The font resource is not {@code TRUETYPE_FONT} or {@code TYPE1_FONT}.
+     * @throws IllegalArgumentException the font resource is not {@code TRUETYPE_FONT} or {@code TYPE1_FONT}.
      */
     @SuppressWarnings("unchecked")
     public FontService initializeFonts() throws FontFormatException, IOException, IllegalArgumentException {
@@ -150,11 +150,11 @@ public class FontService {
      * <p>
      * If a stylized font-file is used, then you must specify the font-file name in
      * TextStyle#fontNameResource
-     * and do not set the corresponding parameter(s) in {@link TextStyle},
+     * and must not set the corresponding parameter(s) in {@link TextStyle},
      * they will be taken from font-file automatically
      *
      * @param textStyle The text style of the element for which the matching font is being searched
-     * @param locale    provided to check font glyphs can be displayed and can cover alphabet of locale
+     * @param locale    provided to check: font glyphs can be displayed, and they can cover alphabet of locale
      * @return {@link PdfFont}
      * @throws IOException error reading font resource
      */

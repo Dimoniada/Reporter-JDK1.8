@@ -15,11 +15,9 @@ import java.util.Optional;
 
 /**
  * The class stores styles.
- * {@link StyleService#extractStyleFor} returns the first style
- * which can be applied to the DocumentItem object.
  * <p>
- * By default, for html-document registered styles are added to head,
- * contra those that are given in the {@link Document} structure -
+ * By default, registered styles are added to head of html-documents,
+ * contra those are given in the {@link Document} structure -
  * they will be added into the tag via style="...".
  */
 
@@ -42,7 +40,7 @@ public abstract class StyleService implements StyleApplier {
      * A style with {@link StyleCondition} equals null is returned as appropriate.
      *
      * @param item the object on which to test the conditions of styles.
-     * @return first style with condition that item matches
+     * @return first style with matched condition
      */
     public Optional<Style> extractStyleFor(DocumentItem item) {
         return styles

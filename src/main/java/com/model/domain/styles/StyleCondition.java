@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 import java.util.function.Predicate;
 
 /**
- * The class of the style applicability condition for the domain object,
+ * Style's applicability condition for the domain object,
  * used by StyleManager in logic: if condition predicate
- * is executed on the object and the class of the object is {@link StyleCondition#clazz},
+ * is executed successfully on the object and the class of the object is {@link StyleCondition#clazz},
  * then the style is transferred/applied to the object.
  */
 public class StyleCondition {
@@ -34,11 +34,11 @@ public class StyleCondition {
     }
 
     /**
-     * Checking the condition of object styling,
+     * Checks the condition of object to be styled (t),
      * the check should not change the condition itself or other styles.
      *
-     * @param t   styling DocumentItem object
-     * @param <T> style object type, T extends DocumentItem
+     * @param t   styled DocumentItem object
+     * @param <T> object type, T extends DocumentItem
      * @return true if the condition is not set, or it is true on the object; otherwise - false
      */
     @SuppressWarnings("unchecked")
@@ -52,14 +52,11 @@ public class StyleCondition {
 
             result = ((Predicate<T>) predicate).test(t);
 
-            // Output is optional here. Left to demonstrate the approach.
             log.trace("Predicate check is:{}", result);
         } else {
             log.trace("No predicate found. Use true.");
         }
 
-        // Here we output in trace, since StyleCondition is an inner class and there can be such conditions
-        // many nested within each other.
         log.trace("Return check result:{}", result);
 
         return result;

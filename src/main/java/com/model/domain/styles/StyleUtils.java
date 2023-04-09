@@ -12,20 +12,20 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Allows you to combine the styles of objects of inherited classes
+ * Allows you to combine styles of objects of inherited classes
  */
 public final class StyleUtils {
     private static final Logger log = LoggerFactory.getLogger(StyleUtils.class);
 
     /**
      * Returns the style difference.
-     * Accepts 2 styles. The first style is an empty instance,
+     * Accepts 2 styles: The first style usually is a default instance,
      * the second is an instance with changed fields.
      * Returns a map(name, value) of the changed fields of the second style.
      *
      * @param style1 style 1 (base)
      * @param style2 compared style 2 (modified)
-     * @return map(name, value) distinct properties of style 2 relative to style 1
+     * @return map(name, value) distinct properties of style 2 relative to properties of style 1
      */
     public static Map<String, Object> compare(Style style1, Style style2) {
         log.debug("Comparing styles {} and {}", style1, style2);
@@ -50,12 +50,12 @@ public final class StyleUtils {
     }
 
     /**
-     * Overlays styleFrom style properties over styleTo style properties, replacing them.
-     * Overlays only those properties that differ from
-     * default properties for a new class instance of type styleFrom (see {@link StyleUtils#compare(Style, Style)}).
+     * Applies styleFrom properties to styleTo properties, replacing them.
+     * Applies only those properties that differ from
+     * default properties for a new instance of styleFrom class (see {@link StyleUtils#compare(Style, Style)})
      *
      * @param styleFrom style whose fields are transferred to styleTo,
-     *                  if they are different from the fields of an empty Style() instance
+     *                  if they are different from the fields of a new instance of styleFrom class
      * @param styleTo   style that accepts styleFrom fields
      */
     public static void joinWith(Style styleFrom, Style styleTo) throws Exception {

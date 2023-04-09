@@ -40,7 +40,7 @@ public class ImplRowMapper<T> implements RowMapper<T> {
                 );
                 beanWrapper.setPropertyValue(column, value);
             } catch (TypeMismatchException | NotWritablePropertyException | ClassNotFoundException e) {
-                log.error("Error on map row", e);
+                log.error("Error while mapping row", e);
             }
         }
         return mappedObject;
