@@ -12,7 +12,7 @@ import com.model.domain.styles.*;
 import com.model.domain.styles.constants.BorderWeight;
 import com.model.domain.styles.constants.Color;
 import com.model.domain.styles.constants.FillPattern;
-import com.model.domain.styles.geometry.Dimensions;
+import com.model.domain.styles.geometry.MeasurableValues;
 import com.model.domain.styles.geometry.Geometry;
 import com.model.formatter.DocumentHolder;
 import com.model.formatter.pdf.PdfFormatter;
@@ -29,7 +29,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.util.List;
 
 class PdfFormatterTest extends BaseDocument {
@@ -81,8 +80,8 @@ class PdfFormatterTest extends BaseDocument {
                     .setFontFamilyStyle(FontFamilyStyle.SANS_SERIF)
                     .setFontNameResource("arial"),
                 LayoutStyle.create()
-                    .setDimensions(
-                        Dimensions.create()
+                    .setMeasurable(
+                        MeasurableValues.create()
                             .setWidth(
                                 Geometry.create().add("pdf", 40f)
                             )

@@ -464,9 +464,9 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
         convertHorizontalAlignment(element, layoutStyle);
         convertVerticalAlignment(element, layoutStyle);
         convertShrinkToFit(element, layoutStyle);
-        if (element instanceof BlockElement<?> && layoutStyle.getDimensions().getWidth() != null) {
+        if (element instanceof BlockElement<?> && layoutStyle.getMeasurable().getWidth() != null) {
             layoutStyle
-                .getDimensions()
+                .getMeasurable()
                 .getWidth()
                 .getValueFor(EXTENSION)
                 .ifPresent(value -> ((BlockElement<?>) element).setWidth((float) value));

@@ -153,9 +153,9 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
     public static void applyWidth(org.apache.poi.ss.usermodel.Cell cell, LayoutStyle layoutStyle) {
         if (layoutStyle.isAutoWidth()) {
             cell.getSheet().autoSizeColumn(cell.getColumnIndex());
-        } else if (layoutStyle.getDimensions().getWidth() != null) {
+        } else if (layoutStyle.getMeasurable().getWidth() != null) {
             layoutStyle
-                .getDimensions()
+                .getMeasurable()
                 .getWidth()
                 .getValueFor(EXTENSION)
                 .ifPresent(value ->
@@ -362,7 +362,7 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
     }
 
     public void checkAdjustHeaderCells(Cell cell, LayoutStyle layoutStyle) {
-        if (layoutStyle != null && (layoutStyle.isAutoWidth() || layoutStyle.getDimensions().getWidth() != null)) {
+        if (layoutStyle != null && (layoutStyle.isAutoWidth() || layoutStyle.getMeasurable().getWidth() != null)) {
             needAdjustHeaderCells.put(cell, layoutStyle);
         }
     }

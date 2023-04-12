@@ -6,7 +6,7 @@ import com.model.domain.styles.constants.Color;
 import com.model.domain.styles.constants.FillPattern;
 import com.model.domain.styles.constants.HorAlignment;
 import com.model.domain.styles.constants.VertAlignment;
-import com.model.domain.styles.geometry.Dimensions;
+import com.model.domain.styles.geometry.MeasurableValues;
 
 /**
  * The style is used to set:
@@ -15,9 +15,9 @@ import com.model.domain.styles.geometry.Dimensions;
  */
 public class LayoutStyle extends Style {
     /**
-     * Dimensions of content
+     * Measurable values of a content
      */
-    protected Dimensions dimensions = new Dimensions();
+    protected MeasurableValues measurableValues = new MeasurableValues();
     /**
      * Content auto alignment
      */
@@ -90,7 +90,7 @@ public class LayoutStyle extends Style {
         final LayoutStyle that = (LayoutStyle) o;
 
         return
-            Objects.equal(this.dimensions, that.dimensions)
+            Objects.equal(this.measurableValues, that.measurableValues)
                 && Objects.equal(this.autoWidth, that.autoWidth)
                 && Objects.equal(this.shrinkToFit, that.shrinkToFit)
                 && Objects.equal(this.borderTop, that.borderTop)
@@ -109,7 +109,7 @@ public class LayoutStyle extends Style {
         return
             Objects
                 .hashCode(
-                    dimensions,
+                    measurableValues,
                     autoWidth,
                     shrinkToFit,
                     borderTop,
@@ -128,7 +128,7 @@ public class LayoutStyle extends Style {
     public String toString() {
         return
             MoreObjects.toStringHelper(this)
-                .add("width", getDimensions())
+                .add("measurable", getMeasurable())
                 .add("autoWidth", isAutoWidth())
                 .add("shrinkToFit", isShrinkToFit())
                 .add("borderTop", getBorderTop())
@@ -144,12 +144,12 @@ public class LayoutStyle extends Style {
                 .toString();
     }
 
-    public Dimensions getDimensions() {
-        return dimensions;
+    public MeasurableValues getMeasurable() {
+        return measurableValues;
     }
 
-    public LayoutStyle setDimensions(Dimensions dimensions) {
-        this.dimensions = dimensions;
+    public LayoutStyle setMeasurable(MeasurableValues measurableValues) {
+        this.measurableValues = measurableValues;
         return this;
     }
 

@@ -101,9 +101,9 @@ public class WordStyleService extends StyleService implements DocDetails {
         if (style instanceof LayoutStyle) {
             final LayoutStyle tableLayoutStyle = (LayoutStyle) style;
             final boolean isTableAutoWidth = tableLayoutStyle.isAutoWidth();
-            if (!isTableAutoWidth && tableLayoutStyle.getDimensions().getWidth() != null) {
+            if (!isTableAutoWidth && tableLayoutStyle.getMeasurable().getWidth() != null) {
                 tableLayoutStyle
-                    .getDimensions()
+                    .getMeasurable()
                     .getWidth()
                     .getValueFor(EXTENSION)
                     .ifPresent(value -> docxTable.setWidth((int) value * XLSX_INCH_CONST));
@@ -207,9 +207,9 @@ public class WordStyleService extends StyleService implements DocDetails {
         convertVerticalAlignmentCell(cell, layoutStyle);
         final boolean isCellAutoWidth = layoutStyle.isAutoWidth();
         final CTTblWidth tblWidth = cell.getCTTc().addNewTcPr().addNewTcW();
-        if (!isCellAutoWidth && layoutStyle.getDimensions().getWidth() != null) {
+        if (!isCellAutoWidth && layoutStyle.getMeasurable().getWidth() != null) {
             layoutStyle
-                .getDimensions()
+                .getMeasurable()
                 .getWidth()
                 .getValueFor(EXTENSION)
                 .ifPresent(value -> {
