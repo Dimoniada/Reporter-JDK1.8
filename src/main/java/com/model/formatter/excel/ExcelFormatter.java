@@ -8,7 +8,7 @@ import org.springframework.core.io.WritableResource;
 
 /**
  * Custom class for saving {@link Document} document in XLS/XLSX format.
- * {@link ExcelFormatter#handle handle(doc)} - store result in
+ * {@link ExcelFormatter#handle handle(doc)} stores the result in
  * resource {@link ExcelFormatter#resource} that is created
  * from the given filename, generated automatically or
  * set "manually"

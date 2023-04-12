@@ -7,15 +7,15 @@ import com.google.common.base.MoreObjects;
  */
 public class MeasurableValues {
     /**
-     * Element width
+     * Element width, null when not applicable
      */
     protected Geometry width = null;
     /**
-     * Element height
+     * Element height, null when not applicable
      */
     protected Geometry height = null;
     /**
-     * Element angle
+     * Element angle, null when not applicable
      */
     protected Geometry angle = null;
 

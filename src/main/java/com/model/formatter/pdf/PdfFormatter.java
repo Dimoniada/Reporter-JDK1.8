@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * Custom class for saving {@link Document} to PDF.
- * {@link PdfFormatter#handle handle(doc)} - store result in
+ * {@link PdfFormatter#handle handle(doc)} stores the result in
  * resource {@link PdfFormatter#resource} that is created
  * from the passed filename or generated automatically.
  * If output stream {@link PdfFormatter#outputStream} is set, then

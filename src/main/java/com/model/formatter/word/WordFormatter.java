@@ -8,7 +8,7 @@ import org.springframework.core.io.WritableResource;
 
 /**
  * Base class for saving {@link Document} document in DOC/DOCX format.
- * {@link WordFormatter#handle handle(doc)} - store result in
+ * {@link WordFormatter#handle handle(doc)} stores the result in
  * resource {@link WordFormatter#resource} that is created
  * from the given filename, generated automatically or
  * set "manually"
