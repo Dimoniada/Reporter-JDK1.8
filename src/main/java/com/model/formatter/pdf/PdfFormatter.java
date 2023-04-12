@@ -22,7 +22,7 @@ import java.util.List;
  * after {@link PdfFormatter#setResource(WritableResource)}
  */
 @Component
-public class PdfFormatter extends PdfFormatterVisitor {
+public class PdfFormatter extends PdfFormatterVisitor implements PdfDetails {
 
     protected List<WritableResource> attachments;
 

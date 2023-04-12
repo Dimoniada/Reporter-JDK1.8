@@ -12,6 +12,8 @@ import com.model.domain.styles.*;
 import com.model.domain.styles.constants.BorderWeight;
 import com.model.domain.styles.constants.Color;
 import com.model.domain.styles.constants.FillPattern;
+import com.model.domain.styles.geometry.Dimensions;
+import com.model.domain.styles.geometry.Geometry;
 import com.model.formatter.DocumentHolder;
 import com.model.formatter.pdf.PdfFormatter;
 import com.model.formatter.pdf.styles.PdfStyleService;
@@ -27,6 +29,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.List;
 
 class PdfFormatterTest extends BaseDocument {
@@ -69,13 +72,22 @@ class PdfFormatterTest extends BaseDocument {
         super.initDoc();
         styleService = PdfStyleService.create("Cp1251");
 
-        final TextStyle titleStyle1 =
-            TextStyle.create()
-                .setColor(Color.TEAL)
-                .setBold(true)
-                .setFontSize((short) 14)
-                .setFontFamilyStyle(FontFamilyStyle.SANS_SERIF)
-                .setFontNameResource("arial");
+        final LayoutTextStyle titleStyle1 =
+            LayoutTextStyle.create(
+                TextStyle.create()
+                    .setColor(Color.TEAL)
+                    .setBold(true)
+                    .setFontSize((short) 14)
+                    .setFontFamilyStyle(FontFamilyStyle.SANS_SERIF)
+                    .setFontNameResource("arial"),
+                LayoutStyle.create()
+                    .setDimensions(
+                        Dimensions.create()
+                            .setWidth(
+                                Geometry.create().add("pdf", 40f)
+                            )
+                    )
+            );
         final TextStyle paragraphStyle1 =
             TextStyle.create()
                 .setColor(Color.BLUE)
@@ -85,9 +97,9 @@ class PdfFormatterTest extends BaseDocument {
 
         final TextStyle titleStyle2 =
             TextStyle.create()
-                .setColor(Color.GREEN)
+                .setColor(Color.RED)
                 .setBold(true)
-                .setFontSize((short) 16)
+                .setFontSize((short) 20)
                 .setFontFamilyStyle(FontFamilyStyle.SANS_SERIF)
                 .setFontNameResource("helvetica");
         final TextStyle paragraphStyle2 =
@@ -205,8 +217,12 @@ class PdfFormatterTest extends BaseDocument {
     }
 
     @Test
+    public void testLocalizeNumber() {
+        Assertions.assertDoesNotThrow(() -> LocalizedNumberUtils.localizeNumber("123", null, null));
+    }
+
+    @Test
     public void testPdfDocumentCreation() throws Throwable {
-        LocalizedNumberUtils.localizeNumber("123", null, null);
         final PdfFormatter pdfFormatter = (PdfFormatter) PdfFormatter.create()
             .setEncoding("Cp1251");
         pdfFormatter.setFileName("pdfDocument");
@@ -327,7 +343,7 @@ class PdfFormatterTest extends BaseDocument {
     }
 
     /**
-     * Footer необходимо регистрирвать до добавления информации в документ
+     * Footer must be registered before information is added to the document
      *
      * @throws Throwable - handle()
      */

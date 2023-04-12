@@ -5,6 +5,7 @@ import com.model.domain.Document;
 import com.model.domain.*;
 import com.model.domain.styles.Style;
 import com.model.domain.styles.StyleService;
+import com.model.formatter.BaseDetails;
 import com.model.formatter.Formatter;
 import com.model.formatter.word.styles.WordStyleService;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
@@ -16,13 +17,13 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTc;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STHdrFtr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.Optional;
 
-public class WordFormatterVisitor extends Formatter {
+public abstract class WordFormatterVisitor extends Formatter implements BaseDetails {
     private final Logger log = LoggerFactory.getLogger(WordFormatterVisitor.class);
 
     /**
@@ -38,16 +39,6 @@ public class WordFormatterVisitor extends Formatter {
     protected FontCharset fontCharset;
     protected DecimalFormat decimalFormat;
     protected StyleService styleService;
-
-    @Override
-    public String getExtension() {
-        return null;
-    }
-
-    @Override
-    public MediaType getContentMediaType() {
-        return null;
-    }
 
     @Override
     public void initializeResource() throws IOException {
@@ -198,7 +189,7 @@ public class WordFormatterVisitor extends Formatter {
     }
 
     public XWPFDocument getWordDocument() {
-        return wordDocument;
+        return Optional.ofNullable(wordDocument).orElse(new XWPFDocument());
     }
 
     public WordFormatterVisitor setWordDocument(XWPFDocument wordDocument) {

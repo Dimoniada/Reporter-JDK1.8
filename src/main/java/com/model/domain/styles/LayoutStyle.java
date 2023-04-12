@@ -6,24 +6,24 @@ import com.model.domain.styles.constants.Color;
 import com.model.domain.styles.constants.FillPattern;
 import com.model.domain.styles.constants.HorAlignment;
 import com.model.domain.styles.constants.VertAlignment;
+import com.model.domain.styles.geometry.Dimensions;
 
 /**
  * The style is used to set:
  * the location of the content in the element,
- * element width, border, color and fill type of nearby environment
+ * element width, border, color and its fill type and nearby environment
  */
 public class LayoutStyle extends Style {
     /**
-     * Content width (currently for cells in excel, docx(inches) and pdf)
-     * FIXME: Bad. This class should be independent of format and implementation details.
+     * Dimensions of content
      */
-    protected int width;
+    protected Dimensions dimensions = new Dimensions();
     /**
      * Content auto alignment
      */
     protected boolean autoWidth;
     /**
-     * Stretch text content to fit width
+     * Stretch content to fit width
      */
     protected boolean shrinkToFit;
     /**
@@ -47,7 +47,7 @@ public class LayoutStyle extends Style {
      */
     protected Color fillBackgroundColor = Color.WHITE;
     /**
-     * Rear content text color
+     * Rear content color
      */
     protected Color fillForegroundColor = Color.WHITE;
     /**
@@ -90,7 +90,7 @@ public class LayoutStyle extends Style {
         final LayoutStyle that = (LayoutStyle) o;
 
         return
-            Objects.equal(this.width, that.width)
+            Objects.equal(this.dimensions, that.dimensions)
                 && Objects.equal(this.autoWidth, that.autoWidth)
                 && Objects.equal(this.shrinkToFit, that.shrinkToFit)
                 && Objects.equal(this.borderTop, that.borderTop)
@@ -109,7 +109,7 @@ public class LayoutStyle extends Style {
         return
             Objects
                 .hashCode(
-                    width,
+                    dimensions,
                     autoWidth,
                     shrinkToFit,
                     borderTop,
@@ -128,7 +128,7 @@ public class LayoutStyle extends Style {
     public String toString() {
         return
             MoreObjects.toStringHelper(this)
-                .add("width", getWidth())
+                .add("width", getDimensions())
                 .add("autoWidth", isAutoWidth())
                 .add("shrinkToFit", isShrinkToFit())
                 .add("borderTop", getBorderTop())
@@ -144,12 +144,12 @@ public class LayoutStyle extends Style {
                 .toString();
     }
 
-    public int getWidth() {
-        return width;
+    public Dimensions getDimensions() {
+        return dimensions;
     }
 
-    public LayoutStyle setWidth(int width) {
-        this.width = width;
+    public LayoutStyle setDimensions(Dimensions dimensions) {
+        this.dimensions = dimensions;
         return this;
     }
 

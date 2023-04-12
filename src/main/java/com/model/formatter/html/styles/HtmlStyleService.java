@@ -8,6 +8,7 @@ import com.model.domain.styles.*;
 import com.model.domain.styles.constants.BorderWeight;
 import com.model.domain.styles.constants.Color;
 import com.model.domain.styles.constants.HorAlignment;
+import com.model.formatter.html.HtmlDetails;
 import com.model.formatter.html.tag.Html4Font;
 import com.model.formatter.html.tag.Html4StyledTag;
 import com.model.formatter.html.tag.HtmlTag;
@@ -15,11 +16,7 @@ import org.springframework.web.util.HtmlUtils;
 
 import java.io.OutputStreamWriter;
 import java.text.DecimalFormat;
-import java.util.StringJoiner;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -28,7 +25,7 @@ import java.util.stream.Collectors;
  * DocumentItem to OutputStreamWriter
  */
 
-public class HtmlStyleService extends StyleService {
+public class HtmlStyleService extends StyleService implements HtmlDetails {
     private static final Map<BorderWeight, String> borderWidthMap =
         new HashMap<BorderWeight, String>() {{
             put(BorderWeight.NONE, "");

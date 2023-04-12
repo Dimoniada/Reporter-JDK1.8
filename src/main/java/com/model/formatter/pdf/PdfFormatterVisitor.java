@@ -17,12 +17,12 @@ import com.model.domain.styles.BorderStyle;
 import com.model.domain.styles.Style;
 import com.model.domain.styles.StyleService;
 import com.model.domain.styles.constants.BorderWeight;
+import com.model.formatter.BaseDetails;
 import com.model.formatter.Formatter;
 import com.model.formatter.pdf.styles.PdfPageEventHandler;
 import com.model.formatter.pdf.styles.PdfStyleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
@@ -32,7 +32,7 @@ import java.util.Arrays;
 /**
  * The class generates a representation of a pdf document {@link Document}
  */
-public class PdfFormatterVisitor extends Formatter {
+public abstract class PdfFormatterVisitor extends Formatter implements BaseDetails {
     protected PdfWriter writer;
     protected PdfDocument pdf;
     protected com.itextpdf.layout.element.Table table;
@@ -41,20 +41,8 @@ public class PdfFormatterVisitor extends Formatter {
     protected DecimalFormat decimalFormat;
     protected StyleService styleService;
 
-    private final String EXTENSION = "pdf";
-    private final MediaType MEDIA_TYPE = MediaType.parseMediaType("application/pdf");
     private final float DEFAULT_MARGIN = 20;
     private final Logger log = LoggerFactory.getLogger(PdfFormatterVisitor.class);
-
-    @Override
-    public String getExtension() {
-        return EXTENSION;
-    }
-
-    @Override
-    public MediaType getContentMediaType() {
-        return MEDIA_TYPE;
-    }
 
     @Override
     public void initializeResource() throws IOException {

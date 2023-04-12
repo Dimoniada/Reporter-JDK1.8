@@ -22,6 +22,7 @@ import com.model.domain.styles.constants.BorderWeight;
 import com.model.domain.styles.constants.Color;
 import com.model.domain.styles.constants.HorAlignment;
 import com.model.domain.styles.constants.VertAlignment;
+import com.model.formatter.pdf.PdfDetails;
 import com.model.utils.LocalizedNumberUtils;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.springframework.util.StringUtils;
@@ -40,7 +41,7 @@ import java.util.function.Function;
  * in pdf style iText {@link PdfFont} and
  * pdf cell layout style
  */
-public final class PdfStyleService extends StyleService {
+public final class PdfStyleService extends StyleService implements PdfDetails {
 
     private static final int PDF_HEADING_CONST = 20;
 
@@ -101,7 +102,6 @@ public final class PdfStyleService extends StyleService {
      * within one document
      */
     private final Map<TextStyle, PdfFont> textStyles = new HashMap<>();
-
     /**
      * Encoding for characters of PdfFont fonts
      */
@@ -464,9 +464,12 @@ public final class PdfStyleService extends StyleService {
         convertHorizontalAlignment(element, layoutStyle);
         convertVerticalAlignment(element, layoutStyle);
         convertShrinkToFit(element, layoutStyle);
-        final int width = layoutStyle.getWidth();
-        if (width > 0 && element instanceof BlockElement<?>) {
-            ((BlockElement<?>) element).setWidth(width);
+        if (element instanceof BlockElement<?> && layoutStyle.getDimensions().getWidth() != null) {
+            layoutStyle
+                .getDimensions()
+                .getWidth()
+                .getValueFor(EXTENSION)
+                .ifPresent(value -> ((BlockElement<?>) element).setWidth((float) value));
         }
     }
 

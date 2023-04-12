@@ -471,7 +471,7 @@ public class HtmlFormatterTest extends BaseDocument {
         final TableCell tc = TableCell.create("test_text");
         final TableRow tr = TableRow.create(tc);
 // Case when tag is without parameters
-        final HtmlFormatterVisitor htmlFormatterVisitor = new HtmlFormatterVisitor();
+        final HtmlFormatterVisitor htmlFormatterVisitor = new HtmlFormatter();
         final HtmlStyleService styleService = HtmlStyleService.create();
         htmlFormatterVisitor.setStyleService(styleService);
         htmlFormatterVisitor.setOutputStreamWriter(writer);
@@ -521,7 +521,7 @@ public class HtmlFormatterTest extends BaseDocument {
         final TableHeaderCell thc = TableHeaderCell.create("test_text");
         final TableHeaderRow thr = TableHeaderRow.create(thc);
 // Case when tag is without parameters
-        final HtmlFormatterVisitor htmlFormatterVisitor = new HtmlFormatterVisitor();
+        final HtmlFormatterVisitor htmlFormatterVisitor = new HtmlFormatter();
         final HtmlStyleService styleService = HtmlStyleService.create();
         htmlFormatterVisitor.setStyleService(styleService);
         htmlFormatterVisitor.setOutputStreamWriter(writer);
@@ -574,7 +574,7 @@ public class HtmlFormatterTest extends BaseDocument {
         final Table t = Table.create(thr).addParts(tr);
 
         // Case when tag is without parameters
-        final HtmlFormatterVisitor htmlFormatterVisitor = new HtmlFormatterVisitor();
+        final HtmlFormatterVisitor htmlFormatterVisitor = new HtmlFormatter();
         htmlFormatterVisitor.setOutputStreamWriter(writer);
 
         final HtmlStyleService styleService = HtmlStyleService.create();
@@ -635,7 +635,7 @@ public class HtmlFormatterTest extends BaseDocument {
     ) throws Throwable {
 // Case when tag is without parameters
 
-        final HtmlFormatterVisitor htmlFormatterVisitor = new HtmlFormatterVisitor();
+        final HtmlFormatterVisitor htmlFormatterVisitor = new HtmlFormatter();
         final HtmlStyleService styleService = HtmlStyleService.create();
         htmlFormatterVisitor.setStyleService(styleService);
         htmlFormatterVisitor.setOutputStreamWriter(writer);

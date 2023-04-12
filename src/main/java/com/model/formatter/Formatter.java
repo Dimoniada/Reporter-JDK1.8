@@ -20,7 +20,7 @@ public abstract class Formatter extends FormatterVisitor implements BaseFormatte
      */
     protected OutputStream outputStream;
     /**
-     * Document file name if it is an OS file
+     * Document file name if it's an OS file
      */
     protected String fileName;
 

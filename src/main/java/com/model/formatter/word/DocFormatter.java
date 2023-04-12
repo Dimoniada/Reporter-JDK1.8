@@ -9,7 +9,6 @@ import com.model.formatter.DocumentCreator;
 import com.model.formatter.DocumentHolder;
 import com.model.formatter.FormatterContext;
 import org.springframework.core.io.WritableResource;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
@@ -23,9 +22,7 @@ import java.io.InputStream;
  * therefore I decide to use converter
  */
 @Component
-public class DocFormatter extends DocxFormatter {
-    private static final String EXTENSION = "doc";
-    private static final MediaType MEDIA_TYPE = MediaType.parseMediaType("application/msword");
+public class DocFormatter extends WordFormatter implements DocDetails {
     private static final String FILE_PREFIX = "for_convert_";
 
     /**
@@ -48,16 +45,6 @@ public class DocFormatter extends DocxFormatter {
 
     public static DocFormatter create(FormatterContext context) {
         return new DocFormatter(context);
-    }
-
-    @Override
-    public String getExtension() {
-        return EXTENSION;
-    }
-
-    @Override
-    public MediaType getContentMediaType() {
-        return MEDIA_TYPE;
     }
 
     /**

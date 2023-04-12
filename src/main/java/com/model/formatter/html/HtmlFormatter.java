@@ -21,7 +21,7 @@ import java.util.Locale;
  * after {@link HtmlFormatter#setResource(WritableResource)}
  */
 @Component
-public class HtmlFormatter extends HtmlFormatterVisitor {
+public class HtmlFormatter extends HtmlFormatterVisitor implements HtmlDetails {
     protected List<WritableResource> attachments;
 
     public HtmlFormatter() {

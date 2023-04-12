@@ -8,6 +8,7 @@ import com.model.domain.styles.constants.BorderWeight;
 import com.model.domain.styles.constants.Color;
 import com.model.domain.styles.constants.HorAlignment;
 import com.model.domain.styles.constants.VertAlignment;
+import com.model.formatter.word.DocDetails;
 import com.model.utils.LocalizedNumberUtils;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.apache.poi.xwpf.usermodel.*;
@@ -19,7 +20,7 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-public class WordStyleService extends StyleService {
+public class WordStyleService extends StyleService implements DocDetails {
     /**
      * Reverse twip (1/567) constant for cm
      */
@@ -100,9 +101,12 @@ public class WordStyleService extends StyleService {
         if (style instanceof LayoutStyle) {
             final LayoutStyle tableLayoutStyle = (LayoutStyle) style;
             final boolean isTableAutoWidth = tableLayoutStyle.isAutoWidth();
-            if (!isTableAutoWidth && tableLayoutStyle.getWidth() != 0) {
-                final int tableWidth = tableLayoutStyle.getWidth();
-                docxTable.setWidth(tableWidth * XLSX_INCH_CONST);
+            if (!isTableAutoWidth && tableLayoutStyle.getDimensions().getWidth() != null) {
+                tableLayoutStyle
+                    .getDimensions()
+                    .getWidth()
+                    .getValueFor(EXTENSION)
+                    .ifPresent(value -> docxTable.setWidth((int) value * XLSX_INCH_CONST));
             } else {
                 docxTable.setWidth("auto");
             }
@@ -203,10 +207,15 @@ public class WordStyleService extends StyleService {
         convertVerticalAlignmentCell(cell, layoutStyle);
         final boolean isCellAutoWidth = layoutStyle.isAutoWidth();
         final CTTblWidth tblWidth = cell.getCTTc().addNewTcPr().addNewTcW();
-        if (!isCellAutoWidth && layoutStyle.getWidth() > 0) {
-            final int width = layoutStyle.getWidth();
-            cell.setWidthType(TableWidthType.DXA);
-            cell.setWidth(String.valueOf(width));
+        if (!isCellAutoWidth && layoutStyle.getDimensions().getWidth() != null) {
+            layoutStyle
+                .getDimensions()
+                .getWidth()
+                .getValueFor(EXTENSION)
+                .ifPresent(value -> {
+                    cell.setWidthType(TableWidthType.DXA);
+                    cell.setWidth(String.valueOf((int) value));
+                });
         } else {
             tblWidth.setType(STTblWidth.AUTO);
         }

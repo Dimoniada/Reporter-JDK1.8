@@ -4,6 +4,7 @@ import com.google.common.base.MoreObjects;
 import com.model.domain.Table;
 import com.model.domain.*;
 import com.model.domain.styles.*;
+import com.model.formatter.BaseDetails;
 import com.model.formatter.Formatter;
 import com.model.formatter.excel.styles.ExcelStyleService;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
@@ -11,7 +12,6 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.WorkbookUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
@@ -19,25 +19,15 @@ import java.text.DecimalFormat;
 import java.util.Optional;
 
 /**
- * The class accepts an excel workbook {@link ExcelFormatterVisitor#workbook} and
+ * The class accepts an Excel workbook {@link ExcelFormatterVisitor#workbook} and
  * generates a xls/xlsx representation of the document {@link Document}
  */
-public class ExcelFormatterVisitor extends Formatter {
+public abstract class ExcelFormatterVisitor extends Formatter implements BaseDetails {
     protected Workbook workbook;
     protected FontCharset fontCharset;
     protected DecimalFormat decimalFormat;
     protected StyleService styleService;
     private final Logger log = LoggerFactory.getLogger(ExcelFormatterVisitor.class);
-
-    @Override
-    public String getExtension() {
-        return null;
-    }
-
-    @Override
-    public MediaType getContentMediaType() {
-        return null;
-    }
 
     @Override
     public void initializeResource() {
@@ -156,10 +146,7 @@ public class ExcelFormatterVisitor extends Formatter {
         } else if (tableHeaderStyle instanceof LayoutStyle) {
             lhsStyle = (LayoutStyle) tableHeaderStyle;
         }
-        if (lhsStyle != null
-            && (lhsStyle.isAutoWidth() || lhsStyle.getWidth() > 0)) {
-            ((ExcelStyleService) styleService).getNeedAdjustHeaderCells().put(cell, lhsStyle);
-        }
+        ((ExcelStyleService) styleService).checkAdjustHeaderCells(cell, lhsStyle);
     }
 
     @Override

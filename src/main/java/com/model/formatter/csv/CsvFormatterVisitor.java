@@ -3,8 +3,8 @@ package com.model.formatter.csv;
 import com.google.common.base.MoreObjects;
 import com.model.domain.*;
 import com.model.domain.styles.StyleService;
+import com.model.formatter.BaseDetails;
 import com.model.formatter.Formatter;
-import org.springframework.http.MediaType;
 import org.supercsv.io.CsvListWriter;
 import org.supercsv.prefs.CsvPreference;
 
@@ -21,9 +21,7 @@ import static com.model.utils.LocalizedNumberUtils.applyDecimalFormat;
 /**
  * The class generates a csv representation of the document {@link Document}
  */
-public class CsvFormatterVisitor extends Formatter {
-    private static final String EXTENSION = "csv";
-    private static final MediaType MEDIA_TYPE = MediaType.parseMediaType("text/csv");
+public abstract class CsvFormatterVisitor extends Formatter implements BaseDetails {
     protected OutputStreamWriter writer;
     protected CsvListWriter csvWriter;
 
@@ -31,16 +29,6 @@ public class CsvFormatterVisitor extends Formatter {
     protected DecimalFormat decimalFormat;
 
     protected CsvPreference csvPreference = CsvPreference.EXCEL_NORTH_EUROPE_PREFERENCE;
-
-    @Override
-    public String getExtension() {
-        return EXTENSION;
-    }
-
-    @Override
-    public MediaType getContentMediaType() {
-        return MEDIA_TYPE;
-    }
 
     @Override
     public StyleService getStyleService() {

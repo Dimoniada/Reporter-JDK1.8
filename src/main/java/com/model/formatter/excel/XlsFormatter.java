@@ -4,7 +4,6 @@ import com.model.formatter.FormatterContext;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -13,9 +12,7 @@ import java.util.Optional;
  * Class for writing to .xls format
  */
 @Component
-public class XlsFormatter extends ExcelFormatter {
-    private static final String EXTENSION = "xls";
-    private static final MediaType MEDIA_TYPE = MediaType.parseMediaType("application/vnd.ms-excel");
+public class XlsFormatter extends ExcelFormatter implements XlsDetails {
 
     public XlsFormatter() {
         super(FontCharset.DEFAULT);
@@ -36,15 +33,5 @@ public class XlsFormatter extends ExcelFormatter {
     @Override
     public Workbook getWorkbook() {
         return Optional.ofNullable(workbook).orElse(new HSSFWorkbook());
-    }
-
-    @Override
-    public String getExtension() {
-        return EXTENSION;
-    }
-
-    @Override
-    public MediaType getContentMediaType() {
-        return MEDIA_TYPE;
     }
 }

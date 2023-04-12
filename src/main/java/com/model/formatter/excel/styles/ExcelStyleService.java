@@ -4,6 +4,7 @@ import com.google.common.base.MoreObjects;
 import com.model.domain.TextItem;
 import com.model.domain.styles.*;
 import com.model.domain.styles.constants.*;
+import com.model.formatter.excel.XlsDetails;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.apache.poi.hssf.usermodel.HSSFPalette;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -29,7 +30,7 @@ import static com.model.utils.LocalizedNumberUtils.applyDecimalFormat;
  * {@link org.apache.poi.ss.usermodel.Cell},
  * {@link org.apache.poi.ss.usermodel.Row}
  */
-public class ExcelStyleService extends StyleService {
+public class ExcelStyleService extends StyleService implements XlsDetails {
     private static final Map<BorderWeight, org.apache.poi.ss.usermodel.BorderStyle> borderMap =
         new HashMap<BorderWeight, org.apache.poi.ss.usermodel.BorderStyle>() {{
             put(BorderWeight.NONE, org.apache.poi.ss.usermodel.BorderStyle.NONE);
@@ -152,8 +153,14 @@ public class ExcelStyleService extends StyleService {
     public static void applyWidth(org.apache.poi.ss.usermodel.Cell cell, LayoutStyle layoutStyle) {
         if (layoutStyle.isAutoWidth()) {
             cell.getSheet().autoSizeColumn(cell.getColumnIndex());
-        } else if (layoutStyle.getWidth() > 0) {
-            cell.getSheet().setColumnWidth(cell.getColumnIndex(), layoutStyle.getWidth());
+        } else if (layoutStyle.getDimensions().getWidth() != null) {
+            layoutStyle
+                .getDimensions()
+                .getWidth()
+                .getValueFor(EXTENSION)
+                .ifPresent(value ->
+                    cell.getSheet().setColumnWidth(cell.getColumnIndex(), (int) value)
+                );
         }
     }
 
@@ -354,12 +361,9 @@ public class ExcelStyleService extends StyleService {
                 .toString();
     }
 
-    public Map<Cell, LayoutStyle> getNeedAdjustHeaderCells() {
-        return needAdjustHeaderCells;
-    }
-
-    public ExcelStyleService setNeedAdjustHeaderCells(Map<Cell, LayoutStyle> needAdjustHeaderCells) {
-        this.needAdjustHeaderCells = needAdjustHeaderCells;
-        return this;
+    public void checkAdjustHeaderCells(Cell cell, LayoutStyle layoutStyle) {
+        if (layoutStyle != null && (layoutStyle.isAutoWidth() || layoutStyle.getDimensions().getWidth() != null)) {
+            needAdjustHeaderCells.put(cell, layoutStyle);
+        }
     }
 }

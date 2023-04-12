@@ -17,7 +17,7 @@ import org.springframework.core.io.WritableResource;
  * {@link WordFormatter#handle handle(doc)} must be called
  * after {@link WordFormatter#setResource(WritableResource)}
  */
-public class WordFormatter extends WordFormatterVisitor {
+public abstract class WordFormatter extends WordFormatterVisitor {
 
     public WordFormatter(FontCharset fontCharset) {
         this.fontCharset = fontCharset;

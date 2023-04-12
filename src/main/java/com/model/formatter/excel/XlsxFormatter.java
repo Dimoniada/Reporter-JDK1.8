@@ -4,7 +4,6 @@ import com.model.formatter.FormatterContext;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -13,11 +12,7 @@ import java.util.Optional;
  * Class for writing to .xlsx format
  */
 @Component
-public class XlsxFormatter extends ExcelFormatter {
-    private static final String EXTENSION = "xlsx";
-    private static final MediaType MEDIA_TYPE =
-        MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-
+public class XlsxFormatter extends ExcelFormatter implements XlsxDetails {
     public XlsxFormatter() {
         super(FontCharset.DEFAULT);
     }
@@ -37,15 +32,5 @@ public class XlsxFormatter extends ExcelFormatter {
     @Override
     public Workbook getWorkbook() {
         return Optional.ofNullable(workbook).orElse(new XSSFWorkbook());
-    }
-
-    @Override
-    public String getExtension() {
-        return EXTENSION;
-    }
-
-    @Override
-    public MediaType getContentMediaType() {
-        return MEDIA_TYPE;
     }
 }

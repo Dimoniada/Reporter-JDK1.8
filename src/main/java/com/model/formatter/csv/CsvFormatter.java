@@ -21,7 +21,7 @@ import java.util.List;
  * after {@link CsvFormatter#setResource(WritableResource) setResource(res)}
  */
 @Component
-public class CsvFormatter extends CsvFormatterVisitor {
+public class CsvFormatter extends CsvFormatterVisitor implements CsvDetails {
     protected List<WritableResource> attachments;
 
     public CsvFormatter() {

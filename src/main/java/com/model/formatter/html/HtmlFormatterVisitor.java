@@ -8,10 +8,10 @@ import com.model.domain.styles.Style;
 import com.model.domain.styles.StyleService;
 import com.model.domain.styles.constants.BorderWeight;
 import com.model.domain.styles.constants.Color;
+import com.model.formatter.BaseDetails;
 import com.model.formatter.Formatter;
 import com.model.formatter.html.styles.HtmlStyleService;
 import com.model.formatter.html.tag.*;
-import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.HtmlUtils;
 
@@ -23,9 +23,7 @@ import java.util.Locale;
 /**
  * The class generates a representation of the html document {@link Document}
  */
-public class HtmlFormatterVisitor extends Formatter {
-    private static final String EXTENSION = "html";
-    private static final MediaType MEDIA_TYPE = MediaType.parseMediaType("text/html");
+public abstract class HtmlFormatterVisitor extends Formatter implements BaseDetails {
 
     protected OutputStreamWriter outputStreamWriter;
 
@@ -35,16 +33,6 @@ public class HtmlFormatterVisitor extends Formatter {
 
     protected StyleService styleService;
     protected TagCreator tagCreator;
-
-    @Override
-    public String getExtension() {
-        return EXTENSION;
-    }
-
-    @Override
-    public MediaType getContentMediaType() {
-        return MEDIA_TYPE;
-    }
 
     @Override
     public void initializeResource() throws IOException {

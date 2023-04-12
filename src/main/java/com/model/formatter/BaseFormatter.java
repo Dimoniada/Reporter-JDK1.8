@@ -2,26 +2,11 @@ package com.model.formatter;
 
 import com.model.domain.Document;
 import com.model.domain.styles.StyleService;
-import org.springframework.http.MediaType;
 
 /**
  * Contains common formatter methods
  */
-public interface BaseFormatter {
-    /**
-     * Returns the file extension for the entry
-     *
-     * @return extension
-     */
-    String getExtension();
-
-    /**
-     * Returns the mimetype of the received file/resource
-     *
-     * @return MediaType of file/resource
-     */
-    MediaType getContentMediaType();
-
+public interface BaseFormatter extends BaseDetails {
     /**
      * Starts generating a file/resource from a Document
      *
