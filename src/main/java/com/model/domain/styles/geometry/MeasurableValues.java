@@ -9,15 +9,15 @@ public class MeasurableValues {
     /**
      * Element width, null when not applicable
      */
-    protected Geometry width = null;
+    protected Geometry width;
     /**
      * Element height, null when not applicable
      */
-    protected Geometry height = null;
+    protected Geometry height;
     /**
      * Element angle, null when not applicable
      */
-    protected Geometry angle = null;
+    protected Geometry angle;
 
     public static MeasurableValues create(Geometry height, Geometry width, Geometry angle) {
         return

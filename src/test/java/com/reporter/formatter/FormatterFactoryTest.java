@@ -51,7 +51,6 @@ class FormatterFactoryTest extends BaseFormatterContext {
                         .values()
                 )
         );
-
     }
 
     @Test

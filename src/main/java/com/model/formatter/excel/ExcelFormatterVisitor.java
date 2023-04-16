@@ -1,9 +1,23 @@
 package com.model.formatter.excel;
 
 import com.google.common.base.MoreObjects;
+import com.model.domain.Document;
+import com.model.domain.DocumentCase;
+import com.model.domain.Heading;
+import com.model.domain.Paragraph;
+import com.model.domain.Separator;
 import com.model.domain.Table;
-import com.model.domain.*;
-import com.model.domain.styles.*;
+import com.model.domain.TableCell;
+import com.model.domain.TableHeaderCell;
+import com.model.domain.TableHeaderRow;
+import com.model.domain.TableRow;
+import com.model.domain.Title;
+import com.model.domain.styles.LayoutStyle;
+import com.model.domain.styles.LayoutTextStyle;
+import com.model.domain.styles.Style;
+import com.model.domain.styles.StyleService;
+import com.model.domain.styles.StyleUtils;
+import com.model.domain.styles.TextStyle;
 import com.model.formatter.BaseDetails;
 import com.model.formatter.Formatter;
 import com.model.formatter.excel.styles.ExcelStyleService;
@@ -92,7 +106,7 @@ public abstract class ExcelFormatterVisitor extends Formatter implements BaseDet
 //        final var watch = new StopWatch();
 //        watch.start();
         final Sheet sheet = getLastSheet(workbook);
-        org.apache.poi.ss.usermodel.Cell cell;
+        final org.apache.poi.ss.usermodel.Cell cell;
         final Style style =
             styleService
                 .extractStyleFor(tableObj)
@@ -116,6 +130,7 @@ public abstract class ExcelFormatterVisitor extends Formatter implements BaseDet
         ((ExcelStyleService) styleService).adjustHeaderCells();
 //        watch.stop();
 //        log.info("Table visited in {} ms", watch.getTotalTimeMillis());
+        log.info("Visited table {}", tableObj);
     }
 
     @Override

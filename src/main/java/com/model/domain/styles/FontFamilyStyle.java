@@ -9,5 +9,5 @@ public enum FontFamilyStyle {
     MONOSPACED("Monospaced"),
     ;
 
-    FontFamilyStyle(String name) {}
+    FontFamilyStyle(String name) { /**/ }
 }

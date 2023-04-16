@@ -1,6 +1,10 @@
 package com.model.formatter.html.tag;
 
-import com.model.formatter.html.attribute.*;
+import com.model.formatter.html.attribute.HtmlAlignAttribute;
+import com.model.formatter.html.attribute.HtmlAttribute;
+import com.model.formatter.html.attribute.HtmlBgColorAttribute;
+import com.model.formatter.html.attribute.HtmlBorderAttribute;
+import com.model.formatter.html.attribute.HtmlCellSpacingAttribute;
 
 import java.util.HashMap;
 import java.util.Map;

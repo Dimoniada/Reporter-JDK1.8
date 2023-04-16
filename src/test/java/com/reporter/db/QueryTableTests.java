@@ -1,6 +1,17 @@
 package com.reporter.db;
 
-import com.model.domain.*;
+import com.ReporterApplication;
+import com.model.domain.Document;
+import com.model.domain.DocumentCase;
+import com.model.domain.Heading;
+import com.model.domain.Paragraph;
+import com.model.domain.ReportTable;
+import com.model.domain.Table;
+import com.model.domain.TableCell;
+import com.model.domain.TableHeaderCell;
+import com.model.domain.TableHeaderRow;
+import com.model.domain.TableRow;
+import com.model.domain.Title;
 import com.model.domain.db.QueryTable;
 import com.model.domain.styles.BorderStyle;
 import com.model.domain.styles.LayoutStyle;
@@ -20,10 +31,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.nio.charset.Charset;
@@ -34,6 +43,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Sql("classpath:db/h2/schema_query_table_test.sql")
+@SpringBootTest(classes = {ReporterApplication.class})
 public class QueryTableTests extends BaseQueryDocument {
     @Autowired
     public NamedParameterJdbcTemplate jdbcTemplateH2;
@@ -190,7 +200,6 @@ public class QueryTableTests extends BaseQueryDocument {
         final DocumentHolder documentHolder = csvFormatter.handle(doc);
         final String text =
             FileUtils.readFileToString(documentHolder.getResource().getFile(), Charset.forName("Cp1251"));
-        documentHolder.close();
         Assertions.assertTrue(expected.stream().allMatch(text::contains));
     }
 }

@@ -116,7 +116,8 @@ public class TutorialTest {
         final String encoding = exportContext.getEncoding();
         final Character csvDelimiter = exportContext.getCsvDelimiter(); //If format == "csv"
 
-        final List<?> data = Arrays.asList(                   //Getting data here from db for instance
+        //Getting data here from db for instance
+        final List<?> data = Arrays.asList(
             new Person(1, "Name1", "Comment1"),
             new Person(2, "Имя2 с !;№% номерами", "абракадабра с \\ЭЭ последовательностью"),
             new Person(3, "Name3", "Comment3"),
@@ -216,7 +217,7 @@ public class TutorialTest {
                     .build();
             final HttpHeaders headers = new HttpHeaders();
             headers.setContentDisposition(contentDisposition);
-            ResponseEntity<StreamingResponseBody> res = ResponseEntity
+            final ResponseEntity<StreamingResponseBody> res = ResponseEntity
                 .ok()
                 .headers(headers)
                 .contentType(formatter.getContentMediaType())
@@ -255,7 +256,7 @@ public class TutorialTest {
                         Assertions.assertTrue(text.contains("Comment4"));
                         break;
                     case "docx":
-                        XWPFDocument docx = new XWPFDocument(new ByteArrayInputStream(os.toByteArray()));
+                        final XWPFDocument docx = new XWPFDocument(new ByteArrayInputStream(os.toByteArray()));
                         Assertions.assertEquals(
                             "Comment3",
                             docx.getTableArray(0).getRow(3).getCell(1).getText()
@@ -272,7 +273,7 @@ public class TutorialTest {
         String name;
         String comment;
 
-        public Person(Serializable id, String name, String comment) {
+        Person(Serializable id, String name, String comment) {
             this.id = id;
             this.name = name;
             this.comment = comment;

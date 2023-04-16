@@ -9,15 +9,15 @@ import java.util.Objects;
 @IdClass(TestChannelDailyRollupEntityPK.class)
 public class TestChannelDailyRollupEntity {
     private int channelId;
-    private Date date_cdr;
-    private byte month_cdr;
-    private short year_cdr;
+    private Date dateCdr;
+    private byte monthCdr;
+    private short yearCdr;
     private int smsSendCount;
     private int smsDeliveredCount;
     private Double price;
     private int mcc;
     private int mnc;
-    private String alias_cdr;
+    private String aliasCdr;
     private int networkId;
     private int distributionId;
     private int partnerId;
@@ -46,34 +46,34 @@ public class TestChannelDailyRollupEntity {
 
     @Id
     @Column(name = "date_cdr", nullable = false)
-    public Date getDate_cdr() {
-        return date_cdr;
+    public Date getDateCdr() {
+        return dateCdr;
     }
 
-    public TestChannelDailyRollupEntity setDate_cdr(Date date_cdr) {
-        this.date_cdr = date_cdr;
+    public TestChannelDailyRollupEntity setDateCdr(Date dateCdr) {
+        this.dateCdr = dateCdr;
         return this;
     }
 
     @Basic
     @Column(name = "month_cdr", nullable = false)
-    public byte getMonth_cdr() {
-        return month_cdr;
+    public byte getMonthCdr() {
+        return monthCdr;
     }
 
-    public TestChannelDailyRollupEntity setMonth_cdr(byte month_cdr) {
-        this.month_cdr = month_cdr;
+    public TestChannelDailyRollupEntity setMonthCdr(byte monthCdr) {
+        this.monthCdr = monthCdr;
         return this;
     }
 
     @Basic
     @Column(name = "year_cdr", nullable = false)
-    public short getYear_cdr() {
-        return year_cdr;
+    public short getYearCdr() {
+        return yearCdr;
     }
 
-    public TestChannelDailyRollupEntity setYear_cdr(short year_cdr) {
-        this.year_cdr = year_cdr;
+    public TestChannelDailyRollupEntity setYearCdr(short yearCdr) {
+        this.yearCdr = yearCdr;
         return this;
     }
 
@@ -134,12 +134,12 @@ public class TestChannelDailyRollupEntity {
 
     @Id
     @Column(name = "alias_cdr", nullable = false, length = 32)
-    public String getAlias_cdr() {
-        return alias_cdr;
+    public String getAliasCdr() {
+        return aliasCdr;
     }
 
-    public TestChannelDailyRollupEntity setAlias_cdr(String alias_cdr) {
-        this.alias_cdr = alias_cdr;
+    public TestChannelDailyRollupEntity setAliasCdr(String aliasCdr) {
+        this.aliasCdr = aliasCdr;
         return this;
     }
 
@@ -313,10 +313,10 @@ public class TestChannelDailyRollupEntity {
         if (channelId != that.channelId) {
             return false;
         }
-        if (month_cdr != that.month_cdr) {
+        if (monthCdr != that.monthCdr) {
             return false;
         }
-        if (year_cdr != that.year_cdr) {
+        if (yearCdr != that.yearCdr) {
             return false;
         }
         if (smsSendCount != that.smsSendCount) {
@@ -355,13 +355,13 @@ public class TestChannelDailyRollupEntity {
         if (deliveryChannelTypeId != that.deliveryChannelTypeId) {
             return false;
         }
-        if (!Objects.equals(date_cdr, that.date_cdr)) {
+        if (!Objects.equals(dateCdr, that.dateCdr)) {
             return false;
         }
         if (!Objects.equals(price, that.price)) {
             return false;
         }
-        if (!Objects.equals(alias_cdr, that.alias_cdr)) {
+        if (!Objects.equals(aliasCdr, that.aliasCdr)) {
             return false;
         }
         if (!Objects.equals(senderName, that.senderName)) {
@@ -389,15 +389,15 @@ public class TestChannelDailyRollupEntity {
     @Override
     public int hashCode() {
         int result = channelId;
-        result = 31 * result + (date_cdr != null ? date_cdr.hashCode() : 0);
-        result = 31 * result + (int) month_cdr;
-        result = 31 * result + (int) year_cdr;
+        result = 31 * result + (dateCdr != null ? dateCdr.hashCode() : 0);
+        result = 31 * result + (int) monthCdr;
+        result = 31 * result + (int) yearCdr;
         result = 31 * result + smsSendCount;
         result = 31 * result + smsDeliveredCount;
         result = 31 * result + (price != null ? price.hashCode() : 0);
         result = 31 * result + mcc;
         result = 31 * result + mnc;
-        result = 31 * result + (alias_cdr != null ? alias_cdr.hashCode() : 0);
+        result = 31 * result + (aliasCdr != null ? aliasCdr.hashCode() : 0);
         result = 31 * result + networkId;
         result = 31 * result + distributionId;
         result = 31 * result + partnerId;

@@ -2,8 +2,16 @@ package com.model.formatter.excel.styles;
 
 import com.google.common.base.MoreObjects;
 import com.model.domain.TextItem;
-import com.model.domain.styles.*;
-import com.model.domain.styles.constants.*;
+import com.model.domain.styles.LayoutStyle;
+import com.model.domain.styles.LayoutTextStyle;
+import com.model.domain.styles.Style;
+import com.model.domain.styles.StyleService;
+import com.model.domain.styles.TextStyle;
+import com.model.domain.styles.constants.BorderWeight;
+import com.model.domain.styles.constants.Color;
+import com.model.domain.styles.constants.FillPattern;
+import com.model.domain.styles.constants.HorAlignment;
+import com.model.domain.styles.constants.VertAlignment;
 import com.model.formatter.excel.XlsDetails;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.apache.poi.hssf.usermodel.HSSFPalette;
@@ -67,14 +75,23 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
             put(FillPattern.THIN_FORWARD_DIAG, org.apache.poi.ss.usermodel.FillPatternType.THIN_FORWARD_DIAG);
         }};
 
-    private static HSSFPalette palette;
+    private static final HSSFPalette palette;
+
+    protected Map<Cell, LayoutStyle> needAdjustHeaderCells = new HashMap<>();
 
     private final FontCharset fontCharset;
     private final Map<LayoutStyle, CellStyle> layoutStyles = new HashMap<>();
     private final Map<TextStyle, CellStyle> textStyles = new HashMap<>();
     private final Map<LayoutTextStyle, CellStyle> layoutTextStyles = new HashMap<>();
-    protected Map<Cell, LayoutStyle> needAdjustHeaderCells = new HashMap<>();
     private Workbook workbook;
+
+    static {
+        try (HSSFWorkbook hwb = new HSSFWorkbook()) {
+            palette = hwb.getCustomPalette();
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Can't create HSSFWorkbook for color palette.", e);
+        }
+    }
 
     public ExcelStyleService(FontCharset fontCharset, DecimalFormat decimalFormat) {
         this.fontCharset = fontCharset;
@@ -97,17 +114,8 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
      * Utility Methods
      **/
     public static short toExcelColor(Color color) {
-        if (palette == null) {
-            try (HSSFWorkbook hwb = new HSSFWorkbook()) {
-                palette = hwb.getCustomPalette();
-            } catch (IOException e) {
-                throw new IllegalArgumentException("Can't create HSSFWorkbook for color palette.");
-            }
-        }
-
         final HSSFColor excelColor = palette.findSimilarColor(color.getRed(), color.getGreen(), color.getBlue());
         return excelColor.getIndex();
-
     }
 
     public static org.apache.poi.ss.usermodel.BorderStyle

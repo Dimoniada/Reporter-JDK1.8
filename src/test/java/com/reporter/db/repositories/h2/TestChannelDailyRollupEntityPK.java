@@ -10,10 +10,10 @@ import java.util.Objects;
 
 public class TestChannelDailyRollupEntityPK implements Serializable {
     private int channelId;
-    private Date date_cdr;
+    private Date dateCdr;
     private int mcc;
     private int mnc;
-    private String alias_cdr;
+    private String aliasCdr;
     private int distributionId;
     private int partnerId;
     private int agregatorId;
@@ -39,12 +39,12 @@ public class TestChannelDailyRollupEntityPK implements Serializable {
 
     @Column(name = "date_cdr", nullable = false)
     @Id
-    public Date getDate_cdr() {
-        return date_cdr;
+    public Date getDateCdr() {
+        return dateCdr;
     }
 
-    public TestChannelDailyRollupEntityPK setDate_cdr(Date date_cdr) {
-        this.date_cdr = date_cdr;
+    public TestChannelDailyRollupEntityPK setDateCdr(Date dateCdr) {
+        this.dateCdr = dateCdr;
         return this;
     }
 
@@ -72,12 +72,12 @@ public class TestChannelDailyRollupEntityPK implements Serializable {
 
     @Column(name = "alias_cdr", nullable = false, length = 32)
     @Id
-    public String getAlias_cdr() {
-        return alias_cdr;
+    public String getAliasCdr() {
+        return aliasCdr;
     }
 
-    public TestChannelDailyRollupEntityPK setAlias_cdr(String alias_cdr) {
-        this.alias_cdr = alias_cdr;
+    public TestChannelDailyRollupEntityPK setAliasCdr(String aliasCdr) {
+        this.aliasCdr = aliasCdr;
         return this;
     }
 
@@ -245,10 +245,10 @@ public class TestChannelDailyRollupEntityPK implements Serializable {
         if (deliveryChannelTypeId != that.deliveryChannelTypeId) {
             return false;
         }
-        if (!Objects.equals(date_cdr, that.date_cdr)) {
+        if (!Objects.equals(dateCdr, that.dateCdr)) {
             return false;
         }
-        if (!Objects.equals(alias_cdr, that.alias_cdr)) {
+        if (!Objects.equals(aliasCdr, that.aliasCdr)) {
             return false;
         }
         if (!Objects.equals(senderName, that.senderName)) {
@@ -270,10 +270,10 @@ public class TestChannelDailyRollupEntityPK implements Serializable {
     @Override
     public int hashCode() {
         int result = channelId;
-        result = 31 * result + (date_cdr != null ? date_cdr.hashCode() : 0);
+        result = 31 * result + (dateCdr != null ? dateCdr.hashCode() : 0);
         result = 31 * result + mcc;
         result = 31 * result + mnc;
-        result = 31 * result + (alias_cdr != null ? alias_cdr.hashCode() : 0);
+        result = 31 * result + (aliasCdr != null ? aliasCdr.hashCode() : 0);
         result = 31 * result + distributionId;
         result = 31 * result + partnerId;
         result = 31 * result + agregatorId;

@@ -17,7 +17,12 @@ import com.itextpdf.layout.element.Text;
 import com.model.domain.FontService;
 import com.model.domain.Heading;
 import com.model.domain.TextItem;
-import com.model.domain.styles.*;
+import com.model.domain.styles.BorderStyle;
+import com.model.domain.styles.LayoutStyle;
+import com.model.domain.styles.LayoutTextStyle;
+import com.model.domain.styles.Style;
+import com.model.domain.styles.StyleService;
+import com.model.domain.styles.TextStyle;
 import com.model.domain.styles.constants.BorderWeight;
 import com.model.domain.styles.constants.Color;
 import com.model.domain.styles.constants.HorAlignment;
@@ -377,15 +382,13 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
                     final byte[] fontResource = fontService.getFontResource(textStyle, fontLocale);
                     if (StandardCharsets.UTF_8.name().equals(encoding)) {
                         font =
-                            PdfFontFactory.createFont
-                                (
+                            PdfFontFactory.createFont(
                                     fontResource,
                                     PdfEncodings.IDENTITY_H,
                                     PdfFontFactory.EmbeddingStrategy.FORCE_EMBEDDED
                                 );
                     } else {
-                        font = PdfFontFactory.createFont
-                            (
+                        font = PdfFontFactory.createFont(
                                 fontResource,
                                 encoding,
                                 PdfFontFactory.EmbeddingStrategy.FORCE_EMBEDDED
@@ -398,8 +401,7 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
                 if (StringUtils.hasText(textStyle.getFontNameResource())) {
                     try {
                         // encoding matches the font resource, otherwise IOException
-                        font = PdfFontFactory.createFont
-                            (
+                        font = PdfFontFactory.createFont(
                                 textStyle.getFontNameResource(),
                                 encoding,
                                 PdfFontFactory.EmbeddingStrategy.FORCE_EMBEDDED
@@ -415,8 +417,7 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
                             e);
                     }
                 } else {
-                    font = PdfFontFactory.createFont
-                        (
+                    font = PdfFontFactory.createFont(
                             StandardFonts.TIMES_ROMAN,
                             "Cp1251",
                             PdfFontFactory.EmbeddingStrategy.FORCE_EMBEDDED

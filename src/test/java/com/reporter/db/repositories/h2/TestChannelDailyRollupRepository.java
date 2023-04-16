@@ -26,7 +26,8 @@ public interface TestChannelDailyRollupRepository
             "            WHERE\n" +
             "            \"cdr\".\"date_cdr\" >= :startDate\n" +
             "            AND \"cdr\".\"date_cdr\" < :finishDate\n" +
-            "            GROUP BY \"cdr\".\"sender_name\", \"cdr\".\"channel_id\", \"cdr\".\"alias_cdr\", COALESCE(\"p\".\"owner_partner_id\",\"p\".\"id\")"
+            "            GROUP BY \"cdr\".\"sender_name\", \"cdr\".\"channel_id\", \"cdr\".\"alias_cdr\", " +
+            "            COALESCE(\"p\".\"owner_partner_id\",\"p\".\"id\")"
     )
     List<TestCDRPeriodStatisticByPartner> getTrafficStatistics2ForPeriod(
         @Param("startDate") LocalDate startDate,

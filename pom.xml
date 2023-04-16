@@ -35,6 +35,11 @@
         <jdbc.version>5.3.15</jdbc.version>
         <springjpa.version>2.7.6</springjpa.version>
         <javax.version>2.2</javax.version>
+        <!-- PMD, CHECKSTYLE PLUGINS-->
+        <plugin.pmd.version>3.20.0</plugin.pmd.version>
+        <plugin.checkstyle.version>3.1.2</plugin.checkstyle.version>
+        <plugin.dependency.checkstyle.version>10.9.3</plugin.dependency.checkstyle.version>
+        <maven.surefire.version>3.0.0</maven.surefire.version>
     </properties>
     <build>
         <plugins>
@@ -42,6 +47,65 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${project.parent.version}</version>
+            </plugin>
+            <!-- For Charset.forName("Cp1251") in testSaveQueryTableResultToFile() -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>-Dfile.encoding=UTF-8</argLine>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>${plugin.pmd.version}</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                            <goal>cpd-check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <rulesets>
+                        <ruleset>${basedir}/etc/pmd/ruleset.xml</ruleset>
+                    </rulesets>
+                    <printFailingErrors>true</printFailingErrors>
+                    <aggregate>true</aggregate>
+                    <minimumTokens>600</minimumTokens>
+                    <linkXRef>true</linkXRef>
+                    <suppressMarker>NOPMD</suppressMarker>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${plugin.checkstyle.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>${plugin.dependency.checkstyle.version}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <configLocation>${basedir}/etc/checkstyle/checkstyle.xml</configLocation>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    <consoleOutput>true</consoleOutput>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -183,6 +247,11 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>${maven.surefire.version}</version>
         </dependency>
     </dependencies>
 

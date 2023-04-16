@@ -9,7 +9,11 @@ import com.model.domain.styles.TextStyle;
 import com.model.formatter.html.styles.CssStyle;
 import com.model.formatter.html.styles.HtmlColgroupTag;
 import com.model.formatter.html.styles.HtmlStyleService;
-import com.model.formatter.html.tag.*;
+import com.model.formatter.html.tag.Html4Font;
+import com.model.formatter.html.tag.HtmlCol;
+import com.model.formatter.html.tag.HtmlTable;
+import com.model.formatter.html.tag.HtmlTableCell;
+import com.model.formatter.html.tag.HtmlTag;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;

@@ -44,7 +44,7 @@ public final class DocumentCreator {
             return resource;
         }
 
-        final String extension = (StringUtils.hasText(ext) ? "." + ext : "");
+        final String extension = StringUtils.hasText(ext) ? "." + ext : "";
         String localFileName = fileName + extension;
 
         if (!StringUtils.hasText(fileName)) {

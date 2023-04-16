@@ -2,11 +2,13 @@ package com.model.formatter.csv;
 
 import com.google.common.base.MoreObjects;
 import com.model.domain.Document;
+import com.model.domain.styles.StyleService;
 import com.model.formatter.FormatterContext;
 import org.springframework.core.io.WritableResource;
 import org.springframework.stereotype.Component;
 import org.supercsv.prefs.CsvPreference;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -77,4 +79,12 @@ public class CsvFormatter extends CsvFormatterVisitor implements CsvDetails {
         this.attachments = attachments;
         return this;
     }
+
+    @Override
+    public StyleService getStyleService() throws Exception {
+        return null;
+    }
+
+    @Override
+    public void cleanupResource() throws IOException { /**/ }
 }

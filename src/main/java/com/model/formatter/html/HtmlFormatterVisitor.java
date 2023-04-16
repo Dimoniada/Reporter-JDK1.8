@@ -1,7 +1,20 @@
 package com.model.formatter.html;
 
 import com.google.common.base.MoreObjects;
-import com.model.domain.*;
+import com.model.domain.CompositionPart;
+import com.model.domain.Document;
+import com.model.domain.DocumentCase;
+import com.model.domain.DocumentItem;
+import com.model.domain.Footer;
+import com.model.domain.Heading;
+import com.model.domain.Paragraph;
+import com.model.domain.Separator;
+import com.model.domain.Table;
+import com.model.domain.TableCell;
+import com.model.domain.TableHeaderCell;
+import com.model.domain.TableHeaderRow;
+import com.model.domain.TableRow;
+import com.model.domain.Title;
 import com.model.domain.styles.BorderStyle;
 import com.model.domain.styles.LayoutStyle;
 import com.model.domain.styles.Style;
@@ -11,7 +24,22 @@ import com.model.domain.styles.constants.Color;
 import com.model.formatter.BaseDetails;
 import com.model.formatter.Formatter;
 import com.model.formatter.html.styles.HtmlStyleService;
-import com.model.formatter.html.tag.*;
+import com.model.formatter.html.tag.Html;
+import com.model.formatter.html.tag.HtmlBody;
+import com.model.formatter.html.tag.HtmlCol;
+import com.model.formatter.html.tag.HtmlColgroup;
+import com.model.formatter.html.tag.HtmlFooter;
+import com.model.formatter.html.tag.HtmlH1;
+import com.model.formatter.html.tag.HtmlHead;
+import com.model.formatter.html.tag.HtmlHeading;
+import com.model.formatter.html.tag.HtmlLineSeparator;
+import com.model.formatter.html.tag.HtmlParagraph;
+import com.model.formatter.html.tag.HtmlTable;
+import com.model.formatter.html.tag.HtmlTableCell;
+import com.model.formatter.html.tag.HtmlTableHeaderCell;
+import com.model.formatter.html.tag.HtmlTableRow;
+import com.model.formatter.html.tag.HtmlTag;
+import com.model.formatter.html.tag.HtmlTitle;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.HtmlUtils;
 
@@ -37,11 +65,6 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
     @Override
     public void initializeResource() throws IOException {
         outputStream = getOutputStream();
-    }
-
-    @Override
-    public void cleanupResource() {
-        /**/
     }
 
     @Override
@@ -169,8 +192,8 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
         handleTag(htmlFooter, footerObj, style, true);
     }
 
-    private void handleTag(HtmlTag tag, DocumentItem item, Style style, Boolean needCloseTag) throws Exception {
-        final HtmlStyleService htmlStyleService = ((HtmlStyleService) styleService);
+    protected void handleTag(HtmlTag tag, DocumentItem item, Style style, Boolean needCloseTag) throws Exception {
+        final HtmlStyleService htmlStyleService = (HtmlStyleService) styleService;
         new TagCreator(outputStreamWriter, decimalFormat)
             .setItem(item)
             .writeTag(
@@ -183,7 +206,7 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
             );
     }
 
-    private void visitRow(CompositionPart<?, ?> row) throws Throwable {
+    protected void visitRow(CompositionPart<?, ?> row) throws Throwable {
         final HtmlTableRow htmlTableRow = new HtmlTableRow();
         outputStreamWriter.write(htmlTableRow.open());
         this.visitComposition(row);
@@ -199,7 +222,7 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
                 final TableHeaderRow thr = tableObj.getTableHeaderRow().get();
                 final HtmlColgroup htmlColgroup = new HtmlColgroup();
                 outputStreamWriter.write(htmlColgroup.open());
-                for (TableHeaderCell ignored : thr.getParts()) {
+                for (final TableHeaderCell ignored : thr.getParts()) {
                     handleTag(new HtmlCol(), TableCell.create(), cellStyle, true);
                 }
                 outputStreamWriter.write(htmlColgroup.close());

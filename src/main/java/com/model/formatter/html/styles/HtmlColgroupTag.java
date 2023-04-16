@@ -6,7 +6,7 @@ public class HtmlColgroupTag {
      */
     protected boolean enabled;
     /**
-     * In-place style in <col> tag or move it to <header> and provide only class reference
+     * In-place style in <col> tag or move it to header section and provide only class reference
      */
     protected boolean writeStyleInplace = true;
 

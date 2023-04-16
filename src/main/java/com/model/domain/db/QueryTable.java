@@ -1,7 +1,11 @@
 package com.model.domain.db;
 
 import com.google.common.base.MoreObjects;
-import com.model.domain.*;
+import com.model.domain.Table;
+import com.model.domain.TableCell;
+import com.model.domain.TableHeaderCell;
+import com.model.domain.TableHeaderRow;
+import com.model.domain.TableRow;
 import com.model.formatter.FormatterVisitor;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -22,6 +26,19 @@ import java.util.concurrent.atomic.AtomicReference;
  * <p>
  */
 public class QueryTable extends Table {
+
+    protected NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    protected Integer fetchSize = 50;
+    protected Integer rsTypeScroll = ResultSet.TYPE_FORWARD_ONLY;
+    protected Integer rsTypeConcurrency = ResultSet.CONCUR_READ_ONLY;
+
+    protected MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+
+    protected boolean isTableHeaderRowFromData;
+
+    protected String query;
+
     /**
      * Class stores names and labels of columns in ResultSetMetaData as HashMap
      */
@@ -40,18 +57,6 @@ public class QueryTable extends Table {
             return metaData;
         }
     }
-
-    protected NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    protected Integer fetchSize = 50;
-    protected Integer rsTypeScroll = ResultSet.TYPE_FORWARD_ONLY;
-    protected Integer rsTypeConcurrency = ResultSet.CONCUR_READ_ONLY;
-
-    protected MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-
-    protected boolean isTableHeaderRowFromData;
-
-    protected String query;
 
     public static QueryTable create() {
         return new QueryTable();
@@ -86,7 +91,7 @@ public class QueryTable extends Table {
         namedParameterJdbcTemplate.getJdbcTemplate().setMaxRows(0);
         namedParameterJdbcTemplate.getJdbcTemplate().setFetchSize(fetchSize);
         final RowCallbackHandler rsLambdaWork =
-            (rs) ->
+            rs ->
                 addPart(
                     resultSetToTableRow(
                         rs,

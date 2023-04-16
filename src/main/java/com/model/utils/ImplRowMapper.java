@@ -15,12 +15,12 @@ public class ImplRowMapper<T> implements RowMapper<T> {
     private static final Logger log = LoggerFactory.getLogger(ImplRowMapper.class);
     private final Class<T> clazz;
 
-    public static <T> ImplRowMapper<T> create(Class<T> clazz) {
-        return new ImplRowMapper<>(clazz);
-    }
-
     public ImplRowMapper(Class<T> clazz) {
         this.clazz = clazz;
+    }
+
+    public static <T> ImplRowMapper<T> create(Class<T> clazz) {
+        return new ImplRowMapper<>(clazz);
     }
 
     @Override

@@ -2,7 +2,18 @@ package com.model.formatter.word;
 
 import com.google.common.base.MoreObjects;
 import com.model.domain.Document;
-import com.model.domain.*;
+import com.model.domain.DocumentCase;
+import com.model.domain.Footer;
+import com.model.domain.Heading;
+import com.model.domain.Paragraph;
+import com.model.domain.Separator;
+import com.model.domain.Table;
+import com.model.domain.TableCell;
+import com.model.domain.TableHeaderCell;
+import com.model.domain.TableHeaderRow;
+import com.model.domain.TableRow;
+import com.model.domain.TextItem;
+import com.model.domain.Title;
 import com.model.domain.styles.Style;
 import com.model.domain.styles.StyleService;
 import com.model.formatter.BaseDetails;
@@ -10,22 +21,36 @@ import com.model.formatter.Formatter;
 import com.model.formatter.word.styles.WordStyleService;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy;
-import org.apache.poi.xwpf.usermodel.*;
+import org.apache.poi.xwpf.usermodel.BreakType;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.apache.poi.xwpf.usermodel.XWPFStyle;
+import org.apache.poi.xwpf.usermodel.XWPFStyles;
+import org.apache.poi.xwpf.usermodel.XWPFTable;
+import org.apache.poi.xwpf.usermodel.XWPFTableCell;
+import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTDecimalNumber;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTHpsMeasure;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTOnOff;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTP;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPPrGeneral;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTString;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTStyle;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTc;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STHdrFtr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STStyleType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.util.Optional;
 
 public abstract class WordFormatterVisitor extends Formatter implements BaseDetails {
-    private final Logger log = LoggerFactory.getLogger(WordFormatterVisitor.class);
-
     /**
      * docx native document {@link org.apache.poi.xwpf.usermodel.XWPFDocument}
      */
@@ -39,6 +64,8 @@ public abstract class WordFormatterVisitor extends Formatter implements BaseDeta
     protected FontCharset fontCharset;
     protected DecimalFormat decimalFormat;
     protected StyleService styleService;
+
+    private final Logger log = LoggerFactory.getLogger(WordFormatterVisitor.class);
 
     @Override
     public void initializeResource() throws IOException {
@@ -81,7 +108,50 @@ public abstract class WordFormatterVisitor extends Formatter implements BaseDeta
         final String heading = headingObj.getText();
         final int depth = headingObj.getDepth();
         final XWPFParagraph paragraph = wordDocument.createParagraph();
+        final String headingStyleId = "Heading " + depth;
+        addHeading(depth, headingStyleId);
+        paragraph.setStyle(headingStyleId);
         paragraph.createRun().setText(heading);
+    }
+
+    protected XWPFStyles addHeading(int depth, String headingStyleId) {
+        final XWPFStyles styles = wordDocument.createStyles();
+
+        if (styles.getStyle(headingStyleId) == null) {
+            final CTStyle ctStyle = CTStyle.Factory.newInstance();
+            ctStyle.setStyleId(headingStyleId);
+
+            final CTString styleName = CTString.Factory.newInstance();
+            styleName.setVal(headingStyleId);
+            ctStyle.setName(styleName);
+
+            final CTDecimalNumber indentNumber = CTDecimalNumber.Factory.newInstance();
+            indentNumber.setVal(BigInteger.valueOf(depth));
+
+            // lower number > style is more prominent in the formats bar
+            ctStyle.setUiPriority(indentNumber);
+
+            final CTOnOff ctOnOff = CTOnOff.Factory.newInstance();
+            ctStyle.setUnhideWhenUsed(ctOnOff);
+
+            // style shows up in the formats bar
+            ctStyle.setQFormat(ctOnOff);
+
+            // style defines a heading of the given level
+            final CTPPrGeneral ppr = CTPPrGeneral.Factory.newInstance();
+            ppr.setOutlineLvl(indentNumber);
+            ctStyle.setPPr(ppr);
+
+            final XWPFStyle style = new XWPFStyle(ctStyle);
+
+            final CTHpsMeasure size = CTHpsMeasure.Factory.newInstance();
+            size.setVal(new BigInteger(String.valueOf(depth)));
+
+            // is a null op if already defined
+            style.setType(STStyleType.PARAGRAPH);
+            styles.addStyle(style);
+        }
+        return styles;
     }
 
     @Override
@@ -112,6 +182,7 @@ public abstract class WordFormatterVisitor extends Formatter implements BaseDeta
         this.visitComposition(tableObj);
 //        watch.stop();
 //        log.info("Table visited in {} ms", watch.getTotalTimeMillis());
+        log.info("Visited table {}", tableObj);
     }
 
     @Override

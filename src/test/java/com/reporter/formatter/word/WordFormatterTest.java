@@ -36,7 +36,6 @@ public class WordFormatterTest extends BaseDocument {
         super.initDoc();
     }
 
-
     /**
      * Test {@link DocxFormatter#handle handle} call
      * and proper saving texts in "Test document.docx"
@@ -46,31 +45,30 @@ public class WordFormatterTest extends BaseDocument {
     @Test
     public void testSaveTextToDocxFile() throws Throwable {
         final WordFormatter docxFormatter = DocxFormatter.create();
-        final DocumentHolder documentHolder = docxFormatter.handle(doc);
+        try (DocumentHolder documentHolder = docxFormatter.handle(doc)) {
 
-        final XWPFDocument docx = new XWPFDocument(documentHolder.getResource().getInputStream());
-        final List<XWPFParagraph> paragraphs = docx.getParagraphs();
+            final XWPFDocument docx = new XWPFDocument(documentHolder.getResource().getInputStream());
+            final List<XWPFParagraph> paragraphs = docx.getParagraphs();
 
-        final String actualParagraphs =
-            paragraphs
-                .stream()
-                .map(XWPFParagraph::getText)
-                .collect(Collectors.joining(";"));
+            final String actualParagraphs =
+                paragraphs
+                    .stream()
+                    .map(XWPFParagraph::getText)
+                    .collect(Collectors.joining(";"));
 
-        Assertions.assertEquals(expectedTextParagraphs, actualParagraphs);
+            Assertions.assertEquals(expectedTextParagraphs, actualParagraphs);
 
-        final List<XWPFTable> tables = docx.getTables();
+            final List<XWPFTable> tables = docx.getTables();
 
-        final String actualTables =
-            tables
-                .stream()
-                .map(XWPFTable::getText)
-                .collect(Collectors.joining(";"));
+            final String actualTables =
+                tables
+                    .stream()
+                    .map(XWPFTable::getText)
+                    .collect(Collectors.joining(";"));
 
-        Assertions.assertEquals(expectedTextTables, actualTables);
-        docx.close();
-
-        documentHolder.close();
+            Assertions.assertEquals(expectedTextTables, actualTables);
+            docx.close();
+        }
     }
 
     @Test
@@ -81,25 +79,25 @@ public class WordFormatterTest extends BaseDocument {
         ((List<DocumentItem>) doc.getParts())
             .add(0, Footer.create("simple footer"));
 
-        final DocumentHolder documentHolder = docxFormatter.handle(doc);
+        try (DocumentHolder documentHolder = docxFormatter.handle(doc)) {
 
-        Assertions.assertDoesNotThrow(() -> {
-            final File file = documentHolder.getResource().getFile();
-            if (Files.exists(file.toPath())) {
-                Assertions.assertEquals("test_file.docx", file.getName());
+            Assertions.assertDoesNotThrow(() -> {
+                final File file = documentHolder.getResource().getFile();
+                if (Files.exists(file.toPath())) {
+                    Assertions.assertEquals("test_file.docx", file.getName());
 
-                final XWPFDocument docx = new XWPFDocument(documentHolder.getResource().getInputStream());
-                final String actual =
-                    docx.getFooterList()
-                        .stream()
-                        .map(XWPFHeaderFooter::getText)
-                        .collect(Collectors.joining(";"));
+                    final XWPFDocument docx = new XWPFDocument(documentHolder.getResource().getInputStream());
+                    final String actual =
+                        docx.getFooterList()
+                            .stream()
+                            .map(XWPFHeaderFooter::getText)
+                            .collect(Collectors.joining(";"));
 
-                Assertions.assertTrue(actual.endsWith("simple footer\n"));
-                docx.close();
-            }
-        });
-        documentHolder.close();
+                    Assertions.assertTrue(actual.endsWith("simple footer\n"));
+                    docx.close();
+                }
+            });
+        }
     }
 
     /**
@@ -111,7 +109,6 @@ public class WordFormatterTest extends BaseDocument {
     @Test
     public void testSaveTextToDocFile() throws Throwable {
         final WordFormatter docFormatter = DocFormatter.create();
-        final DocumentHolder documentHolder = docFormatter.handle(doc);
-        documentHolder.close();
+        try (DocumentHolder ignored = docFormatter.handle(doc)) { /**/ }
     }
 }

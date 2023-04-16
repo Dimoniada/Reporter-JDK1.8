@@ -1,5 +1,6 @@
 package com.reporter.db;
 
+import com.ReporterApplication;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
@@ -33,6 +34,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.MessageSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -50,10 +52,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Sql("classpath:db/h2/schema_report_table_test.sql")
+@SpringBootTest(classes = {ReporterApplication.class})
 public class ReportTableTest extends BaseQueryDocument {
-
-    @Autowired
-    MessageSource messageSource;
 
     @Autowired
     public NamedParameterJdbcTemplate jdbcTemplateH2;
@@ -66,6 +66,9 @@ public class ReportTableTest extends BaseQueryDocument {
 
     @Autowired
     protected FormatterFactory formatterFactory;
+
+    @Autowired
+    MessageSource messageSource;
 
     static Stream<Arguments> testArguments() {
         return Stream.of(
@@ -122,9 +125,9 @@ public class ReportTableTest extends BaseQueryDocument {
                 "                   else\n" +
                 "                       case\n" +
                 "                           when \"rep_2\".\"val2\" % \"rep_1\".\"val1\" = 0 then\n" +
-                "                               concat(round(((\"rep_2\".\"val2\" - \"rep_1\".\"val1\") / \"rep_1\".\"val1\" * 100), 0), '%')\n" +
-                "                           else\n" +
-                "                               concat(round(((\"rep_2\".\"val2\" - \"rep_1\".\"val1\") / \"rep_1\".\"val1\" * 100), 3), '%')\n" +
+                "    concat(round(((\"rep_2\".\"val2\" - \"rep_1\".\"val1\") / \"rep_1\".\"val1\" * 100), 0), '%')\n" +
+                "    else\n" +
+                "    concat(round(((\"rep_2\".\"val2\" - \"rep_1\".\"val1\") / \"rep_1\".\"val1\" * 100), 3), '%')\n" +
                 "                           end\n" +
                 "                   end\n" +
                 "           end                         \"rel_diff_percent\"\n" +
@@ -140,7 +143,8 @@ public class ReportTableTest extends BaseQueryDocument {
                 "                     inner join \"partners\" as \"p\" on (\"cdr\".\"partner_id\" = \"p\".\"id\")\n" +
                 "            where \"cdr\".\"date_cdr\" >= :date_from\n" +
                 "              AND \"cdr\".\"date_cdr\" < :date_to\n" +
-                "            group by \"p\".\"id\", \"cdr\".\"channel_id\", \"cdr\".\"alias_cdr\", coalesce(\"p\".\"owner_partner_id\", \"p\".\"id\")) \"rep1\"\n" +
+                "            group by \"p\".\"id\", \"cdr\".\"channel_id\", \"cdr\".\"alias_cdr\", " +
+                "                       coalesce(\"p\".\"owner_partner_id\", \"p\".\"id\")) \"rep1\"\n" +
                 "      group by \"rep1\".\"id\") \"rep_1\"\n" +
                 "         join\n" +
                 "     (select sum(\"value2\") \"val2\", \"rep2\".\"id\"\n" +
@@ -149,7 +153,8 @@ public class ReportTableTest extends BaseQueryDocument {
                 "                     inner join \"partners\" as \"p\" on (\"cdr\".\"partner_id\" = \"p\".\"id\")\n" +
                 "            where \"cdr\".\"date_cdr\" >= :date_to\n" +
                 "              AND \"cdr\".\"date_cdr\" < :date_now\n" +
-                "            group by \"p\".\"id\", \"cdr\".\"channel_id\", \"cdr\".\"alias_cdr\", coalesce(\"p\".\"owner_partner_id\", \"p\".\"id\")) \"rep2\"\n" +
+                "            group by \"p\".\"id\", \"cdr\".\"channel_id\", \"cdr\".\"alias_cdr\", " +
+                "                   coalesce(\"p\".\"owner_partner_id\", \"p\".\"id\")) \"rep2\"\n" +
                 "      group by \"rep2\".\"id\") \"rep_2\"\n" +
                 "     on\n" +
                 "         \"rep_1\".\"id\" = \"rep_2\".\"id\";");
@@ -368,8 +373,7 @@ public class ReportTableTest extends BaseQueryDocument {
                     .addParts(
                         mapNameAlias
                             .stream()
-                            .map
-                                (e ->
+                            .map(e ->
                                     TableHeaderCell
                                         .create()
                                         .setText(e.getKey())
@@ -533,7 +537,4 @@ public class ReportTableTest extends BaseQueryDocument {
 
         Assertions.assertEquals("legal_person_name10", check);
     }
-
 }
-
-

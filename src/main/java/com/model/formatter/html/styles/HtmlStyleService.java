@@ -4,7 +4,14 @@ import com.google.common.base.MoreObjects;
 import com.model.domain.DocumentItem;
 import com.model.domain.TableCell;
 import com.model.domain.TableRow;
-import com.model.domain.styles.*;
+import com.model.domain.styles.BorderStyle;
+import com.model.domain.styles.FontFamilyStyle;
+import com.model.domain.styles.LayoutStyle;
+import com.model.domain.styles.LayoutTextStyle;
+import com.model.domain.styles.Style;
+import com.model.domain.styles.StyleService;
+import com.model.domain.styles.StyleUtils;
+import com.model.domain.styles.TextStyle;
 import com.model.domain.styles.constants.BorderWeight;
 import com.model.domain.styles.constants.Color;
 import com.model.domain.styles.constants.HorAlignment;
@@ -269,7 +276,7 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
     /**
      * (<a href="http://htmlbook.ru/faq/kak-s-pomoshchyu-stiley-zadat-tsvet-linii">...</a>)
      */
-    private static void fillCssStyleFromBorderStyle(CssStyle cssStyle, BorderStyle borderStyle) {
+    protected static void fillCssStyleFromBorderStyle(CssStyle cssStyle, BorderStyle borderStyle) {
         if (separatorWidthMap.containsKey(borderStyle.getWeight())) {
             cssStyle.setHeight(separatorWidthMap.get(borderStyle.getWeight()));
         }
@@ -312,7 +319,7 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
         final OutputStreamWriter OsWriter = (OutputStreamWriter) o;
         if (!useHtml4Tags && !writeStyleInplace) {
 
-            BiFunction<Class<?>, Style, Boolean> checkConditionClass = (clazz, style) -> {
+            final BiFunction<Class<?>, Style, Boolean> checkConditionClass = (clazz, style) -> {
                 if (style.getCondition() != null) {
                     return clazz.equals(style.getCondition().getClazz());
                 }

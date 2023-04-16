@@ -35,7 +35,7 @@ public class TableRow extends CompositionPart<TableRow, TableCell> {
     @Override
     public TableRow addParts(TableCell... docItems) {
         this.cellCount += docItems.length;
-        for (TableCell item : docItems) {
+        for (final TableCell item : docItems) {
             item.setCustomIndex(rowIndex);
         }
         return super.addParts(docItems);
@@ -59,7 +59,7 @@ public class TableRow extends CompositionPart<TableRow, TableCell> {
     public TableRow setRowIndex(int rowIndex) {
         this.rowIndex = rowIndex;
         if (parts != null) {
-            for (TableCell item : parts) {
+            for (final TableCell item : parts) {
                 item.setCustomIndex(rowIndex);
             }
         }

@@ -1,5 +1,6 @@
 package com.reporter.domain;
 
+import com.ReporterApplication;
 import com.model.domain.*;
 import com.model.domain.db.QueryTable;
 import com.model.formatter.FormatterVisitor;
@@ -17,16 +18,16 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 
 //Tests to verify the contract between the visitor and domain objects
-@SpringBootTest
+@SpringBootTest(classes = {ReporterApplication.class})
 @ExtendWith(MockitoExtension.class)
 public class VisitorContractTest {
-
-    @Autowired
-    NamedParameterJdbcTemplate jdbcTemplateH2;
 
     public static final int DEFAULT_DEPTH = 1;
 
     public FormatterVisitor mock;
+
+    @Autowired
+    NamedParameterJdbcTemplate jdbcTemplateH2;
 
     @BeforeEach
     public void initFormatter() {

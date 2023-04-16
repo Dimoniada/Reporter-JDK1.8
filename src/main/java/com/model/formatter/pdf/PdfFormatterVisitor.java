@@ -12,7 +12,18 @@ import com.itextpdf.layout.element.LineSeparator;
 import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.properties.AreaBreakType;
 import com.itextpdf.layout.properties.UnitValue;
-import com.model.domain.*;
+import com.model.domain.Document;
+import com.model.domain.DocumentCase;
+import com.model.domain.Footer;
+import com.model.domain.Heading;
+import com.model.domain.Paragraph;
+import com.model.domain.Separator;
+import com.model.domain.Table;
+import com.model.domain.TableCell;
+import com.model.domain.TableHeaderCell;
+import com.model.domain.TableHeaderRow;
+import com.model.domain.TableRow;
+import com.model.domain.Title;
 import com.model.domain.styles.BorderStyle;
 import com.model.domain.styles.Style;
 import com.model.domain.styles.StyleService;
@@ -33,6 +44,8 @@ import java.util.Arrays;
  * The class generates a representation of a pdf document {@link Document}
  */
 public abstract class PdfFormatterVisitor extends Formatter implements BaseDetails {
+    private static final float DEFAULT_MARGIN = 20;
+
     protected PdfWriter writer;
     protected PdfDocument pdf;
     protected com.itextpdf.layout.element.Table table;
@@ -41,17 +54,11 @@ public abstract class PdfFormatterVisitor extends Formatter implements BaseDetai
     protected DecimalFormat decimalFormat;
     protected StyleService styleService;
 
-    private final float DEFAULT_MARGIN = 20;
     private final Logger log = LoggerFactory.getLogger(PdfFormatterVisitor.class);
 
     @Override
     public void initializeResource() throws IOException {
         outputStream = getOutputStream();
-    }
-
-    @Override
-    public void cleanupResource() {
-        /**/
     }
 
     @Override
@@ -136,6 +143,7 @@ public abstract class PdfFormatterVisitor extends Formatter implements BaseDetai
         }
 //        watch.stop();
 //        log.info("Table visited in {} ms", watch.getTotalTimeMillis());
+        log.info("Visited table {}", tableObj);
     }
 
     @Override

@@ -55,6 +55,11 @@ public class HtmlFormatter extends HtmlFormatterVisitor implements HtmlDetails {
     }
 
     @Override
+    public void cleanupResource() {
+        /**/
+    }
+
+    @Override
     public String toString() {
         return
             MoreObjects.toStringHelper(this)

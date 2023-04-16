@@ -185,7 +185,7 @@ public class HtmlFormatterTest extends BaseDocument {
 
     /**
      * Test on {@link HtmlFormatter#handle handle} call
-     * with styled <colgroup> tag which propagates to columns
+     * with styled <colgroup></colgroup> tag which propagates to columns
      * and proper saving result in "fileName"
      *
      * @throws Throwable Exception/IOException

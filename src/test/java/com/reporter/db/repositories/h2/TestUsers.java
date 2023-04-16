@@ -14,6 +14,8 @@ public class TestUsers {
     protected String username;
     protected String password;
 
+    public TestUsers() { /**/ }
+
     public TestUsers(Long id) {
         this.id = id;
     }
@@ -26,10 +28,6 @@ public class TestUsers {
             .add("password", password)
             .add("parent", super.toString())
             .toString();
-    }
-
-    public TestUsers() {
-        /**/
     }
 
     public Long getId() {

@@ -3,7 +3,12 @@ package com.model.formatter.word.styles;
 import com.google.common.base.MoreObjects;
 import com.model.domain.Heading;
 import com.model.domain.TextItem;
-import com.model.domain.styles.*;
+import com.model.domain.styles.BorderStyle;
+import com.model.domain.styles.LayoutStyle;
+import com.model.domain.styles.LayoutTextStyle;
+import com.model.domain.styles.Style;
+import com.model.domain.styles.StyleService;
+import com.model.domain.styles.TextStyle;
 import com.model.domain.styles.constants.BorderWeight;
 import com.model.domain.styles.constants.Color;
 import com.model.domain.styles.constants.HorAlignment;
@@ -11,9 +16,26 @@ import com.model.domain.styles.constants.VertAlignment;
 import com.model.formatter.word.DocDetails;
 import com.model.utils.LocalizedNumberUtils;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
-import org.apache.poi.xwpf.usermodel.*;
-import org.openxmlformats.schemas.officeDocument.x2006.sharedTypes.STOnOff;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.*;
+import org.apache.poi.xwpf.usermodel.Borders;
+import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
+import org.apache.poi.xwpf.usermodel.TableWidthType;
+import org.apache.poi.xwpf.usermodel.TextAlignment;
+import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.apache.poi.xwpf.usermodel.XWPFTable;
+import org.apache.poi.xwpf.usermodel.XWPFTableCell;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBorder;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTP;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPBdr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPPr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTShd;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblWidth;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTc;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTcBorders;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTcPr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STBorder;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblWidth;
 import org.springframework.util.StringUtils;
 
 import java.text.DecimalFormat;
@@ -221,22 +243,22 @@ public class WordStyleService extends StyleService implements DocDetails {
         }
     }
 
-    private static XWPFStyle createNewStyle(XWPFStyles styles, STStyleType.Enum styleType, String styleId) {
-        if (styles == null || styleId == null) {
-            return null;
-        }
-        XWPFStyle style = styles.getStyle(styleId);
-        if (style == null) {
-            final CTStyle ctStyle = CTStyle.Factory.newInstance();
-            ctStyle.addNewName().setVal(styleId);
-            ctStyle.setCustomStyle(STOnOff.GREATER_THAN);
-            style = new XWPFStyle(ctStyle, styles);
-            style.setType(styleType);
-            style.setStyleId(styleId);
-            styles.addStyle(style);
-        }
-        return style;
-    }
+//    private static XWPFStyle createNewStyle(XWPFStyles styles, STStyleType.Enum styleType, String styleId) {
+//        if (styles == null || styleId == null) {
+//            return null;
+//        }
+//        XWPFStyle style = styles.getStyle(styleId);
+//        if (style == null) {
+//            final CTStyle ctStyle = CTStyle.Factory.newInstance();
+//            ctStyle.addNewName().setVal(styleId);
+//            ctStyle.setCustomStyle(STOnOff.GREATER_THAN);
+//            style = new XWPFStyle(ctStyle, styles);
+//            style.setType(styleType);
+//            style.setStyleId(styleId);
+//            styles.addStyle(style);
+//        }
+//        return style;
+//    }
 
     /**
      * Applies the layoutStyle backfill setting to the XWPFParagraph element

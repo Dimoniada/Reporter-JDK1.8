@@ -58,8 +58,7 @@ public class FontService {
      */
     protected Set<Locale> localeSet = new HashSet<>();
 
-    public FontService() {
-    }
+    public FontService() { /**/ }
 
     public static FontService create() {
         return new FontService();
@@ -88,8 +87,8 @@ public class FontService {
         final Resource resource = resolver.getResource(alphabetProps);
         try (InputStream is = resource.getInputStream()) {
             final String text = IOUtils.toString(is, StandardCharsets.UTF_8);
-            Pattern pattern = Pattern.compile(FONTS_LOCALE_REGEXP);
-            Matcher matcher = pattern.matcher(text);
+            final Pattern pattern = Pattern.compile(FONTS_LOCALE_REGEXP);
+            final Matcher matcher = pattern.matcher(text);
             while (matcher.find()) {
                 localeSet.add(Locale.forLanguageTag(matcher.group()));
             }
@@ -211,12 +210,12 @@ public class FontService {
         if (locale == null) {
             return;
         }
-        final String charsString = alphabet(locale.toLanguageTag());
         if (!fonts.containsKey(fontName)) {
             throw new IllegalArgumentException(
                 String.format("Can't find font %s in resources", fontName)
             );
         }
+        final String charsString = alphabet(locale.toLanguageTag());
         final int undisplayedCharAt = fonts.get(fontName).getKey().canDisplayUpTo(charsString);
         if (undisplayedCharAt != -1) {
             throw new IllegalArgumentException(

@@ -1,7 +1,7 @@
 package com.model.formatter.html.tag;
 
 /**
- * Needs <table style="border-collapse: collapse;">
+ * Needs <table style="border-collapse: collapse;"></table>
  * There is only a very limited selection of
  * CSS properties that are allowed to be used in the colgroup:
  * width

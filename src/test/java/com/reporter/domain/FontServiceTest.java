@@ -74,7 +74,7 @@ class FontServiceTest {
     @Test
     void testGetFontResource() {
         final TextStyle testStyle = TextStyle.create("helvetica_SansSerif_(en-ru OpenSans).ttf");
-        AtomicReference<byte[]> fontResource = new AtomicReference<>();
+        final AtomicReference<byte[]> fontResource = new AtomicReference<>();
         Assertions.assertDoesNotThrow(() -> {
             fontService.initializeFonts();
             fontResource.set(fontService.getFontResource(testStyle, Locale.forLanguageTag("en")));
