@@ -1,8 +1,5 @@
 package com.model.domain.styles.geometry;
 
-import com.google.common.base.MoreObjects;
-import com.sun.deploy.util.StringUtils;
-
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.stream.Collectors;
