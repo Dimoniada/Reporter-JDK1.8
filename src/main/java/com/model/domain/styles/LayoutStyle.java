@@ -17,7 +17,7 @@ public class LayoutStyle extends Style {
     /**
      * Measurable values of a content
      */
-    protected MeasurableValues measurableValues = new MeasurableValues();
+    protected MeasurableValues measurableValues = MeasurableValues.create();
     /**
      * Content auto alignment
      */
