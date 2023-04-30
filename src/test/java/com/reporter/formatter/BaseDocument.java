@@ -4,6 +4,8 @@ import com.model.domain.*;
 import com.model.domain.styles.*;
 import com.model.domain.styles.constants.BorderWeight;
 import com.model.domain.styles.constants.Color;
+import com.model.domain.styles.geometry.Geometry;
+import com.model.domain.styles.geometry.MeasurableValues;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
@@ -36,7 +38,14 @@ public class BaseDocument {
                 .setBorderLeft(border)
                 .setBorderRight(border)
                 .setBorderBottom(border)
-                .setAutoWidth(true);
+                .setAutoWidth(true)
+                .setMeasurable(
+                    MeasurableValues.create(
+                        Geometry.create().add("html", "1.2"),
+                        Geometry.create().add("html", "1.7"),
+                        Geometry.create().add("html", "359")
+                    )
+                );
 
         textStyle1 =
             TextStyle

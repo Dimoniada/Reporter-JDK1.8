@@ -33,76 +33,65 @@ import java.util.List;
 public class HtmlFormatterTest extends BaseDocument {
 
     public static final String expected = "<!doctype html><html><head><meta charset=\"UTF-8\"><title>Test document" +
-        "</title></head><body><h1>Title 1</h1><p style=\"background-color:#FFFFFF;border-bottom:#FFFFFF;" +
-        "border-collapse:collapse;border-left:#FFFFFF;border-right:#FFFFFF;border-top:#FFFFFF;color:#000000;" +
-        "font-family:courierNew,monospace;font-size:10pt;font-weight:bold;text-align:justify\">paragraph 1</p><table>" +
-        "<tr><th style=\"background-color:#FFFFFF;border-bottom:double #000000;border-collapse:collapse;border-left:" +
-        "double #000000;border-right:double #000000;border-top:double #000000;color:#000000;font-family:arial,monospace;" +
-        "font-size:14pt;font-weight:bold;text-align:justify\">column1</th><th style=\"background-color:#FFFFFF;" +
-        "border-bottom:double #000000;border-collapse:collapse;border-left:double #000000;border-right:double #000000;" +
-        "border-top:double #000000;color:#000000;font-family:arial,monospace;font-size:14pt;font-weight:bold;" +
-        "text-align:justify\">column2 (столбец2)</th></tr><tr><td style=\"color:#000000;font-family:arial,monospace;" +
-        "font-size:14pt;font-weight:bold\">1,000</td><td style=\"color:#000000;font-family:arial,monospace;font-size:" +
-        "14pt;font-weight:bold\">2,000</td></tr><tr><td style=\"color:#000000;font-family:arial,monospace;font-size:" +
-        "14pt;font-weight:bold\">3,000</td><td style=\"color:#000000;font-family:arial,monospace;font-size:14pt;" +
-        "font-weight:bold\">4,000</td></tr><tr><td style=\"color:#000000;font-family:arial,monospace;font-size:14pt;" +
-        "font-weight:bold\">5,000</td><td style=\"color:#000000;font-family:arial,monospace;font-size:14pt;" +
-        "font-weight:bold\">6,000</td></tr></table><h1 style=\"color:#000000;font-family:monospace;font-size:20pt\">" +
-        "Test document v.1</h1>" +
-        "<hr style=\"background-color:#FFFFFF;border-bottom:1px solid #008080;border-collapse:collapse;border-left:" +
-        "#FFFFFF;border-right:#FFFFFF;border-top:#FFFFFF;text-align:justify\"><h1 style=\"background-color:#FFFFFF;" +
-        "border-bottom:#FFFFFF;border-collapse:collapse;border-left:#FFFFFF;border-right:#FFFFFF;border-top:#FFFFFF;" +
-        "color:#000000;font-family:courierNew,monospace;font-size:10pt;font-weight:bold;text-align:justify\">Chapter " +
-        "1</h1><h2 style=\"background-color:#FFFFFF;border-bottom:#FFFFFF;border-collapse:collapse;border-left:" +
-        "#FFFFFF;border-right:#FFFFFF;border-top:#FFFFFF;color:#000000;font-family:courierNew,monospace;font-size:" +
-        "10pt;font-weight:bold;text-align:justify\">Chapter 1.1</h2><h3 style=\"background-color:#FFFFFF;" +
-        "border-bottom:#FFFFFF;border-collapse:collapse;border-left:#FFFFFF;border-right:#FFFFFF;border-top:#FFFFFF;" +
-        "color:#000000;font-family:courierNew,monospace;font-size:10pt;font-weight:bold;text-align:justify\">" +
-        "Chapter 1.1.1</h3><p style=\"background-color:#FFFFFF;border-bottom:#FFFFFF;border-collapse:collapse;" +
-        "border-left:#FFFFFF;border-right:#FFFFFF;border-top:#FFFFFF;color:#000000;font-family:courierNew,monospace;" +
-        "font-size:10pt;font-weight:bold;text-align:justify\">This is an example of text in paragraph</p><table><tr>" +
-        "<th style=\"background-color:#FFFFFF;border-bottom:double #000000;border-collapse:collapse;border-left:" +
-        "double #000000;border-right:double #000000;border-top:double #000000;color:#000000;font-family:arial,monospace;" +
-        "font-size:14pt;font-weight:bold;text-align:justify\">Column 1</th><th style=\"background-color:#FFFFFF;" +
-        "border-bottom:double #000000;border-collapse:collapse;border-left:double #000000;border-right:double #000000;" +
-        "border-top:double #000000;color:#000000;font-family:arial,monospace;font-size:14pt;font-weight:bold;" +
-        "text-align:justify\">Column 2</th></tr><tr><td style=\"color:#000000;font-family:courierNew,monospace;" +
-        "font-size:10pt;font-weight:bold\">Cell 1.1</td><td style=\"color:#000000;font-family:courierNew,monospace;" +
-        "font-size:10pt;font-weight:bold\">Cell 1.2</td></tr><tr><td style=\"color:#000000;font-family:courierNew," +
-        "monospace;font-size:10pt;font-weight:bold\">Cell 2.1</td><td style=\"color:#000000;font-family:courierNew," +
-        "monospace;font-size:10pt;font-weight:bold\">Cell 2.2</td></tr><tr><td style=\"color:#000000;font-family:" +
-        "courierNew,monospace;font-size:10pt;font-weight:bold\">Cell 3.1</td><td style=\"color:#000000;font-family:" +
-        "courierNew,monospace;font-size:10pt;font-weight:bold\">Cell 3.2</td></tr><tr><td style=\"color:#000000;" +
-        "font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">Cell 4.1</td><td style=\"color:#000000;" +
-        "font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">Cell 4.2</td></tr></table><h1 style=" +
-        "\"background-color:#FFFFFF;border-bottom:#FFFFFF;border-collapse:collapse;border-left:#FFFFFF;border-right:" +
-        "#FFFFFF;border-top:#FFFFFF;color:#000000;font-family:courierNew,monospace;font-size:10pt;font-weight:bold;" +
-        "text-align:justify\">Chapter 2</h1><h2 style=\"background-color:#FFFFFF;border-bottom:#FFFFFF;" +
-        "border-collapse:collapse;border-left:#FFFFFF;border-right:#FFFFFF;border-top:#FFFFFF;color:#000000;" +
-        "font-family:courierNew,monospace;font-size:10pt;font-weight:bold;text-align:justify\">Chapter 2.1</h2>" +
-        "<h3 style=\"background-color:#FFFFFF;border-bottom:#FFFFFF;border-collapse:collapse;border-left:#FFFFFF;" +
-        "border-right:#FFFFFF;border-top:#FFFFFF;color:#000000;font-family:courierNew,monospace;font-size:10pt;" +
-        "font-weight:bold;text-align:justify\">Chapter 2.1.1</h3><p style=\"background-color:#FFFFFF;border-bottom:" +
-        "#FFFFFF;border-collapse:collapse;border-left:#FFFFFF;border-right:#FFFFFF;border-top:#FFFFFF;color:#000000;" +
-        "font-family:courierNew,monospace;font-size:10pt;font-weight:bold;text-align:justify\">This is an example" +
-        " of text in paragraph 2</p><table><tr><th style=\"background-color:#FFFFFF;border-bottom:double #000000;" +
-        "border-collapse:collapse;border-left:double #000000;border-right:double #000000;border-top:double #000000;" +
-        "color:#000000;font-family:arial,monospace;font-size:14pt;font-weight:bold;text-align:justify\">Column 1</th>" +
-        "<th style=\"background-color:#FFFFFF;border-bottom:double #000000;border-collapse:collapse;border-left:" +
-        "double #000000;border-right:double #000000;border-top:double #000000;color:#000000;font-family:arial,monospace;" +
-        "font-size:14pt;font-weight:bold;text-align:justify\">Column 2</th></tr><tr><td style=\"color:#000000;" +
-        "font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">Cell 1.1</td><td style=\"color:#000000;" +
-        "font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">Cell 1.2</td></tr><tr><td style=\"color:" +
-        "#000000;font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">Cell 2.1</td><td style=\"color:" +
-        "#000000;font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">Cell 2.2</td></tr></table><h1>" +
-        "Title 1</h1><p>paragraph 1</p><h2>shifted heading</h2><table><tr><th>столбец1</th><th>column2</th></tr><tr>" +
-        "<td style=\"color:#000000;font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">1,000</td>" +
-        "<td style=\"color:#000000;font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">2,000</td>" +
-        "</tr><tr><td style=\"color:#000000;font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">3,000" +
-        "</td><td style=\"color:#000000;font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">4 and " +
-        "some escape characters (символы) %;;;;;\\/</td></tr><tr><td style=\"color:#000000;font-family:courierNew," +
-        "monospace;font-size:10pt;font-weight:bold\">5,000</td><td style=\"color:#000000;font-family:courierNew," +
-        "monospace;font-size:10pt;font-weight:bold\">6,000</td></tr></table></body></html>";
+        "</title></head><body><h1>Title 1</h1><p style=\"border-collapse:collapse;font-family:" +
+        "courierNew,monospace;font-size:10pt;font-weight:bold\">paragraph 1</p><table><tr><th style=" +
+        "\"border-bottom:double #000000;border-collapse:collapse;border-left:double #000000;border-right:" +
+        "double #000000;border-top:double #000000;font-family:arial,monospace;font-size:14pt;" +
+        "font-weight:bold;transform:rotate(359deg) scaleX(1.2) scaleY(1.7)\">column1</th><th style=" +
+        "\"border-bottom:double #000000;border-collapse:collapse;border-left:double #000000;border-right:" +
+        "double #000000;border-top:double #000000;font-family:arial,monospace;font-size:14pt;" +
+        "font-weight:bold;transform:rotate(359deg) scaleX(1.2) scaleY(1.7)\">column2 (столбец2)</th></tr><tr>" +
+        "<td style=\"font-family:arial,monospace;font-size:14pt;font-weight:bold\">1,000</td>" +
+        "<td style=\"font-family:arial,monospace;font-size:14pt;font-weight:bold\">2,000</td></tr>" +
+        "<tr><td style=\"font-family:arial,monospace;font-size:14pt;font-weight:bold\">3,000</td>" +
+        "<td style=\"font-family:arial,monospace;font-size:14pt;font-weight:bold\">4,000</td></tr>" +
+        "<tr><td style=\"font-family:arial,monospace;font-size:14pt;font-weight:bold\">5,000</td>" +
+        "<td style=\"font-family:arial,monospace;font-size:14pt;font-weight:bold\">6,000</td></tr>" +
+        "</table><h1 style=\"font-size:20pt\">Test document v.1</h1><hr " +
+        "style=\"border-bottom:1px solid #008080;border-collapse:collapse\"><h1 style=\"border-collapse:" +
+        "collapse;font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">Chapter 1</h1>" +
+        "<h2 style=\"border-collapse:collapse;font-family:courierNew,monospace;font-size:10pt;" +
+        "font-weight:bold\">Chapter 1.1</h2><h3 style=\"border-collapse:collapse;font-family:" +
+        "courierNew,monospace;font-size:10pt;font-weight:bold\">Chapter 1.1.1</h3><p style=\"border-collapse:" +
+        "collapse;font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">This is an " +
+        "example of text in paragraph</p><table><tr><th style=\"border-bottom:double #000000;border-collapse:" +
+        "collapse;border-left:double #000000;border-right:double #000000;border-top:double #000000;" +
+        "font-family:arial,monospace;font-size:14pt;font-weight:bold;transform:rotate(359deg) scaleX(1.2) " +
+        "scaleY(1.7)\">Column 1</th><th style=\"border-bottom:double #000000;border-collapse:collapse;border-left:" +
+        "double #000000;border-right:double #000000;border-top:double #000000;font-family:arial," +
+        "monospace;font-size:14pt;font-weight:bold;transform:rotate(359deg) scaleX(1.2) scaleY(1.7)\">Column 2</th>" +
+        "</tr><tr><td style=\"font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">" +
+        "Cell 1.1</td><td style=\"font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">" +
+        "Cell 1.2</td></tr><tr><td style=\"font-family:courierNew,monospace;font-size:10pt;font-weight:" +
+        "bold\">Cell 2.1</td><td style=\"font-family:courierNew,monospace;font-size:10pt;font-weight:" +
+        "bold\">Cell 2.2</td></tr><tr><td style=\"font-family:courierNew,monospace;font-size:10pt;" +
+        "font-weight:bold\">Cell 3.1</td><td style=\"font-family:courierNew,monospace;font-size:10pt;" +
+        "font-weight:bold\">Cell 3.2</td></tr><tr><td style=\"font-family:courierNew,monospace;" +
+        "font-size:10pt;font-weight:bold\">Cell 4.1</td><td style=\"font-family:courierNew,monospace;" +
+        "font-size:10pt;font-weight:bold\">Cell 4.2</td></tr></table><h1 style=\"border-collapse:collapse;" +
+        "font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">Chapter 2</h1><h2 style=" +
+        "\"border-collapse:collapse;font-family:courierNew,monospace;font-size:10pt;font-weight:" +
+        "bold\">Chapter 2.1</h2><h3 style=\"border-collapse:collapse;font-family:courierNew,monospace;" +
+        "font-size:10pt;font-weight:bold\">Chapter 2.1.1</h3><p style=\"border-collapse:collapse;" +
+        "font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">This is an example of text in paragraph" +
+        " 2</p><table><tr><th style=\"border-bottom:double #000000;border-collapse:collapse;border-left:double " +
+        "#000000;border-right:double #000000;border-top:double #000000;font-family:arial,monospace;" +
+        "font-size:14pt;font-weight:bold;transform:rotate(359deg) scaleX(1.2) scaleY(1.7)\">Column 1</th><th " +
+        "style=\"border-bottom:double #000000;border-collapse:collapse;border-left:double #000000;border-right:" +
+        "double #000000;border-top:double #000000;font-family:arial,monospace;font-size:14pt;" +
+        "font-weight:bold;transform:rotate(359deg) scaleX(1.2) scaleY(1.7)\">Column 2</th></tr><tr><td style=" +
+        "\"font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">Cell 1.1</td><td style=" +
+        "\"font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">Cell 1.2</td></tr><tr>" +
+        "<td style=\"font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">Cell 2.1</td>" +
+        "<td style=\"font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">Cell 2.2</td>" +
+        "</tr></table><h1>Title 1</h1><p>paragraph 1</p><h2>shifted heading</h2><table><tr><th>столбец1</th><th>" +
+        "column2</th></tr><tr><td style=\"font-family:courierNew,monospace;font-size:10pt;font-weight:" +
+        "bold\">1,000</td><td style=\"font-family:courierNew,monospace;font-size:10pt;font-weight:" +
+        "bold\">2,000</td></tr><tr><td style=\"font-family:courierNew,monospace;font-size:10pt;" +
+        "font-weight:bold\">3,000</td><td style=\"font-family:courierNew,monospace;font-size:10pt;" +
+        "font-weight:bold\">4 and some escape characters (символы) %;;;;;\\/</td></tr><tr><td style=\"" +
+        "font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">5,000</td><td style=\"" +
+        "font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">6,000</td></tr></table></body></html>";
 
     @Override
     @BeforeEach
@@ -370,47 +359,40 @@ public class HtmlFormatterTest extends BaseDocument {
         htmlStyleService.addStyles(interlinearStyle);
 
         final String expected = "<!doctype html><html><head><meta charset=\"Cp1251\"><title>Test document</title>" +
-            "</head><body><h1>Title 1</h1><p align=\"left\" bgcolor=\"#FFFFFF\"><font color=\"#000000\" face=" +
-            "\"monospace\" size=\"10\">paragraph 1</font></p><table bgcolor=\"#FFFFFF\" border=\"1\" cellspacing=" +
-            "\"0\"><tr><th align=\"left\" bgcolor=\"#FFFFFF\"><font color=\"#000000\" face=\"sans-serif\" " +
-            "size=\"14\">column1</font></th><th align=\"left\" bgcolor=\"#FFFFFF\"><font color=\"#000000\" face=" +
-            "\"sans-serif\" size=\"14\">column2 (столбец2)</font></th></tr><tr><td align=\"left\" bgcolor=" +
-            "\"#C0C0C0\">1</td><td align=\"left\" bgcolor=\"#C0C0C0\">2</td></tr><tr><td align=\"left\" bgcolor=" +
-            "\"#FFFFFF\">3</td><td align=\"left\" bgcolor=\"#FFFFFF\">4</td></tr><tr><td align=\"left\" bgcolor=" +
-            "\"#C0C0C0\">5</td><td align=\"left\" bgcolor=\"#C0C0C0\">6</td></tr></table><h1><font color=\"#000000\"" +
-            " face=\"serif\" size=\"20\">Test document v.1</font></h1>" +
-            "<hr align=\"left\" bgcolor=\"#FFFFFF\"><h1 align=\"left\" bgcolor=\"#FFFFFF\">" +
-            "<font color=\"#000000\" face=\"monospace\" size=\"10\">Chapter 1</font></h1>" +
-            "<h2 align=\"left\" bgcolor=\"#FFFFFF\"><font color=\"#000000\" face=\"monospace\" size=\"10\">" +
-            "Chapter 1.1</font></h2><h3 align=\"left\" bgcolor=\"#FFFFFF\">" +
-            "<font color=\"#000000\" face=\"monospace\" size=\"10\">Chapter 1.1.1</font></h3>" +
-            "<p align=\"left\" bgcolor=\"#FFFFFF\"><font color=\"#000000\" face=\"monospace\" size=\"10\">" +
-            "This is an example of text in paragraph</font></p><table bgcolor=\"#FFFFFF\" border=\"1\" " +
-            "cellspacing=\"0\"><tr><th align=\"left\" bgcolor=\"#FFFFFF\"><font color=\"#000000\" " +
-            "face=\"sans-serif\" size=\"14\">Column 1</font></th><th align=\"left\" bgcolor=\"#FFFFFF\">" +
-            "<font color=\"#000000\" face=\"sans-serif\" size=\"14\">Column 2</font></th></tr><tr><td " +
-            "align=\"left\" bgcolor=\"#C0C0C0\">Cell 1.1</td><td align=\"left\" bgcolor=\"#C0C0C0\">" +
-            "Cell 1.2</td></tr><tr><td align=\"left\" bgcolor=\"#FFFFFF\">Cell 2.1</td>" +
-            "<td align=\"left\" bgcolor=\"#FFFFFF\">Cell 2.2</td></tr><tr><td align=\"left\" bgcolor=" +
-            "\"#C0C0C0\">Cell 3.1</td><td align=\"left\" bgcolor=\"#C0C0C0\">Cell 3.2</td></tr><tr><td align=" +
-            "\"left\" bgcolor=\"#FFFFFF\">Cell 4.1</td><td align=\"left\" bgcolor=\"#FFFFFF\">Cell 4.2</td>" +
-            "</tr></table><h1 align=\"left\" bgcolor=\"#FFFFFF\"><font color=\"#000000\" face=" +
-            "\"monospace\" size=\"10\">Chapter 2</font></h1><h2 align=\"left\" bgcolor=\"#FFFFFF\"><font color=" +
-            "\"#000000\" face=\"monospace\" size=\"10\">Chapter 2.1</font></h2><h3 align=\"left\" bgcolor=" +
-            "\"#FFFFFF\"><font color=\"#000000\" face=\"monospace\" size=\"10\">Chapter 2.1.1</font></h3>" +
-            "<p align=\"left\" bgcolor=\"#FFFFFF\"><font color=\"#000000\" face=\"monospace\" size=\"10\">" +
-            "This is an example of text in paragraph 2</font></p><table bgcolor=\"#FFFFFF\" border=\"1\" " +
-            "cellspacing=\"0\"><tr><th align=\"left\" bgcolor=\"#FFFFFF\"><font color=\"#000000\" face=" +
-            "\"sans-serif\" size=\"14\">Column 1</font></th><th align=\"left\" bgcolor=\"#FFFFFF\"><font color=" +
-            "\"#000000\" face=\"sans-serif\" size=\"14\">Column 2</font></th></tr><tr><td align=\"left\" " +
-            "bgcolor=\"#C0C0C0\">Cell 1.1</td><td align=\"left\" bgcolor=\"#C0C0C0\">Cell 1.2</td></tr><tr>" +
-            "<td align=\"left\" bgcolor=\"#FFFFFF\">Cell 2.1</td><td align=\"left\" bgcolor=\"#FFFFFF\">" +
-            "Cell 2.2</td></tr></table><h1>Title 1</h1><p>paragraph 1</p><h2>shifted heading</h2><table bgcolor=" +
-            "\"#FFFFFF\" border=\"1\" cellspacing=\"0\"><tr><th>столбец1</th><th>column2</th></tr><tr><td align=" +
+            "</head><body><h1>Title 1</h1><p align=\"left\"><font face=\"monospace\" size=\"10\">" +
+            "paragraph 1</font></p><table border=\"1\" cellspacing=\"0\"><tr><th align=\"left\"><font " +
+            "face=\"sans-serif\" size=\"14\">column1</font></th><th align=\"left\"><font " +
+            "face=\"sans-serif\" size=\"14\">column2 (столбец2)</font></th></tr><tr><td align=" +
             "\"left\" bgcolor=\"#C0C0C0\">1</td><td align=\"left\" bgcolor=\"#C0C0C0\">2</td></tr><tr><td align=" +
-            "\"left\" bgcolor=\"#FFFFFF\">3</td><td align=\"left\" bgcolor=\"#FFFFFF\">" +
-            "4 and some escape characters (символы) %;;;;;\\/</td></tr><tr><td align=\"left\" bgcolor=" +
-            "\"#C0C0C0\">5</td><td align=\"left\" bgcolor=\"#C0C0C0\">6</td></tr></table></body></html>";
+            "\"left\" bgcolor=\"#FFFFFF\">3</td><td align=\"left\" bgcolor=\"#FFFFFF\">4</td></tr><tr><td align=" +
+            "\"left\" bgcolor=\"#C0C0C0\">5</td><td align=\"left\" bgcolor=\"#C0C0C0\">6</td></tr></table><h1>" +
+            "<font face=\"serif\" size=\"20\">Test document v.1</font></h1><hr align=\"left\">" +
+            "<h1 align=\"left\"><font face=\"monospace\" size=\"10\">Chapter 1</font></h1>" +
+            "<h2 align=\"left\"><font face=\"monospace\" size=\"10\">Chapter 1.1</font></h2>" +
+            "<h3 align=\"left\"><font face=\"monospace\" size=\"10\">Chapter 1.1.1</font></h3>" +
+            "<p align=\"left\"><font face=\"monospace\" size=\"10\">This is an example of text " +
+            "in paragraph</font></p><table border=\"1\" cellspacing=\"0\"><tr><th align=\"left\"><font " +
+            "face=\"sans-serif\" size=\"14\">Column 1</font></th><th align=\"left\"><font " +
+            "face=\"sans-serif\" size=\"14\">Column 2</font></th></tr><tr><td align=\"left\" bgcolor=" +
+            "\"#C0C0C0\">Cell 1.1</td><td align=\"left\" bgcolor=\"#C0C0C0\">Cell 1.2</td></tr><tr><td align=" +
+            "\"left\" bgcolor=\"#FFFFFF\">Cell 2.1</td><td align=\"left\" bgcolor=\"#FFFFFF\">Cell 2.2</td></tr>" +
+            "<tr><td align=\"left\" bgcolor=\"#C0C0C0\">Cell 3.1</td><td align=\"left\" bgcolor=\"#C0C0C0\">Cell 3.2" +
+            "</td></tr><tr><td align=\"left\" bgcolor=\"#FFFFFF\">Cell 4.1</td><td align=\"left\" bgcolor=" +
+            "\"#FFFFFF\">Cell 4.2</td></tr></table><h1 align=\"left\"><font face=\"monospace\" " +
+            "size=\"10\">Chapter 2</font></h1><h2 align=\"left\"><font face=\"monospace\" " +
+            "size=\"10\">Chapter 2.1</font></h2><h3 align=\"left\"><font face=\"monospace\" " +
+            "size=\"10\">Chapter 2.1.1</font></h3><p align=\"left\"><font face=\"monospace\" " +
+            "size=\"10\">This is an example of text in paragraph 2</font></p><table border=\"1\" cellspacing=\"0\">" +
+            "<tr><th align=\"left\"><font face=\"sans-serif\" size=\"14\">Column 1</font></th>" +
+            "<th align=\"left\"><font face=\"sans-serif\" size=\"14\">Column 2</font></th></tr><tr>" +
+            "<td align=\"left\" bgcolor=\"#C0C0C0\">Cell 1.1</td><td align=\"left\" bgcolor=\"#C0C0C0\">Cell 1.2</td>" +
+            "</tr><tr><td align=\"left\" bgcolor=\"#FFFFFF\">Cell 2.1</td><td align=\"left\" bgcolor=\"#FFFFFF\">" +
+            "Cell 2.2</td></tr></table><h1>Title 1</h1><p>paragraph 1</p><h2>shifted heading</h2><table border=" +
+            "\"1\" cellspacing=\"0\"><tr><th>столбец1</th><th>column2</th></tr><tr><td align=\"left\" bgcolor=" +
+            "\"#C0C0C0\">1</td><td align=\"left\" bgcolor=\"#C0C0C0\">2</td></tr><tr><td align=\"left\" bgcolor=" +
+            "\"#FFFFFF\">3</td><td align=\"left\" bgcolor=\"#FFFFFF\">4 and some escape characters (символы) " +
+            "%;;;;;\\/</td></tr><tr><td align=\"left\" bgcolor=\"#C0C0C0\">5</td><td align=\"left\" bgcolor=" +
+            "\"#C0C0C0\">6</td></tr></table></body></html>";
         final HtmlFormatter htmlFormatter = HtmlFormatter
             .create()
             .setEncoding("Cp1251")
@@ -488,13 +470,14 @@ public class HtmlFormatterTest extends BaseDocument {
         writer.flush();
 
         Assertions.assertEquals(
-            "<tr><td style=\"background-color:#FFFFFF;" +
+            "<tr><td style=\"" +
                 "border-bottom:double #000000;" +
                 "border-collapse:collapse;" +
                 "border-left:double #000000;" +
                 "border-right:double #000000;" +
                 "border-top:double #000000;" +
-                "text-align:justify\">test_text</td></tr>", os.toString());
+                "transform:rotate(359deg) scaleX(1.2) scaleY(1.7)" +
+                "\">test_text</td></tr>", os.toString());
         os.reset();
 
 // Case of the named style class
@@ -537,13 +520,14 @@ public class HtmlFormatterTest extends BaseDocument {
         htmlFormatterVisitor.visitTableHeaderRow(thr);
         writer.flush();
 
-        Assertions.assertEquals("<tr><th style=\"background-color:#FFFFFF;" +
+        Assertions.assertEquals("<tr><th style=\"" +
             "border-bottom:double #000000;" +
             "border-collapse:collapse;" +
             "border-left:double #000000;" +
             "border-right:double #000000;" +
             "border-top:double #000000;" +
-            "text-align:justify\">test_text</th></tr>", os.toString());
+            "transform:rotate(359deg) scaleX(1.2) scaleY(1.7)" +
+            "\">test_text</th></tr>", os.toString());
         os.reset();
 
 // Case of the named class style
@@ -596,13 +580,14 @@ public class HtmlFormatterTest extends BaseDocument {
 
         writer.flush();
 
-        Assertions.assertEquals("<table><tr><th style=\"background-color:#FFFFFF;" +
+        Assertions.assertEquals("<table><tr><th style=\"" +
             "border-bottom:double #000000;" +
             "border-collapse:collapse;" +
             "border-left:double #000000;" +
             "border-right:double #000000;" +
             "border-top:double #000000;" +
-            "text-align:justify\">test_text1</th></tr><tr><td>test_text2</td></tr></table>", os.toString());
+            "transform:rotate(359deg) scaleX(1.2) scaleY(1.7)" +
+            "\">test_text1</th></tr><tr><td>test_text2</td></tr></table>", os.toString());
         os.reset();
 
 // Case of the named class style
@@ -634,7 +619,6 @@ public class HtmlFormatterTest extends BaseDocument {
         Class<? extends DocumentItem> itemClass
     ) throws Throwable {
 // Case when tag is without parameters
-
         final HtmlFormatterVisitor htmlFormatterVisitor = new HtmlFormatter();
         final HtmlStyleService styleService = HtmlStyleService.create();
         htmlFormatterVisitor.setStyleService(styleService);
@@ -650,13 +634,14 @@ public class HtmlFormatterTest extends BaseDocument {
         writer.flush();
 
         Assertions.assertEquals(
-            "<" + baseTag + " style=\"background-color:#FFFFFF;" +
+            "<" + baseTag + " style=\"" +
                 "border-bottom:double #000000;" +
                 "border-collapse:collapse;" +
                 "border-left:double #000000;" +
                 "border-right:double #000000;" +
                 "border-top:double #000000;" +
-                "text-align:justify\">test_text</" + baseTag + ">", os.toString());
+                "transform:rotate(359deg) scaleX(1.2) scaleY(1.7)" +
+                "\">test_text</" + baseTag + ">", os.toString());
         os.reset();
 // Case of the text style
         item.setStyle(textStyle1);
@@ -664,7 +649,7 @@ public class HtmlFormatterTest extends BaseDocument {
         writer.flush();
 
         Assertions.assertEquals(
-            "<" + baseTag + " style=\"color:#000000;" +
+            "<" + baseTag + " style=\"" +
                 "font-family:" + textStyle1.getFontNameResource() + ",monospace;" +
                 "font-size:14pt;" +
                 "font-weight:bold\">test_text</" + baseTag + ">", os.toString());

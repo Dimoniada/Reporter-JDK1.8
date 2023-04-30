@@ -12,11 +12,11 @@ public class BorderStyle implements Cloneable {
     /**
      * Line color
      */
-    protected Color color = Color.WHITE;
+    protected Color color;
     /**
      * Thickness or line style
      */
-    protected BorderWeight weight = BorderWeight.NONE;
+    protected BorderWeight weight;
 
     public static BorderStyle create() {
         return new BorderStyle();

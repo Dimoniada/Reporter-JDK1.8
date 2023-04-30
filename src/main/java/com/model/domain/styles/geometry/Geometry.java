@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
  *    for .xlsx(int) it's units of 1/256th of a character width, see setColumnWidth() in {@link org.apache.poi.ss.usermodel.Sheet},
  *    for .docx(int) it's 20ths of a point, twips, see setWidth() in {@link org.apache.poi.xwpf.usermodel.XWPFTable},
  *    for .pdf(float) it's in points, see setWidth() in {@link com.itextpdf.layout.element.BlockElement}
+ *    for .html(float) it's a scale, see attribute transform and scaleX()
  */
 public class Geometry extends HashMap<String, Object> {
     /**

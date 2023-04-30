@@ -2,7 +2,7 @@ package com.model.formatter.html.tag;
 
 import com.model.formatter.html.attribute.HtmlColorAttribute;
 import com.model.formatter.html.attribute.HtmlFontFaceAttribute;
-import com.model.formatter.html.attribute.HtmlSizeAttribute;
+import com.model.formatter.html.attribute.HtmlFontSizeAttribute;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -13,7 +13,7 @@ public class Html4Font extends HtmlTag {
 
     final HtmlColorAttribute color = new HtmlColorAttribute();
     final HtmlFontFaceAttribute face = new HtmlFontFaceAttribute();
-    final HtmlSizeAttribute size = new HtmlSizeAttribute();
+    final HtmlFontSizeAttribute size = new HtmlFontSizeAttribute();
 
     public Html4Font() {
         availableAttributes =
@@ -31,7 +31,7 @@ public class Html4Font extends HtmlTag {
     }
 
     public Html4Font setSize(int size) {
-        this.size.setSize(size);
+        this.size.setFontSize(size);
         return this;
     }
 

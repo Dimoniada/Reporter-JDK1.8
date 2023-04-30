@@ -7,19 +7,19 @@ import com.google.common.base.MoreObjects;
  */
 public class MeasurableValues {
     /**
-     * Element width, null when not applicable
+     * Element width, null when not provided
      */
     protected Geometry width;
     /**
-     * Element height, null when not applicable
+     * Element height, null when not provided
      */
     protected Geometry height;
     /**
-     * Element angle, null when not applicable
+     * Element angle, null when not provided
      */
     protected Geometry angle;
 
-    public static MeasurableValues create(Geometry height, Geometry width, Geometry angle) {
+    public static MeasurableValues create(Geometry width, Geometry height, Geometry angle) {
         return
             new MeasurableValues()
                 .setWidth(width)
@@ -27,12 +27,12 @@ public class MeasurableValues {
                 .setAngle(angle);
     }
 
-    public static MeasurableValues create(Geometry height, Geometry width) {
-        return MeasurableValues.create(height, width, null);
+    public static MeasurableValues create(Geometry width, Geometry height) {
+        return MeasurableValues.create(width, height, null);
     }
 
-    public static MeasurableValues create(Geometry height) {
-        return MeasurableValues.create(height, null, null);
+    public static MeasurableValues create(Geometry width) {
+        return MeasurableValues.create(width, null, null);
     }
 
     public static MeasurableValues create() {

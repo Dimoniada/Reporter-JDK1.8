@@ -2,16 +2,13 @@ package com.model.formatter.excel.styles;
 
 import com.google.common.base.MoreObjects;
 import com.model.domain.TextItem;
-import com.model.domain.styles.LayoutStyle;
-import com.model.domain.styles.LayoutTextStyle;
-import com.model.domain.styles.Style;
-import com.model.domain.styles.StyleService;
-import com.model.domain.styles.TextStyle;
+import com.model.domain.styles.*;
 import com.model.domain.styles.constants.BorderWeight;
 import com.model.domain.styles.constants.Color;
 import com.model.domain.styles.constants.FillPattern;
 import com.model.domain.styles.constants.HorAlignment;
 import com.model.domain.styles.constants.VertAlignment;
+import com.model.domain.styles.geometry.MeasurableValues;
 import com.model.formatter.excel.XlsDetails;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.apache.poi.hssf.usermodel.HSSFPalette;
@@ -41,6 +38,7 @@ import static com.model.utils.LocalizedNumberUtils.applyDecimalFormat;
 public class ExcelStyleService extends StyleService implements XlsDetails {
     private static final Map<BorderWeight, org.apache.poi.ss.usermodel.BorderStyle> borderMap =
         new HashMap<BorderWeight, org.apache.poi.ss.usermodel.BorderStyle>() {{
+            put(null, org.apache.poi.ss.usermodel.BorderStyle.NONE);
             put(BorderWeight.NONE, org.apache.poi.ss.usermodel.BorderStyle.NONE);
             put(BorderWeight.THIN, org.apache.poi.ss.usermodel.BorderStyle.THIN);
             put(BorderWeight.MEDIUM, org.apache.poi.ss.usermodel.BorderStyle.MEDIUM);
@@ -51,6 +49,7 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
 
     private static final Map<HorAlignment, org.apache.poi.ss.usermodel.HorizontalAlignment> horizontalAlignmentMap =
         new HashMap<HorAlignment, org.apache.poi.ss.usermodel.HorizontalAlignment>() {{
+            put(null, null);
             put(HorAlignment.GENERAL, org.apache.poi.ss.usermodel.HorizontalAlignment.GENERAL);
             put(HorAlignment.LEFT, org.apache.poi.ss.usermodel.HorizontalAlignment.LEFT);
             put(HorAlignment.CENTER, org.apache.poi.ss.usermodel.HorizontalAlignment.CENTER);
@@ -59,6 +58,7 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
 
     private static final Map<VertAlignment, org.apache.poi.ss.usermodel.VerticalAlignment> verticalAlignmentMap =
         new HashMap<VertAlignment, org.apache.poi.ss.usermodel.VerticalAlignment>() {{
+            put(null, null);
             put(VertAlignment.TOP, org.apache.poi.ss.usermodel.VerticalAlignment.TOP);
             put(VertAlignment.CENTER, org.apache.poi.ss.usermodel.VerticalAlignment.CENTER);
             put(VertAlignment.BOTTOM, org.apache.poi.ss.usermodel.VerticalAlignment.BOTTOM);
@@ -66,6 +66,7 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
 
     private static final Map<FillPattern, org.apache.poi.ss.usermodel.FillPatternType> fillPatternMap =
         new HashMap<FillPattern, org.apache.poi.ss.usermodel.FillPatternType>() {{
+            put(null, org.apache.poi.ss.usermodel.FillPatternType.NO_FILL);
             put(FillPattern.NO_FILL, org.apache.poi.ss.usermodel.FillPatternType.NO_FILL);
             put(FillPattern.FINE_DOTS, org.apache.poi.ss.usermodel.FillPatternType.FINE_DOTS);
             put(FillPattern.SOLID_FOREGROUND, org.apache.poi.ss.usermodel.FillPatternType.SOLID_FOREGROUND);
@@ -113,7 +114,10 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
     /**
      * Utility Methods
      **/
-    public static short toExcelColor(Color color) {
+    public static Short toExcelColor(Color color) {
+        if (color == null) {
+            return null;
+        }
         final HSSFColor excelColor = palette.findSimilarColor(color.getRed(), color.getGreen(), color.getBlue());
         return excelColor.getIndex();
     }
@@ -155,15 +159,19 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
     }
 
     public static void convertFit(CellStyle cellStyle, LayoutStyle layoutStyle) {
-        cellStyle.setShrinkToFit(layoutStyle.isShrinkToFit());
+        final Boolean isShrinkToFit = layoutStyle.isShrinkToFit();
+        if (isShrinkToFit != null) {
+            cellStyle.setShrinkToFit(layoutStyle.isShrinkToFit());
+        }
     }
 
     public static void applyWidth(org.apache.poi.ss.usermodel.Cell cell, LayoutStyle layoutStyle) {
-        if (layoutStyle.isAutoWidth()) {
+        final Boolean isAutoWidth = layoutStyle.isAutoWidth();
+        final MeasurableValues measurableValues = layoutStyle.getMeasurable();
+        if (isAutoWidth != null && isAutoWidth) {
             cell.getSheet().autoSizeColumn(cell.getColumnIndex());
-        } else if (layoutStyle.getMeasurable().getWidth() != null) {
-            layoutStyle
-                .getMeasurable()
+        } else if (measurableValues != null && measurableValues.getWidth() != null) {
+            measurableValues
                 .getWidth()
                 .getValueFor(EXTENSION)
                 .ifPresent(value ->
@@ -176,34 +184,66 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
         org.apache.poi.ss.usermodel.CellStyle cellStyle,
         LayoutStyle layoutStyle
     ) {
-        cellStyle.setVerticalAlignment(toExcelVertAlignment(layoutStyle.getVertAlignment()));
+        final org.apache.poi.ss.usermodel.VerticalAlignment verticalAlignment =
+            toExcelVertAlignment(layoutStyle.getVertAlignment());
+        if (verticalAlignment != null) {
+            cellStyle.setVerticalAlignment(verticalAlignment);
+        }
     }
 
     public static void convertHorizontalAlignment(
         org.apache.poi.ss.usermodel.CellStyle cellStyle,
         LayoutStyle layoutStyle
     ) {
-        cellStyle.setAlignment(toExcelHorAlignment(layoutStyle.getHorAlignment()));
+        final org.apache.poi.ss.usermodel.HorizontalAlignment horizontalAlignment =
+            toExcelHorAlignment(layoutStyle.getHorAlignment());
+        if (horizontalAlignment != null) {
+            cellStyle.setAlignment(toExcelHorAlignment(layoutStyle.getHorAlignment()));
+        }
     }
 
     public static void convertBorders(
         org.apache.poi.ss.usermodel.CellStyle cellStyle,
         LayoutStyle layoutStyle
     ) {
-        cellStyle.setBorderTop(toExcelBorder(layoutStyle.getBorderTop().getWeight()));
-        cellStyle.setBorderLeft(toExcelBorder(layoutStyle.getBorderLeft().getWeight()));
-        cellStyle.setBorderRight(toExcelBorder(layoutStyle.getBorderRight().getWeight()));
-        cellStyle.setBorderBottom(toExcelBorder(layoutStyle.getBorderBottom().getWeight()));
+        final BorderStyle borderTop = layoutStyle.getBorderTop();
+        final BorderStyle borderLeft = layoutStyle.getBorderLeft();
+        final BorderStyle borderRight = layoutStyle.getBorderRight();
+        final BorderStyle borderBottom = layoutStyle.getBorderBottom();
+        if (borderTop != null) {
+            cellStyle.setBorderTop(toExcelBorder(borderTop.getWeight()));
+        }
+        if (borderLeft != null) {
+            cellStyle.setBorderLeft(toExcelBorder(borderLeft.getWeight()));
+        }
+        if (borderRight != null) {
+            cellStyle.setBorderRight(toExcelBorder(borderRight.getWeight()));
+        }
+        if (borderBottom != null) {
+            cellStyle.setBorderBottom(toExcelBorder(borderBottom.getWeight()));
+        }
     }
 
     public static void convertBorderColors(
         org.apache.poi.ss.usermodel.CellStyle cellStyle,
         LayoutStyle layoutStyle
     ) {
-        cellStyle.setTopBorderColor(toExcelColor(layoutStyle.getBorderTop().getColor()));
-        cellStyle.setLeftBorderColor(toExcelColor(layoutStyle.getBorderLeft().getColor()));
-        cellStyle.setRightBorderColor(toExcelColor(layoutStyle.getBorderRight().getColor()));
-        cellStyle.setBottomBorderColor(toExcelColor(layoutStyle.getBorderBottom().getColor()));
+        final BorderStyle borderTop = layoutStyle.getBorderTop();
+        final BorderStyle borderLeft = layoutStyle.getBorderLeft();
+        final BorderStyle borderRight = layoutStyle.getBorderRight();
+        final BorderStyle borderBottom = layoutStyle.getBorderBottom();
+        if (borderTop != null) {
+            cellStyle.setTopBorderColor(toExcelColor(borderTop.getColor()));
+        }
+        if (borderLeft != null) {
+            cellStyle.setLeftBorderColor(toExcelColor(borderLeft.getColor()));
+        }
+        if (borderRight != null) {
+            cellStyle.setRightBorderColor(toExcelColor(borderRight.getColor()));
+        }
+        if (borderBottom != null) {
+            cellStyle.setBottomBorderColor(toExcelColor(borderBottom.getColor()));
+        }
     }
 
     //See the difference between Foreground and Background colors, the order and conditions for their filling
@@ -213,9 +253,19 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
         org.apache.poi.ss.usermodel.CellStyle cellStyle,
         LayoutStyle layoutStyle
     ) {
-        cellStyle.setFillForegroundColor(toExcelColor(layoutStyle.getFillForegroundColor()));
-        cellStyle.setFillPattern(toExcelFillPattern(layoutStyle.getFillPattern()));
-        cellStyle.setFillBackgroundColor(toExcelColor(layoutStyle.getFillBackgroundColor()));
+        final Short foregroundColor = toExcelColor(layoutStyle.getFillForegroundColor());
+        if (foregroundColor != null) {
+            cellStyle.setFillForegroundColor(foregroundColor);
+        }
+        final org.apache.poi.ss.usermodel.FillPatternType fillPatternType =
+            toExcelFillPattern(layoutStyle.getFillPattern());
+        if (fillPatternType != null) {
+            cellStyle.setFillPattern(fillPatternType);
+        }
+        final Short backgroundColor = toExcelColor(layoutStyle.getFillBackgroundColor());
+        if (backgroundColor != null) {
+            cellStyle.setFillBackgroundColor(backgroundColor);
+        }
     }
 
     public void adjustHeaderCells() {
@@ -347,12 +397,26 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
         if (StringUtils.hasText(fontName)) {
             font.setFontName(fontName);
         }
-        font.setBold(textStyle.isBold());
-        font.setColor(toExcelColor(textStyle.getColor()));
-        font.setFontHeightInPoints(textStyle.getFontSize());
-        font.setItalic(textStyle.isItalic());
-        font.setUnderline(textStyle.getUnderline());
-
+        final Boolean isBold = textStyle.isBold();
+        if (isBold != null) {
+            font.setBold(textStyle.isBold());
+        }
+        final Short fontColor = toExcelColor(textStyle.getColor());
+        if (fontColor != null) {
+            font.setColor(toExcelColor(textStyle.getColor()));
+        }
+        final Short fontSize = textStyle.getFontSize();
+        if (fontSize != null) {
+            font.setFontHeightInPoints(textStyle.getFontSize());
+        }
+        final Boolean isItalic = textStyle.isItalic();
+        if (isItalic != null) {
+            font.setItalic(textStyle.isItalic());
+        }
+        final Byte underline = textStyle.getUnderline();
+        if (underline != null) {
+            font.setUnderline(textStyle.getUnderline());
+        }
         return font;
     }
 

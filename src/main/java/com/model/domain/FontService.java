@@ -165,9 +165,9 @@ public class FontService {
                 .stream()
                 .filter(entry -> {
                     boolean fit = true;
-                    final boolean useTtfFontAttributes = textStyle.isUseTtfFontAttributes();
+                    final Boolean useTtfFontAttributes = textStyle.isUseTtfFontAttributes();
                     final Map<TextAttribute, Object> attr = entry.getValue().getValue();
-                    if (useTtfFontAttributes) {
+                    if (useTtfFontAttributes != null && useTtfFontAttributes) {
                         fit = checkFitBold(textStyle, attr)
                             && checkFitItalic(textStyle, attr)
                             && checkFitUnderline(textStyle, attr);

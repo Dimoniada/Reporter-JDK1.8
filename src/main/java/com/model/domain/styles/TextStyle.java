@@ -18,12 +18,12 @@ public class TextStyle extends Style {
      * 2) full font name from built-in resource (for 'pdf')
      * 3) font name (for html format)
      */
-    protected String fontNameResource = "";
+    protected String fontNameResource;
     /**
      * Font class style,
      * default FontFamilyStyle.SERIF;
      */
-    protected FontFamilyStyle fontFamilyStyle = FontFamilyStyle.SERIF;
+    protected FontFamilyStyle fontFamilyStyle;
     /**
      * Font locale (for 'pdf')
      */
@@ -36,19 +36,19 @@ public class TextStyle extends Style {
      * Font size
      * (poorly, because units of measure vary from format to format - "pt", "px", "twips", e.t.c)
      */
-    protected short fontSize = 10;
+    protected Short fontSize;
     /**
      * Font thickness flag
      */
-    protected boolean bold;
+    protected Boolean bold;
     /**
      * Font slant flag
      */
-    protected boolean italic;
+    protected Boolean italic;
     /**
      * Font underline flag
      */
-    protected byte underline;
+    protected Byte underline;
     /**
      * The flag sets the logic:
      * use the font strictly with the specified parameters from the resource,
@@ -56,11 +56,11 @@ public class TextStyle extends Style {
      * and change it programmatically to match current values of TextStyle
      * (bold, italic, underline)
      */
-    protected boolean useTtfFontAttributes;
+    protected Boolean useTtfFontAttributes;
     /**
      * Font color
      */
-    protected Color color = Color.BLACK;
+    protected Color color;
 
     public static TextStyle create() {
         return new TextStyle();
@@ -80,11 +80,11 @@ public class TextStyle extends Style {
         if (this == o) return true;
         if (!(o instanceof TextStyle)) return false;
         final TextStyle textStyle = (TextStyle) o;
-        return fontSize == textStyle.fontSize
-            && bold == textStyle.bold
-            && italic == textStyle.italic
-            && underline == textStyle.underline
-            && useTtfFontAttributes == textStyle.useTtfFontAttributes
+        return java.util.Objects.equals(fontSize, textStyle.fontSize)
+            && java.util.Objects.equals(bold, textStyle.bold)
+            && java.util.Objects.equals(italic, textStyle.italic)
+            && java.util.Objects.equals(underline, textStyle.underline)
+            && java.util.Objects.equals(useTtfFontAttributes, textStyle.useTtfFontAttributes)
             && Objects.equal(fontNameResource, textStyle.fontNameResource)
             && fontFamilyStyle == textStyle.fontFamilyStyle
             && Objects.equal(fontLocale, textStyle.fontLocale)
@@ -152,11 +152,11 @@ public class TextStyle extends Style {
         return this;
     }
 
-    public short getFontSize() {
+    public Short getFontSize() {
         return fontSize;
     }
 
-    public TextStyle setFontSize(short fontSize) {
+    public TextStyle setFontSize(Short fontSize) {
         this.fontSize = fontSize;
         return this;
     }
@@ -170,38 +170,38 @@ public class TextStyle extends Style {
         return this;
     }
 
-    public boolean isBold() {
+    public Boolean isBold() {
         return bold;
     }
 
-    public TextStyle setBold(boolean bold) {
+    public TextStyle setBold(Boolean bold) {
         this.bold = bold;
         return this;
     }
 
-    public boolean isItalic() {
+    public Boolean isItalic() {
         return italic;
     }
 
-    public TextStyle setItalic(boolean italic) {
+    public TextStyle setItalic(Boolean italic) {
         this.italic = italic;
         return this;
     }
 
-    public byte getUnderline() {
+    public Byte getUnderline() {
         return underline;
     }
 
-    public TextStyle setUnderline(byte underline) {
+    public TextStyle setUnderline(Byte underline) {
         this.underline = underline;
         return this;
     }
 
-    public boolean isUseTtfFontAttributes() {
+    public Boolean isUseTtfFontAttributes() {
         return useTtfFontAttributes;
     }
 
-    public TextStyle setUseTtfFontAttributes(boolean useTtfFontAttributes) {
+    public TextStyle setUseTtfFontAttributes(Boolean useTtfFontAttributes) {
         this.useTtfFontAttributes = useTtfFontAttributes;
         return this;
     }

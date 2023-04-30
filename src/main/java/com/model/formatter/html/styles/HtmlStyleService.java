@@ -15,6 +15,8 @@ import com.model.domain.styles.TextStyle;
 import com.model.domain.styles.constants.BorderWeight;
 import com.model.domain.styles.constants.Color;
 import com.model.domain.styles.constants.HorAlignment;
+import com.model.domain.styles.geometry.Geometry;
+import com.model.domain.styles.geometry.MeasurableValues;
 import com.model.formatter.html.HtmlDetails;
 import com.model.formatter.html.tag.Html4Font;
 import com.model.formatter.html.tag.Html4StyledTag;
@@ -35,7 +37,7 @@ import java.util.stream.Collectors;
 public class HtmlStyleService extends StyleService implements HtmlDetails {
     private static final Map<BorderWeight, String> borderWidthMap =
         new HashMap<BorderWeight, String>() {{
-            put(BorderWeight.NONE, "");
+            put(BorderWeight.NONE, null);
             put(BorderWeight.THIN, "1px solid");
             put(BorderWeight.MEDIUM, "2px solid");
             put(BorderWeight.THICK, "3px solid");
@@ -60,6 +62,7 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
 
     private static final Map<HorAlignment, String> horizontalAlignmentMap =
         new HashMap<HorAlignment, String>() {{
+            put(null, null);
             put(HorAlignment.GENERAL, "justify");
             put(HorAlignment.LEFT, "left");
             put(HorAlignment.CENTER, "center");
@@ -112,6 +115,35 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
         } else {
             throw new IllegalArgumentException("Undefined HorizontalAlignment type");
         }
+    }
+
+    public static String toHtmlTransform(MeasurableValues measurableValues) {
+        if (measurableValues == null) {
+            return null;
+        }
+        final StringBuilder res = new StringBuilder();
+        final Geometry angle = measurableValues.getAngle();
+        final Geometry width = measurableValues.getWidth();
+        final Geometry height = measurableValues.getHeight();
+        if (angle != null && angle.getValueFor(EXTENSION).isPresent()) {
+            res
+                .append("rotate(")
+                .append(angle.getValueFor(EXTENSION).get())
+                .append("deg) ");
+        }
+        if (width != null && width.getValueFor(EXTENSION).isPresent()) {
+            res
+                .append("scaleX(")
+                .append(width.getValueFor(EXTENSION).get())
+                .append(") ");
+        }
+        if (height != null && height.getValueFor(EXTENSION).isPresent()) {
+            res
+                .append("scaleY(")
+                .append(height.getValueFor(EXTENSION).get())
+                .append(") ");
+        }
+        return res.toString().trim();
     }
 
     public static String toHtml4HorAlignment(HorAlignment horAlignment) {
@@ -217,10 +249,12 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
         if (style instanceof TextStyle) {
             final TextStyle textStyle = (TextStyle) style;
             cssStyle.setFontSize(textStyle.getFontSize());
-            if (textStyle.isBold()) {
+            final Boolean isBold = textStyle.isBold();
+            if (isBold != null && isBold) {
                 cssStyle.setFontWeight("bold");
             }
-            if (textStyle.isItalic()) {
+            final Boolean isItalic = textStyle.isItalic();
+            if (isItalic != null && isItalic) {
                 cssStyle.setFontStyle("italic");
             }
             cssStyle.setFontColor(toHtmlColor(textStyle.getColor()));
@@ -228,13 +262,11 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
         } else if (style instanceof LayoutStyle) {
             final LayoutStyle layoutStyle = (LayoutStyle) style;
             cssStyle.setTextAlign(toHtmlHorAlignment(layoutStyle.getHorAlignment()));
-            cssStyle.setBorderTop(formHtmlBorder(layoutStyle.getBorderTop(), layoutStyle.getBorderTop().getColor()));
-            cssStyle.setBorderLeft(formHtmlBorder(layoutStyle.getBorderLeft(),
-                layoutStyle.getBorderLeft().getColor()));
-            cssStyle.setBorderRight(formHtmlBorder(layoutStyle.getBorderRight(),
-                layoutStyle.getBorderRight().getColor()));
-            cssStyle.setBorderBottom(formHtmlBorder(layoutStyle.getBorderBottom(),
-                layoutStyle.getBorderBottom().getColor()));
+            cssStyle.setTransform(toHtmlTransform(layoutStyle.getMeasurable()));
+            cssStyle.setBorderTop(formHtmlBorder(layoutStyle.getBorderTop()));
+            cssStyle.setBorderLeft(formHtmlBorder(layoutStyle.getBorderLeft()));
+            cssStyle.setBorderRight(formHtmlBorder(layoutStyle.getBorderRight()));
+            cssStyle.setBorderBottom(formHtmlBorder(layoutStyle.getBorderBottom()));
             cssStyle.setBackgroundColor(toHtmlColor(layoutStyle.getFillBackgroundColor()));
             cssStyle.setBorderCollapse("collapse");
             if (useHtml4Tags) {
@@ -285,10 +317,15 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
         cssStyle.setBackgroundColor(toHtmlColor(borderStyle.getColor()));
     }
 
-    public static String formHtmlBorder(BorderStyle borderStyle, Color color) {
+    public static String formHtmlBorder(BorderStyle borderStyle) {
+        if (borderStyle == null) {
+            return null;
+        }
         final StringJoiner stringJoiner = new StringJoiner(" ");
         stringJoiner.add(toHtmlBorderWidth(borderStyle.getWeight()));
-        stringJoiner.add(toHtmlColor(color));
+        if (borderStyle.getColor() != null) {
+            stringJoiner.add(toHtmlColor(borderStyle.getColor()));
+        }
         return stringJoiner.toString().trim();
     }
 

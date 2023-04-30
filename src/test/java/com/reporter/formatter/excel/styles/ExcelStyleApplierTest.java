@@ -2,9 +2,7 @@ package com.reporter.formatter.excel.styles;
 
 import com.model.domain.styles.BorderStyle;
 import com.model.domain.styles.LayoutStyle;
-import com.model.domain.styles.constants.BorderWeight;
-import com.model.domain.styles.constants.Color;
-import com.model.domain.styles.constants.FillPattern;
+import com.model.domain.styles.constants.*;
 import com.model.formatter.excel.styles.ExcelStyleService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -28,6 +26,8 @@ public class ExcelStyleApplierTest {
         .setBorderLeft(BorderStyle.create(Color.WHITE, BorderWeight.MEDIUM))
         .setBorderRight(BorderStyle.create(Color.RED, BorderWeight.THICK))
         .setBorderBottom(BorderStyle.create(Color.PINK, BorderWeight.THIN))
+        .setVertAlignment(VertAlignment.BOTTOM)
+        .setHorAlignment(HorAlignment.GENERAL)
         .setFillPattern(FillPattern.THIN_VERT_BANDS)
         .setFillForegroundColor(Color.WHITE)
         .setFillBackgroundColor(Color.WHITE)

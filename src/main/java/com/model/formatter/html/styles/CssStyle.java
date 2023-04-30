@@ -15,6 +15,7 @@ public class CssStyle {
     public static final String FONT_FAMILY = "font-family";
 
     public static final String TEXT_ALIGN = "text-align";
+    public static final String TRANSFORM = "transform";
 
     public static final String BORDER_COLLAPSE = "border-collapse";
     public static final String BORDER_TOP = "border-top";
@@ -46,6 +47,7 @@ public class CssStyle {
             put(FONT_COLOR, CssStyle::produceFontColorAttribute);
             put(FONT_FAMILY, CssStyle::produceFontFamilyAttribute);
             put(TEXT_ALIGN, CssStyle::produceTextAlignAttribute);
+            put(TRANSFORM, CssStyle::produceTransformAttribute);
             put(BORDER_TOP, CssStyle::produceBorderTopAttribute);
             put(BORDER_LEFT, CssStyle::produceBorderLeftAttribute);
             put(BORDER_RIGHT, CssStyle::produceBorderRightAttribute);
@@ -141,77 +143,82 @@ public class CssStyle {
     }
 
     public CssStyle setFontSize(int size) {
-        attributes.put(FONT_SIZE, size);
+        attributes.computeIfAbsent(FONT_SIZE, v -> size);
         return this;
     }
 
     public CssStyle setFontWeight(String fontWeight) {
-        attributes.put(FONT_WEIGHT, fontWeight);
+        attributes.computeIfAbsent(FONT_WEIGHT, v -> fontWeight);
         return this;
     }
 
     public CssStyle setFontStyle(String fontStyle) {
-        attributes.put(FONT_STYLE, fontStyle);
+        attributes.computeIfAbsent(FONT_STYLE, v -> fontStyle);
         return this;
     }
 
     public CssStyle setFontColor(String fontColor) {
-        attributes.put(FONT_COLOR, fontColor);
+        attributes.computeIfAbsent(FONT_COLOR, v -> fontColor);
         return this;
     }
 
     public CssStyle setFontFamily(String fontFamily) {
-        attributes.put(FONT_FAMILY, fontFamily);
+        attributes.computeIfAbsent(FONT_FAMILY, v -> fontFamily);
         return this;
     }
 
     public CssStyle setTextAlign(String textAlign) {
-        attributes.put(TEXT_ALIGN, textAlign);
+        attributes.computeIfAbsent(TEXT_ALIGN, v -> textAlign);
+        return this;
+    }
+
+    public CssStyle setTransform(String transform) {
+        attributes.computeIfAbsent(TRANSFORM, v -> transform);
         return this;
     }
 
     public CssStyle setBorderCollapse(String borderCollapse) {
-        attributes.put(BORDER_COLLAPSE, borderCollapse);
+        attributes.computeIfAbsent(BORDER_COLLAPSE, v -> borderCollapse);
         return this;
     }
 
     public CssStyle setBorderTop(String borderTop) {
-        attributes.put(BORDER_TOP, borderTop);
+        attributes.computeIfAbsent(BORDER_TOP, v -> borderTop);
         return this;
     }
 
     public CssStyle setBorderLeft(String borderLeft) {
-        attributes.put(BORDER_LEFT, borderLeft);
+        attributes.computeIfAbsent(BORDER_LEFT, v -> borderLeft);
         return this;
     }
 
     public CssStyle setBorderRight(String borderRight) {
-        attributes.put(BORDER_RIGHT, borderRight);
+        attributes.computeIfAbsent(BORDER_RIGHT, v -> borderRight);
         return this;
     }
 
     public CssStyle setBorderBottom(String borderBottom) {
-        attributes.put(BORDER_BOTTOM, borderBottom);
+        attributes.computeIfAbsent(BORDER_BOTTOM, v -> borderBottom);
         return this;
     }
 
     public CssStyle setBackgroundColor(String backgroundColor) {
-        attributes.put(BACKGROUND_COLOR, backgroundColor);
+        attributes.computeIfAbsent(BACKGROUND_COLOR, v -> backgroundColor);
         return this;
     }
 
     public CssStyle setBorder(String border) {
-        attributes.put(BORDER, border);
+        attributes.computeIfAbsent(BORDER, v -> border);
         return this;
     }
 
     public CssStyle setColor(String color) {
-        attributes.put(COLOR, color);
+        attributes.computeIfAbsent(COLOR, v -> color);
         return this;
     }
 
     public CssStyle setHeight(String height) {
-        attributes.put(HEIGHT, height);
+        attributes.computeIfAbsent(HEIGHT, v -> height);
         return this;
     }
 
@@ -263,6 +270,10 @@ public class CssStyle {
     }
 
     public static String produceTextAlignAttribute(Object o) {
+        return produceDefaultStringAttribute(o);
+    }
+
+    public static String produceTransformAttribute(Object o) {
         return produceDefaultStringAttribute(o);
     }
 

@@ -27,6 +27,7 @@ import com.model.domain.styles.constants.BorderWeight;
 import com.model.domain.styles.constants.Color;
 import com.model.domain.styles.constants.HorAlignment;
 import com.model.domain.styles.constants.VertAlignment;
+import com.model.domain.styles.geometry.MeasurableValues;
 import com.model.formatter.pdf.PdfDetails;
 import com.model.utils.LocalizedNumberUtils;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
@@ -56,6 +57,7 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
      */
     private static final Map<BorderWeight, com.itextpdf.layout.borders.Border> borderWeightMap =
         new HashMap<BorderWeight, com.itextpdf.layout.borders.Border>() {{
+            put(null, com.itextpdf.layout.borders.Border.NO_BORDER);
             put(BorderWeight.NONE, com.itextpdf.layout.borders.Border.NO_BORDER);
             put(BorderWeight.THIN, new SolidBorder(1));
             put(BorderWeight.MEDIUM, new SolidBorder(2));
@@ -71,6 +73,7 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
      */
     private static final Map<BorderWeight, com.itextpdf.kernel.pdf.canvas.draw.ILineDrawer> lineWeightMap =
         new HashMap<BorderWeight, com.itextpdf.kernel.pdf.canvas.draw.ILineDrawer>() {{
+            put(null, null);
             put(BorderWeight.NONE, null);
             put(BorderWeight.THIN, new SolidLine(1));   //width - distance between borders
             put(BorderWeight.MEDIUM, new SolidLine(2));   //width - distance between borders
@@ -85,6 +88,7 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
      */
     private static final Map<HorAlignment, com.itextpdf.layout.properties.TextAlignment> horizontalAlignmentMap =
         new HashMap<HorAlignment, com.itextpdf.layout.properties.TextAlignment>() {{
+            put(null, null);
             put(HorAlignment.GENERAL, com.itextpdf.layout.properties.TextAlignment.JUSTIFIED);
             put(HorAlignment.LEFT, com.itextpdf.layout.properties.TextAlignment.LEFT);
             put(HorAlignment.CENTER, com.itextpdf.layout.properties.TextAlignment.CENTER);
@@ -97,6 +101,7 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
      */
     private static final Map<VertAlignment, com.itextpdf.layout.properties.VerticalAlignment> verticalAlignmentMap =
         new HashMap<VertAlignment, com.itextpdf.layout.properties.VerticalAlignment>() {{
+            put(null, null);
             put(VertAlignment.TOP, com.itextpdf.layout.properties.VerticalAlignment.TOP);
             put(VertAlignment.CENTER, com.itextpdf.layout.properties.VerticalAlignment.MIDDLE);
             put(VertAlignment.BOTTOM, com.itextpdf.layout.properties.VerticalAlignment.BOTTOM);
@@ -130,6 +135,9 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
      */
     public static com.itextpdf.kernel.colors.Color
     toPdfColor(Color color) {
+        if (color == null) {
+            return null;
+        }
         return new DeviceRgb(color.getRed(), color.getGreen(), color.getBlue());
     }
 
@@ -233,12 +241,14 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
      * @param isTableCell flag that the element is a table cell
      */
     public static void convertBorder(BorderStyle borderStyle, Function<Border, ?> setBorder, boolean isTableCell) {
-        if (isTableCell && borderStyle.getWeight() == BorderWeight.NONE) {
+        if (isTableCell && borderStyle == null) {
             return;
         }
-        final com.itextpdf.layout.borders.Border border = toPdfBorder(borderStyle.getWeight());
-        convertBorderColor(border, borderStyle.getColor());
-        setBorder.apply(border);
+        if (borderStyle != null) {
+            final com.itextpdf.layout.borders.Border border = toPdfBorder(borderStyle.getWeight());
+            convertBorderColor(border, borderStyle.getColor());
+            setBorder.apply(border);
+        }
     }
 
     /**
@@ -283,7 +293,8 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
      * @param layoutStyle input style
      */
     public static void convertShrinkToFit(AbstractElement<?> element, LayoutStyle layoutStyle) {
-        if (!layoutStyle.isShrinkToFit()) {
+        final Boolean isShrinkToFit = layoutStyle.isShrinkToFit();
+        if (isShrinkToFit != null && !isShrinkToFit) {
             element.setCharacterSpacing(0);
             element.setWordSpacing(0);
         }
@@ -426,7 +437,7 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
             }
             textStyles.put(textStyle, font);
         }
-        final boolean useTtfAttributes = textStyle.isUseTtfFontAttributes();
+        final Boolean useTtfAttributes = textStyle.isUseTtfFontAttributes();
         if (font != null) {
             element.setFont(font);
         }
@@ -435,13 +446,13 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
                 .setFontSize(textStyle.getFontSize())
                 .setFontColor(toPdfColor(textStyle.getColor()));
         }
-        if (!useTtfAttributes && textStyle.isBold()) {
+        if (useTtfAttributes != null && !useTtfAttributes && textStyle.isBold()) {
             element.setBold();
         }
-        if (!useTtfAttributes && textStyle.isItalic()) {
+        if (useTtfAttributes != null && !useTtfAttributes && textStyle.isItalic()) {
             element.setItalic();
         }
-        if (!useTtfAttributes && textStyle.getUnderline() != 0) {
+        if (useTtfAttributes != null && !useTtfAttributes && textStyle.getUnderline() != 0) {
             element.setUnderline();
         }
     }
@@ -465,9 +476,9 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
         convertHorizontalAlignment(element, layoutStyle);
         convertVerticalAlignment(element, layoutStyle);
         convertShrinkToFit(element, layoutStyle);
-        if (element instanceof BlockElement<?> && layoutStyle.getMeasurable().getWidth() != null) {
-            layoutStyle
-                .getMeasurable()
+        final MeasurableValues measurableValues = layoutStyle.getMeasurable();
+        if (element instanceof BlockElement<?> && measurableValues != null && measurableValues.getWidth() != null) {
+            measurableValues
                 .getWidth()
                 .getValueFor(EXTENSION)
                 .ifPresent(value -> ((BlockElement<?>) element).setWidth((float) value));

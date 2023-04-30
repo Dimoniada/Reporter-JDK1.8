@@ -17,51 +17,51 @@ public class LayoutStyle extends Style {
     /**
      * Measurable values of a content
      */
-    protected MeasurableValues measurableValues = MeasurableValues.create();
+    protected MeasurableValues measurableValues;
     /**
      * Content auto alignment
      */
-    protected boolean autoWidth;
+    protected Boolean autoWidth;
     /**
      * Stretch content to fit width
      */
-    protected boolean shrinkToFit;
+    protected Boolean shrinkToFit;
     /**
      * Type of top line limiting content
      */
-    protected BorderStyle borderTop = BorderStyle.create();
+    protected BorderStyle borderTop;
     /**
      * Type of left line limiting content
      */
-    protected BorderStyle borderLeft = BorderStyle.create();
+    protected BorderStyle borderLeft;
     /**
      * Type of right line limiting content
      */
-    protected BorderStyle borderRight = BorderStyle.create();
+    protected BorderStyle borderRight;
     /**
      * Type of bottom line limiting content
      */
-    protected BorderStyle borderBottom = BorderStyle.create();
+    protected BorderStyle borderBottom;
     /**
      * Back color of all content
      */
-    protected Color fillBackgroundColor = Color.WHITE;
+    protected Color fillBackgroundColor;
     /**
      * Rear content color
      */
-    protected Color fillForegroundColor = Color.WHITE;
+    protected Color fillForegroundColor;
     /**
      * The way to fill the back color of the content
      */
-    protected FillPattern fillPattern = FillPattern.NO_FILL;
+    protected FillPattern fillPattern;
     /**
      * Content horizontal alignment type
      */
-    protected HorAlignment horAlignment = HorAlignment.GENERAL;
+    protected HorAlignment horAlignment;
     /**
      * Content vertical alignment type
      */
-    protected VertAlignment vertAlignment = VertAlignment.CENTER;
+    protected VertAlignment vertAlignment;
 
     public static LayoutStyle create() {
         return new LayoutStyle();
@@ -72,10 +72,10 @@ public class LayoutStyle extends Style {
         return
             ((LayoutStyle) super
                 .clone())
-                .setBorderTop(borderTop.clone())
-                .setBorderLeft(borderLeft.clone())
-                .setBorderRight(borderRight.clone())
-                .setBorderBottom(borderBottom.clone());
+                .setBorderTop(borderTop != null ? borderTop.clone() : null)
+                .setBorderLeft(borderLeft != null ? borderLeft.clone() : null)
+                .setBorderRight(borderRight != null ? borderRight.clone() : null)
+                .setBorderBottom(borderBottom != null ? borderBottom.clone() : null);
     }
 
     @Override
@@ -153,20 +153,20 @@ public class LayoutStyle extends Style {
         return this;
     }
 
-    public boolean isAutoWidth() {
+    public Boolean isAutoWidth() {
         return autoWidth;
     }
 
-    public LayoutStyle setAutoWidth(boolean autoWidth) {
+    public LayoutStyle setAutoWidth(Boolean autoWidth) {
         this.autoWidth = autoWidth;
         return this;
     }
 
-    public boolean isShrinkToFit() {
+    public Boolean isShrinkToFit() {
         return shrinkToFit;
     }
 
-    public LayoutStyle setShrinkToFit(boolean shrinkToFit) {
+    public LayoutStyle setShrinkToFit(Boolean shrinkToFit) {
         this.shrinkToFit = shrinkToFit;
         return this;
     }

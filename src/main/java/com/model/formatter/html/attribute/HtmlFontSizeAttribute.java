@@ -1,6 +1,6 @@
 package com.model.formatter.html.attribute;
 
-public class HtmlSizeAttribute extends HtmlAttribute {
+public class HtmlFontSizeAttribute extends HtmlAttribute {
     public static final String ATTR_NAME = "size";
 
     @Override
@@ -8,8 +8,8 @@ public class HtmlSizeAttribute extends HtmlAttribute {
         return ATTR_NAME;
     }
 
-    public HtmlSizeAttribute setSize(int size) {
-        setAttributeValue(size);
+    public HtmlFontSizeAttribute setFontSize(int fontSize) {
+        setAttributeValue(fontSize);
         return this;
     }
 }

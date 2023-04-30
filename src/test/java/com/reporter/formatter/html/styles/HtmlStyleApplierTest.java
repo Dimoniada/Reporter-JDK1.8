@@ -78,6 +78,14 @@ class HtmlStyleApplierTest {
     }
 
     @Test
+    public void testConvertCssPropertyTransform() {
+
+        cssStyle.setTransform("scaleX(0.7)");
+
+        Assertions.assertEquals("transform:scaleX(0.7)", cssStyle.toCssStyleString());
+    }
+
+    @Test
     public void testConvertCssPropertyBorderCollapse() {
 
         cssStyle.setBorderCollapse("separate");
@@ -176,6 +184,7 @@ class HtmlStyleApplierTest {
         cssStyle.setFontFamily("Tahoma");
 
         cssStyle.setTextAlign("right");
+        cssStyle.setTransform("scaleX(0.7) scaleY(2.0) rotate(370deg)");
         cssStyle.setBorderCollapse("separate");
         cssStyle.setBorderTop("2px solid");
         cssStyle.setBorderLeft("1px solid");
@@ -188,18 +197,22 @@ class HtmlStyleApplierTest {
         cssStyle.setBgcolorHtml4("#123456");
         cssStyle.setAlignHtml4("left");
 
-        Assertions.assertEquals("background-color:#A36BCD;" +
-            "border-bottom:double;" +
-            "border-collapse:separate;" +
-            "border-left:1px solid;" +
-            "border-right:3px solid;" +
-            "border-top:2px solid;" +
-            "color:#F0C35E;" +
-            "font-family:Tahoma,monospace;" +
-            "font-size:12pt;" +
-            "font-style:italic;" +
-            "font-weight:bold;" +
-            "text-align:right", cssStyle.toCssStyleString());
+        Assertions.assertEquals(
+                "background-color:#A36BCD;" +
+                "border-bottom:double;" +
+                "border-collapse:separate;" +
+                "border-left:1px solid;" +
+                "border-right:3px solid;" +
+                "border-top:2px solid;" +
+                "color:#F0C35E;" +
+                "font-family:Tahoma,monospace;" +
+                "font-size:12pt;" +
+                "font-style:italic;" +
+                "font-weight:bold;" +
+                "text-align:right;" +
+                "transform:scaleX(0.7) scaleY(2.0) rotate(370deg)",
+                cssStyle.toCssStyleString()
+        );
 
         Assertions.assertEquals("align=\"left\" " +
             "bgcolor=\"#123456\" " +

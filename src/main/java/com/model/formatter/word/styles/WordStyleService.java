@@ -59,6 +59,7 @@ public class WordStyleService extends StyleService implements DocDetails {
      */
     private static final Map<BorderWeight, Borders> borderMap =
         new HashMap<BorderWeight, Borders>() {{
+            put(null, Borders.NONE);
             put(BorderWeight.NONE, Borders.NONE);
             put(BorderWeight.THIN, Borders.THIN_THICK_MEDIUM_GAP);
             put(BorderWeight.MEDIUM, Borders.THICK_THIN_MEDIUM_GAP);
@@ -74,6 +75,7 @@ public class WordStyleService extends StyleService implements DocDetails {
      */
     private static final Map<HorAlignment, ParagraphAlignment> horizontalAlignmentMap =
         new HashMap<HorAlignment, ParagraphAlignment>() {{
+            put(null, null);
             put(HorAlignment.GENERAL, ParagraphAlignment.BOTH);
             put(HorAlignment.LEFT, ParagraphAlignment.LEFT);
             put(HorAlignment.CENTER, ParagraphAlignment.CENTER);
@@ -86,6 +88,7 @@ public class WordStyleService extends StyleService implements DocDetails {
      */
     private static final Map<VertAlignment, TextAlignment> verticalAlignmentMap =
         new HashMap<VertAlignment, TextAlignment>() {{
+            put(null, null);
             put(VertAlignment.TOP, TextAlignment.TOP);
             put(VertAlignment.CENTER, TextAlignment.CENTER);
             put(VertAlignment.BOTTOM, TextAlignment.BOTTOM);
@@ -97,6 +100,7 @@ public class WordStyleService extends StyleService implements DocDetails {
      */
     private static final Map<VertAlignment, XWPFTableCell.XWPFVertAlign> verticalAlignmentCellMap =
         new HashMap<VertAlignment, XWPFTableCell.XWPFVertAlign>() {{
+            put(null, null);
             put(VertAlignment.TOP, XWPFTableCell.XWPFVertAlign.TOP);
             put(VertAlignment.CENTER, XWPFTableCell.XWPFVertAlign.CENTER);
             put(VertAlignment.BOTTOM, XWPFTableCell.XWPFVertAlign.BOTTOM);
@@ -187,14 +191,27 @@ public class WordStyleService extends StyleService implements DocDetails {
     public void convertStyleToElement(Style style, XWPFRun innerElement, XWPFParagraph outerElement) {
         if (style instanceof TextStyle) {
             final TextStyle textStyle = (TextStyle) style;
-            innerElement.setFontSize(textStyle.getFontSize());
-            innerElement.setColor(toWordColor(textStyle.getColor()));
+            final Short fontSize = textStyle.getFontSize();
+            if (fontSize != null) {
+                innerElement.setFontSize(fontSize);
+            }
+            final String color = toWordColor(textStyle.getColor());
+            if (color != null) {
+                innerElement.setColor(color);
+            }
             if (StringUtils.hasText(textStyle.getFontNameResource())) {
                 innerElement.setFontFamily(textStyle.getFontNameResource());
             }
-            innerElement.setBold(textStyle.isBold());
-            innerElement.setItalic(textStyle.isItalic());
-            if (textStyle.getUnderline() != 0) {
+            final Boolean isBold = textStyle.isBold();
+            if (isBold != null) {
+                innerElement.setBold(isBold);
+            }
+            final Boolean isItalic = textStyle.isItalic();
+            if (isItalic != null) {
+                innerElement.setItalic(textStyle.isItalic());
+            }
+            final Byte underline = textStyle.getUnderline();
+            if (underline != null) {
                 innerElement.setUnderline(UnderlinePatterns.SINGLE);
             }
         } else if (style instanceof LayoutStyle) {
@@ -278,7 +295,10 @@ public class WordStyleService extends StyleService implements DocDetails {
         final CTShd shd = ppr.getShd();
         shd.setVal(org.openxmlformats.schemas.wordprocessingml.x2006.main.STShd.CLEAR);
         shd.setColor("auto");
-        shd.setFill(toWordColor(layoutStyle.getFillBackgroundColor()));
+        final String fillColor = toWordColor(layoutStyle.getFillBackgroundColor());
+        if (fillColor != null) {
+            shd.setFill(fillColor);
+        }
     }
 
     /**
@@ -342,51 +362,65 @@ public class WordStyleService extends StyleService implements DocDetails {
         if (pbd.getTop() == null) {
             pbd.addNewTop();
         }
-        pbd.getTop().setColor(toWordColor(borderStyle.getColor()));
-        final Borders border = toWordBorder(borderStyle.getWeight());
-        element.setBorderTop(border);
+        if (borderStyle != null) {
+            pbd.getTop().setColor(toWordColor(borderStyle.getColor()));
+            final Borders border = toWordBorder(borderStyle.getWeight());
+            element.setBorderTop(border);
+        }
     }
 
     public static void convertBorderLeft(BorderStyle borderStyle, XWPFParagraph element, CTPBdr pbd) {
         if (pbd.getLeft() == null) {
             pbd.addNewLeft();
         }
-        pbd.getLeft().setColor(toWordColor(borderStyle.getColor()));
-        final Borders border = toWordBorder(borderStyle.getWeight());
-        element.setBorderLeft(border);
+        if (borderStyle != null) {
+            pbd.getLeft().setColor(toWordColor(borderStyle.getColor()));
+            final Borders border = toWordBorder(borderStyle.getWeight());
+            element.setBorderLeft(border);
+        }
     }
 
     public static void convertBorderRight(BorderStyle borderStyle, XWPFParagraph element, CTPBdr pbd) {
         if (pbd.getRight() == null) {
             pbd.addNewRight();
         }
-        pbd.getRight().setColor(toWordColor(borderStyle.getColor()));
-        final Borders border = toWordBorder(borderStyle.getWeight());
-        element.setBorderRight(border);
+        if (borderStyle != null) {
+            pbd.getRight().setColor(toWordColor(borderStyle.getColor()));
+            final Borders border = toWordBorder(borderStyle.getWeight());
+            element.setBorderRight(border);
+        }
     }
 
     public static void convertBorderBottom(BorderStyle borderStyle, XWPFParagraph element, CTPBdr pbd) {
         if (pbd.getBottom() == null) {
             pbd.addNewBottom();
         }
-        pbd.getBottom().setColor(toWordColor(borderStyle.getColor()));
-        final Borders border = toWordBorder(borderStyle.getWeight());
-        element.setBorderBottom(border);
+        if (borderStyle != null) {
+            pbd.getBottom().setColor(toWordColor(borderStyle.getColor()));
+            final Borders border = toWordBorder(borderStyle.getWeight());
+            element.setBorderBottom(border);
+        }
     }
 
     public static void convertHorizontalAlignment(XWPFParagraph element, LayoutStyle layoutStyle) {
         final ParagraphAlignment horAlignment = toWordHorAlignment(layoutStyle.getHorAlignment());
-        element.setAlignment(horAlignment);
+        if (horAlignment != null) {
+            element.setAlignment(horAlignment);
+        }
     }
 
     public static void convertVerticalAlignment(XWPFParagraph element, LayoutStyle layoutStyle) {
         final TextAlignment vertAlignment = toWordVertAlignment(layoutStyle.getVertAlignment());
-        element.setVerticalAlignment(vertAlignment);
+        if (vertAlignment != null) {
+            element.setVerticalAlignment(vertAlignment);
+        }
     }
 
     public static void convertVerticalAlignmentCell(XWPFTableCell cell, LayoutStyle layoutStyle) {
         final XWPFTableCell.XWPFVertAlign vertAlignmentCell = toWordVertAlignmentCell(layoutStyle.getVertAlignment());
-        cell.setVerticalAlignment(vertAlignmentCell);
+        if (vertAlignmentCell != null) {
+            cell.setVerticalAlignment(vertAlignmentCell);
+        }
     }
 
     /**
@@ -401,6 +435,9 @@ public class WordStyleService extends StyleService implements DocDetails {
     }
 
     public static String toWordColor(Color color) {
+        if (color == null) {
+            return null;
+        }
         return color.buildColorString();
     }
 

@@ -11,7 +11,9 @@ public abstract class StringMetricUtils {
      * converting one string to another
      */
     public static int levenshteinDistance(String str1, String str2) {
-
+        if (str1 == null || str2 == null) {
+            return 0;
+        }
         final int len1 = str1.length();
         final int len2 = str2.length();
         final int[][] distance = new int[len1 + 1][len2 + 1];

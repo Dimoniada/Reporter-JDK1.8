@@ -6,7 +6,8 @@ html, pdf<font size=2><sup id="a1">[1](#f1)</sup></font>, xls, xlsx, doc<font si
 docx, csv
 \
 \
-To start just add folder "Reporter-JDK1.8" to your project.
+Use as lib: add folder "Reporter-JDK1.8" to your project.\
+Use as service: ... (in development)
 
 |       Dependencies       |      Usage      |
 |:------------------------:|:---------------:|
