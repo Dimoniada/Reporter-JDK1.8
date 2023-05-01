@@ -2,13 +2,18 @@ package com.model.formatter.excel.styles;
 
 import com.google.common.base.MoreObjects;
 import com.model.domain.TextItem;
-import com.model.domain.styles.*;
+import com.model.domain.styles.BorderStyle;
+import com.model.domain.styles.LayoutStyle;
+import com.model.domain.styles.LayoutTextStyle;
+import com.model.domain.styles.Style;
+import com.model.domain.styles.StyleService;
+import com.model.domain.styles.TextStyle;
 import com.model.domain.styles.constants.BorderWeight;
 import com.model.domain.styles.constants.Color;
 import com.model.domain.styles.constants.FillPattern;
 import com.model.domain.styles.constants.HorAlignment;
 import com.model.domain.styles.constants.VertAlignment;
-import com.model.domain.styles.geometry.MeasurableValues;
+import com.model.domain.styles.geometry.SpecificDetails;
 import com.model.formatter.excel.XlsDetails;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.apache.poi.hssf.usermodel.HSSFPalette;
@@ -167,11 +172,11 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
 
     public static void applyWidth(org.apache.poi.ss.usermodel.Cell cell, LayoutStyle layoutStyle) {
         final Boolean isAutoWidth = layoutStyle.isAutoWidth();
-        final MeasurableValues measurableValues = layoutStyle.getMeasurable();
+        final SpecificDetails specificDetails = layoutStyle.getMeasurable();
         if (isAutoWidth != null && isAutoWidth) {
             cell.getSheet().autoSizeColumn(cell.getColumnIndex());
-        } else if (measurableValues != null && measurableValues.getWidth() != null) {
-            measurableValues
+        } else if (specificDetails != null && specificDetails.getWidth() != null) {
+            specificDetails
                 .getWidth()
                 .getValueFor(EXTENSION)
                 .ifPresent(value ->

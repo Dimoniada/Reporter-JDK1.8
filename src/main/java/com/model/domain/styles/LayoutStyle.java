@@ -6,7 +6,7 @@ import com.model.domain.styles.constants.Color;
 import com.model.domain.styles.constants.FillPattern;
 import com.model.domain.styles.constants.HorAlignment;
 import com.model.domain.styles.constants.VertAlignment;
-import com.model.domain.styles.geometry.MeasurableValues;
+import com.model.domain.styles.geometry.SpecificDetails;
 
 /**
  * The style is used to set:
@@ -17,7 +17,7 @@ public class LayoutStyle extends Style {
     /**
      * Measurable values of a content
      */
-    protected MeasurableValues measurableValues;
+    protected SpecificDetails specificDetails;
     /**
      * Content auto alignment
      */
@@ -90,7 +90,7 @@ public class LayoutStyle extends Style {
         final LayoutStyle that = (LayoutStyle) o;
 
         return
-            Objects.equal(this.measurableValues, that.measurableValues)
+            Objects.equal(this.specificDetails, that.specificDetails)
                 && Objects.equal(this.autoWidth, that.autoWidth)
                 && Objects.equal(this.shrinkToFit, that.shrinkToFit)
                 && Objects.equal(this.borderTop, that.borderTop)
@@ -109,7 +109,7 @@ public class LayoutStyle extends Style {
         return
             Objects
                 .hashCode(
-                    measurableValues,
+                    specificDetails,
                     autoWidth,
                     shrinkToFit,
                     borderTop,
@@ -144,12 +144,12 @@ public class LayoutStyle extends Style {
                 .toString();
     }
 
-    public MeasurableValues getMeasurable() {
-        return measurableValues;
+    public SpecificDetails getMeasurable() {
+        return specificDetails;
     }
 
-    public LayoutStyle setMeasurable(MeasurableValues measurableValues) {
-        this.measurableValues = measurableValues;
+    public LayoutStyle setMeasurable(SpecificDetails specificDetails) {
+        this.specificDetails = specificDetails;
         return this;
     }
 

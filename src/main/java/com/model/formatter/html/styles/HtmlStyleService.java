@@ -16,7 +16,7 @@ import com.model.domain.styles.constants.BorderWeight;
 import com.model.domain.styles.constants.Color;
 import com.model.domain.styles.constants.HorAlignment;
 import com.model.domain.styles.geometry.Geometry;
-import com.model.domain.styles.geometry.MeasurableValues;
+import com.model.domain.styles.geometry.SpecificDetails;
 import com.model.formatter.html.HtmlDetails;
 import com.model.formatter.html.tag.Html4Font;
 import com.model.formatter.html.tag.Html4StyledTag;
@@ -117,14 +117,14 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
         }
     }
 
-    public static String toHtmlTransform(MeasurableValues measurableValues) {
-        if (measurableValues == null) {
+    public static String toHtmlTransform(SpecificDetails specificDetails) {
+        if (specificDetails == null) {
             return null;
         }
         final StringBuilder res = new StringBuilder();
-        final Geometry angle = measurableValues.getAngle();
-        final Geometry width = measurableValues.getWidth();
-        final Geometry height = measurableValues.getHeight();
+        final Geometry angle = specificDetails.getAngle();
+        final Geometry width = specificDetails.getWidth();
+        final Geometry height = specificDetails.getHeight();
         if (angle != null && angle.getValueFor(EXTENSION).isPresent()) {
             res
                 .append("rotate(")

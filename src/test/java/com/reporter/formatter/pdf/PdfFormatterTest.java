@@ -12,7 +12,7 @@ import com.model.domain.styles.*;
 import com.model.domain.styles.constants.BorderWeight;
 import com.model.domain.styles.constants.Color;
 import com.model.domain.styles.constants.FillPattern;
-import com.model.domain.styles.geometry.MeasurableValues;
+import com.model.domain.styles.geometry.SpecificDetails;
 import com.model.domain.styles.geometry.Geometry;
 import com.model.formatter.DocumentHolder;
 import com.model.formatter.pdf.PdfFormatter;
@@ -81,7 +81,7 @@ class PdfFormatterTest extends BaseDocument {
                     .setFontNameResource("arial"),
                 LayoutStyle.create()
                     .setMeasurable(
-                        MeasurableValues.create()
+                        SpecificDetails.create()
                             .setWidth(
                                 Geometry.create().add("pdf", 40f)
                             )

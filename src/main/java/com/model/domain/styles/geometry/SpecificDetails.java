@@ -3,47 +3,47 @@ package com.model.domain.styles.geometry;
 import com.google.common.base.MoreObjects;
 
 /**
- * Represents measurable values of an element
+ * Represents measurable details of an element
  */
-public class MeasurableValues {
+public class SpecificDetails {
     /**
-     * Element width, null when not provided
+     * Element width, default is null when not provided
      */
     protected Geometry width;
     /**
-     * Element height, null when not provided
+     * Element height, default is null when not provided
      */
     protected Geometry height;
     /**
-     * Element angle, null when not provided
+     * Element angle, default is null when not provided
      */
     protected Geometry angle;
 
-    public static MeasurableValues create(Geometry width, Geometry height, Geometry angle) {
+    public static SpecificDetails create(Geometry width, Geometry height, Geometry angle) {
         return
-            new MeasurableValues()
+            new SpecificDetails()
                 .setWidth(width)
                 .setHeight(height)
                 .setAngle(angle);
     }
 
-    public static MeasurableValues create(Geometry width, Geometry height) {
-        return MeasurableValues.create(width, height, null);
+    public static SpecificDetails create(Geometry width, Geometry height) {
+        return SpecificDetails.create(width, height, null);
     }
 
-    public static MeasurableValues create(Geometry width) {
-        return MeasurableValues.create(width, null, null);
+    public static SpecificDetails create(Geometry width) {
+        return SpecificDetails.create(width, null, null);
     }
 
-    public static MeasurableValues create() {
-        return MeasurableValues.create(null, null, null);
+    public static SpecificDetails create() {
+        return SpecificDetails.create(null, null, null);
     }
 
     public Geometry getWidth() {
         return width;
     }
 
-    public MeasurableValues setWidth(Geometry width) {
+    public SpecificDetails setWidth(Geometry width) {
         this.width = width;
         return this;
     }
@@ -52,7 +52,7 @@ public class MeasurableValues {
         return height;
     }
 
-    public MeasurableValues setHeight(Geometry height) {
+    public SpecificDetails setHeight(Geometry height) {
         this.height = height;
         return this;
     }
@@ -61,7 +61,7 @@ public class MeasurableValues {
         return angle;
     }
 
-    public MeasurableValues setAngle(Geometry angle) {
+    public SpecificDetails setAngle(Geometry angle) {
         this.angle = angle;
         return this;
     }

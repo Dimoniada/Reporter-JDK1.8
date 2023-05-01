@@ -27,7 +27,7 @@ import com.model.domain.styles.constants.BorderWeight;
 import com.model.domain.styles.constants.Color;
 import com.model.domain.styles.constants.HorAlignment;
 import com.model.domain.styles.constants.VertAlignment;
-import com.model.domain.styles.geometry.MeasurableValues;
+import com.model.domain.styles.geometry.SpecificDetails;
 import com.model.formatter.pdf.PdfDetails;
 import com.model.utils.LocalizedNumberUtils;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
@@ -476,9 +476,9 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
         convertHorizontalAlignment(element, layoutStyle);
         convertVerticalAlignment(element, layoutStyle);
         convertShrinkToFit(element, layoutStyle);
-        final MeasurableValues measurableValues = layoutStyle.getMeasurable();
-        if (element instanceof BlockElement<?> && measurableValues != null && measurableValues.getWidth() != null) {
-            measurableValues
+        final SpecificDetails specificDetails = layoutStyle.getMeasurable();
+        if (element instanceof BlockElement<?> && specificDetails != null && specificDetails.getWidth() != null) {
+            specificDetails
                 .getWidth()
                 .getValueFor(EXTENSION)
                 .ifPresent(value -> ((BlockElement<?>) element).setWidth((float) value));
