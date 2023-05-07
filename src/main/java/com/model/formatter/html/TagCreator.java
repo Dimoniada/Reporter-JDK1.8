@@ -1,8 +1,6 @@
 package com.model.formatter.html;
 
 import com.google.common.base.Objects;
-import com.model.domain.DocumentItem;
-import com.model.domain.TextItem;
 import com.model.domain.styles.LayoutStyle;
 import com.model.domain.styles.Style;
 import com.model.domain.styles.TextStyle;
@@ -14,6 +12,7 @@ import com.model.formatter.html.tag.HtmlCol;
 import com.model.formatter.html.tag.HtmlTable;
 import com.model.formatter.html.tag.HtmlTableCell;
 import com.model.formatter.html.tag.HtmlTag;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -25,7 +24,6 @@ import static com.model.utils.LocalizedNumberUtils.applyDecimalFormat;
 public class TagCreator {
     protected OutputStreamWriter outputStreamWriter;
     protected DecimalFormat decimalFormat;
-    protected DocumentItem item;
 
     public TagCreator(OutputStreamWriter outputStreamWriter, DecimalFormat decimalFormat) {
         this.outputStreamWriter = outputStreamWriter;
@@ -43,6 +41,7 @@ public class TagCreator {
 
     public void writeTag(
         HtmlTag tag,
+        String text,
         Style style,
         boolean isUseHtml4Tags,
         boolean isStyleInHeader,
@@ -59,9 +58,9 @@ public class TagCreator {
                 HtmlStyleService.fillHtml4StyleTagsFromStyle(tag, layoutStyle, isHtmlTable);
             }
             write(String.format("<%s%s>", tag.getTagName(), tag.attributesToHtmlString(true)));
-            if (item instanceof TextItem<?>) {
-                final TextItem<?> textItem = (TextItem<?>) item;
-                final String formattedText = HtmlStyleService.escapeHtml(applyDecimalFormat(textItem, decimalFormat));
+            if (StringUtils.hasText(text)) {
+                final String formattedText =
+                    HtmlStyleService.escapeHtml(applyDecimalFormat(text, style, decimalFormat));
                 final TextStyle textStyle = HtmlStyleService.extractTextStyle(style);
                 if (textStyle != null) {
                     final Html4Font html4Font = HtmlStyleService.convertHtml4Font(textStyle);
@@ -99,8 +98,8 @@ public class TagCreator {
                 tag.setStyle(cssStyle);
             }
             write(String.format("<%s%s>", tag.getTagName(), tag.attributesToHtmlString(false)));
-            if (item instanceof TextItem<?>) {
-                write(HtmlStyleService.escapeHtml(applyDecimalFormat((TextItem<?>) item, decimalFormat)));
+            if (StringUtils.hasText(text)) {
+                write(HtmlStyleService.escapeHtml(applyDecimalFormat(text, style, decimalFormat)));
             }
         }
         if (needCloseTag) {
@@ -123,15 +122,6 @@ public class TagCreator {
 
     public TagCreator setDecimalFormat(DecimalFormat decimalFormat) {
         this.decimalFormat = decimalFormat;
-        return this;
-    }
-
-    public DocumentItem getItem() {
-        return item;
-    }
-
-    public TagCreator setItem(DocumentItem item) {
-        this.item = item;
         return this;
     }
 }

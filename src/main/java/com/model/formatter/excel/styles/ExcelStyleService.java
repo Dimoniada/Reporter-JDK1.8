@@ -13,7 +13,7 @@ import com.model.domain.styles.constants.Color;
 import com.model.domain.styles.constants.FillPattern;
 import com.model.domain.styles.constants.HorAlignment;
 import com.model.domain.styles.constants.VertAlignment;
-import com.model.domain.styles.geometry.SpecificDetails;
+import com.model.domain.styles.geometry.GeometryDetails;
 import com.model.formatter.excel.XlsDetails;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.apache.poi.hssf.usermodel.HSSFPalette;
@@ -172,11 +172,11 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
 
     public static void applyWidth(org.apache.poi.ss.usermodel.Cell cell, LayoutStyle layoutStyle) {
         final Boolean isAutoWidth = layoutStyle.isAutoWidth();
-        final SpecificDetails specificDetails = layoutStyle.getMeasurable();
+        final GeometryDetails geometryDetails = layoutStyle.getGeometryDetails();
         if (isAutoWidth != null && isAutoWidth) {
             cell.getSheet().autoSizeColumn(cell.getColumnIndex());
-        } else if (specificDetails != null && specificDetails.getWidth() != null) {
-            specificDetails
+        } else if (geometryDetails != null && geometryDetails.getWidth() != null) {
+            geometryDetails
                 .getWidth()
                 .getValueFor(EXTENSION)
                 .ifPresent(value ->
@@ -330,7 +330,7 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
         workbook.getFontAt(cell.getCellStyle().getFontIndex()).setCharSet(fontCharset.getNativeId());
 
         if (StringUtils.hasText(tableCustomCell.getText())) {
-            cell.setCellValue(applyDecimalFormat(tableCustomCell, decimalFormat));
+            cell.setCellValue(applyDecimalFormat(tableCustomCell.getText(), tableCustomCell.getStyle(), decimalFormat));
         } else {
             cell.setCellValue("");
         }
@@ -439,7 +439,7 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
     }
 
     public void checkAdjustHeaderCells(Cell cell, LayoutStyle layoutStyle) {
-        if (layoutStyle != null && (layoutStyle.isAutoWidth() || layoutStyle.getMeasurable().getWidth() != null)) {
+        if (layoutStyle != null && (layoutStyle.isAutoWidth() || layoutStyle.getGeometryDetails().getWidth() != null)) {
             needAdjustHeaderCells.put(cell, layoutStyle);
         }
     }

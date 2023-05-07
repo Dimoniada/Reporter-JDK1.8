@@ -5,7 +5,7 @@ import com.model.domain.styles.*;
 import com.model.domain.styles.constants.BorderWeight;
 import com.model.domain.styles.constants.Color;
 import com.model.domain.styles.geometry.Geometry;
-import com.model.domain.styles.geometry.SpecificDetails;
+import com.model.domain.styles.geometry.GeometryDetails;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
@@ -39,12 +39,11 @@ public class BaseDocument {
                 .setBorderRight(border)
                 .setBorderBottom(border)
                 .setAutoWidth(true)
-                .setMeasurable(
-                    SpecificDetails.create(
-                        Geometry.create().add("html", "1.2"),
-                        Geometry.create().add("html", "1.7"),
-                        Geometry.create().add("html", "359")
-                    )
+                .setGeometryDetails(
+                    GeometryDetails.create()
+                        .setWidth(Geometry.create().add("html", "20px"))
+                        .setHeight(Geometry.create().add("html", "15px"))
+                        .setAngle(Geometry.create().add("html", "10deg"))
                 );
 
         textStyle1 =

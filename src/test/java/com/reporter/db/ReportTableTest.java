@@ -252,8 +252,7 @@ public class ReportTableTest extends BaseQueryDocument {
                 rowStyleNormal);
             styleService.setFontService(fontService);
         }
-        final DocumentHolder documentHolder = formatter.handle(document);
-        documentHolder.close();
+        try (DocumentHolder documentHolder = formatter.handle(document)) { /**/ }
     }
 
     private void redefineStylesPolish() {
@@ -394,18 +393,17 @@ public class ReportTableTest extends BaseQueryDocument {
             rowStyleNormal,
             cellStyle);
 
-        final DocumentHolder documentHolder = formatter.handle(document);
-
-        if (Files.exists(documentHolder.getResource().getFile().toPath())) {
-            final PdfReader pdfReader = new PdfReader(documentHolder.getResource().getFile());
-            final PdfDocument doc1 = new PdfDocument(pdfReader);
-            final ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
-            final String currentText = PdfTextExtractor
-                .getTextFromPage(doc1.getPage(1), strategy)
-                .replaceAll("\\n", "");
-            pdfReader.close();
-            documentHolder.close();
-            mapNameAlias.forEach(e -> Assertions.assertTrue(currentText.contains(e.getKey())));
+        try (DocumentHolder documentHolder = formatter.handle(document)) {
+            if (Files.exists(documentHolder.getResource().getFile().toPath())) {
+                final PdfReader pdfReader = new PdfReader(documentHolder.getResource().getFile());
+                final PdfDocument doc1 = new PdfDocument(pdfReader);
+                final ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
+                final String currentText = PdfTextExtractor
+                    .getTextFromPage(doc1.getPage(1), strategy)
+                    .replaceAll("\\n", "");
+                pdfReader.close();
+                mapNameAlias.forEach(e -> Assertions.assertTrue(currentText.contains(e.getKey())));
+            }
         }
     }
 
@@ -445,18 +443,17 @@ public class ReportTableTest extends BaseQueryDocument {
                 )
         );
 
-        final DocumentHolder documentHolder = formatter.handle(document);
-
-        if (Files.exists(documentHolder.getResource().getFile().toPath())) {
-            final PdfReader pdfReader = new PdfReader(documentHolder.getResource().getFile());
-            final PdfDocument doc1 = new PdfDocument(pdfReader);
-            final ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
-            final String currentText = PdfTextExtractor
-                .getTextFromPage(doc1.getPage(1), strategy)
-                .replaceAll("\\n", "");
-            pdfReader.close();
-            documentHolder.close();
-            mapNameAlias.forEach(e -> Assertions.assertTrue(currentText.contains(e.getKey())));
+        try (DocumentHolder documentHolder = formatter.handle(document)) {
+            if (Files.exists(documentHolder.getResource().getFile().toPath())) {
+                final PdfReader pdfReader = new PdfReader(documentHolder.getResource().getFile());
+                final PdfDocument doc1 = new PdfDocument(pdfReader);
+                final ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
+                final String currentText = PdfTextExtractor
+                    .getTextFromPage(doc1.getPage(1), strategy)
+                    .replaceAll("\\n", "");
+                pdfReader.close();
+                mapNameAlias.forEach(e -> Assertions.assertTrue(currentText.contains(e.getKey())));
+            }
         }
     }
 
@@ -475,13 +472,10 @@ public class ReportTableTest extends BaseQueryDocument {
             rowStyleNormal,
             cellStyle);
 
-        final DocumentHolder documentHolder = formatter.handle(queryDoc);
-
-        final String check = FileUtils.readFileToString(documentHolder.getResource().getFile(), StandardCharsets.UTF_8);
-
-        documentHolder.close();
-
-        Assertions.assertTrue(check.contains("79777797620"));
+        try (DocumentHolder documentHolder = formatter.handle(queryDoc)) {
+            final String check = FileUtils.readFileToString(documentHolder.getResource().getFile(), StandardCharsets.UTF_8);
+            Assertions.assertTrue(check.contains("79777797620"));
+        }
     }
 
     @Test
@@ -500,17 +494,16 @@ public class ReportTableTest extends BaseQueryDocument {
                 cellStyle
             );
 
-        final DocumentHolder documentHolder = formatter.handle(queryDoc);
-
-        if (Files.exists(documentHolder.getResource().getFile().toPath())) {
-            final PdfReader pdfReader = new PdfReader(documentHolder.getResource().getFile());
-            final PdfDocument doc1 = new PdfDocument(pdfReader);
-            final SimpleTextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
-            final String currentText = PdfTextExtractor.getTextFromPage(doc1.getPage(1), strategy);
-            pdfReader.close();
-            documentHolder.close();
-            Assertions.assertTrue(currentText.contains("Мониторинг"));
-            Assertions.assertTrue(currentText.contains("трафика"));
+        try (DocumentHolder documentHolder = formatter.handle(queryDoc)) {
+            if (Files.exists(documentHolder.getResource().getFile().toPath())) {
+                final PdfReader pdfReader = new PdfReader(documentHolder.getResource().getFile());
+                final PdfDocument doc1 = new PdfDocument(pdfReader);
+                final SimpleTextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
+                final String currentText = PdfTextExtractor.getTextFromPage(doc1.getPage(1), strategy);
+                pdfReader.close();
+                Assertions.assertTrue(currentText.contains("Мониторинг"));
+                Assertions.assertTrue(currentText.contains("трафика"));
+            }
         }
     }
 
@@ -526,15 +519,12 @@ public class ReportTableTest extends BaseQueryDocument {
             rowStyleNormal,
             cellStyle);
 
-        final DocumentHolder documentHolder = formatter.handle(queryDoc);
-
-        final Workbook wb = WorkbookFactory.create(documentHolder.getResource().getFile());
-        final Sheet sheet = wb.getSheetAt(0);
-        final String check = sheet.getRow(3).getCell(1).getStringCellValue();
-        wb.close();
-
-        documentHolder.close();
-
-        Assertions.assertEquals("legal_person_name10", check);
+        try (DocumentHolder documentHolder = formatter.handle(queryDoc)) {
+            final Workbook wb = WorkbookFactory.create(documentHolder.getResource().getFile());
+            final Sheet sheet = wb.getSheetAt(0);
+            final String check = sheet.getRow(3).getCell(1).getStringCellValue();
+            wb.close();
+            Assertions.assertEquals("legal_person_name10", check);
+        }
     }
 }

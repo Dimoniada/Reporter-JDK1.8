@@ -62,17 +62,17 @@ public abstract class CsvFormatterVisitor extends Formatter implements BaseDetai
 
     @Override
     public void visitTitle(Title titleObj) throws Exception {
-        csvWriter.write(applyDecimalFormat(titleObj, decimalFormat));
+        csvWriter.write(applyDecimalFormat(titleObj.getText(), titleObj.getStyle(), decimalFormat));
     }
 
     @Override
     public void visitHeading(Heading headingObj) throws Exception {
-        csvWriter.write(applyDecimalFormat(headingObj, decimalFormat));
+        csvWriter.write(applyDecimalFormat(headingObj.getText(), headingObj.getStyle(), decimalFormat));
     }
 
     @Override
     public void visitParagraph(Paragraph paragraphObj) throws Exception {
-        csvWriter.write(applyDecimalFormat(paragraphObj, decimalFormat));
+        csvWriter.write(applyDecimalFormat(paragraphObj.getText(), paragraphObj.getStyle(), decimalFormat));
     }
 
     @Override
@@ -87,7 +87,7 @@ public abstract class CsvFormatterVisitor extends Formatter implements BaseDetai
     public void visitTableHeaderRow(TableHeaderRow tableHeaderRowObj) throws Throwable {
         final List<String> tableRow = new ArrayList<>();
         for (final TableHeaderCell o : tableHeaderRowObj.getParts()) {
-            tableRow.add(applyDecimalFormat(o, decimalFormat));
+            tableRow.add(applyDecimalFormat(o.getText(), o.getStyle(), decimalFormat));
         }
         csvWriter.write(tableRow);
     }
@@ -96,7 +96,7 @@ public abstract class CsvFormatterVisitor extends Formatter implements BaseDetai
     public void visitTableRow(TableRow tableRowObj) throws Throwable {
         final List<String> tableRow = new ArrayList<>();
         for (final TableCell o : tableRowObj.getParts()) {
-            tableRow.add(applyDecimalFormat(o, decimalFormat));
+            tableRow.add(applyDecimalFormat(o.getText(), o.getStyle(), decimalFormat));
         }
         csvWriter.write(tableRow);
     }

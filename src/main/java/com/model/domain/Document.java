@@ -30,6 +30,10 @@ public class Document extends CompositionPart<Document, DocumentItem> {
         return new Document();
     }
 
+    public static Document create(DocumentItem... parts) {
+        return new Document().setParts(parts);
+    }
+
     public Document accept(FormatterVisitor visitor) throws Throwable {
         visitor.visitDocument(this);
         return this;

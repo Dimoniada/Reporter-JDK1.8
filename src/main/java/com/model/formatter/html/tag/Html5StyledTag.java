@@ -11,12 +11,12 @@ import java.util.stream.Stream;
 /**
  * The class stores attributes that describe the style of the element for HTML.
  */
-public abstract class HtmlStyledTag extends Html4StyledTag {
+public abstract class Html5StyledTag extends Html4StyledTag {
 
     final HtmlStyleAttribute style = new HtmlStyleAttribute();
     final HtmlClassAttribute clazz = new HtmlClassAttribute();
 
-    public HtmlStyledTag() {
+    public Html5StyledTag() {
         availableAttributes.putAll(
             Stream.of(
                     style.getAttributeMapper(),
@@ -26,12 +26,12 @@ public abstract class HtmlStyledTag extends Html4StyledTag {
         );
     }
 
-    public HtmlStyledTag setStyle(CssStyle cssStyle) {
+    public Html5StyledTag setStyle(CssStyle cssStyle) {
         this.style.setStyle(cssStyle);
         return this;
     }
 
-    public HtmlStyledTag setClass(String clazz) {
+    public Html5StyledTag setClass(String clazz) {
         this.clazz.setClass(clazz);
         return this;
     }

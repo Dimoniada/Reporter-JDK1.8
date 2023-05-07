@@ -12,7 +12,7 @@ import com.model.domain.styles.*;
 import com.model.domain.styles.constants.BorderWeight;
 import com.model.domain.styles.constants.Color;
 import com.model.domain.styles.constants.FillPattern;
-import com.model.domain.styles.geometry.SpecificDetails;
+import com.model.domain.styles.geometry.GeometryDetails;
 import com.model.domain.styles.geometry.Geometry;
 import com.model.formatter.DocumentHolder;
 import com.model.formatter.pdf.PdfFormatter;
@@ -80,11 +80,9 @@ class PdfFormatterTest extends BaseDocument {
                     .setFontFamilyStyle(FontFamilyStyle.SANS_SERIF)
                     .setFontNameResource("arial"),
                 LayoutStyle.create()
-                    .setMeasurable(
-                        SpecificDetails.create()
-                            .setWidth(
-                                Geometry.create().add("pdf", 40f)
-                            )
+                    .setGeometryDetails(
+                        GeometryDetails.create()
+                            .setWidth(Geometry.create().add("pdf", 40f))
                     )
             );
         final TextStyle paragraphStyle1 =
@@ -228,11 +226,7 @@ class PdfFormatterTest extends BaseDocument {
 
         pdfFormatter.getStyleService().setFontService(fontService);
 
-        Assertions.assertDoesNotThrow(() -> {
-            final DocumentHolder documentHolder = pdfFormatter.handle(pdfDoc);
-
-            documentHolder.close();
-        });
+        Assertions.assertDoesNotThrow(() -> pdfFormatter.handle(pdfDoc).close());
     }
 
     /**
@@ -250,17 +244,16 @@ class PdfFormatterTest extends BaseDocument {
         pdfFormatter.setFileName("test_file");
         Assertions.assertEquals("test_file", pdfFormatter.getFileName());
 
-        final DocumentHolder documentHolder = pdfFormatter.handle(doc);
-
-        if (Files.exists(documentHolder.getResource().getFile().toPath())) {
-            final PdfReader pdfReader = new PdfReader(documentHolder.getResource().getFile());
-            final PdfDocument doc1 = new PdfDocument(pdfReader);
-            final ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
-            final String currentText = PdfTextExtractor.getTextFromPage(doc1.getPage(2), strategy);
-            doc1.close();
-            pdfReader.close();
-            documentHolder.close();
-            Assertions.assertEquals(expected, currentText);
+        try (DocumentHolder documentHolder = pdfFormatter.handle(doc)) {
+            if (Files.exists(documentHolder.getResource().getFile().toPath())) {
+                final PdfReader pdfReader = new PdfReader(documentHolder.getResource().getFile());
+                final PdfDocument doc1 = new PdfDocument(pdfReader);
+                final ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
+                final String currentText = PdfTextExtractor.getTextFromPage(doc1.getPage(2), strategy);
+                doc1.close();
+                pdfReader.close();
+                Assertions.assertEquals(expected, currentText);
+            }
         }
     }
 
@@ -273,17 +266,16 @@ class PdfFormatterTest extends BaseDocument {
 
         Assertions.assertEquals(resource, pdfFormatter.getResource());
 
-        final DocumentHolder documentHolder = pdfFormatter.handle(doc);
-
-        if (Files.exists(documentHolder.getResource().getFile().toPath())) {
-            final PdfReader pdfReader = new PdfReader(documentHolder.getResource().getFile());
-            final PdfDocument doc1 = new PdfDocument(pdfReader);
-            final ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
-            final String currentText = PdfTextExtractor.getTextFromPage(doc1.getPage(2), strategy);
-            doc1.close();
-            pdfReader.close();
-            documentHolder.close();
-            Assertions.assertEquals(expected, currentText);
+        try (DocumentHolder documentHolder = pdfFormatter.handle(doc)) {
+            if (Files.exists(documentHolder.getResource().getFile().toPath())) {
+                final PdfReader pdfReader = new PdfReader(documentHolder.getResource().getFile());
+                final PdfDocument doc1 = new PdfDocument(pdfReader);
+                final ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
+                final String currentText = PdfTextExtractor.getTextFromPage(doc1.getPage(2), strategy);
+                doc1.close();
+                pdfReader.close();
+                Assertions.assertEquals(expected, currentText);
+            }
         }
     }
 
@@ -296,17 +288,16 @@ class PdfFormatterTest extends BaseDocument {
 
         Assertions.assertEquals(os, pdfFormatter.getOutputStream());
 
-        final DocumentHolder documentHolder = pdfFormatter.handle(doc);
-
-        if (os.size() != 0) {
-            final PdfReader pdfReader = new PdfReader(new ByteArrayInputStream(os.toByteArray()));
-            final PdfDocument doc1 = new PdfDocument(pdfReader);
-            final ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
-            final String currentText = PdfTextExtractor.getTextFromPage(doc1.getPage(2), strategy);
-            doc1.close();
-            pdfReader.close();
-            documentHolder.close();
-            Assertions.assertEquals(expected, currentText);
+        try (DocumentHolder documentHolder = pdfFormatter.handle(doc)) {
+            if (os.size() != 0) {
+                final PdfReader pdfReader = new PdfReader(new ByteArrayInputStream(os.toByteArray()));
+                final PdfDocument doc1 = new PdfDocument(pdfReader);
+                final ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
+                final String currentText = PdfTextExtractor.getTextFromPage(doc1.getPage(2), strategy);
+                doc1.close();
+                pdfReader.close();
+                Assertions.assertEquals(expected, currentText);
+            }
         }
     }
 
@@ -356,17 +347,16 @@ class PdfFormatterTest extends BaseDocument {
         ((List<DocumentItem>) doc.getParts())
             .add(0, Footer.create("simple footer"));
 
-        final DocumentHolder documentHolder = pdfFormatter.handle(doc);
-
-        if (Files.exists(documentHolder.getResource().getFile().toPath())) {
-            final PdfReader pdfReader = new PdfReader(documentHolder.getResource().getFile());
-            final PdfDocument doc1 = new PdfDocument(pdfReader);
-            final ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
-            final String currentText = PdfTextExtractor.getTextFromPage(doc1.getPage(2), strategy);
-            doc1.close();
-            pdfReader.close();
-            documentHolder.close();
-            Assertions.assertTrue(currentText.endsWith("simple footer"));
+        try (DocumentHolder documentHolder = pdfFormatter.handle(doc)) {
+            if (Files.exists(documentHolder.getResource().getFile().toPath())) {
+                final PdfReader pdfReader = new PdfReader(documentHolder.getResource().getFile());
+                final PdfDocument doc1 = new PdfDocument(pdfReader);
+                final ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
+                final String currentText = PdfTextExtractor.getTextFromPage(doc1.getPage(2), strategy);
+                doc1.close();
+                pdfReader.close();
+                Assertions.assertTrue(currentText.endsWith("simple footer"));
+            }
         }
     }
 }

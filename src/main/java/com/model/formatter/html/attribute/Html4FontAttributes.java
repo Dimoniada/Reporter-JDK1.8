@@ -22,15 +22,27 @@ public class Html4FontAttributes {
         }};
 
     public int getFontSizeHtml4() {
-        return (int) fontAttributes.getOrDefault(FONTSIZE_HTML4, "10");
+        if (fontAttributes.containsKey(FONTSIZE_HTML4)) {
+            return (int) fontAttributes.get(FONTSIZE_HTML4);
+        } else {
+            throw new IllegalArgumentException("Undefined FONTSIZE_HTML4 type");
+        }
     }
 
     public String getFontColorHtml4() {
-        return (String) fontAttributes.getOrDefault(FONTCOLOR_HTML4, "black");
+        if (fontAttributes.containsKey(FONTCOLOR_HTML4)) {
+            return (String) fontAttributes.get(FONTCOLOR_HTML4);
+        } else {
+            throw new IllegalArgumentException("Undefined FONTCOLOR_HTML4 type");
+        }
     }
 
     public String getFontFaceHtml4() {
-        return (String) fontAttributes.getOrDefault(FONTFACE_HTML4, "serif");
+        if (fontAttributes.containsKey(FONTFACE_HTML4)) {
+            return (String) fontAttributes.get(FONTFACE_HTML4);
+        } else {
+            throw new IllegalArgumentException("Undefined FONTFACE_HTML4 type");
+        }
     }
 
     public Html4FontAttributes setFontSizeHtml4(int sizeHtml4) {

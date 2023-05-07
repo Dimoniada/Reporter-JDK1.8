@@ -127,9 +127,9 @@ public class WordStyleService extends StyleService implements DocDetails {
         if (style instanceof LayoutStyle) {
             final LayoutStyle tableLayoutStyle = (LayoutStyle) style;
             final boolean isTableAutoWidth = tableLayoutStyle.isAutoWidth();
-            if (!isTableAutoWidth && tableLayoutStyle.getMeasurable().getWidth() != null) {
+            if (!isTableAutoWidth && tableLayoutStyle.getGeometryDetails().getWidth() != null) {
                 tableLayoutStyle
-                    .getMeasurable()
+                    .getGeometryDetails()
                     .getWidth()
                     .getValueFor(EXTENSION)
                     .ifPresent(value -> docxTable.setWidth((int) value * XLSX_INCH_CONST));
@@ -151,7 +151,7 @@ public class WordStyleService extends StyleService implements DocDetails {
      */
     public void handleCustomText(TextItem<?> item, Object element) throws Exception {
         final Style style = extractStyleFor(item).orElse(item.getStyle());
-        final String text = LocalizedNumberUtils.applyDecimalFormat(item, decimalFormat);
+        final String text = LocalizedNumberUtils.applyDecimalFormat(item.getText(), item.getStyle(), decimalFormat);
         if (element instanceof XWPFParagraph) {
             final XWPFParagraph paragraph = (XWPFParagraph) element;
             final XWPFRun run = paragraph.createRun();
@@ -246,9 +246,9 @@ public class WordStyleService extends StyleService implements DocDetails {
         convertVerticalAlignmentCell(cell, layoutStyle);
         final boolean isCellAutoWidth = layoutStyle.isAutoWidth();
         final CTTblWidth tblWidth = cell.getCTTc().addNewTcPr().addNewTcW();
-        if (!isCellAutoWidth && layoutStyle.getMeasurable().getWidth() != null) {
+        if (!isCellAutoWidth && layoutStyle.getGeometryDetails().getWidth() != null) {
             layoutStyle
-                .getMeasurable()
+                .getGeometryDetails()
                 .getWidth()
                 .getValueFor(EXTENSION)
                 .ifPresent(value -> {

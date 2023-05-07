@@ -9,25 +9,36 @@ import com.model.domain.styles.FontFamilyStyle;
 import com.model.domain.styles.LayoutStyle;
 import com.model.domain.styles.LayoutTextStyle;
 import com.model.domain.styles.Style;
+import com.model.domain.styles.StyleCondition;
 import com.model.domain.styles.StyleService;
 import com.model.domain.styles.StyleUtils;
 import com.model.domain.styles.TextStyle;
 import com.model.domain.styles.constants.BorderWeight;
 import com.model.domain.styles.constants.Color;
 import com.model.domain.styles.constants.HorAlignment;
+import com.model.domain.styles.constants.VertAlignment;
 import com.model.domain.styles.geometry.Geometry;
-import com.model.domain.styles.geometry.SpecificDetails;
+import com.model.domain.styles.geometry.GeometryDetails;
 import com.model.formatter.html.HtmlDetails;
 import com.model.formatter.html.tag.Html4Font;
 import com.model.formatter.html.tag.Html4StyledTag;
+import com.model.formatter.html.tag.HtmlDiv;
 import com.model.formatter.html.tag.HtmlTag;
+import org.springframework.util.StringUtils;
 import org.springframework.web.util.HtmlUtils;
 
 import java.io.OutputStreamWriter;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringJoiner;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Registers methods for writing styles
@@ -69,6 +80,22 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
             put(HorAlignment.RIGHT, "right");
         }};
 
+    private static final Map<VertAlignment, String> verticalTextAlignmentMap =
+        new HashMap<VertAlignment, String>() {{
+            put(null, null);
+            put(VertAlignment.TOP, "top");
+            put(VertAlignment.CENTER, "middle");
+            put(VertAlignment.BOTTOM, "bottom");
+        }};
+
+    private static final Map<VertAlignment, String> verticalAlignmentMap =
+        new HashMap<VertAlignment, String>() {{
+            put(null, null);
+            put(VertAlignment.TOP, "top");
+            put(VertAlignment.CENTER, "center");
+            put(VertAlignment.BOTTOM, "bottom");
+        }};
+
     private static final Map<FontFamilyStyle, String> fontFamilyHtml4Map =
         new HashMap<FontFamilyStyle, String>() {{
             put(FontFamilyStyle.SERIF, "serif");
@@ -97,6 +124,18 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
         this.decimalFormat = decimalFormat;
     }
 
+    private static String geometryToString(String prefix, Geometry geometry, String suffix) {
+        final AtomicReference<String> res = new AtomicReference<>(null);
+        if (geometry != null) {
+            geometry.getValueFor(EXTENSION).ifPresent(v -> {
+                if (v instanceof String) {
+                    res.set(prefix + v + suffix);
+                }
+            });
+        }
+        return res.get();
+    }
+
     public static String toHtmlColor(Color color) {
         return color != null ? "#" + color.buildColorString() : null;
     }
@@ -104,54 +143,84 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
     public static String toHtmlBorderWidth(BorderWeight borderWeight) {
         if (borderWidthMap.containsKey(borderWeight)) {
             return borderWidthMap.get(borderWeight);
-        } else {
-            throw new IllegalArgumentException("Undefined BorderWeight type");
         }
+        return null;
     }
 
     public static String toHtmlHorAlignment(HorAlignment horAlignment) {
         if (horizontalAlignmentMap.containsKey(horAlignment)) {
             return horizontalAlignmentMap.get(horAlignment);
-        } else {
-            throw new IllegalArgumentException("Undefined HorizontalAlignment type");
         }
+        return null;
     }
 
-    public static String toHtmlTransform(SpecificDetails specificDetails) {
-        if (specificDetails == null) {
-            return null;
+    public static String toHtmlTextVertAlignment(VertAlignment vertAlignment) {
+        if (verticalTextAlignmentMap.containsKey(vertAlignment)) {
+            return verticalTextAlignmentMap.get(vertAlignment);
         }
-        final StringBuilder res = new StringBuilder();
-        final Geometry angle = specificDetails.getAngle();
-        final Geometry width = specificDetails.getWidth();
-        final Geometry height = specificDetails.getHeight();
-        if (angle != null && angle.getValueFor(EXTENSION).isPresent()) {
-            res
-                .append("rotate(")
-                .append(angle.getValueFor(EXTENSION).get())
-                .append("deg) ");
+        return null;
+    }
+
+    public static String toHtmlTransform(GeometryDetails geometryDetails) {
+        return Stream
+            .of(
+                geometryToString("scaleX(", geometryDetails.getScaleX(), ")"),
+                geometryToString("scaleY(", geometryDetails.getScaleY(), ")"),
+                geometryToString("rotate(", geometryDetails.getAngle(), ")")
+            )
+            .filter(StringUtils::hasText)
+            .collect(Collectors.joining(" "));
+    }
+
+    public static String toHtmlWidth(Geometry width) {
+        return geometryToString("", width, "");
+    }
+
+    public static String toHtmlHeight(Geometry height) {
+        return geometryToString("", height, "");
+    }
+
+    public static String toHtmlTransformCenter(Geometry transformCenter) {
+        final AtomicReference<String> res = new AtomicReference<>(null);
+        if (transformCenter != null) {
+            transformCenter.getValueFor(EXTENSION).ifPresent(v -> {
+                final AbstractMap.SimpleEntry<?, ?> point = (AbstractMap.SimpleEntry<?, ?>) v;
+                if (point.getKey() instanceof HorAlignment && point.getValue() instanceof VertAlignment) {
+                    HorAlignment horAlignment = (HorAlignment) point.getKey();
+                    if (!horizontalAlignmentMap.containsKey(horAlignment)) {
+                        throw new IllegalArgumentException("Undefined HorAlignment type for transform-origin");
+                    }
+                    if (horAlignment == HorAlignment.GENERAL) {
+                        horAlignment = HorAlignment.CENTER;
+                    }
+                    final VertAlignment vertAlignment = (VertAlignment) point.getValue();
+                    if (!verticalAlignmentMap.containsKey(vertAlignment)) {
+                        throw new IllegalArgumentException("Undefined VertAlignment type for transform-origin");
+                    }
+                    res.set(
+                        String.join(" ",
+                            horizontalAlignmentMap.get(horAlignment),
+                            verticalAlignmentMap.get(vertAlignment)
+                        )
+                    );
+                }
+            });
         }
-        if (width != null && width.getValueFor(EXTENSION).isPresent()) {
-            res
-                .append("scaleX(")
-                .append(width.getValueFor(EXTENSION).get())
-                .append(") ");
-        }
-        if (height != null && height.getValueFor(EXTENSION).isPresent()) {
-            res
-                .append("scaleY(")
-                .append(height.getValueFor(EXTENSION).get())
-                .append(") ");
-        }
-        return res.toString().trim();
+        return res.get();
     }
 
     public static String toHtml4HorAlignment(HorAlignment horAlignment) {
-        return horizontalAlignmentHtml4Map.getOrDefault(horAlignment, "left");
+        if (horizontalAlignmentHtml4Map.containsKey(horAlignment)) {
+            return horizontalAlignmentHtml4Map.get(horAlignment);
+        }
+        return null;
     }
 
     public static String toHtml4FontFace(FontFamilyStyle fontFamilyStyle) {
-        return fontFamilyHtml4Map.getOrDefault(fontFamilyStyle, "serif");
+        if (fontFamilyHtml4Map.containsKey(fontFamilyStyle)) {
+            return fontFamilyHtml4Map.get(fontFamilyStyle);
+        }
+        return null;
     }
 
     public static HtmlStyleService create(
@@ -248,7 +317,10 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
     public static void fillCssStyleFromStyle(CssStyle cssStyle, Style style, Boolean isTable, Boolean useHtml4Tags) {
         if (style instanceof TextStyle) {
             final TextStyle textStyle = (TextStyle) style;
-            cssStyle.setFontSize(textStyle.getFontSize());
+            final Short fontSize = textStyle.getFontSize();
+            if (fontSize != null) {
+                cssStyle.setFontSize(fontSize);
+            }
             final Boolean isBold = textStyle.isBold();
             if (isBold != null && isBold) {
                 cssStyle.setFontWeight("bold");
@@ -261,14 +333,20 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
             cssStyle.setFontFamily(textStyle.getFontNameResource());
         } else if (style instanceof LayoutStyle) {
             final LayoutStyle layoutStyle = (LayoutStyle) style;
-            cssStyle.setTextAlign(toHtmlHorAlignment(layoutStyle.getHorAlignment()));
-            cssStyle.setTransform(toHtmlTransform(layoutStyle.getMeasurable()));
+            cssStyle.setTextHorAlignment(toHtmlHorAlignment(layoutStyle.getHorAlignment()));
+            cssStyle.setTextVertAlignment(toHtmlTextVertAlignment(layoutStyle.getVertAlignment()));
+            final GeometryDetails geometryDetails = layoutStyle.getGeometryDetails();
+            if (geometryDetails != null) {
+                cssStyle.setTransform(toHtmlTransform(geometryDetails));
+                cssStyle.setWidth(toHtmlWidth(geometryDetails.getWidth()));
+                cssStyle.setHeight(toHtmlHeight(geometryDetails.getHeight()));
+                cssStyle.setTransformCenter(toHtmlTransformCenter(geometryDetails.getTransformCenter()));
+            }
             cssStyle.setBorderTop(formHtmlBorder(layoutStyle.getBorderTop()));
             cssStyle.setBorderLeft(formHtmlBorder(layoutStyle.getBorderLeft()));
             cssStyle.setBorderRight(formHtmlBorder(layoutStyle.getBorderRight()));
             cssStyle.setBorderBottom(formHtmlBorder(layoutStyle.getBorderBottom()));
             cssStyle.setBackgroundColor(toHtmlColor(layoutStyle.getFillBackgroundColor()));
-            cssStyle.setBorderCollapse("collapse");
             if (useHtml4Tags) {
                 if (isTable) {
                     if (
@@ -332,17 +410,21 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
     /**
      * Joins styles for table cell
      *
-     * @param tableCustomCell TableCell or TableHeaderCell
+     * @param documentItem TableCell or TableHeaderCell
      * @return cell style
      */
-    public Style handleTableCustomCell(DocumentItem tableCustomCell) throws Exception {
+    public Style getCustomTableCellStyle(DocumentItem documentItem) throws Exception {
         final boolean skipStyleInplace = htmlColgroupTag.isEnabled()
             && !htmlColgroupTag.isWriteStyleInplace()
-            && tableCustomCell instanceof TableCell;
+            && documentItem instanceof TableCell;
         if (skipStyleInplace) {
             return null;
         }
-        return prepareStyleFrom(tableCustomCell);
+        return prepareStyleFrom(documentItem);
+    }
+
+    public Style getCustomTableCellDivStyle(HtmlDiv htmlDiv) throws Exception {
+        return prepareStyleFrom(htmlDiv);
     }
 
     /**
@@ -363,9 +445,9 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
                 return false;
             };
 
-            if (getHtmlColgroupTag().isEnabled() && getHtmlColgroupTag().isWriteStyleInplace()) {
-                styles.removeIf(s -> !checkConditionClass.apply(TableCell.class, s));
-            }
+//            if (getHtmlColgroupTag().isEnabled() && getHtmlColgroupTag().isWriteStyleInplace()) {
+//                styles.removeIf(s -> !checkConditionClass.apply(TableCell.class, s));
+//            }
 
             final List<Style> rowStyles =
                 styles
@@ -373,11 +455,33 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
                     .filter(s -> checkConditionClass.apply(TableRow.class, s))
                     .collect(Collectors.toList());
 
+            final List<Style> cellDivStyles = new ArrayList<>();
             final List<Style> cellStyles =
                 styles
                     .stream()
                     .filter(s -> checkConditionClass.apply(TableCell.class, s))
+                    .peek(s -> {
+                        GeometryDetails gd = null;
+                        if (s instanceof LayoutStyle) {
+                            gd = ((LayoutStyle) s).getGeometryDetails();
+                            ((LayoutStyle) s).setGeometryDetails(null);
+                        } else if (s instanceof LayoutTextStyle && ((LayoutTextStyle) s).getLayoutStyle() != null) {
+                            gd = ((LayoutTextStyle) s).getLayoutStyle().getGeometryDetails();
+                            ((LayoutTextStyle) s).getLayoutStyle().setGeometryDetails(null);
+                        }
+                        if (gd != null) {
+                            cellDivStyles.add(
+                                LayoutStyle.create()
+                                    .setGeometryDetails(gd)
+                                    .setCondition(
+                                        StyleCondition.create(HtmlDiv.class, ignored -> true)
+                                    )
+                            );
+                        }
+                    })
                     .collect(Collectors.toList());
+
+            styles.addAll(cellDivStyles);
 
             final List<Style> gluedStyles = new ArrayList<>(styles);
 

@@ -6,7 +6,7 @@ import com.model.formatter.FormatterContext;
 import org.springframework.core.io.WritableResource;
 import org.springframework.stereotype.Component;
 
-import java.awt.*;
+import java.awt.FontFormatException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;

@@ -58,28 +58,28 @@ public class DocFormatter extends WordFormatter implements DocDetails {
     public DocumentHolder handle(Document document) throws Throwable {
         final String docName = document.getLabel();
         document.setLabel(FILE_PREFIX + docName);
-        final DocumentHolder documentHolder = super.handle(document);
-        final InputStream inputStream = documentHolder.getResourceInputStream();
+        try (DocumentHolder documentHolder = super.handle(document)) {
+            final InputStream inputStream = documentHolder.getResourceInputStream();
 
-        final WritableResource writableResource =
-            DocumentCreator.initResource(null, docName, getExtension());
+            final WritableResource writableResource =
+                DocumentCreator.initResource(null, docName, getExtension());
 
-        if (converterAdapter != null) {
-            converterAdapter
-                .convert(inputStream).as(DocumentType.DOCX)
-                .to(writableResource.getOutputStream()).as(DocumentType.DOC)
-                .execute();
-        } else {
-            LocalConverter
-                .builder()
-                .baseFolder(documentHolder.getResource().getFile().getParentFile())
-                .build()
-                .convert(inputStream).as(DocumentType.DOCX)
-                .to(writableResource.getOutputStream()).as(DocumentType.DOC)
-                .execute();
+            if (converterAdapter != null) {
+                converterAdapter
+                    .convert(inputStream).as(DocumentType.DOCX)
+                    .to(writableResource.getOutputStream()).as(DocumentType.DOC)
+                    .execute();
+            } else {
+                LocalConverter
+                    .builder()
+                    .baseFolder(documentHolder.getResource().getFile().getParentFile())
+                    .build()
+                    .convert(inputStream).as(DocumentType.DOCX)
+                    .to(writableResource.getOutputStream()).as(DocumentType.DOC)
+                    .execute();
+            }
+            return new DocumentHolder(writableResource);
         }
-        documentHolder.close();
-        return new DocumentHolder(writableResource);
     }
 
     @Override

@@ -70,11 +70,43 @@ class HtmlStyleApplierTest {
     }
 
     @Test
-    public void testConvertCssPropertyTextAlign() {
+    public void testConvertCssPropertyTextHorAlign() {
 
-        cssStyle.setTextAlign("right");
+        cssStyle.setTextHorAlignment("right");
 
         Assertions.assertEquals("text-align:right", cssStyle.toCssStyleString());
+    }
+
+    @Test
+    public void testConvertCssPropertyTextVertAlign() {
+
+        cssStyle.setTextVertAlignment("bottom");
+
+        Assertions.assertEquals("display:table-cell;vertical-align:bottom", cssStyle.toCssStyleString());
+    }
+
+    @Test
+    public void testConvertCssPropertyWidth() {
+
+        cssStyle.setWidth("100px");
+
+        Assertions.assertEquals("width:100px", cssStyle.toCssStyleString());
+    }
+
+    @Test
+    public void testConvertCssPropertyHeight() {
+
+        cssStyle.setHeight("100px");
+
+        Assertions.assertEquals("height:100px", cssStyle.toCssStyleString());
+    }
+
+    @Test
+    public void testConvertCssPropertyTransformCenter() {
+
+        cssStyle.setTransformCenter("top top");
+
+        Assertions.assertEquals("transform-origin:top top", cssStyle.toCssStyleString());
     }
 
     @Test
@@ -98,7 +130,7 @@ class HtmlStyleApplierTest {
 
         cssStyle.setBorderTop("2px solid");
 
-        Assertions.assertEquals("border-top:2px solid", cssStyle.toCssStyleString());
+        Assertions.assertEquals("border-collapse:collapse;border-top:2px solid", cssStyle.toCssStyleString());
     }
 
     @Test
@@ -106,7 +138,7 @@ class HtmlStyleApplierTest {
 
         cssStyle.setBorderLeft("1px solid");
 
-        Assertions.assertEquals("border-left:1px solid", cssStyle.toCssStyleString());
+        Assertions.assertEquals("border-collapse:collapse;border-left:1px solid", cssStyle.toCssStyleString());
     }
 
     @Test
@@ -114,7 +146,7 @@ class HtmlStyleApplierTest {
 
         cssStyle.setBorderRight("3px solid");
 
-        Assertions.assertEquals("border-right:3px solid", cssStyle.toCssStyleString());
+        Assertions.assertEquals("border-collapse:collapse;border-right:3px solid", cssStyle.toCssStyleString());
     }
 
     @Test
@@ -122,7 +154,7 @@ class HtmlStyleApplierTest {
 
         cssStyle.setBorderBottom("double");
 
-        Assertions.assertEquals("border-bottom:double", cssStyle.toCssStyleString());
+        Assertions.assertEquals("border-bottom:double;border-collapse:collapse", cssStyle.toCssStyleString());
     }
 
     @Test
@@ -183,7 +215,7 @@ class HtmlStyleApplierTest {
         cssStyle.setFontColor("#F0C35E");
         cssStyle.setFontFamily("Tahoma");
 
-        cssStyle.setTextAlign("right");
+        cssStyle.setTextHorAlignment("right");
         cssStyle.setTransform("scaleX(0.7) scaleY(2.0) rotate(370deg)");
         cssStyle.setBorderCollapse("separate");
         cssStyle.setBorderTop("2px solid");

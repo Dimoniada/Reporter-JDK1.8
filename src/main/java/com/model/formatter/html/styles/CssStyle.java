@@ -14,8 +14,11 @@ public class CssStyle {
     public static final String FONT_COLOR = "color";
     public static final String FONT_FAMILY = "font-family";
 
-    public static final String TEXT_ALIGN = "text-align";
+    public static final String TEXT_HOR_ALIGN = "text-align";
+    public static final String TEXT_VERT_ALIGN = "vertical-align";
+    public static final String DISPLAY = "display";
     public static final String TRANSFORM = "transform";
+    public static final String TRANSFORM_ORIGIN = "transform-origin";
 
     public static final String BORDER_COLLAPSE = "border-collapse";
     public static final String BORDER_TOP = "border-top";
@@ -28,6 +31,8 @@ public class CssStyle {
     public static final String BORDER = "border";
     public static final String COLOR = "color";
     public static final String HEIGHT = "height";
+    public static final String WIDTH = "width";
+    public static final String TRANSFORM_CENTER = "transform-origin";
 
     public static final String BORDER_HTML4 = "border=";
     public static final String CELLSPACING_HTML4 = "cellspacing=";
@@ -42,27 +47,31 @@ public class CssStyle {
     public CssStyle() {
         attributeMapper = new HashMap<String, Function<Object, String>>() {{
             put(FONT_SIZE, CssStyle::produceFontSizeAttribute);
-            put(FONT_WEIGHT, CssStyle::produceFontWeightAttribute);
-            put(FONT_STYLE, CssStyle::produceFontStyleAttribute);
-            put(FONT_COLOR, CssStyle::produceFontColorAttribute);
+            put(FONT_WEIGHT, CssStyle::produceDefaultStringAttribute);
+            put(FONT_STYLE, CssStyle::produceDefaultStringAttribute);
+            put(FONT_COLOR, CssStyle::produceDefaultStringAttribute);
             put(FONT_FAMILY, CssStyle::produceFontFamilyAttribute);
-            put(TEXT_ALIGN, CssStyle::produceTextAlignAttribute);
-            put(TRANSFORM, CssStyle::produceTransformAttribute);
-            put(BORDER_TOP, CssStyle::produceBorderTopAttribute);
-            put(BORDER_LEFT, CssStyle::produceBorderLeftAttribute);
-            put(BORDER_RIGHT, CssStyle::produceBorderRightAttribute);
-            put(BORDER_BOTTOM, CssStyle::produceBorderBottomAttribute);
-            put(BACKGROUND_COLOR, CssStyle::produceBackgroundColorAttribute);
-            put(BORDER_COLLAPSE, CssStyle::produceBorderCollapseAttribute);
-            put(BORDER, CssStyle::produceBorderCollapseAttribute);
-            put(HEIGHT, CssStyle::produceBorderCollapseAttribute);
+            put(TEXT_HOR_ALIGN, CssStyle::produceDefaultStringAttribute);
+            put(TEXT_VERT_ALIGN, CssStyle::produceDefaultStringAttribute);
+            put(DISPLAY, CssStyle::produceDefaultStringAttribute);
+            put(TRANSFORM, CssStyle::produceDefaultStringAttribute);
+            put(WIDTH, CssStyle::produceDefaultStringAttribute);
+            put(HEIGHT, CssStyle::produceDefaultStringAttribute);
+            put(TRANSFORM_ORIGIN, CssStyle::produceDefaultStringAttribute);
+            put(BORDER_TOP, CssStyle::produceDefaultStringAttribute);
+            put(BORDER_LEFT, CssStyle::produceDefaultStringAttribute);
+            put(BORDER_RIGHT, CssStyle::produceDefaultStringAttribute);
+            put(BORDER_BOTTOM, CssStyle::produceDefaultStringAttribute);
+            put(BACKGROUND_COLOR, CssStyle::produceDefaultStringAttribute);
+            put(BORDER_COLLAPSE, CssStyle::produceDefaultStringAttribute);
+            put(BORDER, CssStyle::produceDefaultStringAttribute);
         }};
 
         attributeHtml4Mapper = new HashMap<String, Function<Object, String>>() {{
             put(BORDER_HTML4, CssStyle::produceBorderHtml4Attribute);
             put(CELLSPACING_HTML4, CssStyle::produceCellspacingHtml4Attribute);
-            put(BGCOLOR_HTML4, CssStyle::produceBgcolorHtml4Attribute);
-            put(ALIGN_HTML4, CssStyle::produceAlignHtml4Attribute);
+            put(BGCOLOR_HTML4, CssStyle::produceDefaultStringAttribute);
+            put(ALIGN_HTML4, CssStyle::produceDefaultStringAttribute);
         }};
     }
 
@@ -86,8 +95,16 @@ public class CssStyle {
         return (String) attributes.getOrDefault(FONT_FAMILY, "inherit");
     }
 
-    public String getTextAlign() {
-        return (String) attributes.getOrDefault(TEXT_ALIGN, "justify");
+    public String getTextHorAlign() {
+        return (String) attributes.getOrDefault(TEXT_HOR_ALIGN, "justify");
+    }
+
+    public String getTextVertAlign() {
+        return (String) attributes.getOrDefault(TEXT_VERT_ALIGN, "middle");
+    }
+
+    public String getDisplay() {
+        return (String) attributes.getOrDefault(DISPLAY, "table-cell");
     }
 
     public String getBorderCollapse() {
@@ -167,13 +184,41 @@ public class CssStyle {
         return this;
     }
 
-    public CssStyle setTextAlign(String textAlign) {
-        attributes.computeIfAbsent(TEXT_ALIGN, v -> textAlign);
+    public CssStyle setTextHorAlignment(String textHorAlignment) {
+        attributes.computeIfAbsent(TEXT_HOR_ALIGN, v -> textHorAlignment);
+        return this;
+    }
+
+    public CssStyle setTextVertAlignment(String textVertAlignment) {
+        if (StringUtils.hasText(textVertAlignment)) {
+            attributes.putIfAbsent(DISPLAY, "table-cell");
+        }
+        attributes.computeIfAbsent(TEXT_VERT_ALIGN, v -> textVertAlignment);
+        return this;
+    }
+
+    public CssStyle setDisplay(String display) {
+        attributes.computeIfAbsent(DISPLAY, v -> display);
         return this;
     }
 
     public CssStyle setTransform(String transform) {
         attributes.computeIfAbsent(TRANSFORM, v -> transform);
+        return this;
+    }
+
+    public CssStyle setWidth(String width) {
+        attributes.computeIfAbsent(WIDTH, v -> width);
+        return this;
+    }
+
+    public CssStyle setHeight(String height) {
+        attributes.computeIfAbsent(HEIGHT, v -> height);
+        return this;
+    }
+
+    public CssStyle setTransformCenter(String transformCenter) {
+        attributes.computeIfAbsent(TRANSFORM_CENTER, v -> transformCenter);
         return this;
     }
 
@@ -183,21 +228,33 @@ public class CssStyle {
     }
 
     public CssStyle setBorderTop(String borderTop) {
+        if (StringUtils.hasText(borderTop)) {
+            attributes.putIfAbsent(BORDER_COLLAPSE, "collapse");
+        }
         attributes.computeIfAbsent(BORDER_TOP, v -> borderTop);
         return this;
     }
 
     public CssStyle setBorderLeft(String borderLeft) {
+        if (StringUtils.hasText(borderLeft)) {
+            attributes.putIfAbsent(BORDER_COLLAPSE, "collapse");
+        }
         attributes.computeIfAbsent(BORDER_LEFT, v -> borderLeft);
         return this;
     }
 
     public CssStyle setBorderRight(String borderRight) {
+        if (StringUtils.hasText(borderRight)) {
+            attributes.putIfAbsent(BORDER_COLLAPSE, "collapse");
+        }
         attributes.computeIfAbsent(BORDER_RIGHT, v -> borderRight);
         return this;
     }
 
     public CssStyle setBorderBottom(String borderBottom) {
+        if (StringUtils.hasText(borderBottom)) {
+            attributes.putIfAbsent(BORDER_COLLAPSE, "collapse");
+        }
         attributes.computeIfAbsent(BORDER_BOTTOM, v -> borderBottom);
         return this;
     }
@@ -214,11 +271,6 @@ public class CssStyle {
 
     public CssStyle setColor(String color) {
         attributes.computeIfAbsent(COLOR, v -> color);
-        return this;
-    }
-
-    public CssStyle setHeight(String height) {
-        attributes.computeIfAbsent(HEIGHT, v -> height);
         return this;
     }
 
@@ -249,18 +301,6 @@ public class CssStyle {
         return String.format("%dpt", (Integer) o);
     }
 
-    public static String produceFontWeightAttribute(Object o) {
-        return produceDefaultStringAttribute(o);
-    }
-
-    public static String produceFontStyleAttribute(Object o) {
-        return produceDefaultStringAttribute(o);
-    }
-
-    public static String produceFontColorAttribute(Object o) {
-        return produceDefaultStringAttribute(o);
-    }
-
     public static String produceFontFamilyAttribute(Object o) {
         if (!StringUtils.hasText((String) o)) {
             return "monospace";
@@ -269,52 +309,12 @@ public class CssStyle {
         }
     }
 
-    public static String produceTextAlignAttribute(Object o) {
-        return produceDefaultStringAttribute(o);
-    }
-
-    public static String produceTransformAttribute(Object o) {
-        return produceDefaultStringAttribute(o);
-    }
-
-    public static String produceBorderCollapseAttribute(Object o) {
-        return produceDefaultStringAttribute(o);
-    }
-
-    public static String produceBorderTopAttribute(Object o) {
-        return produceDefaultStringAttribute(o);
-    }
-
-    public static String produceBorderLeftAttribute(Object o) {
-        return produceDefaultStringAttribute(o);
-    }
-
-    public static String produceBorderRightAttribute(Object o) {
-        return produceDefaultStringAttribute(o);
-    }
-
-    public static String produceBorderBottomAttribute(Object o) {
-        return produceDefaultStringAttribute(o);
-    }
-
-    public static String produceBackgroundColorAttribute(Object o) {
-        return produceDefaultStringAttribute(o);
-    }
-
     public static String produceBorderHtml4Attribute(Object o) {
         return String.format("%d", (Integer) o);
     }
 
     public static String produceCellspacingHtml4Attribute(Object o) {
         return String.format("%d", (Integer) o);
-    }
-
-    public static String produceBgcolorHtml4Attribute(Object o) {
-        return produceDefaultStringAttribute(o);
-    }
-
-    public static String produceAlignHtml4Attribute(Object o) {
-        return produceDefaultStringAttribute(o);
     }
 
     public static String produceDefaultStringAttribute(Object o) {

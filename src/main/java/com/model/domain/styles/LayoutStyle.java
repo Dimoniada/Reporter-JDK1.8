@@ -6,7 +6,7 @@ import com.model.domain.styles.constants.Color;
 import com.model.domain.styles.constants.FillPattern;
 import com.model.domain.styles.constants.HorAlignment;
 import com.model.domain.styles.constants.VertAlignment;
-import com.model.domain.styles.geometry.SpecificDetails;
+import com.model.domain.styles.geometry.GeometryDetails;
 
 /**
  * The style is used to set:
@@ -17,7 +17,7 @@ public class LayoutStyle extends Style {
     /**
      * Measurable values of a content
      */
-    protected SpecificDetails specificDetails;
+    protected GeometryDetails geometryDetails;
     /**
      * Content auto alignment
      */
@@ -90,7 +90,7 @@ public class LayoutStyle extends Style {
         final LayoutStyle that = (LayoutStyle) o;
 
         return
-            Objects.equal(this.specificDetails, that.specificDetails)
+            Objects.equal(this.geometryDetails, that.geometryDetails)
                 && Objects.equal(this.autoWidth, that.autoWidth)
                 && Objects.equal(this.shrinkToFit, that.shrinkToFit)
                 && Objects.equal(this.borderTop, that.borderTop)
@@ -109,7 +109,7 @@ public class LayoutStyle extends Style {
         return
             Objects
                 .hashCode(
-                    specificDetails,
+                    geometryDetails,
                     autoWidth,
                     shrinkToFit,
                     borderTop,
@@ -128,7 +128,7 @@ public class LayoutStyle extends Style {
     public String toString() {
         return
             MoreObjects.toStringHelper(this)
-                .add("measurable", getMeasurable())
+                .add("geometryDetails", getGeometryDetails())
                 .add("autoWidth", isAutoWidth())
                 .add("shrinkToFit", isShrinkToFit())
                 .add("borderTop", getBorderTop())
@@ -144,12 +144,12 @@ public class LayoutStyle extends Style {
                 .toString();
     }
 
-    public SpecificDetails getMeasurable() {
-        return specificDetails;
+    public GeometryDetails getGeometryDetails() {
+        return geometryDetails;
     }
 
-    public LayoutStyle setMeasurable(SpecificDetails specificDetails) {
-        this.specificDetails = specificDetails;
+    public LayoutStyle setGeometryDetails(GeometryDetails geometryDetails) {
+        this.geometryDetails = geometryDetails;
         return this;
     }
 

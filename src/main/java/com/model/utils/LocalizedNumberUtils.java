@@ -1,6 +1,5 @@
 package com.model.utils;
 
-import com.model.domain.TextItem;
 import com.model.domain.styles.Style;
 import com.model.domain.styles.TextStyle;
 import org.springframework.util.StringUtils;
@@ -34,9 +33,11 @@ public final class LocalizedNumberUtils {
         /**/
     }
 
-    public static String applyDecimalFormat(TextItem<?> textItem, DecimalFormat decimalFormat) throws ParseException {
-        final String text = textItem.getText();
-        final Style style = textItem.getStyle();
+    public static String applyDecimalFormat(
+        String text,
+        Style style,
+        DecimalFormat decimalFormat
+    ) throws ParseException {
         if (style instanceof TextStyle && StringUtils.hasText(text) && isNumber(text)) {
             final TextStyle textStyle = (TextStyle) style;
             final DecimalFormat format =

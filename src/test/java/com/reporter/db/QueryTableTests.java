@@ -146,16 +146,13 @@ public class QueryTableTests extends BaseQueryDocument {
             );
 
         final XlsxFormatter xlsxFormatter = XlsxFormatter.create().setStyleService(styleService);
-        final DocumentHolder documentHolder = xlsxFormatter.handle(doc);
-
-        final Workbook wb = WorkbookFactory.create(documentHolder.getResource().getFile());
-        final Sheet sheet = wb.getSheetAt(0);
-        final String actual = sheet.getRow(4).getCell(4).getStringCellValue();
-        wb.close();
-
-        documentHolder.close();
-
-        Assertions.assertEquals("124", actual);
+        try (DocumentHolder documentHolder = xlsxFormatter.handle(doc)) {
+            final Workbook wb = WorkbookFactory.create(documentHolder.getResource().getFile());
+            final Sheet sheet = wb.getSheetAt(0);
+            final String actual = sheet.getRow(4).getCell(4).getStringCellValue();
+            wb.close();
+            Assertions.assertEquals("124", actual);
+        }
     }
 
     @Test
@@ -196,10 +193,11 @@ public class QueryTableTests extends BaseQueryDocument {
             }};
         final CsvFormatter csvFormatter = new CsvFormatter();
 
-        csvFormatter.setEncoding("Cp1251");
-        final DocumentHolder documentHolder = csvFormatter.handle(doc);
-        final String text =
-            FileUtils.readFileToString(documentHolder.getResource().getFile(), Charset.forName("Cp1251"));
-        Assertions.assertTrue(expected.stream().allMatch(text::contains));
+        csvFormatter.setEncoding("windows-1251");
+        try (DocumentHolder documentHolder = csvFormatter.handle(doc)) {
+            final String text =
+                FileUtils.readFileToString(documentHolder.getResource().getFile(), Charset.forName("windows-1251"));
+            Assertions.assertTrue(expected.stream().allMatch(text::contains));
+        }
     }
 }

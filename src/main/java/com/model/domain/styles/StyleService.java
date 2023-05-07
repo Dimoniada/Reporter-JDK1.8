@@ -39,16 +39,16 @@ public abstract class StyleService implements StyleApplier {
      * checking style's {@link StyleCondition}.
      * A style with {@link StyleCondition} equals null is returned as appropriate.
      *
-     * @param item the object on which to test the conditions of styles.
+     * @param o the object on which to test the conditions of styles.
      * @return first style with matched condition
      */
-    public Optional<Style> extractStyleFor(DocumentItem item) {
+    public Optional<Style> extractStyleFor(Object o) {
         return styles
             .stream()
             .filter(s -> {
                 if (s.getCondition() != null) {
-                    final boolean passCondition = s.getCondition().test(item);
-                    final Class<?> itemClass = item.getClass();
+                    final boolean passCondition = s.getCondition().test(o);
+                    final Class<?> itemClass = o.getClass();
                     final Class<?> conditionClass = s.getCondition().getClazz();
                     return passCondition && itemClass.isAssignableFrom(conditionClass);
                 }
@@ -60,13 +60,16 @@ public abstract class StyleService implements StyleApplier {
     /**
      * Prepares (if any) style from item and StyleService's style
      *
-     * @param item is a donor of the style for native element
+     * @param o is a donor of the style for native element
      * @return mixed style
      * @throws Exception on joining styles
      */
-    public Style prepareStyleFrom(DocumentItem item) throws Exception {
-        final Optional<Style> optStyle = extractStyleFor(item);
-        Style style = item.getStyle();
+    public Style prepareStyleFrom(Object o) throws Exception {
+        final Optional<Style> optStyle = extractStyleFor(o);
+        Style style = null;
+        if (o instanceof DocumentItem) {
+            style = ((DocumentItem) o).getStyle();
+        }
         if (optStyle.isPresent()) {
             if (style == null) {
                 style = optStyle.get();

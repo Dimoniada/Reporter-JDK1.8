@@ -9,7 +9,11 @@ import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.canvas.draw.DashedLine;
 import com.itextpdf.kernel.pdf.canvas.draw.DottedLine;
 import com.itextpdf.kernel.pdf.canvas.draw.SolidLine;
-import com.itextpdf.layout.borders.*;
+import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.borders.DashedBorder;
+import com.itextpdf.layout.borders.DottedBorder;
+import com.itextpdf.layout.borders.DoubleBorder;
+import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.AbstractElement;
 import com.itextpdf.layout.element.BlockElement;
 import com.itextpdf.layout.element.Cell;
@@ -27,7 +31,7 @@ import com.model.domain.styles.constants.BorderWeight;
 import com.model.domain.styles.constants.Color;
 import com.model.domain.styles.constants.HorAlignment;
 import com.model.domain.styles.constants.VertAlignment;
-import com.model.domain.styles.geometry.SpecificDetails;
+import com.model.domain.styles.geometry.GeometryDetails;
 import com.model.formatter.pdf.PdfDetails;
 import com.model.utils.LocalizedNumberUtils;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
@@ -301,6 +305,16 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
     }
 
     /**
+     * Adjusts width/height/angle in an itextpdf text element, depending on the layoutStyle
+     *
+     * @param element     text itextpdf element
+     * @param layoutStyle input style
+     */
+    public static void convertTransform(AbstractElement<?> element, LayoutStyle layoutStyle) {
+       //TODO
+    }
+
+    /**
      * Implements, as needed for the format, writing styles to the native object
      *
      * @param o native object for writing styles {@link StyleService#styles}
@@ -320,7 +334,8 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
      * @throws Exception on bad decimalFormat or font creation error
      */
     public void handleSimpleElement(TextItem<?> item, com.itextpdf.layout.Document o) throws Exception {
-        final Text text = new Text(LocalizedNumberUtils.applyDecimalFormat(item, decimalFormat));
+        final Text text =
+            new Text(LocalizedNumberUtils.applyDecimalFormat(item.getText(), item.getStyle(), decimalFormat));
         final com.itextpdf.layout.element.Paragraph elParagraph = new com.itextpdf.layout.element.Paragraph(text);
         final Style style = extractStyleFor(item).orElse(item.getStyle());
         convertStyleToElement(style, text, elParagraph);
@@ -338,7 +353,14 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
      * @throws Exception when converting style
      */
     public Cell handleTableCustomCell(TextItem<?> tableCustomCell) throws Exception {
-        final Text text = new Text(LocalizedNumberUtils.applyDecimalFormat(tableCustomCell, decimalFormat));
+        final Text text =
+            new Text(
+                LocalizedNumberUtils.applyDecimalFormat(
+                    tableCustomCell.getText(),
+                    tableCustomCell.getStyle(),
+                    decimalFormat
+                )
+            );
         final com.itextpdf.layout.element.Paragraph paragraph = new com.itextpdf.layout.element.Paragraph(text);
         final Cell cell = new Cell().add(paragraph);
         final Style style = prepareStyleFrom(tableCustomCell);
@@ -476,9 +498,10 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
         convertHorizontalAlignment(element, layoutStyle);
         convertVerticalAlignment(element, layoutStyle);
         convertShrinkToFit(element, layoutStyle);
-        final SpecificDetails specificDetails = layoutStyle.getMeasurable();
-        if (element instanceof BlockElement<?> && specificDetails != null && specificDetails.getWidth() != null) {
-            specificDetails
+        convertTransform(element, layoutStyle);
+        final GeometryDetails geometryDetails = layoutStyle.getGeometryDetails();
+        if (element instanceof BlockElement<?> && geometryDetails != null && geometryDetails.getWidth() != null) {
+            geometryDetails
                 .getWidth()
                 .getValueFor(EXTENSION)
                 .ifPresent(value -> ((BlockElement<?>) element).setWidth((float) value));

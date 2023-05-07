@@ -6,11 +6,12 @@ import java.util.stream.Collectors;
 
 /**
  * Represents measurable types (based on document type) and corresponded values.
- * Key is document extension, value for length is one of:
+ * Key is document extension, value is length.
+ * For width Geometry the length is:
  *    for .xlsx(int) it's units of 1/256th of a character width, see setColumnWidth() in {@link org.apache.poi.ss.usermodel.Sheet},
  *    for .docx(int) it's 20ths of a point, twips, see setWidth() in {@link org.apache.poi.xwpf.usermodel.XWPFTable},
- *    for .pdf(float) it's in points, see setWidth() in {@link com.itextpdf.layout.element.BlockElement}
- *    for .html(float) it's a scale, see attribute transform and scaleX()
+ *    for .pdf(float) by default it's in points of (1/72)", see setWidth() in {@link com.itextpdf.layout.element.BlockElement}
+ *    for .html(String) it's a width with dimension, see attribute width
  */
 public class Geometry extends HashMap<String, Object> {
     /**

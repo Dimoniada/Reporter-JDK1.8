@@ -4,7 +4,6 @@ import com.google.common.base.MoreObjects;
 import com.model.domain.CompositionPart;
 import com.model.domain.Document;
 import com.model.domain.DocumentCase;
-import com.model.domain.DocumentItem;
 import com.model.domain.Footer;
 import com.model.domain.Heading;
 import com.model.domain.Paragraph;
@@ -28,6 +27,7 @@ import com.model.formatter.html.tag.Html;
 import com.model.formatter.html.tag.HtmlBody;
 import com.model.formatter.html.tag.HtmlCol;
 import com.model.formatter.html.tag.HtmlColgroup;
+import com.model.formatter.html.tag.HtmlDiv;
 import com.model.formatter.html.tag.HtmlFooter;
 import com.model.formatter.html.tag.HtmlH1;
 import com.model.formatter.html.tag.HtmlHead;
@@ -60,6 +60,7 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
     protected DecimalFormat decimalFormat;
 
     protected StyleService styleService;
+
     protected TagCreator tagCreator;
 
     @Override
@@ -71,7 +72,7 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
     public void visitDocument(Document documentObj) throws Throwable {
         styleService = getStyleService();
         outputStreamWriter = new OutputStreamWriter(outputStream, encoding);
-        tagCreator = new TagCreator(outputStreamWriter, decimalFormat);
+        tagCreator = getTagCreator();
         tagCreator.write("<!doctype html>");
         final Html html = new Html();
         final HtmlHead htmlHead = new HtmlHead();
@@ -104,21 +105,21 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
     public void visitTitle(Title titleObj) throws Exception {
         final HtmlH1 htmlTitle = new HtmlH1();
         final Style style = styleService.extractStyleFor(titleObj).orElse(titleObj.getStyle());
-        handleTag(htmlTitle, titleObj, style, true);
+        handleTag(htmlTitle, titleObj.getText(), style, true);
     }
 
     @Override
     public void visitHeading(Heading headingObj) throws Exception {
         final HtmlHeading htmlHeading = new HtmlHeading(headingObj.getDepth());
         final Style style = styleService.extractStyleFor(headingObj).orElse(headingObj.getStyle());
-        handleTag(htmlHeading, headingObj, style, true);
+        handleTag(htmlHeading, headingObj.getText(), style, true);
     }
 
     @Override
     public void visitParagraph(Paragraph paragraphObj) throws Exception {
         final HtmlParagraph htmlParagraph = new HtmlParagraph();
         final Style style = styleService.extractStyleFor(paragraphObj).orElse(paragraphObj.getStyle());
-        handleTag(htmlParagraph, paragraphObj, style, true);
+        handleTag(htmlParagraph, paragraphObj.getText(), style, true);
     }
 
     @Override
@@ -135,7 +136,7 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
             if (isUseColgroupTag) {
                 handleColgroupTag(tableObj, style);
             } else {
-                handleTag(htmlTable, tableObj, style, false);
+                handleTag(htmlTable, tableObj.getLabel(), style, false);
             }
         } else {
             if (isUseColgroupTag) {
@@ -161,8 +162,8 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
     @Override
     public void visitTableHeaderCell(TableHeaderCell tableHeaderCellObj) throws Throwable {
         final HtmlTableHeaderCell htmlTableHeaderCell = new HtmlTableHeaderCell();
-        final Style style = ((HtmlStyleService) styleService).handleTableCustomCell(tableHeaderCellObj);
-        handleTag(htmlTableHeaderCell, tableHeaderCellObj, style, true);
+        final Style style = ((HtmlStyleService) styleService).getCustomTableCellStyle(tableHeaderCellObj);
+        handleTag(htmlTableHeaderCell, tableHeaderCellObj.getText(), style, true);
     }
 
     @Override
@@ -174,30 +175,39 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
     @Override
     public void visitTableCell(TableCell tableCellObj) throws Exception {
         final HtmlTableCell htmlTableCell = new HtmlTableCell();
-        final Style style = ((HtmlStyleService) styleService).handleTableCustomCell(tableCellObj);
-        handleTag(htmlTableCell, tableCellObj, style, true);
+        final HtmlDiv htmlDiv = new HtmlDiv();
+        final HtmlStyleService htmlStyleService = (HtmlStyleService) styleService;
+        final Style cellStyle = htmlStyleService.getCustomTableCellStyle(tableCellObj);
+        final Style cellDivStyle = htmlStyleService.getCustomTableCellDivStyle(htmlDiv);
+        if (cellDivStyle != null) {
+            handleTag(htmlTableCell, null, cellStyle, false);
+            handleTag(htmlDiv, tableCellObj.getText(), cellDivStyle, true);
+            outputStreamWriter.write(htmlTableCell.close());
+        } else {
+            handleTag(htmlTableCell, tableCellObj.getText(), cellStyle, true);
+        }
     }
 
     @Override
     public void visitSeparator(Separator separatorObj) throws Exception {
         final HtmlLineSeparator htmlLineSeparator = new HtmlLineSeparator();
         final Style style = LayoutStyle.create().setBorderBottom(separatorObj.getBorderStyle());
-        handleTag(htmlLineSeparator, separatorObj, style, false);
+        handleTag(htmlLineSeparator, null, style, false);
     }
 
     @Override
     public void visitFooter(Footer footerObj) throws Exception {
         final HtmlFooter htmlFooter = new HtmlFooter();
         final Style style = styleService.extractStyleFor(footerObj).orElse(footerObj.getStyle());
-        handleTag(htmlFooter, footerObj, style, true);
+        handleTag(htmlFooter, footerObj.getText(), style, true);
     }
 
-    protected void handleTag(HtmlTag tag, DocumentItem item, Style style, Boolean needCloseTag) throws Exception {
+    protected void handleTag(HtmlTag tag, String text, Style style, Boolean needCloseTag) throws Exception {
         final HtmlStyleService htmlStyleService = (HtmlStyleService) styleService;
-        new TagCreator(outputStreamWriter, decimalFormat)
-            .setItem(item)
+        getTagCreator()
             .writeTag(
                 tag,
+                text,
                 style,
                 htmlStyleService.isUseHtml4Tags(),
                 htmlStyleService.contains(style) && !htmlStyleService.isWriteStyleInplace(),
@@ -216,14 +226,14 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
     private void handleColgroupTag(Table tableObj, Style style) throws Exception {
         final HtmlTable htmlTable = new HtmlTable();
         if (tableObj.getTableHeaderRow().isPresent()) {
-            handleTag(htmlTable, tableObj, style, false);
+            handleTag(htmlTable, tableObj.getLabel(), style, false);
             if (styleService.extractStyleFor(TableCell.create()).isPresent()) {
                 final Style cellStyle = styleService.extractStyleFor(TableCell.create()).get();
                 final TableHeaderRow thr = tableObj.getTableHeaderRow().get();
                 final HtmlColgroup htmlColgroup = new HtmlColgroup();
                 outputStreamWriter.write(htmlColgroup.open());
                 for (final TableHeaderCell ignored : thr.getParts()) {
-                    handleTag(new HtmlCol(), TableCell.create(), cellStyle, true);
+                    handleTag(new HtmlCol(), TableCell.create().getText(), cellStyle, true);
                 }
                 outputStreamWriter.write(htmlColgroup.close());
             }
@@ -289,5 +299,12 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
     public HtmlFormatterVisitor setDecimalFormat(DecimalFormat decimalFormat) {
         this.decimalFormat = decimalFormat;
         return this;
+    }
+
+    public TagCreator getTagCreator() {
+        if (tagCreator == null) {
+            tagCreator = new TagCreator(outputStreamWriter, decimalFormat);
+        }
+        return tagCreator;
     }
 }

@@ -31,16 +31,23 @@ public abstract class CompositionPart<T extends CompositionPart<?, ?>, K extends
     }
 
     @SuppressWarnings("unchecked")
-    public T addPart(K docItem) {
+    public T setParts(K... parts) {
         checkPartsForAppend();
-        ((Collection<K>) this.parts).add(docItem);
+        this.parts = Arrays.asList(parts);
         return (T) this;
     }
 
     @SuppressWarnings("unchecked")
-    public T addParts(K... docItems) {
+    public T addPart(K parts) {
         checkPartsForAppend();
-        ((Collection<K>) this.parts).addAll(Arrays.asList(docItems));
+        ((Collection<K>) this.parts).add(parts);
+        return (T) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T addParts(K... parts) {
+        checkPartsForAppend();
+        ((Collection<K>) this.parts).addAll(Arrays.asList(parts));
         return (T) this;
     }
 

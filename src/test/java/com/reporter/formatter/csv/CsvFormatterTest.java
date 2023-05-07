@@ -54,20 +54,14 @@ class CsvFormatterTest extends BaseDocument {
 
     @Test
     public void testSaveTextToNewFile() throws Throwable {
-
         final CsvFormatter csvFormatter = (CsvFormatter) new CsvFormatter().setEncoding("Cp1251");
         csvFormatter.setFileName("testFile");
-
         Assertions.assertEquals("testFile", csvFormatter.getFileName());
-
-        final DocumentHolder documentHolder = csvFormatter.handle(doc);
-
-        final String text =
-            FileUtils.readFileToString(documentHolder.getResource().getFile(), Charset.forName("Cp1251"));
-
-        Assertions.assertEquals(text, expected);
-
-        documentHolder.close();
+        try (DocumentHolder documentHolder = csvFormatter.handle(doc)) {
+            final String text =
+                FileUtils.readFileToString(documentHolder.getResource().getFile(), Charset.forName("Cp1251"));
+            Assertions.assertEquals(text, expected);
+        }
     }
 
     @Test
@@ -80,14 +74,11 @@ class CsvFormatterTest extends BaseDocument {
 
         Assertions.assertEquals(resource, csvFormatter.getResource());
 
-        final DocumentHolder documentHolder = csvFormatter.handle(doc);
-
-        final String text =
-            FileUtils.readFileToString(documentHolder.getResource().getFile(), Charset.forName("Cp1251"));
-
-        Assertions.assertEquals(expected, text);
-
-        documentHolder.close();
+        try (DocumentHolder documentHolder = csvFormatter.handle(doc)) {
+            final String text =
+                FileUtils.readFileToString(documentHolder.getResource().getFile(), Charset.forName("Cp1251"));
+            Assertions.assertEquals(expected, text);
+        }
     }
 
     @Test
@@ -98,13 +89,10 @@ class CsvFormatterTest extends BaseDocument {
         final ByteArrayOutputStream os = new ByteArrayOutputStream();
         csvFormatter.setOutputStream(os);
 
-        final DocumentHolder documentHolder = csvFormatter.handle(doc);
-
-        final String text = os.toString("Cp1251");
-
-        Assertions.assertEquals(expected, text);
-
-        documentHolder.close();
+        try (DocumentHolder ignored = csvFormatter.handle(doc)) {
+            final String text = os.toString("Cp1251");
+            Assertions.assertEquals(expected, text);
+        }
     }
 
     @Test

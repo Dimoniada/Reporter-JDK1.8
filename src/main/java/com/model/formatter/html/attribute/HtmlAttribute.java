@@ -8,10 +8,10 @@ import java.util.Map;
  * Class of the html attribute.
  */
 public abstract class HtmlAttribute {
-    public static final String DELIMITER_PATTERN_HTML = ";";
+    public static final String DELIMITER_PATTERN_HTML5 = ";";
     public static final String DELIMITER_PATTERN_HTML4 = " ";
 
-    public static final String ASSIGNMENT_PATTERN_HTML = "%s:%s";
+    public static final String ASSIGNMENT_PATTERN_HTML5 = "%s:%s";
     public static final String ASSIGNMENT_PATTERN_HTML4 = "%s=\"%s\"";
 
     public final Map.Entry<String, HtmlAttribute> attributeMapper;
@@ -61,6 +61,6 @@ public abstract class HtmlAttribute {
         return
             isHtml4
                 ? ASSIGNMENT_PATTERN_HTML4
-                : ASSIGNMENT_PATTERN_HTML;
+                : ASSIGNMENT_PATTERN_HTML5;
     }
 }

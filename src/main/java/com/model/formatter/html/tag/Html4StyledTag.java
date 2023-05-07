@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 /**
  * The class stores attributes that describe the style of the element for HTML4.
  */
-public abstract class Html4StyledTag {
+public abstract class Html4StyledTag implements HtmlTagAttributesWriter {
     protected Map<String, HtmlAttribute> availableAttributes = new HashMap<>();
 
     final HtmlBorderAttribute border = new HtmlBorderAttribute();

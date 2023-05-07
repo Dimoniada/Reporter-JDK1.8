@@ -3,14 +3,11 @@ package com.model.formatter.html.tag;
 import com.google.common.base.Objects;
 import com.model.domain.DocumentItem;
 import com.model.domain.styles.Style;
-import com.model.formatter.html.attribute.HtmlAttribute;
 
 import java.io.IOException;
 import java.util.Locale;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-public abstract class HtmlTag extends HtmlStyledTag {
+public abstract class HtmlTag extends Html5StyledTag {
     /**
      * Gets the unique style name for the entry
      *
@@ -42,31 +39,6 @@ public abstract class HtmlTag extends HtmlStyledTag {
         return getTagName().toUpperCase(Locale.ENGLISH);
     }
 
-    public String attributesToHtmlString(Boolean isHtml4) {
-        final String res =
-            getAvailableAttributes()
-                .entrySet()
-                .stream()
-                .sorted(Map.Entry.comparingByKey())
-                .filter(s -> s.getValue().getAttributeValue() != null)
-                .map(e -> itemMapping(e, isHtml4))
-                .collect(
-                    Collectors
-                        .joining(
-                            isHtml4
-                                ? HtmlAttribute.DELIMITER_PATTERN_HTML4
-                                : HtmlAttribute.DELIMITER_PATTERN_HTML,
-                            " ",
-                            ""
-                        )
-                );
-
-        return
-            res.length() > 1
-                ? res
-                : "";
-    }
-
     /**
      * Writes an opening tag
      *
@@ -89,17 +61,5 @@ public abstract class HtmlTag extends HtmlStyledTag {
     @Override
     public String toString() {
         return getTagName();
-    }
-
-    private String itemMapping(Map.Entry<String, HtmlAttribute> e, Boolean isHtml4) {
-        final String key = e.getKey();
-        final HtmlAttribute attribute = e.getValue();
-        final String processedValue = attribute.produceDefaultStringAttribute(attribute.getAttributeValue());
-        return
-                String.format(
-                        attribute.getAssignmentPattern(isHtml4),
-                        key,
-                        processedValue
-                );
     }
 }

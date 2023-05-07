@@ -42,27 +42,23 @@ class ExcelFormatterTest extends BaseDocument {
     public void testSaveTextToXlsxFile() throws Throwable {
 
         final XlsxFormatter xlsxFormatter = XlsxFormatter.create();
-        final DocumentHolder documentHolder = xlsxFormatter.handle(doc);
-
-        final List<String> checked = new ArrayList<>();
-
-        final Workbook wb = WorkbookFactory.create(documentHolder.getResource().getFile());
-        final Sheet sheet = wb.getSheetAt(0);
-        sheet.rowIterator().forEachRemaining(r -> {
-            Cell cell = r.getCell(0);
-            if (cell != null) {
-                checked.add(cell.getStringCellValue());
-            }
-            cell = r.getCell(1);
-            if (cell != null) {
-                checked.add(cell.getStringCellValue());
-            }
-        });
-        wb.close();
-
-        Assertions.assertEquals(check, String.join(",", checked));
-
-        documentHolder.close();
+        try (DocumentHolder documentHolder = xlsxFormatter.handle(doc)) {
+            final List<String> checked = new ArrayList<>();
+            final Workbook wb = WorkbookFactory.create(documentHolder.getResource().getFile());
+            final Sheet sheet = wb.getSheetAt(0);
+            sheet.rowIterator().forEachRemaining(r -> {
+                Cell cell = r.getCell(0);
+                if (cell != null) {
+                    checked.add(cell.getStringCellValue());
+                }
+                cell = r.getCell(1);
+                if (cell != null) {
+                    checked.add(cell.getStringCellValue());
+                }
+            });
+            wb.close();
+            Assertions.assertEquals(check, String.join(",", checked));
+        }
     }
 
     /**
@@ -78,16 +74,13 @@ class ExcelFormatterTest extends BaseDocument {
         final ExcelStyleService styleService = ExcelStyleService.create(FontCharset.DEFAULT, null);
 
         final XlsxFormatter xlsxFormatter = XlsxFormatter.create().setStyleService(styleService);
-        final DocumentHolder documentHolder = xlsxFormatter.handle(doc);
-
-        final Workbook wb = WorkbookFactory.create(documentHolder.getResource().getFile());
-        final Sheet sheet = wb.getSheetAt(0);
-        final String check = sheet.getRow(15).getCell(1).getStringCellValue();
-        wb.close();
-
-        documentHolder.close();
-
-        Assertions.assertEquals("Cell 3.2", check);
+        try (DocumentHolder documentHolder = xlsxFormatter.handle(doc)) {
+            final Workbook wb = WorkbookFactory.create(documentHolder.getResource().getFile());
+            final Sheet sheet = wb.getSheetAt(0);
+            final String check = sheet.getRow(15).getCell(1).getStringCellValue();
+            wb.close();
+            Assertions.assertEquals("Cell 3.2", check);
+        }
     }
 
     /**
@@ -102,24 +95,20 @@ class ExcelFormatterTest extends BaseDocument {
 
         final DecimalFormat df = new DecimalFormat("\u203000");
 
-        final DocumentHolder documentHolder = xlsFormatter.handle(doc);
-
-        final Workbook wb = WorkbookFactory.create(documentHolder.getResource().getFile());
-
-        xlsFormatter
-            .setFontCharset(FontCharset.JOHAB)
-            .setWorkbook(wb)
-            .setOutputStream(os)
-            .getStyleService()
-            .setDecimalFormat(df);
-
-        Assertions.assertEquals(os, xlsFormatter.getOutputStream());
-        Assertions.assertEquals(wb, xlsFormatter.getWorkbook());
-        Assertions.assertEquals(FontCharset.JOHAB, xlsFormatter.getFontCharset());
-        Assertions.assertEquals(df, xlsFormatter.getStyleService().getDecimalFormat());
-
-        wb.close();
-        documentHolder.close();
+        try (DocumentHolder documentHolder = xlsFormatter.handle(doc)) {
+            final Workbook wb = WorkbookFactory.create(documentHolder.getResource().getFile());
+            xlsFormatter
+                .setFontCharset(FontCharset.JOHAB)
+                .setWorkbook(wb)
+                .setOutputStream(os)
+                .getStyleService()
+                .setDecimalFormat(df);
+            Assertions.assertEquals(os, xlsFormatter.getOutputStream());
+            Assertions.assertEquals(wb, xlsFormatter.getWorkbook());
+            Assertions.assertEquals(FontCharset.JOHAB, xlsFormatter.getFontCharset());
+            Assertions.assertEquals(df, xlsFormatter.getStyleService().getDecimalFormat());
+            wb.close();
+        }
     }
 
 }

@@ -1,19 +1,40 @@
 package com.reporter.formatter.html;
 
 import com.google.common.base.Objects;
-import com.model.domain.*;
+import com.model.domain.Document;
+import com.model.domain.DocumentItem;
+import com.model.domain.Footer;
+import com.model.domain.Heading;
+import com.model.domain.Paragraph;
+import com.model.domain.Table;
+import com.model.domain.TableCell;
+import com.model.domain.TableHeaderCell;
+import com.model.domain.TableHeaderRow;
+import com.model.domain.TableRow;
+import com.model.domain.Title;
 import com.model.domain.styles.LayoutStyle;
 import com.model.domain.styles.Style;
 import com.model.domain.styles.StyleCondition;
 import com.model.domain.styles.TextStyle;
 import com.model.domain.styles.constants.Color;
 import com.model.domain.styles.constants.FillPattern;
+import com.model.domain.styles.constants.HorAlignment;
+import com.model.domain.styles.constants.VertAlignment;
+import com.model.domain.styles.geometry.Geometry;
+import com.model.domain.styles.geometry.GeometryDetails;
 import com.model.formatter.DocumentHolder;
 import com.model.formatter.html.HtmlFormatter;
 import com.model.formatter.html.HtmlFormatterVisitor;
 import com.model.formatter.html.styles.HtmlColgroupTag;
 import com.model.formatter.html.styles.HtmlStyleService;
-import com.model.formatter.html.tag.*;
+import com.model.formatter.html.tag.HtmlDiv;
+import com.model.formatter.html.tag.HtmlFooter;
+import com.model.formatter.html.tag.HtmlH1;
+import com.model.formatter.html.tag.HtmlHeading;
+import com.model.formatter.html.tag.HtmlParagraph;
+import com.model.formatter.html.tag.HtmlTableCell;
+import com.model.formatter.html.tag.HtmlTableHeaderCell;
+import com.model.formatter.html.tag.HtmlTag;
 import com.reporter.formatter.BaseDocument;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Assertions;
@@ -27,20 +48,21 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.text.MessageFormat;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 
 public class HtmlFormatterTest extends BaseDocument {
 
     public static final String expected = "<!doctype html><html><head><meta charset=\"UTF-8\"><title>Test document" +
-        "</title></head><body><h1>Title 1</h1><p style=\"border-collapse:collapse;font-family:" +
+        "</title></head><body><h1>Title 1</h1><p style=\"font-family:" +
         "courierNew,monospace;font-size:10pt;font-weight:bold\">paragraph 1</p><table><tr><th style=" +
         "\"border-bottom:double #000000;border-collapse:collapse;border-left:double #000000;border-right:" +
         "double #000000;border-top:double #000000;font-family:arial,monospace;font-size:14pt;" +
-        "font-weight:bold;transform:rotate(359deg) scaleX(1.2) scaleY(1.7)\">column1</th><th style=" +
+        "font-weight:bold;height:15px;transform:rotate(10deg);width:20px\">column1</th><th style=" +
         "\"border-bottom:double #000000;border-collapse:collapse;border-left:double #000000;border-right:" +
         "double #000000;border-top:double #000000;font-family:arial,monospace;font-size:14pt;" +
-        "font-weight:bold;transform:rotate(359deg) scaleX(1.2) scaleY(1.7)\">column2 (столбец2)</th></tr><tr>" +
+        "font-weight:bold;height:15px;transform:rotate(10deg);width:20px\">column2 (столбец2)</th></tr><tr>" +
         "<td style=\"font-family:arial,monospace;font-size:14pt;font-weight:bold\">1,000</td>" +
         "<td style=\"font-family:arial,monospace;font-size:14pt;font-weight:bold\">2,000</td></tr>" +
         "<tr><td style=\"font-family:arial,monospace;font-size:14pt;font-weight:bold\">3,000</td>" +
@@ -48,18 +70,18 @@ public class HtmlFormatterTest extends BaseDocument {
         "<tr><td style=\"font-family:arial,monospace;font-size:14pt;font-weight:bold\">5,000</td>" +
         "<td style=\"font-family:arial,monospace;font-size:14pt;font-weight:bold\">6,000</td></tr>" +
         "</table><h1 style=\"font-size:20pt\">Test document v.1</h1><hr " +
-        "style=\"border-bottom:1px solid #008080;border-collapse:collapse\"><h1 style=\"border-collapse:" +
-        "collapse;font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">Chapter 1</h1>" +
-        "<h2 style=\"border-collapse:collapse;font-family:courierNew,monospace;font-size:10pt;" +
-        "font-weight:bold\">Chapter 1.1</h2><h3 style=\"border-collapse:collapse;font-family:" +
-        "courierNew,monospace;font-size:10pt;font-weight:bold\">Chapter 1.1.1</h3><p style=\"border-collapse:" +
-        "collapse;font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">This is an " +
+        "style=\"border-bottom:1px solid #008080;border-collapse:collapse\"><h1 style=\"" +
+        "font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">Chapter 1</h1>" +
+        "<h2 style=\"font-family:courierNew,monospace;font-size:10pt;" +
+        "font-weight:bold\">Chapter 1.1</h2><h3 style=\"font-family:" +
+        "courierNew,monospace;font-size:10pt;font-weight:bold\">Chapter 1.1.1</h3><p style=\"" +
+        "font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">This is an " +
         "example of text in paragraph</p><table><tr><th style=\"border-bottom:double #000000;border-collapse:" +
         "collapse;border-left:double #000000;border-right:double #000000;border-top:double #000000;" +
-        "font-family:arial,monospace;font-size:14pt;font-weight:bold;transform:rotate(359deg) scaleX(1.2) " +
-        "scaleY(1.7)\">Column 1</th><th style=\"border-bottom:double #000000;border-collapse:collapse;border-left:" +
+        "font-family:arial,monospace;font-size:14pt;font-weight:bold;height:15px;transform:rotate(10deg);width:20px" +
+        "\">Column 1</th><th style=\"border-bottom:double #000000;border-collapse:collapse;border-left:" +
         "double #000000;border-right:double #000000;border-top:double #000000;font-family:arial," +
-        "monospace;font-size:14pt;font-weight:bold;transform:rotate(359deg) scaleX(1.2) scaleY(1.7)\">Column 2</th>" +
+        "monospace;font-size:14pt;font-weight:bold;height:15px;transform:rotate(10deg);width:20px\">Column 2</th>" +
         "</tr><tr><td style=\"font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">" +
         "Cell 1.1</td><td style=\"font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">" +
         "Cell 1.2</td></tr><tr><td style=\"font-family:courierNew,monospace;font-size:10pt;font-weight:" +
@@ -68,18 +90,18 @@ public class HtmlFormatterTest extends BaseDocument {
         "font-weight:bold\">Cell 3.1</td><td style=\"font-family:courierNew,monospace;font-size:10pt;" +
         "font-weight:bold\">Cell 3.2</td></tr><tr><td style=\"font-family:courierNew,monospace;" +
         "font-size:10pt;font-weight:bold\">Cell 4.1</td><td style=\"font-family:courierNew,monospace;" +
-        "font-size:10pt;font-weight:bold\">Cell 4.2</td></tr></table><h1 style=\"border-collapse:collapse;" +
+        "font-size:10pt;font-weight:bold\">Cell 4.2</td></tr></table><h1 style=\"" +
         "font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">Chapter 2</h1><h2 style=" +
-        "\"border-collapse:collapse;font-family:courierNew,monospace;font-size:10pt;font-weight:" +
-        "bold\">Chapter 2.1</h2><h3 style=\"border-collapse:collapse;font-family:courierNew,monospace;" +
-        "font-size:10pt;font-weight:bold\">Chapter 2.1.1</h3><p style=\"border-collapse:collapse;" +
+        "\"font-family:courierNew,monospace;font-size:10pt;font-weight:" +
+        "bold\">Chapter 2.1</h2><h3 style=\"font-family:courierNew,monospace;" +
+        "font-size:10pt;font-weight:bold\">Chapter 2.1.1</h3><p style=\"" +
         "font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">This is an example of text in paragraph" +
         " 2</p><table><tr><th style=\"border-bottom:double #000000;border-collapse:collapse;border-left:double " +
         "#000000;border-right:double #000000;border-top:double #000000;font-family:arial,monospace;" +
-        "font-size:14pt;font-weight:bold;transform:rotate(359deg) scaleX(1.2) scaleY(1.7)\">Column 1</th><th " +
+        "font-size:14pt;font-weight:bold;height:15px;transform:rotate(10deg);width:20px\">Column 1</th><th " +
         "style=\"border-bottom:double #000000;border-collapse:collapse;border-left:double #000000;border-right:" +
         "double #000000;border-top:double #000000;font-family:arial,monospace;font-size:14pt;" +
-        "font-weight:bold;transform:rotate(359deg) scaleX(1.2) scaleY(1.7)\">Column 2</th></tr><tr><td style=" +
+        "font-weight:bold;height:15px;transform:rotate(10deg);width:20px\">Column 2</th></tr><tr><td style=" +
         "\"font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">Cell 1.1</td><td style=" +
         "\"font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">Cell 1.2</td></tr><tr>" +
         "<td style=\"font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">Cell 2.1</td>" +
@@ -140,19 +162,19 @@ public class HtmlFormatterTest extends BaseDocument {
             );
 
         final HtmlFormatter htmlFormatter = HtmlFormatter.create().setStyleService(styleService);
-        final DocumentHolder documentHolder = htmlFormatter.handle(doc1);
-        final String text = FileUtils.readFileToString(documentHolder.getResource().getFile(), StandardCharsets.UTF_8);
-        Assertions.assertEquals(1, StringUtils.countOccurrencesOf(text,
-            "{color:#00FF00;" +
-                "font-family:Brush Script MT,monospace;" +
-                "font-size:35pt;" +
-                "font-style:italic;" +
-                "font-weight:bold}"));
-        Assertions.assertEquals(1, StringUtils.countOccurrencesOf(text,
-            "{color:#FF0000;" +
-                "font-family:Gill Sans,monospace;" +
-                "font-size:15pt}"));
-        documentHolder.close();
+        try (DocumentHolder documentHolder = htmlFormatter.handle(doc1)) {
+            final String text = FileUtils.readFileToString(documentHolder.getResource().getFile(), StandardCharsets.UTF_8);
+            Assertions.assertEquals(1, StringUtils.countOccurrencesOf(text,
+                "{color:#00FF00;" +
+                    "font-family:Brush Script MT,monospace;" +
+                    "font-size:35pt;" +
+                    "font-style:italic;" +
+                    "font-weight:bold}"));
+            Assertions.assertEquals(1, StringUtils.countOccurrencesOf(text,
+                "{color:#FF0000;" +
+                    "font-family:Gill Sans,monospace;" +
+                    "font-size:15pt}"));
+        }
     }
 
     /**
@@ -164,12 +186,74 @@ public class HtmlFormatterTest extends BaseDocument {
     @Test
     public void testSaveToFile() throws Throwable {
         final HtmlFormatter htmlFormatter = HtmlFormatter.create();
-        final DocumentHolder documentHolder = htmlFormatter.handle(doc);
-        final String text = FileUtils.readFileToString(documentHolder.getResource().getFile(), StandardCharsets.UTF_8);
-        documentHolder.close();
+        try (DocumentHolder documentHolder = htmlFormatter.handle(doc)) {
+            final String text = FileUtils.readFileToString(documentHolder.getResource().getFile(), StandardCharsets.UTF_8);
+            final String styleCode = "_" + Integer.toHexString(Objects.hashCode(textStyleCell));
+            Assertions.assertEquals(MessageFormat.format(expected, styleCode), text);
+        }
+    }
 
-        final String styleCode = "_" + Integer.toHexString(Objects.hashCode(textStyleCell));
-        Assertions.assertEquals(MessageFormat.format(expected, styleCode), text);
+    /**
+     * Test on {@link HtmlFormatter#handle handle} call
+     * and proper saving result in "fileName"
+     *
+     * @throws Throwable Exception/IOException
+     */
+    @Test
+    public void testSaveToFileTextWithTransform() throws Throwable {
+        final HtmlFormatter htmlFormatter = HtmlFormatter.create();
+        try (DocumentHolder documentHolder = htmlFormatter.handle(
+            Document.create(
+                Paragraph
+                    .create("test string for transform")
+                    .setStyle(
+                        LayoutStyle.create()
+                            .setGeometryDetails(
+                                GeometryDetails.create()
+                                    .setAngle(
+                                        Geometry.create().add("html", "10deg")
+                                    )
+                                    .setTransformCenter(
+                                        Geometry.create()
+                                            .add(
+                                                "html",
+                                                new AbstractMap.SimpleEntry<>(
+                                                    HorAlignment.LEFT,
+                                                    VertAlignment.BOTTOM
+                                                )
+                                            )
+                                    )
+                                    .setWidth(
+                                        Geometry.create().add("html", "200px")
+                                    )
+                                    .setHeight(
+                                        Geometry.create().add("html", "200px")
+                                    )
+                                    .setScaleX(
+                                        Geometry.create().add("html", "0.3")
+                                    )
+                                    .setScaleY(
+                                        Geometry.create().add("html", "0.3")
+                                    )
+                            )
+                            .setVertAlignment(VertAlignment.CENTER)
+                            .setHorAlignment(HorAlignment.CENTER)
+                    )
+            )
+        )) {
+            final String text = FileUtils.readFileToString(documentHolder.getResource().getFile(), StandardCharsets.UTF_8);
+
+            Assertions.assertTrue(
+                text.contains("display:table-cell;" +
+                    "height:200px;" +
+                    "text-align:center;" +
+                    "transform:scaleX(0.3) scaleY(0.3) rotate(10deg);" +
+                    "transform-origin:left bottom;" +
+                    "vertical-align:middle;" +
+                    "width:200px"
+                )
+            );
+        }
     }
 
     /**
@@ -230,6 +314,7 @@ public class HtmlFormatterTest extends BaseDocument {
                 StyleCondition.create(TableCell.class, null)
             );
         final Style headerCellstyle = layoutTextStyle.clone().getLayoutStyle().setFillBackgroundColor(Color.TEAL)
+            .setGeometryDetails(null)
             .setCondition(
                 StyleCondition.create(TableHeaderCell.class, null)
             );
@@ -237,18 +322,17 @@ public class HtmlFormatterTest extends BaseDocument {
             HtmlStyleService
                 .create()
                 .setWriteStyleInplace(false)
-                .setHtmlColgroupTag(HtmlColgroupTag.create(true, false))
+                .setHtmlColgroupTag(HtmlColgroupTag.create(true, true))
                 .addStyles(
                     cellStyle,
                     headerCellstyle
                 )
         );
-        final DocumentHolder documentHolder = htmlFormatter.handle(doc1);
-        final String text = FileUtils.readFileToString(documentHolder.getResource().getFile(), StandardCharsets.UTF_8);
-        documentHolder.close();
-
-        Assertions.assertTrue(text.contains(Integer.toHexString(Objects.hashCode(cellStyle))));
-        Assertions.assertTrue(text.contains(Integer.toHexString(Objects.hashCode(headerCellstyle))));
+        try (DocumentHolder documentHolder = htmlFormatter.handle(doc1)) {
+            final String text = FileUtils.readFileToString(documentHolder.getResource().getFile(), StandardCharsets.UTF_8);
+            Assertions.assertTrue(text.contains(Integer.toHexString(Objects.hashCode(cellStyle))));
+            Assertions.assertTrue(text.contains(Integer.toHexString(Objects.hashCode(headerCellstyle))));
+        }
     }
 
     /**
@@ -261,13 +345,11 @@ public class HtmlFormatterTest extends BaseDocument {
     public void testSaveToResource() throws Throwable {
         final FileUrlResource resource = new FileUrlResource("testFile.txt");
         final HtmlFormatter htmlFormatter = HtmlFormatter.create().setResource(resource);
-        final DocumentHolder documentHolder = htmlFormatter.handle(doc);
-        final String text = FileUtils.readFileToString(documentHolder.getResource().getFile(), StandardCharsets.UTF_8);
-
-        documentHolder.close();
-
-        final String styleCode = "_" + Integer.toHexString(Objects.hashCode(textStyleCell));
-        Assertions.assertEquals(MessageFormat.format(expected, styleCode), text);
+        try (DocumentHolder documentHolder = htmlFormatter.handle(doc)) {
+            final String text = FileUtils.readFileToString(documentHolder.getResource().getFile(), StandardCharsets.UTF_8);
+            final String styleCode = "_" + Integer.toHexString(Objects.hashCode(textStyleCell));
+            Assertions.assertEquals(MessageFormat.format(expected, styleCode), text);
+        }
     }
 
     /**
@@ -280,12 +362,12 @@ public class HtmlFormatterTest extends BaseDocument {
     @Test
     public void testSaveToTmpFile() throws Throwable {
         final HtmlFormatter htmlFormatter = (HtmlFormatter) HtmlFormatter.create().setEncoding("UTF-8");
-        final DocumentHolder documentHolder = htmlFormatter.handle(doc);
-        final String text = FileUtils.readFileToString(documentHolder.getResource().getFile(), StandardCharsets.UTF_8);
-        documentHolder.close();
+        try (DocumentHolder documentHolder = htmlFormatter.handle(doc)) {
+            final String text = FileUtils.readFileToString(documentHolder.getResource().getFile(), StandardCharsets.UTF_8);
 
-        final String styleCode = "_" + Integer.toHexString(Objects.hashCode(textStyleCell));
-        Assertions.assertEquals(MessageFormat.format(expected, styleCode), text);
+            final String styleCode = "_" + Integer.toHexString(Objects.hashCode(textStyleCell));
+            Assertions.assertEquals(MessageFormat.format(expected, styleCode), text);
+        }
     }
 
     /**
@@ -298,12 +380,11 @@ public class HtmlFormatterTest extends BaseDocument {
     public void testSaveToStream() throws Throwable {
         final ByteArrayOutputStream os = new ByteArrayOutputStream();
         final HtmlFormatter htmlFormatter = HtmlFormatter.create().setOutputStream(os);
-        final DocumentHolder documentHolder = htmlFormatter.handle(doc);
-        final String text = os.toString(StandardCharsets.UTF_8.name());
-        documentHolder.close();
-
-        final String styleCode = "_" + Integer.toHexString(Objects.hashCode(textStyleCell));
-        Assertions.assertEquals(MessageFormat.format(expected, styleCode), text);
+        try (DocumentHolder ignored = htmlFormatter.handle(doc)) {
+            final String text = os.toString(StandardCharsets.UTF_8.name());
+            final String styleCode = "_" + Integer.toHexString(Objects.hashCode(textStyleCell));
+            Assertions.assertEquals(MessageFormat.format(expected, styleCode), text);
+        }
     }
 
     /**
@@ -316,10 +397,7 @@ public class HtmlFormatterTest extends BaseDocument {
         final Document doc = Document.create()
             .addPart(Heading.create(1).setDepth((short) 7).setText("test"));
         final HtmlFormatter htmlFormatter = HtmlFormatter.create();
-        final Exception e = Assertions.assertThrows(Exception.class, () -> {
-            final DocumentHolder documentHolder = htmlFormatter.handle(doc);
-            documentHolder.close();
-        });
+        final Exception e = Assertions.assertThrows(Exception.class, () -> htmlFormatter.handle(doc).close());
         Files.deleteIfExists(htmlFormatter.getResource().getFile().toPath());
         Assertions.assertTrue("Malformed tag: h7".contains(e.getMessage()));
     }
@@ -359,51 +437,42 @@ public class HtmlFormatterTest extends BaseDocument {
         htmlStyleService.addStyles(interlinearStyle);
 
         final String expected = "<!doctype html><html><head><meta charset=\"Cp1251\"><title>Test document</title>" +
-            "</head><body><h1>Title 1</h1><p align=\"left\"><font face=\"monospace\" size=\"10\">" +
-            "paragraph 1</font></p><table border=\"1\" cellspacing=\"0\"><tr><th align=\"left\"><font " +
-            "face=\"sans-serif\" size=\"14\">column1</font></th><th align=\"left\"><font " +
-            "face=\"sans-serif\" size=\"14\">column2 (столбец2)</font></th></tr><tr><td align=" +
-            "\"left\" bgcolor=\"#C0C0C0\">1</td><td align=\"left\" bgcolor=\"#C0C0C0\">2</td></tr><tr><td align=" +
-            "\"left\" bgcolor=\"#FFFFFF\">3</td><td align=\"left\" bgcolor=\"#FFFFFF\">4</td></tr><tr><td align=" +
-            "\"left\" bgcolor=\"#C0C0C0\">5</td><td align=\"left\" bgcolor=\"#C0C0C0\">6</td></tr></table><h1>" +
-            "<font face=\"serif\" size=\"20\">Test document v.1</font></h1><hr align=\"left\">" +
-            "<h1 align=\"left\"><font face=\"monospace\" size=\"10\">Chapter 1</font></h1>" +
-            "<h2 align=\"left\"><font face=\"monospace\" size=\"10\">Chapter 1.1</font></h2>" +
-            "<h3 align=\"left\"><font face=\"monospace\" size=\"10\">Chapter 1.1.1</font></h3>" +
-            "<p align=\"left\"><font face=\"monospace\" size=\"10\">This is an example of text " +
-            "in paragraph</font></p><table border=\"1\" cellspacing=\"0\"><tr><th align=\"left\"><font " +
-            "face=\"sans-serif\" size=\"14\">Column 1</font></th><th align=\"left\"><font " +
-            "face=\"sans-serif\" size=\"14\">Column 2</font></th></tr><tr><td align=\"left\" bgcolor=" +
-            "\"#C0C0C0\">Cell 1.1</td><td align=\"left\" bgcolor=\"#C0C0C0\">Cell 1.2</td></tr><tr><td align=" +
-            "\"left\" bgcolor=\"#FFFFFF\">Cell 2.1</td><td align=\"left\" bgcolor=\"#FFFFFF\">Cell 2.2</td></tr>" +
-            "<tr><td align=\"left\" bgcolor=\"#C0C0C0\">Cell 3.1</td><td align=\"left\" bgcolor=\"#C0C0C0\">Cell 3.2" +
-            "</td></tr><tr><td align=\"left\" bgcolor=\"#FFFFFF\">Cell 4.1</td><td align=\"left\" bgcolor=" +
-            "\"#FFFFFF\">Cell 4.2</td></tr></table><h1 align=\"left\"><font face=\"monospace\" " +
-            "size=\"10\">Chapter 2</font></h1><h2 align=\"left\"><font face=\"monospace\" " +
-            "size=\"10\">Chapter 2.1</font></h2><h3 align=\"left\"><font face=\"monospace\" " +
-            "size=\"10\">Chapter 2.1.1</font></h3><p align=\"left\"><font face=\"monospace\" " +
-            "size=\"10\">This is an example of text in paragraph 2</font></p><table border=\"1\" cellspacing=\"0\">" +
-            "<tr><th align=\"left\"><font face=\"sans-serif\" size=\"14\">Column 1</font></th>" +
-            "<th align=\"left\"><font face=\"sans-serif\" size=\"14\">Column 2</font></th></tr><tr>" +
-            "<td align=\"left\" bgcolor=\"#C0C0C0\">Cell 1.1</td><td align=\"left\" bgcolor=\"#C0C0C0\">Cell 1.2</td>" +
-            "</tr><tr><td align=\"left\" bgcolor=\"#FFFFFF\">Cell 2.1</td><td align=\"left\" bgcolor=\"#FFFFFF\">" +
-            "Cell 2.2</td></tr></table><h1>Title 1</h1><p>paragraph 1</p><h2>shifted heading</h2><table border=" +
-            "\"1\" cellspacing=\"0\"><tr><th>столбец1</th><th>column2</th></tr><tr><td align=\"left\" bgcolor=" +
-            "\"#C0C0C0\">1</td><td align=\"left\" bgcolor=\"#C0C0C0\">2</td></tr><tr><td align=\"left\" bgcolor=" +
-            "\"#FFFFFF\">3</td><td align=\"left\" bgcolor=\"#FFFFFF\">4 and some escape characters (символы) " +
-            "%;;;;;\\/</td></tr><tr><td align=\"left\" bgcolor=\"#C0C0C0\">5</td><td align=\"left\" bgcolor=" +
-            "\"#C0C0C0\">6</td></tr></table></body></html>";
+            "</head><body><h1>Title 1</h1><p><font face=\"monospace\" size=\"10\">paragraph 1</font></p><table " +
+            "border=\"1\" cellspacing=\"0\"><tr><th><font face=\"sans-serif\" size=\"14\">column1</font></th><th>" +
+            "<font face=\"sans-serif\" size=\"14\">column2 (столбец2)</font></th></tr><tr><td bgcolor=\"#C0C0C0\">1" +
+            "</td><td bgcolor=\"#C0C0C0\">2</td></tr><tr><td bgcolor=\"#FFFFFF\">3</td><td bgcolor=\"#FFFFFF\">4" +
+            "</td></tr><tr><td bgcolor=\"#C0C0C0\">5</td><td bgcolor=\"#C0C0C0\">6</td></tr></table><h1>" +
+            "<font size=\"20\">Test document v.1</font></h1><hr><h1><font face=\"monospace\" size=\"10\">" +
+            "Chapter 1</font></h1><h2><font face=\"monospace\" size=\"10\">Chapter 1.1</font></h2><h3><font " +
+            "face=\"monospace\" size=\"10\">Chapter 1.1.1</font></h3><p><font face=\"monospace\" size=\"10\">" +
+            "This is an example of text in paragraph</font></p><table border=\"1\" cellspacing=\"0\"><tr><th><font " +
+            "face=\"sans-serif\" size=\"14\">Column 1</font></th><th><font face=\"sans-serif\" size=\"14\">Column 2" +
+            "</font></th></tr><tr><td bgcolor=\"#C0C0C0\">Cell 1.1</td><td bgcolor=\"#C0C0C0\">Cell 1.2</td></tr>" +
+            "<tr><td bgcolor=\"#FFFFFF\">Cell 2.1</td><td bgcolor=\"#FFFFFF\">Cell 2.2</td></tr><tr><td " +
+            "bgcolor=\"#C0C0C0\">Cell 3.1</td><td bgcolor=\"#C0C0C0\">Cell 3.2</td></tr><tr><td bgcolor=\"#FFFFFF\">" +
+            "Cell 4.1</td><td bgcolor=\"#FFFFFF\">Cell 4.2</td></tr></table><h1><font face=\"monospace\" size=\"10\">" +
+            "Chapter 2</font></h1><h2><font face=\"monospace\" size=\"10\">Chapter 2.1</font></h2><h3><font " +
+            "face=\"monospace\" size=\"10\">Chapter 2.1.1</font></h3><p><font face=\"monospace\" size=\"10\">" +
+            "This is an example of text in paragraph 2</font></p><table border=\"1\" cellspacing=\"0\"><tr><th>" +
+            "<font face=\"sans-serif\" size=\"14\">Column 1</font></th><th><font face=\"sans-serif\" size=\"14\">" +
+            "Column 2</font></th></tr><tr><td bgcolor=\"#C0C0C0\">Cell 1.1</td><td bgcolor=\"#C0C0C0\">Cell 1.2</td>" +
+            "</tr><tr><td bgcolor=\"#FFFFFF\">Cell 2.1</td><td bgcolor=\"#FFFFFF\">Cell 2.2</td></tr></table><h1>" +
+            "Title 1</h1><p>paragraph 1</p><h2>shifted heading</h2><table border=\"1\" cellspacing=\"0\"><tr>" +
+            "<th>столбец1</th><th>column2</th></tr><tr><td bgcolor=\"#C0C0C0\">1</td><td bgcolor=\"#C0C0C0\">2</td>" +
+            "</tr><tr><td bgcolor=\"#FFFFFF\">3</td><td bgcolor=\"#FFFFFF\">4 and some escape characters " +
+            "(символы) %;;;;;\\/</td></tr><tr><td bgcolor=\"#C0C0C0\">5</td><td bgcolor=\"#C0C0C0\">6</td></tr>" +
+            "</table></body></html>";
         final HtmlFormatter htmlFormatter = HtmlFormatter
             .create()
             .setEncoding("Cp1251")
             .setStyleService(htmlStyleService);
-        final DocumentHolder documentHolder = htmlFormatter.handle(doc);
-        final String text = FileUtils.readFileToString(
-            documentHolder.getResource().getFile(),
-            Charset.forName("Cp1251")
-        );
-        documentHolder.close();
-        Assertions.assertEquals(expected, text);
+        try (DocumentHolder documentHolder = htmlFormatter.handle(doc)) {
+            final String text = FileUtils.readFileToString(
+                documentHolder.getResource().getFile(),
+                Charset.forName("Cp1251")
+            );
+            Assertions.assertEquals(expected, text);
+        }
     }
 
     @Test
@@ -476,7 +545,9 @@ public class HtmlFormatterTest extends BaseDocument {
                 "border-left:double #000000;" +
                 "border-right:double #000000;" +
                 "border-top:double #000000;" +
-                "transform:rotate(359deg) scaleX(1.2) scaleY(1.7)" +
+                "height:15px;" +
+                "transform:rotate(10deg);" +
+                "width:20px" +
                 "\">test_text</td></tr>", os.toString());
         os.reset();
 
@@ -491,12 +562,19 @@ public class HtmlFormatterTest extends BaseDocument {
 
         final HtmlFormatter htmlFormatter = HtmlFormatter.create().setStyleService(styleService);
         htmlFormatter.setOutputStream(os);
-        final DocumentHolder documentHolder = htmlFormatter.handle(doc);
-
-        Assertions.assertTrue(StringUtils.endsWithIgnoreCase(os.toString(),
-            "<tr><td class=\"_" + Integer.toHexString(Objects.hashCode(layoutStyle1)) + "\">test_text</td></tr>" +
-                "</body></html>"));
-        documentHolder.close();
+        final Style divStyle = LayoutStyle.create()
+            .setGeometryDetails(
+                layoutStyle1.getGeometryDetails()
+            )
+            .setCondition(
+                StyleCondition.create(HtmlDiv.class, o -> true)
+            );
+        try (DocumentHolder ignored = htmlFormatter.handle(doc)) {
+            Assertions.assertTrue(StringUtils.endsWithIgnoreCase(os.toString(),
+                "<tr><td class=\"_" + Integer.toHexString(Objects.hashCode(layoutStyle1.setGeometryDetails(null))) + "\">" +
+                    "<div class=\"_" + Integer.toHexString(Objects.hashCode(divStyle)) + "\">test_text</div></td></tr>" +
+                    "</body></html>"));
+        }
     }
 
     @Test
@@ -526,7 +604,9 @@ public class HtmlFormatterTest extends BaseDocument {
             "border-left:double #000000;" +
             "border-right:double #000000;" +
             "border-top:double #000000;" +
-            "transform:rotate(359deg) scaleX(1.2) scaleY(1.7)" +
+            "height:15px;" +
+            "transform:rotate(10deg);" +
+            "width:20px" +
             "\">test_text</th></tr>", os.toString());
         os.reset();
 
@@ -540,12 +620,11 @@ public class HtmlFormatterTest extends BaseDocument {
 
         final HtmlFormatter htmlFormatter = HtmlFormatter.create().setStyleService(styleService);
         htmlFormatter.setOutputStream(os);
-        final DocumentHolder documentHolder = htmlFormatter.handle(doc);
-
-        Assertions.assertTrue(StringUtils.endsWithIgnoreCase(os.toString(),
-            "<tr><th class=\"_" + Integer.toHexString(Objects.hashCode(layoutStyle1)) + "\">test_text</th></tr>" +
-                "</body></html>"));
-        documentHolder.close();
+        try (DocumentHolder documentHolder = htmlFormatter.handle(doc)) {
+            Assertions.assertTrue(StringUtils.endsWithIgnoreCase(os.toString(),
+                "<tr><th class=\"_" + Integer.toHexString(Objects.hashCode(layoutStyle1)) + "\">test_text</th></tr>" +
+                    "</body></html>"));
+        }
     }
 
     @Test
@@ -586,7 +665,9 @@ public class HtmlFormatterTest extends BaseDocument {
             "border-left:double #000000;" +
             "border-right:double #000000;" +
             "border-top:double #000000;" +
-            "transform:rotate(359deg) scaleX(1.2) scaleY(1.7)" +
+            "height:15px;" +
+            "transform:rotate(10deg);" +
+            "width:20px" +
             "\">test_text1</th></tr><tr><td>test_text2</td></tr></table>", os.toString());
         os.reset();
 
@@ -600,17 +681,16 @@ public class HtmlFormatterTest extends BaseDocument {
 
         final HtmlFormatter htmlFormatter = HtmlFormatter.create().setStyleService(styleService);
         htmlFormatter.setOutputStream(os);
-        final DocumentHolder documentHolder = htmlFormatter.handle(doc);
-
-        Assertions.assertTrue(
-            StringUtils.endsWithIgnoreCase(
-                os.toString(),
-                "<tr><th class=\"_" +
-                    Integer.toHexString(Objects.hashCode(layoutStyle1)) +
-                    "\">test_text1</th></tr></body></html>"
-            )
-        );
-        documentHolder.close();
+        try (DocumentHolder documentHolder = htmlFormatter.handle(doc)) {
+            Assertions.assertTrue(
+                StringUtils.endsWithIgnoreCase(
+                    os.toString(),
+                    "<tr><th class=\"_" +
+                        Integer.toHexString(Objects.hashCode(layoutStyle1)) +
+                        "\">test_text1</th></tr></body></html>"
+                )
+            );
+        }
     }
 
     public void testHtmlTag(
@@ -640,7 +720,9 @@ public class HtmlFormatterTest extends BaseDocument {
                 "border-left:double #000000;" +
                 "border-right:double #000000;" +
                 "border-top:double #000000;" +
-                "transform:rotate(359deg) scaleX(1.2) scaleY(1.7)" +
+                "height:15px;" +
+                "transform:rotate(10deg);" +
+                "width:20px" +
                 "\">test_text</" + baseTag + ">", os.toString());
         os.reset();
 // Case of the text style
@@ -667,14 +749,28 @@ public class HtmlFormatterTest extends BaseDocument {
 
         final HtmlFormatter htmlFormatter = HtmlFormatter.create().setStyleService(styleService);
         htmlFormatter.setOutputStream(osRes);
-        final DocumentHolder documentHolder = htmlFormatter.handle(doc);
-
-        Assertions.assertTrue(StringUtils.endsWithIgnoreCase(osRes.toString(),
-            "<" + baseTag + " class=\"_" +
-                Integer.toHexString(Objects.hashCode(layoutStyle1)) +
-                "\">test_text</" + baseTag + ">" +
-                "</body></html>"));
-        documentHolder.close();
+        final Style divStyle = LayoutStyle.create()
+            .setGeometryDetails(
+                layoutStyle1.getGeometryDetails()
+            )
+            .setCondition(
+                StyleCondition.create(HtmlDiv.class, o -> true)
+            );
+        try (DocumentHolder ignored = htmlFormatter.handle(doc)) {
+            if (baseTag.getClass().equals(HtmlTableCell.class)) {
+                Assertions.assertTrue(StringUtils.endsWithIgnoreCase(osRes.toString(),
+                    "<" + baseTag + " class=\"_" +
+                        Integer.toHexString(Objects.hashCode(layoutStyle1.setGeometryDetails(null))) +
+                        "\"><div class=\"_" + Integer.toHexString(Objects.hashCode(divStyle)) + "\">test_text</div></" + baseTag + ">" +
+                        "</body></html>"));
+            } else {
+                Assertions.assertTrue(StringUtils.endsWithIgnoreCase(osRes.toString(),
+                    "<" + baseTag + " class=\"_" +
+                        Integer.toHexString(Objects.hashCode(layoutStyle1)) +
+                        "\">test_text</" + baseTag + ">" +
+                        "</body></html>"));
+            }
+        }
     }
 
     public void handleItem(DocumentItem item, HtmlFormatterVisitor htmlFormatterVisitor) throws Throwable {
@@ -698,5 +794,4 @@ public class HtmlFormatterTest extends BaseDocument {
             htmlFormatterVisitor.visitFooter((Footer) item);
         }
     }
-
 }

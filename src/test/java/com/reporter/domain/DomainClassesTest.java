@@ -103,9 +103,9 @@ public class DomainClassesTest {
     @Test
     public void testDocumentHolder() throws Throwable {
         final FileUrlResource file = new FileUrlResource("testFile");
-        final DocumentHolder documentHolder = new DocumentHolder(file);
-        Assertions.assertTrue(AutoCloseable.class.isAssignableFrom(DocumentHolder.class));
-        documentHolder.close();
-        Assertions.assertTrue(Files.notExists(documentHolder.getResource().getFile().toPath()));
+        try (DocumentHolder documentHolder = new DocumentHolder(file)) {
+            Assertions.assertTrue(AutoCloseable.class.isAssignableFrom(DocumentHolder.class));
+            Assertions.assertTrue(Files.notExists(documentHolder.getResource().getFile().toPath()));
+        }
     }
 }
