@@ -12,6 +12,8 @@ import com.model.domain.styles.*;
 import com.model.domain.styles.constants.BorderWeight;
 import com.model.domain.styles.constants.Color;
 import com.model.domain.styles.constants.FillPattern;
+import com.model.domain.styles.constants.HorAlignment;
+import com.model.domain.styles.constants.VertAlignment;
 import com.model.domain.styles.geometry.GeometryDetails;
 import com.model.domain.styles.geometry.Geometry;
 import com.model.formatter.DocumentHolder;
@@ -29,7 +31,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.text.DecimalFormat;
+import java.util.AbstractMap;
 import java.util.List;
+import java.util.Map;
 
 class PdfFormatterTest extends BaseDocument {
     public static final String expected = "Title 1\n" +
@@ -231,7 +235,7 @@ class PdfFormatterTest extends BaseDocument {
 
     /**
      * Tests {@link PdfFormatter#handle handle} call
-     * and proper saving table in "doc1.pdf",
+     * and proper saving table in "test_file.pdf",
      * checks saved table as a text
      *
      * @throws Throwable Exception/IOException
@@ -253,6 +257,46 @@ class PdfFormatterTest extends BaseDocument {
                 doc1.close();
                 pdfReader.close();
                 Assertions.assertEquals(expected, currentText);
+            }
+        }
+    }
+
+    @Test
+    public void testSaveParagraphWithRotationToNewFile() throws Throwable {
+        final PdfFormatter pdfFormatter = PdfFormatter.create()
+            .setEncoding("Cp1251")
+            .setStyleService(styleService);
+        pdfFormatter.setFileName("test_file");
+        Assertions.assertEquals("test_file", pdfFormatter.getFileName());
+
+        final Document document = Document.create(
+            Paragraph.create("Test paragraph")
+                .setStyle(
+                    LayoutStyle.create()
+                        .setGeometryDetails(
+                            GeometryDetails.create()
+                                .setAngle(Geometry.create().add("pdf", 10f))
+                                .setWidth(Geometry.create().add("pdf", 300f))
+                                .setTransformCenter(Geometry.<Map.Entry<HorAlignment, VertAlignment>>create()
+                                    .add(
+                                        "pdf",
+                                        new AbstractMap.SimpleEntry<>(HorAlignment.LEFT, VertAlignment.TOP)
+                                    )
+                                )
+                                .setScaleX(Geometry.create().add("pdf", 1.2f))
+                        )
+                )
+        );
+
+        try (DocumentHolder documentHolder = pdfFormatter.handle(document)) {
+            if (Files.exists(documentHolder.getResource().getFile().toPath())) {
+                final PdfReader pdfReader = new PdfReader(documentHolder.getResource().getFile());
+                final PdfDocument doc1 = new PdfDocument(pdfReader);
+                final ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
+                final String currentText = PdfTextExtractor.getTextFromPage(doc1.getPage(1), strategy);
+                doc1.close();
+                pdfReader.close();
+                Assertions.assertEquals("Test paragraph", currentText);
             }
         }
     }

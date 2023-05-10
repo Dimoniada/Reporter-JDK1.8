@@ -51,6 +51,7 @@ import java.text.MessageFormat;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class HtmlFormatterTest extends BaseDocument {
 
@@ -214,7 +215,7 @@ public class HtmlFormatterTest extends BaseDocument {
                                         Geometry.create().add("html", "10deg")
                                     )
                                     .setTransformCenter(
-                                        Geometry.create()
+                                        Geometry.<Map.Entry<HorAlignment, VertAlignment>>create()
                                             .add(
                                                 "html",
                                                 new AbstractMap.SimpleEntry<>(

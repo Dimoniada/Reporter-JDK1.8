@@ -17,7 +17,11 @@ import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.AbstractElement;
 import com.itextpdf.layout.element.BlockElement;
 import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Text;
+import com.itextpdf.layout.properties.Property;
+import com.itextpdf.layout.properties.Transform;
+import com.itextpdf.layout.properties.UnitValue;
 import com.model.domain.FontService;
 import com.model.domain.Heading;
 import com.model.domain.TextItem;
@@ -33,6 +37,7 @@ import com.model.domain.styles.constants.HorAlignment;
 import com.model.domain.styles.constants.VertAlignment;
 import com.model.domain.styles.geometry.GeometryDetails;
 import com.model.formatter.pdf.PdfDetails;
+import com.model.formatter.pdf.image.CustomBlockRendered;
 import com.model.utils.LocalizedNumberUtils;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.springframework.util.StringUtils;
@@ -43,6 +48,7 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 /**
@@ -305,13 +311,87 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
     }
 
     /**
-     * Adjusts width/height/angle in an itextpdf text element, depending on the layoutStyle
+     * Adjusts width/height/angle/scale in an itextpdf text element, depending on the layoutStyle
      *
-     * @param element     text itextpdf element
-     * @param layoutStyle input style
+     * @param outerElement decoration element
+     * @param layoutStyle  input style
      */
-    public static void convertTransform(AbstractElement<?> element, LayoutStyle layoutStyle) {
-       //TODO
+    public static void convertGeometryDetails(AbstractElement<?> outerElement, LayoutStyle layoutStyle) {
+        final GeometryDetails geometryDetails = layoutStyle.getGeometryDetails();
+        if (geometryDetails != null && outerElement instanceof BlockElement<?>) {
+            // Width
+            if (geometryDetails.getWidth() != null) {
+                geometryDetails
+                    .getWidth()
+                    .getValueFor(EXTENSION)
+                    .ifPresent(value -> {
+                        if (value instanceof Float) {
+                            ((BlockElement<?>) outerElement).setWidth((float) value);
+                        }
+                    });
+            }
+            // Height
+            if (geometryDetails.getHeight() != null) {
+                geometryDetails
+                    .getHeight()
+                    .getValueFor(EXTENSION)
+                    .ifPresent(value -> {
+                            if (value instanceof Float) {
+                                ((BlockElement<?>) outerElement).setHeight((float) value);
+                            }
+                        }
+                    );
+            }
+            // Rotation angle
+            if (geometryDetails.getAngle() != null) {
+                geometryDetails
+                    .getAngle()
+                    .getValueFor(EXTENSION)
+                    .ifPresent(value -> {
+                            if (value instanceof Float) {
+                                ((BlockElement<?>) outerElement)
+                                    .setRotationAngle((float) ((float) value * Math.PI / 180f));
+                            }
+                        }
+                    );
+            }
+            // To get Rotation center
+            if (geometryDetails.getTransformCenter() != null) {
+                geometryDetails
+                    .getTransformCenter()
+                    .getValueFor(EXTENSION)
+                    .ifPresent(center -> {
+                        outerElement.setNextRenderer(new CustomBlockRendered((Paragraph) outerElement, center));
+                        }
+                    );
+            }
+            // Horizontal & Vertical scaling
+            final AtomicReference<Object> scaleX = new AtomicReference<>(1f);
+            if (geometryDetails.getScaleX() != null) {
+                geometryDetails
+                    .getScaleX()
+                    .getValueFor(EXTENSION)
+                    .ifPresent(scaleX::set);
+            }
+            final AtomicReference<Object> scaleY = new AtomicReference<>(1f);
+            if (geometryDetails.getScaleY() != null) {
+                geometryDetails
+                    .getScaleY()
+                    .getValueFor(EXTENSION)
+                    .ifPresent(scaleY::set);
+            }
+            final UnitValue uv = new UnitValue(UnitValue.POINT, 0);
+            final Transform transform = new Transform(1);
+            transform
+                .addSingleTransform(
+                    new Transform.SingleTransform((float) scaleX.get(), 0, 0, (float) scaleY.get(), uv, uv)
+                );
+            outerElement
+                .setProperty(
+                    Property.TRANSFORM,
+                    transform
+                );
+        }
     }
 
     /**
@@ -416,16 +496,16 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
                     if (StandardCharsets.UTF_8.name().equals(encoding)) {
                         font =
                             PdfFontFactory.createFont(
-                                    fontResource,
-                                    PdfEncodings.IDENTITY_H,
-                                    PdfFontFactory.EmbeddingStrategy.FORCE_EMBEDDED
-                                );
-                    } else {
-                        font = PdfFontFactory.createFont(
                                 fontResource,
-                                encoding,
+                                PdfEncodings.IDENTITY_H,
                                 PdfFontFactory.EmbeddingStrategy.FORCE_EMBEDDED
                             );
+                    } else {
+                        font = PdfFontFactory.createFont(
+                            fontResource,
+                            encoding,
+                            PdfFontFactory.EmbeddingStrategy.FORCE_EMBEDDED
+                        );
                     }
                 } catch (Exception e) {
                     throw new IllegalStateException("Failed to create PdfFont.", e);
@@ -435,10 +515,10 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
                     try {
                         // encoding matches the font resource, otherwise IOException
                         font = PdfFontFactory.createFont(
-                                textStyle.getFontNameResource(),
-                                encoding,
-                                PdfFontFactory.EmbeddingStrategy.FORCE_EMBEDDED
-                            );
+                            textStyle.getFontNameResource(),
+                            encoding,
+                            PdfFontFactory.EmbeddingStrategy.FORCE_EMBEDDED
+                        );
                     } catch (IOException e) {
                         throw new IllegalArgumentException(
                             String
@@ -451,10 +531,10 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
                     }
                 } else {
                     font = PdfFontFactory.createFont(
-                            StandardFonts.TIMES_ROMAN,
-                            "Cp1251",
-                            PdfFontFactory.EmbeddingStrategy.FORCE_EMBEDDED
-                        );
+                        StandardFonts.TIMES_ROMAN,
+                        "Cp1251",
+                        PdfFontFactory.EmbeddingStrategy.FORCE_EMBEDDED
+                    );
                 }
             }
             textStyles.put(textStyle, font);
@@ -482,30 +562,23 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
     /**
      * Decorates the native AbstractElement with a LayoutStyle
      *
-     * @param element     decoration element
-     * @param layoutStyle input LayoutStyle style
+     * @param outerElement decoration element
+     * @param layoutStyle  input LayoutStyle style
      */
-    public void convertLayoutStyleToElement(AbstractElement<?> element, LayoutStyle layoutStyle) {
+    public void convertLayoutStyleToElement(AbstractElement<?> outerElement, LayoutStyle layoutStyle) {
         if (layoutStyle == null) {
             return;
         }
-        final boolean isTableCell = element instanceof com.itextpdf.layout.element.Cell;
-        convertGroundColor(element, layoutStyle);
-        convertBorder(layoutStyle.getBorderTop(), element::setBorderTop, isTableCell);
-        convertBorder(layoutStyle.getBorderLeft(), element::setBorderLeft, isTableCell);
-        convertBorder(layoutStyle.getBorderRight(), element::setBorderRight, isTableCell);
-        convertBorder(layoutStyle.getBorderBottom(), element::setBorderBottom, isTableCell);
-        convertHorizontalAlignment(element, layoutStyle);
-        convertVerticalAlignment(element, layoutStyle);
-        convertShrinkToFit(element, layoutStyle);
-        convertTransform(element, layoutStyle);
-        final GeometryDetails geometryDetails = layoutStyle.getGeometryDetails();
-        if (element instanceof BlockElement<?> && geometryDetails != null && geometryDetails.getWidth() != null) {
-            geometryDetails
-                .getWidth()
-                .getValueFor(EXTENSION)
-                .ifPresent(value -> ((BlockElement<?>) element).setWidth((float) value));
-        }
+        final boolean isTableCell = outerElement instanceof com.itextpdf.layout.element.Cell;
+        convertGroundColor(outerElement, layoutStyle);
+        convertBorder(layoutStyle.getBorderTop(), outerElement::setBorderTop, isTableCell);
+        convertBorder(layoutStyle.getBorderLeft(), outerElement::setBorderLeft, isTableCell);
+        convertBorder(layoutStyle.getBorderRight(), outerElement::setBorderRight, isTableCell);
+        convertBorder(layoutStyle.getBorderBottom(), outerElement::setBorderBottom, isTableCell);
+        convertHorizontalAlignment(outerElement, layoutStyle);
+        convertVerticalAlignment(outerElement, layoutStyle);
+        convertShrinkToFit(outerElement, layoutStyle);
+        convertGeometryDetails(outerElement, layoutStyle);
     }
 
     @Override

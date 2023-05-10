@@ -29,7 +29,6 @@ import org.springframework.web.util.HtmlUtils;
 
 import java.io.OutputStreamWriter;
 import java.text.DecimalFormat;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -172,38 +171,35 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
             .collect(Collectors.joining(" "));
     }
 
-    public static String toHtmlWidth(Geometry width) {
+    public static String toHtmlWidth(Geometry<Object> width) {
         return geometryToString("", width, "");
     }
 
-    public static String toHtmlHeight(Geometry height) {
+    public static String toHtmlHeight(Geometry<Object> height) {
         return geometryToString("", height, "");
     }
 
-    public static String toHtmlTransformCenter(Geometry transformCenter) {
+    public static String toHtmlTransformCenter(Geometry<Map.Entry<HorAlignment, VertAlignment>> transformCenter) {
         final AtomicReference<String> res = new AtomicReference<>(null);
         if (transformCenter != null) {
             transformCenter.getValueFor(EXTENSION).ifPresent(v -> {
-                final AbstractMap.SimpleEntry<?, ?> point = (AbstractMap.SimpleEntry<?, ?>) v;
-                if (point.getKey() instanceof HorAlignment && point.getValue() instanceof VertAlignment) {
-                    HorAlignment horAlignment = (HorAlignment) point.getKey();
-                    if (!horizontalAlignmentMap.containsKey(horAlignment)) {
-                        throw new IllegalArgumentException("Undefined HorAlignment type for transform-origin");
-                    }
-                    if (horAlignment == HorAlignment.GENERAL) {
-                        horAlignment = HorAlignment.CENTER;
-                    }
-                    final VertAlignment vertAlignment = (VertAlignment) point.getValue();
-                    if (!verticalAlignmentMap.containsKey(vertAlignment)) {
-                        throw new IllegalArgumentException("Undefined VertAlignment type for transform-origin");
-                    }
-                    res.set(
-                        String.join(" ",
-                            horizontalAlignmentMap.get(horAlignment),
-                            verticalAlignmentMap.get(vertAlignment)
-                        )
-                    );
+                if (!horizontalAlignmentMap.containsKey(v.getKey())) {
+                    throw new IllegalArgumentException("Undefined HorAlignment type for transform-origin");
                 }
+                HorAlignment horAlignment = v.getKey();
+                if (horAlignment == HorAlignment.GENERAL) {
+                    horAlignment = HorAlignment.CENTER;
+                }
+
+                if (!verticalAlignmentMap.containsKey(v.getValue())) {
+                    throw new IllegalArgumentException("Undefined VertAlignment type for transform-origin");
+                }
+                res.set(
+                    String.join(" ",
+                        horizontalAlignmentMap.get(horAlignment),
+                        verticalAlignmentMap.get(v.getValue())
+                    )
+                );
             });
         }
         return res.get();

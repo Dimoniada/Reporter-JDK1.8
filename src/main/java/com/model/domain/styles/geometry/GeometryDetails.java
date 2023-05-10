@@ -1,6 +1,10 @@
 package com.model.domain.styles.geometry;
 
 import com.google.common.base.MoreObjects;
+import com.model.domain.styles.constants.HorAlignment;
+import com.model.domain.styles.constants.VertAlignment;
+
+import java.util.Map;
 
 /**
  * Represents measurable details of an element
@@ -9,23 +13,23 @@ public class GeometryDetails {
     /**
      * Element width, default is null when not provided
      */
-    protected Geometry width;
+    protected Geometry<Object> width;
     /**
      * Element height, default is null when not provided
      */
-    protected Geometry height;
+    protected Geometry<Object> height;
     /**
      * Scale X of element, default is null when not provided
      */
-    protected Geometry scaleX;
+    protected Geometry<Object> scaleX;
     /**
      * Scale Y of element, default is null when not provided
      */
-    protected Geometry scaleY;
+    protected Geometry<Object> scaleY;
     /**
      * Element angle, default is null when not provided
      */
-    protected Geometry angle;
+    protected Geometry<Object> angle;
     /**
      * Scaling and rotation center for element, default is null when not provided
      * Geometry here is a Map
@@ -35,7 +39,7 @@ public class GeometryDetails {
      *      {@link com.model.domain.styles.constants.HorAlignment},
      *      {@link com.model.domain.styles.constants.VertAlignment}
      */
-    protected Geometry transformCenter;
+    protected Geometry<Map.Entry<HorAlignment, VertAlignment>> transformCenter;
 
     public static GeometryDetails create() {
         return new GeometryDetails();
@@ -53,65 +57,56 @@ public class GeometryDetails {
             .toString();
     }
 
-    public Geometry getWidth() {
+    public Geometry<Object> getWidth() {
         return width;
     }
 
-    public GeometryDetails setWidth(Geometry width) {
+    public GeometryDetails setWidth(Geometry<Object> width) {
         this.width = width;
         return this;
     }
 
-    public Geometry getHeight() {
+    public Geometry<Object> getHeight() {
         return height;
     }
 
-    public GeometryDetails setHeight(Geometry height) {
+    public GeometryDetails setHeight(Geometry<Object> height) {
         this.height = height;
         return this;
     }
 
-    public Geometry getScaleX() {
+    public Geometry<Object> getScaleX() {
         return scaleX;
     }
 
-    public GeometryDetails setScaleX(Geometry scaleX) {
+    public GeometryDetails setScaleX(Geometry<Object> scaleX) {
         this.scaleX = scaleX;
         return this;
     }
 
-    public Geometry getScaleY() {
+    public Geometry<Object> getScaleY() {
         return scaleY;
     }
 
-    public GeometryDetails setScaleY(Geometry scaleY) {
+    public GeometryDetails setScaleY(Geometry<Object> scaleY) {
         this.scaleY = scaleY;
         return this;
     }
 
-    public Geometry getAngle() {
+    public Geometry<Object> getAngle() {
         return angle;
     }
 
-    public GeometryDetails setAngle(Geometry angle) {
+    public GeometryDetails setAngle(Geometry<Object> angle) {
         this.angle = angle;
         return this;
     }
 
-    public Geometry getTransformCenter() {
+    public Geometry<Map.Entry<HorAlignment, VertAlignment>> getTransformCenter() {
         return transformCenter;
     }
 
-    /**
-     *
-     * @param transformCenter is a Map
-     *            key = extension (String),
-     *            value = center is a  AbstractMap.SimpleEntry with
-     *                      key = {@link com.model.domain.styles.constants.HorAlignment},
-     *                      value = {@link com.model.domain.styles.constants.VertAlignment}
-     * @return GeometryDetails
-     */
-    public GeometryDetails setTransformCenter(Geometry transformCenter) {
+    public GeometryDetails setTransformCenter(Geometry<Map.Entry<HorAlignment, VertAlignment>> transformCenter) {
         this.transformCenter = transformCenter;
         return this;
     }
