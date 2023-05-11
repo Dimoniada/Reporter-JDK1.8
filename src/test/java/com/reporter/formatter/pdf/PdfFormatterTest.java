@@ -275,15 +275,64 @@ class PdfFormatterTest extends BaseDocument {
                     LayoutStyle.create()
                         .setGeometryDetails(
                             GeometryDetails.create()
-                                .setAngle(Geometry.create().add("pdf", 10f))
-                                .setWidth(Geometry.create().add("pdf", 300f))
+                                .setAngle(Geometry.create().add("pdf", 45f))
                                 .setTransformCenter(Geometry.<Map.Entry<HorAlignment, VertAlignment>>create()
                                     .add(
                                         "pdf",
-                                        new AbstractMap.SimpleEntry<>(HorAlignment.LEFT, VertAlignment.TOP)
+                                        new AbstractMap.SimpleEntry<>(HorAlignment.CENTER, VertAlignment.CENTER)
                                     )
                                 )
-                                .setScaleX(Geometry.create().add("pdf", 1.2f))
+                                .setWidth(Geometry.create().add("pdf", 100f))
+                        )
+                ),
+            Table
+                .create()
+                .setTableHeaderRow(
+                    TableHeaderRow
+                        .create()
+                        .addParts(
+                            TableHeaderCell.create().setText("Column 1"),
+                            TableHeaderCell.create().setText("Column 2")
+                        )
+                )
+                .addParts(
+                    TableRow
+                        .create()
+                        .addParts(
+                            TableCell.create().setText("Cell 1.1"),
+                            TableCell.create().setText("Cell 1.2")
+                        ),
+                    TableRow
+                        .create()
+                        .addParts(
+                            TableCell.create().setText("Cell 2.1"),
+                            TableCell.create().setText("Cell 2.2")
+                                .setStyle(
+                                    LayoutStyle.create()
+                                        .setGeometryDetails(
+                                            GeometryDetails.create()
+                                                .setAngle(Geometry.create().add("pdf", 45f))
+                                                .setTransformCenter(Geometry.<Map.Entry<HorAlignment, VertAlignment>>create()
+                                                    .add(
+                                                        "pdf",
+                                                        new AbstractMap.SimpleEntry<>(HorAlignment.CENTER, VertAlignment.CENTER)
+                                                    )
+                                                )
+                                                .setWidth(Geometry.create().add("pdf", 40f))
+                                        )
+                                )
+                        ),
+                    TableRow
+                        .create()
+                        .addParts(
+                            TableCell.create().setText("Cell 3.1"),
+                            TableCell.create().setText("Cell 3.2")
+                        ),
+                    TableRow
+                        .create()
+                        .addParts(
+                            TableCell.create().setText("Cell 4.1"),
+                            TableCell.create().setText("Cell 4.2")
                         )
                 )
         );
@@ -332,7 +381,7 @@ class PdfFormatterTest extends BaseDocument {
 
         Assertions.assertEquals(os, pdfFormatter.getOutputStream());
 
-        try (DocumentHolder documentHolder = pdfFormatter.handle(doc)) {
+        try (DocumentHolder ignored = pdfFormatter.handle(doc)) {
             if (os.size() != 0) {
                 final PdfReader pdfReader = new PdfReader(new ByteArrayInputStream(os.toByteArray()));
                 final PdfDocument doc1 = new PdfDocument(pdfReader);
@@ -351,7 +400,7 @@ class PdfFormatterTest extends BaseDocument {
         final PdfWriter writer = new PdfWriter(os);
         final PdfFormatter pdfFormatter = PdfFormatter.create().setStyleService(styleService);
 
-        final DecimalFormat df = new DecimalFormat("\u203000");
+        final DecimalFormat df = new DecimalFormat("‰00");
 
         final PdfDocument pdfDoc = new PdfDocument(new PdfWriter(new PdfOutputStream(os)));
         final com.itextpdf.layout.Document document = new com.itextpdf.layout.Document(pdfDoc);

@@ -37,7 +37,8 @@ import com.model.domain.styles.constants.HorAlignment;
 import com.model.domain.styles.constants.VertAlignment;
 import com.model.domain.styles.geometry.GeometryDetails;
 import com.model.formatter.pdf.PdfDetails;
-import com.model.formatter.pdf.image.CustomBlockRendered;
+import com.model.formatter.pdf.renders.CustomCellRenderer;
+import com.model.formatter.pdf.renders.CustomParagraphRenderer;
 import com.model.utils.LocalizedNumberUtils;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.springframework.util.StringUtils;
@@ -355,16 +356,7 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
                         }
                     );
             }
-            // To get Rotation center
-            if (geometryDetails.getTransformCenter() != null) {
-                geometryDetails
-                    .getTransformCenter()
-                    .getValueFor(EXTENSION)
-                    .ifPresent(center -> {
-                        outerElement.setNextRenderer(new CustomBlockRendered((Paragraph) outerElement, center));
-                        }
-                    );
-            }
+
             // Horizontal & Vertical scaling
             final AtomicReference<Object> scaleX = new AtomicReference<>(1f);
             if (geometryDetails.getScaleX() != null) {
@@ -391,6 +383,12 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
                     Property.TRANSFORM,
                     transform
                 );
+            // To apply Rotation center and scales
+            if (outerElement instanceof Paragraph) {
+                outerElement.setNextRenderer(new CustomParagraphRenderer((Paragraph) outerElement, geometryDetails));
+            } else if (outerElement instanceof Cell) {
+                outerElement.setNextRenderer(new CustomCellRenderer((Cell) outerElement, geometryDetails));
+            }
         }
     }
 
