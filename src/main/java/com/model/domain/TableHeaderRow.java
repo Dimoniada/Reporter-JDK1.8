@@ -19,6 +19,7 @@ public class TableHeaderRow extends CompositionPart<TableHeaderRow, TableHeaderC
         return new TableHeaderRow();
     }
 
+    @Override
     public TableHeaderRow accept(FormatterVisitor visitor) throws Throwable {
         visitor.visitTableHeaderRow(this);
         return this;

@@ -20,6 +20,7 @@ public class TableRow extends CompositionPart<TableRow, TableCell> {
         return new TableRow();
     }
 
+    @Override
     public TableRow accept(FormatterVisitor visitor) throws Throwable {
         visitor.visitTableRow(this);
         return this;

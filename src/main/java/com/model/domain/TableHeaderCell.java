@@ -21,6 +21,7 @@ public class TableHeaderCell extends TextItem<TableHeaderCell> {
         return new TableHeaderCell();
     }
 
+    @Override
     public TableHeaderCell accept(FormatterVisitor visitor) throws Throwable {
         visitor.visitTableHeaderCell(this);
         return this;

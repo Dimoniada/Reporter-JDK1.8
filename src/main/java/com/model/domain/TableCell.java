@@ -22,7 +22,8 @@ public class TableCell extends TextItem<TableCell> {
         return new TableCell();
     }
 
-    public TableCell accept(FormatterVisitor visitor) throws Exception {
+    @Override
+    public TableCell accept(FormatterVisitor visitor) throws Throwable {
         visitor.visitTableCell(this);
         return this;
     }

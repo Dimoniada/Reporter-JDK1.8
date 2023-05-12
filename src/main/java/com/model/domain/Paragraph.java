@@ -20,7 +20,8 @@ public class Paragraph extends TextItem<Paragraph> {
         return create(null, null);
     }
 
-    public Paragraph accept(FormatterVisitor visitor) throws Exception {
+    @Override
+    public Paragraph accept(FormatterVisitor visitor) throws Throwable {
         visitor.visitParagraph(this);
         return this;
     }

@@ -21,7 +21,8 @@ import java.text.DecimalFormat;
 @SpringBootTest(classes = QueryTable.class)
 class CsvFormatterTest extends BaseDocument {
     public static final String expected =
-        "Test document v.1\n" +
+            "\n" +
+            "Test document v.1\n" +
             "\n" +
             "Chapter 1\n" +
             "Chapter 1.1\n" +

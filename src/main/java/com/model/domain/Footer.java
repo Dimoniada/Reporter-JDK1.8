@@ -16,7 +16,8 @@ public class Footer extends TextItem<Footer> {
         return new Footer().setText(text);
     }
 
-    public Footer accept(FormatterVisitor visitor) throws Exception {
+    @Override
+    public Footer accept(FormatterVisitor visitor) throws Throwable {
         visitor.visitFooter(this);
         return this;
     }

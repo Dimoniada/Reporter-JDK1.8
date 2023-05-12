@@ -17,7 +17,8 @@ public class Title extends TextItem<Title> {
         return new Title().setText(text);
     }
 
-    public Title accept(FormatterVisitor visitor) throws Exception {
+    @Override
+    public Title accept(FormatterVisitor visitor) throws Throwable {
         visitor.visitTitle(this);
         return this;
     }

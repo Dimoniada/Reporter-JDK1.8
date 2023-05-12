@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 public class FormatterVisitor implements Visitor {
 
     private static final Logger log = LoggerFactory.getLogger(FormatterVisitor.class);
+    private final String superClassName = getClass().getGenericSuperclass().getTypeName();
 
     @Override
     public void visitComposition(CompositionPart<?, ?> compositionPart) throws Throwable {
@@ -35,60 +36,72 @@ public class FormatterVisitor implements Visitor {
     @Override
     public void visitDocument(Document documentObj) throws Throwable {
         log.debug("No overriding for visitDocument: {}", documentObj);
+        throw new Throwable("No overriding for visitDocument in " + superClassName);
     }
 
     @Override
     public void visitDocumentCase(DocumentCase documentCase) throws Throwable {
         log.debug("No overriding for visitDocumentCase: {}", documentCase);
+        throw new Throwable("No overriding for visitDocumentCase in " + superClassName);
     }
 
     @Override
-    public void visitTitle(Title titleObj) throws Exception {
+    public void visitTitle(Title titleObj) throws Throwable {
         log.debug("No overriding for visitTitle: {}", titleObj);
+        throw new Throwable("No overriding for visitTitle " + superClassName);
     }
 
     @Override
-    public void visitHeading(Heading headingObj) throws Exception {
+    public void visitHeading(Heading headingObj) throws Throwable {
         log.debug("No overriding for visitHeading: {}", headingObj);
+        throw new Throwable("No overriding for visitHeading " + superClassName);
     }
 
     @Override
-    public void visitParagraph(Paragraph paragraphObj) throws Exception {
+    public void visitParagraph(Paragraph paragraphObj) throws Throwable {
         log.debug("No overriding for visitParagraph: {}", paragraphObj);
+        throw new Throwable("No overriding for visitParagraph " + superClassName);
     }
 
     @Override
     public void visitTable(Table tableObj) throws Throwable {
         log.debug("No overriding for visitTable: {}", tableObj);
+        throw new Throwable("No overriding for visitTable " + superClassName);
     }
 
     @Override
     public void visitTableHeaderRow(TableHeaderRow tableHeaderRowObj) throws Throwable {
         log.debug("No overriding for visitTableHeaderRow: {}", tableHeaderRowObj);
+        throw new Throwable("No overriding for visitTableHeaderRow " + superClassName);
     }
 
     @Override
     public void visitTableHeaderCell(TableHeaderCell tableHeaderCellObj) throws Throwable {
         log.debug("No overriding for visitTableHeaderCell: {}", tableHeaderCellObj);
+        throw new Throwable("No overriding for visitTableHeaderCell " + superClassName);
     }
 
     @Override
     public void visitTableRow(TableRow tableRowObj) throws Throwable {
         log.debug("No overriding for visitTableRow: {}", tableRowObj);
+        throw new Throwable("No overriding for visitTableHeaderCell " + superClassName);
     }
 
     @Override
-    public void visitTableCell(TableCell tableCellObj) throws Exception {
+    public void visitTableCell(TableCell tableCellObj) throws Throwable {
         log.debug("No overriding for visitTableCell: {}", tableCellObj);
+        throw new Throwable("No overriding for visitTableCell " + superClassName);
     }
 
     @Override
-    public void visitSeparator(Separator separatorObj) throws Exception {
+    public void visitSeparator(Separator separatorObj) throws Throwable {
         log.debug("No overriding for visitSeparator: {}", separatorObj);
+        throw new Throwable("No overriding for visitSeparator " + superClassName);
     }
 
     @Override
-    public void visitFooter(Footer footerObj) throws Exception {
+    public void visitFooter(Footer footerObj) throws Throwable {
         log.debug("No overriding for visitFooter: {}", footerObj);
+        throw new Throwable("No overriding for visitFooter " + superClassName);
     }
 }

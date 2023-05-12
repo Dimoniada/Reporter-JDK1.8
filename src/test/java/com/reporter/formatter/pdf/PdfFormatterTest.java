@@ -345,7 +345,13 @@ class PdfFormatterTest extends BaseDocument {
                 final String currentText = PdfTextExtractor.getTextFromPage(doc1.getPage(1), strategy);
                 doc1.close();
                 pdfReader.close();
-                Assertions.assertEquals("Test paragraph", currentText);
+                Assertions.assertEquals("Column 1 Column 2\n" +
+                    "Cell 1.1 Cell 1.2\n" +
+                    "Cell 2.1\n" +
+                    "Cell 2.2\n" +
+                    "Cell 3.1 Cell 3.2\n" +
+                    "Cell 4.1 Cell 4.2\n" +
+                    "Test paragraph", currentText);
             }
         }
     }

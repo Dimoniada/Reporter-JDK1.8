@@ -27,7 +27,8 @@ public class Heading extends TextItem<Heading> {
         return new Heading(depth);
     }
 
-    public Heading accept(FormatterVisitor visitor) throws Exception {
+    @Override
+    public Heading accept(FormatterVisitor visitor) throws Throwable {
         visitor.visitHeading(this);
         return this;
     }

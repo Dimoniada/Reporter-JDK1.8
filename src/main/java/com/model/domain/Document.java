@@ -34,6 +34,7 @@ public class Document extends CompositionPart<Document, DocumentItem> {
         return new Document().setParts(parts);
     }
 
+    @Override
     public Document accept(FormatterVisitor visitor) throws Throwable {
         visitor.visitDocument(this);
         return this;

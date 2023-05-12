@@ -25,7 +25,8 @@ public class Separator extends DocumentItem {
         return new Separator().setBorderStyle(borderStyle);
     }
 
-    public Separator accept(FormatterVisitor visitor) throws Exception {
+    @Override
+    public Separator accept(FormatterVisitor visitor) throws Throwable {
         visitor.visitSeparator(this);
         return this;
     }

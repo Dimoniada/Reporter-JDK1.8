@@ -48,6 +48,7 @@ public class Table extends CompositionPart<Table, TableRow> {
         return new Table();
     }
 
+    @Override
     public Table accept(FormatterVisitor visitor) throws Throwable {
         visitor.visitTable(this);
         log.debug("accept: called on table {}", this);
