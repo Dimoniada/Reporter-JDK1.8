@@ -14,7 +14,6 @@ import com.model.domain.styles.geometry.GeometryDetails;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 import static com.model.formatter.pdf.PdfDetails.EXTENSION;
