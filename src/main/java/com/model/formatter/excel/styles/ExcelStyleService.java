@@ -15,6 +15,7 @@ import com.model.domain.styles.constants.HorAlignment;
 import com.model.domain.styles.constants.VertAlignment;
 import com.model.domain.styles.geometry.GeometryDetails;
 import com.model.formatter.excel.XlsDetails;
+import com.model.utils.ConverterUtils;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.apache.poi.hssf.usermodel.HSSFPalette;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -170,6 +171,16 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
         }
     }
 
+    public static void convertGeometryDetails(CellStyle cellStyle, LayoutStyle layoutStyle) {
+        if (layoutStyle.getGeometryDetails() != null) {
+            layoutStyle
+                .getGeometryDetails()
+                .getAngle()
+                .getValueFor(EXTENSION)
+                .ifPresent(angle -> cellStyle.setRotation(ConverterUtils.convert(angle)));
+        }
+    }
+
     public static void applyWidth(org.apache.poi.ss.usermodel.Cell cell, LayoutStyle layoutStyle) {
         final Boolean isAutoWidth = layoutStyle.isAutoWidth();
         final GeometryDetails geometryDetails = layoutStyle.getGeometryDetails();
@@ -180,7 +191,7 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
                 .getWidth()
                 .getValueFor(EXTENSION)
                 .ifPresent(value ->
-                    cell.getSheet().setColumnWidth(cell.getColumnIndex(), (int) value)
+                    cell.getSheet().setColumnWidth(cell.getColumnIndex(), ConverterUtils.convert(value))
                 );
         }
     }
@@ -388,6 +399,7 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
             convertHorizontalAlignment(cellStyle, layoutStyle);
             convertVerticalAlignment(cellStyle, layoutStyle);
             convertFit(cellStyle, layoutStyle);
+            convertGeometryDetails(cellStyle, layoutStyle);
             layoutTextStyles.put(layoutTextStyle, cellStyle);
         }
         cell.setCellStyle(cellStyle);

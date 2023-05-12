@@ -72,21 +72,6 @@ public interface CustomRenderer {
 
     default void customBeginTransformationIfApplied(PdfCanvas canvas) {
         // Horizontal & Vertical scaling
-        final AtomicReference<Object> scaleX = new AtomicReference<>(1d);
-        if (getGeometryDetails().getScaleX() != null) {
-            getGeometryDetails()
-                .getScaleX()
-                .getValueFor(EXTENSION)
-                .ifPresent(scaleX::set);
-        }
-        final AtomicReference<Object> scaleY = new AtomicReference<>(1d);
-        if (getGeometryDetails().getScaleY() != null) {
-            getGeometryDetails()
-                .getScaleY()
-                .getValueFor(EXTENSION)
-                .ifPresent(scaleY::set);
-        }
-
         final Rectangle backgroundArea = applyMargins(getOccupiedArea().clone().getBBox(), false);
         final float x = backgroundArea.getX();
         final float y = backgroundArea.getY();

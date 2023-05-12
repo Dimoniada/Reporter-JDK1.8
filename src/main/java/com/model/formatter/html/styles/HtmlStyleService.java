@@ -24,6 +24,7 @@ import com.model.formatter.html.tag.Html4Font;
 import com.model.formatter.html.tag.Html4StyledTag;
 import com.model.formatter.html.tag.HtmlDiv;
 import com.model.formatter.html.tag.HtmlTag;
+import com.model.utils.ConverterUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.HtmlUtils;
 
@@ -123,14 +124,10 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
         this.decimalFormat = decimalFormat;
     }
 
-    private static String geometryToString(String prefix, Geometry geometry, String suffix) {
+    private static String geometryToString(String prefix, Geometry<?> geometry, String suffix) {
         final AtomicReference<String> res = new AtomicReference<>(null);
         if (geometry != null) {
-            geometry.getValueFor(EXTENSION).ifPresent(v -> {
-                if (v instanceof String) {
-                    res.set(prefix + v + suffix);
-                }
-            });
+            geometry.getValueFor(EXTENSION).ifPresent(v -> res.set(prefix + ConverterUtils.convert(v) + suffix));
         }
         return res.get();
     }

@@ -14,6 +14,7 @@ import com.model.domain.styles.constants.Color;
 import com.model.domain.styles.constants.HorAlignment;
 import com.model.domain.styles.constants.VertAlignment;
 import com.model.formatter.word.DocDetails;
+import com.model.utils.ConverterUtils;
 import com.model.utils.LocalizedNumberUtils;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.apache.poi.xwpf.usermodel.Borders;
@@ -132,7 +133,7 @@ public class WordStyleService extends StyleService implements DocDetails {
                     .getGeometryDetails()
                     .getWidth()
                     .getValueFor(EXTENSION)
-                    .ifPresent(value -> docxTable.setWidth((int) value * XLSX_INCH_CONST));
+                    .ifPresent(value -> docxTable.setWidth(ConverterUtils.<Integer>convert(value) * XLSX_INCH_CONST));
             } else {
                 docxTable.setWidth("auto");
             }
@@ -253,7 +254,7 @@ public class WordStyleService extends StyleService implements DocDetails {
                 .getValueFor(EXTENSION)
                 .ifPresent(value -> {
                     cell.setWidthType(TableWidthType.DXA);
-                    cell.setWidth(String.valueOf((int) value));
+                    cell.setWidth(String.valueOf(ConverterUtils.<Integer>convert(value)));
                 });
         } else {
             tblWidth.setType(STTblWidth.AUTO);

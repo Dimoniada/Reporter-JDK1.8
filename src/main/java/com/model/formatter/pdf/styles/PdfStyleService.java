@@ -39,6 +39,7 @@ import com.model.domain.styles.geometry.GeometryDetails;
 import com.model.formatter.pdf.PdfDetails;
 import com.model.formatter.pdf.renders.CustomCellRenderer;
 import com.model.formatter.pdf.renders.CustomParagraphRenderer;
+import com.model.utils.ConverterUtils;
 import com.model.utils.LocalizedNumberUtils;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.springframework.util.StringUtils;
@@ -325,22 +326,17 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
                 geometryDetails
                     .getWidth()
                     .getValueFor(EXTENSION)
-                    .ifPresent(value -> {
-                        if (value instanceof Float) {
-                            ((BlockElement<?>) outerElement).setWidth((float) value);
-                        }
-                    });
+                    .ifPresent(value ->
+                        ((BlockElement<?>) outerElement).setWidth(ConverterUtils.<Float>convert(value))
+                    );
             }
             // Height
             if (geometryDetails.getHeight() != null) {
                 geometryDetails
                     .getHeight()
                     .getValueFor(EXTENSION)
-                    .ifPresent(value -> {
-                            if (value instanceof Float) {
-                                ((BlockElement<?>) outerElement).setHeight((float) value);
-                            }
-                        }
+                    .ifPresent(value ->
+                        ((BlockElement<?>) outerElement).setHeight(ConverterUtils.<Float>convert(value))
                     );
             }
             // Rotation angle
@@ -348,35 +344,31 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
                 geometryDetails
                     .getAngle()
                     .getValueFor(EXTENSION)
-                    .ifPresent(value -> {
-                            if (value instanceof Float) {
-                                ((BlockElement<?>) outerElement)
-                                    .setRotationAngle((float) ((float) value * Math.PI / 180f));
-                            }
-                        }
+                    .ifPresent(value -> ((BlockElement<?>) outerElement)
+                        .setRotationAngle((float) ConverterUtils.convert(value) * Math.PI / 180f)
                     );
             }
 
             // Horizontal & Vertical scaling
-            final AtomicReference<Object> scaleX = new AtomicReference<>(1f);
+            final AtomicReference<Float> scaleX = new AtomicReference<>(1f);
             if (geometryDetails.getScaleX() != null) {
                 geometryDetails
                     .getScaleX()
                     .getValueFor(EXTENSION)
-                    .ifPresent(scaleX::set);
+                    .ifPresent(value -> scaleX.set(ConverterUtils.convert(value)));
             }
-            final AtomicReference<Object> scaleY = new AtomicReference<>(1f);
+            final AtomicReference<Float> scaleY = new AtomicReference<>(1f);
             if (geometryDetails.getScaleY() != null) {
                 geometryDetails
                     .getScaleY()
                     .getValueFor(EXTENSION)
-                    .ifPresent(scaleY::set);
+                    .ifPresent(value -> scaleY.set(ConverterUtils.convert(value)));
             }
             final UnitValue uv = new UnitValue(UnitValue.POINT, 0);
             final Transform transform = new Transform(1);
             transform
                 .addSingleTransform(
-                    new Transform.SingleTransform((float) scaleX.get(), 0, 0, (float) scaleY.get(), uv, uv)
+                    new Transform.SingleTransform(scaleX.get(), 0, 0, scaleY.get(), uv, uv)
                 );
             outerElement
                 .setProperty(
