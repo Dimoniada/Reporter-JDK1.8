@@ -1,6 +1,8 @@
 package com.model.formatter.excel.styles;
 
 import com.google.common.base.MoreObjects;
+import com.model.domain.DocumentItem;
+import com.model.domain.Picture;
 import com.model.domain.TextItem;
 import com.model.domain.styles.BorderStyle;
 import com.model.domain.styles.LayoutStyle;
@@ -12,10 +14,12 @@ import com.model.domain.styles.constants.BorderWeight;
 import com.model.domain.styles.constants.Color;
 import com.model.domain.styles.constants.FillPattern;
 import com.model.domain.styles.constants.HorAlignment;
+import com.model.domain.styles.constants.PictureFormat;
 import com.model.domain.styles.constants.VertAlignment;
 import com.model.domain.styles.geometry.GeometryDetails;
 import com.model.formatter.excel.XlsDetails;
 import com.model.utils.ConverterUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.apache.poi.hssf.usermodel.HSSFPalette;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -23,14 +27,20 @@ import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
+import org.apache.poi.xssf.usermodel.XSSFDrawing;
+import org.apache.poi.xssf.usermodel.XSSFPicture;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.model.utils.LocalizedNumberUtils.applyDecimalFormat;
 
@@ -42,6 +52,8 @@ import static com.model.utils.LocalizedNumberUtils.applyDecimalFormat;
  * {@link org.apache.poi.ss.usermodel.Row}
  */
 public class ExcelStyleService extends StyleService implements XlsDetails {
+    private static final int XLSX_ANGLE_CONST = 60000;
+
     private static final Map<BorderWeight, org.apache.poi.ss.usermodel.BorderStyle> borderMap =
         new HashMap<BorderWeight, org.apache.poi.ss.usermodel.BorderStyle>() {{
             put(null, org.apache.poi.ss.usermodel.BorderStyle.NONE);
@@ -82,6 +94,18 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
             put(FillPattern.THIN_FORWARD_DIAG, org.apache.poi.ss.usermodel.FillPatternType.THIN_FORWARD_DIAG);
         }};
 
+    private static final Map<PictureFormat, Integer> pictureFormatMap =
+        new HashMap<PictureFormat, Integer>() {{
+            put(null, -1);
+            put(PictureFormat.JPEG, Workbook.PICTURE_TYPE_JPEG);
+            put(PictureFormat.JPG, Workbook.PICTURE_TYPE_JPEG);
+            put(PictureFormat.PNG, Workbook.PICTURE_TYPE_PNG);
+            put(PictureFormat.WMF, Workbook.PICTURE_TYPE_WMF);
+            put(PictureFormat.EMF, Workbook.PICTURE_TYPE_EMF);
+            put(PictureFormat.DIB, Workbook.PICTURE_TYPE_DIB);
+            put(PictureFormat.PICT, Workbook.PICTURE_TYPE_PICT);
+        }};
+
     private static final HSSFPalette palette;
 
     protected Map<Cell, LayoutStyle> needAdjustHeaderCells = new HashMap<>();
@@ -105,6 +129,21 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
         this.decimalFormat = decimalFormat;
     }
 
+    private void convertCommonStyleToCell(
+        Cell cell,
+        CellStyle cellStyle,
+        LayoutStyle layoutStyle,
+        XSSFPicture xssfPicture
+    ) {
+        convertGround(cellStyle, layoutStyle);
+        convertBorders(cellStyle, layoutStyle);
+        convertBorderColors(cellStyle, layoutStyle);
+        convertHorizontalAlignment(cellStyle, layoutStyle);
+        convertVerticalAlignment(cellStyle, layoutStyle);
+        convertFit(cellStyle, layoutStyle);
+        convertGeometryDetails(cell, cellStyle, layoutStyle, xssfPicture);
+    }
+
     public static ExcelStyleService create(FontCharset fontCharset, DecimalFormat decimalFormat) {
         return new ExcelStyleService(fontCharset, decimalFormat);
     }
@@ -126,6 +165,14 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
         }
         final HSSFColor excelColor = palette.findSimilarColor(color.getRed(), color.getGreen(), color.getBlue());
         return excelColor.getIndex();
+    }
+
+    public static Integer toExcelPictureFormat(PictureFormat pictureFormat) {
+        if (pictureFormatMap.containsKey(pictureFormat)) {
+            return pictureFormatMap.get(pictureFormat);
+        } else {
+            throw new IllegalArgumentException("Undefined PictureFormat type");
+        }
     }
 
     public static org.apache.poi.ss.usermodel.BorderStyle
@@ -171,28 +218,78 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
         }
     }
 
-    public static void convertGeometryDetails(CellStyle cellStyle, LayoutStyle layoutStyle) {
-        if (layoutStyle.getGeometryDetails() != null) {
-            layoutStyle
-                .getGeometryDetails()
-                .getAngle()
-                .getValueFor(EXTENSION)
-                .ifPresent(angle -> cellStyle.setRotation(ConverterUtils.convert(angle)));
-        }
-    }
-
-    public static void applyWidth(org.apache.poi.ss.usermodel.Cell cell, LayoutStyle layoutStyle) {
-        final Boolean isAutoWidth = layoutStyle.isAutoWidth();
+    public static void convertGeometryDetails(
+        Cell cell,
+        CellStyle cellStyle,
+        LayoutStyle layoutStyle,
+        XSSFPicture xssfPicture
+    ) {
         final GeometryDetails geometryDetails = layoutStyle.getGeometryDetails();
-        if (isAutoWidth != null && isAutoWidth) {
-            cell.getSheet().autoSizeColumn(cell.getColumnIndex());
-        } else if (geometryDetails != null && geometryDetails.getWidth() != null) {
+        if (geometryDetails == null) {
+            return;
+        }
+
+        // Height
+        if (geometryDetails.getHeight() != null) {
+            geometryDetails
+                .getHeight()
+                .getValueFor(EXTENSION)
+                .ifPresent(value ->
+                    cell.getRow().setHeight(ConverterUtils.convert(value))
+                );
+        }
+
+        // Width
+        if (geometryDetails.getWidth() != null) {
             geometryDetails
                 .getWidth()
                 .getValueFor(EXTENSION)
                 .ifPresent(value ->
                     cell.getSheet().setColumnWidth(cell.getColumnIndex(), ConverterUtils.convert(value))
                 );
+        }
+
+        // Rotation angle (center is a middle of cell/picture)
+        if (geometryDetails.getAngle() != null) {
+            geometryDetails
+                .getAngle()
+                .getValueFor(EXTENSION)
+                .ifPresent(angle -> {
+                    if (xssfPicture != null) {
+                        xssfPicture
+                            .getCTPicture()
+                            .getSpPr()
+                            .getXfrm()
+                            .setRot((int) ConverterUtils.convert(angle) * XLSX_ANGLE_CONST);
+                    } else {
+                        cellStyle.setRotation(ConverterUtils.convert(angle));
+                    }
+                });
+        }
+
+        if (xssfPicture == null) {
+            return;
+        }
+        // Horizontal & Vertical scaling
+        if (geometryDetails.getScaleX() != null && geometryDetails.getScaleY() != null) {
+            final AtomicReference<Double> scaleX = new AtomicReference<>(1d);
+            final AtomicReference<Double> scaleY = new AtomicReference<>(1d);
+            geometryDetails
+                .getScaleX()
+                .getValueFor(EXTENSION)
+                .ifPresent(value -> scaleX.set(ConverterUtils.convert(value)));
+            geometryDetails
+                .getScaleY()
+                .getValueFor(EXTENSION)
+                .ifPresent(value -> scaleY.set(ConverterUtils.convert(value)));
+            xssfPicture.resize(scaleX.get(), scaleY.get());
+        }
+    }
+
+    public static void applyAutoWidth(org.apache.poi.ss.usermodel.Cell cell, LayoutStyle layoutStyle) {
+        final Boolean isAutoWidth = layoutStyle.isAutoWidth();
+        if (isAutoWidth != null && isAutoWidth) {
+            cell.getSheet().autoSizeColumn(cell.getColumnIndex());
         }
     }
 
@@ -285,7 +382,7 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
     }
 
     public void adjustHeaderCells() {
-        needAdjustHeaderCells.forEach(ExcelStyleService::applyWidth);
+        needAdjustHeaderCells.forEach(ExcelStyleService::applyAutoWidth);
     }
 
     @Override
@@ -300,52 +397,55 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
         layoutStyles.put(null, style);
     }
 
-    public void fillCellFromItem(org.apache.poi.ss.usermodel.Cell cellObj, TextItem<?> item)
-        throws ParseException {
-        final Cell cell = applyFontCharsetAndDecimalFormat(item, cellObj);
-        final Style style = extractStyleFor(item).orElse(item.getStyle());
-        if (style instanceof TextStyle) {
-            convertTextStyleToCell(cell, (TextStyle) style);
-        } else if (style instanceof LayoutStyle) {
-            convertLayoutStyleToCell(cell, (LayoutStyle) style);
-        } else if (style instanceof LayoutTextStyle) {
-            convertLayoutTextStyleToCell(cell, (LayoutTextStyle) style);
-        }
-    }
-
     /**
-     * Generic method for styling cells in a table
+     * Writes DocumentItem to excel cell
      *
-     * @param tableCustomCell TableCell or TableHeaderCell
-     * @param cell            native cell
-     * @throws ParseException when parsing a value in a cell
+     * @param item    DocumentItem
+     * @param cellObj native excel cell
+     * @throws ParseException when can't apply FontCharset and DecimalFormat to cell
+     * @throws IOException    when can't find/read picture or convert it to byte array
+     * @throws Exception      on joining styles
      */
-    public void handleTableCustomCell(TextItem<?> tableCustomCell, org.apache.poi.ss.usermodel.Cell cell)
+    public void writeItemToCell(DocumentItem item, org.apache.poi.ss.usermodel.Cell cellObj)
         throws Exception {
-        applyFontCharsetAndDecimalFormat(tableCustomCell, cell);
-        final Style style = prepareStyleFrom(tableCustomCell);
+        XSSFPicture xssfPicture = null;
+        final Style style = prepareStyleFrom(item);
+        if (item instanceof TextItem<?>) {
+            final TextItem<?> textItem = (TextItem<?>) item;
+            workbook.getFontAt(cellObj.getCellStyle().getFontIndex()).setCharSet(fontCharset.getNativeId());
+            if (StringUtils.hasText(textItem.getText())) {
+                cellObj.setCellValue(applyDecimalFormat(textItem.getText(), textItem.getStyle(), decimalFormat));
+            } else {
+                cellObj.setCellValue("");
+            }
+        } else if (item instanceof Picture) {
+            final Picture picture = (Picture) item;
+            final InputStream pictureStream = picture.getData().getInputStream();
+            final int picInd =
+                workbook.addPicture(
+                    IOUtils.toByteArray(pictureStream),
+                    toExcelPictureFormat(picture.getPictureFormat())
+                );
+            final Sheet lastSheet = workbook.getSheetAt(workbook.getNumberOfSheets() - 1);
+            final XSSFDrawing drawing = (XSSFDrawing) lastSheet.createDrawingPatriarch();
+            final XSSFClientAnchor pictureAnchor = new XSSFClientAnchor();
+            final int col1 = cellObj.getColumnIndex();
+            final int col2 = cellObj.getColumnIndex() + 1;
+            final int row1 = cellObj.getRowIndex();
+            final int row2 = cellObj.getRowIndex() + 1;
+            pictureAnchor.setCol1(col1);
+            pictureAnchor.setCol2(col2);
+            pictureAnchor.setRow1(row1);
+            pictureAnchor.setRow2(row2);
+            xssfPicture = drawing.createPicture(pictureAnchor, picInd);
+        }
         if (style instanceof TextStyle) {
-            convertTextStyleToCell(cell, (TextStyle) style);
+            convertTextStyleToCell(cellObj, (TextStyle) style);
         } else if (style instanceof LayoutStyle) {
-            convertLayoutStyleToCell(cell, (LayoutStyle) style);
+            convertLayoutStyleToCell(cellObj, (LayoutStyle) style, xssfPicture);
         } else if (style instanceof LayoutTextStyle) {
-            convertLayoutTextStyleToCell(cell, (LayoutTextStyle) style);
+            convertLayoutTextStyleToCell(cellObj, (LayoutTextStyle) style, xssfPicture);
         }
-    }
-
-    public Cell applyFontCharsetAndDecimalFormat(
-        TextItem<?> tableCustomCell,
-        org.apache.poi.ss.usermodel.Cell cell
-    )
-        throws ParseException {
-        workbook.getFontAt(cell.getCellStyle().getFontIndex()).setCharSet(fontCharset.getNativeId());
-
-        if (StringUtils.hasText(tableCustomCell.getText())) {
-            cell.setCellValue(applyDecimalFormat(tableCustomCell.getText(), tableCustomCell.getStyle(), decimalFormat));
-        } else {
-            cell.setCellValue("");
-        }
-        return cell;
     }
 
     public void convertTextStyleToCell(Cell cell, TextStyle textStyle) {
@@ -361,26 +461,21 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
         cell.setCellStyle(cellStyle);
     }
 
-    public void convertLayoutStyleToCell(Cell cell, LayoutStyle layoutStyle) {
+    public void convertLayoutStyleToCell(Cell cell, LayoutStyle layoutStyle, XSSFPicture xssfPicture) {
         final CellStyle cellStyle;
 
         if (layoutStyles.containsKey(layoutStyle)) {
             cellStyle = layoutStyles.get(layoutStyle);
         } else {
             cellStyle = cell.getSheet().getWorkbook().createCellStyle();
-            convertGround(cellStyle, layoutStyle);
-            convertBorders(cellStyle, layoutStyle);
-            convertBorderColors(cellStyle, layoutStyle);
-            convertHorizontalAlignment(cellStyle, layoutStyle);
-            convertVerticalAlignment(cellStyle, layoutStyle);
-            convertFit(cellStyle, layoutStyle);
+            convertCommonStyleToCell(cell, cellStyle, layoutStyle, xssfPicture);
             layoutStyles.put(layoutStyle, cellStyle);
         }
         cell.setCellStyle(cellStyle);
-        applyWidth(cell, layoutStyle);
+        applyAutoWidth(cell, layoutStyle);
     }
 
-    public void convertLayoutTextStyleToCell(Cell cell, LayoutTextStyle layoutTextStyle) {
+    public void convertLayoutTextStyleToCell(Cell cell, LayoutTextStyle layoutTextStyle, XSSFPicture xssfPicture) {
         final CellStyle cellStyle;
         final Workbook wb = cell.getSheet().getWorkbook();
         final TextStyle textStyle = layoutTextStyle.getTextStyle();
@@ -393,17 +488,11 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
             final Font font = createFontFromTextStyle(textStyle, wb);
             cellStyle.setFont(font);
 
-            convertGround(cellStyle, layoutStyle);
-            convertBorders(cellStyle, layoutStyle);
-            convertBorderColors(cellStyle, layoutStyle);
-            convertHorizontalAlignment(cellStyle, layoutStyle);
-            convertVerticalAlignment(cellStyle, layoutStyle);
-            convertFit(cellStyle, layoutStyle);
-            convertGeometryDetails(cellStyle, layoutStyle);
+            convertCommonStyleToCell(cell, cellStyle, layoutStyle, xssfPicture);
             layoutTextStyles.put(layoutTextStyle, cellStyle);
         }
         cell.setCellStyle(cellStyle);
-        applyWidth(cell, layoutStyle);
+        applyAutoWidth(cell, layoutStyle);
     }
 
     public Font createFontFromTextStyle(TextStyle textStyle, Workbook wb) {

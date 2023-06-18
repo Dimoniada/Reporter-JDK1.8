@@ -1,20 +1,32 @@
 package com.reporter.formatter.excel;
 
+import com.model.domain.Document;
+import com.model.domain.DocumentCase;
+import com.model.domain.Picture;
+import com.model.domain.styles.LayoutStyle;
+import com.model.domain.styles.constants.PictureFormat;
+import com.model.domain.styles.geometry.Geometry;
+import com.model.domain.styles.geometry.GeometryDetails;
 import com.model.formatter.DocumentHolder;
 import com.model.formatter.excel.XlsFormatter;
 import com.model.formatter.excel.XlsxFormatter;
 import com.model.formatter.excel.styles.ExcelStyleService;
 import com.reporter.formatter.BaseDocument;
+import org.apache.commons.io.IOUtils;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFDrawing;
+import org.apache.poi.xssf.usermodel.XSSFPicture;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.PathResource;
 
 import java.io.ByteArrayOutputStream;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +105,7 @@ class ExcelFormatterTest extends BaseDocument {
         final ByteArrayOutputStream os = new ByteArrayOutputStream();
         final XlsFormatter xlsFormatter = XlsFormatter.create();
 
-        final DecimalFormat df = new DecimalFormat("\u203000");
+        final DecimalFormat df = new DecimalFormat("‰00");
 
         try (DocumentHolder documentHolder = xlsFormatter.handle(doc)) {
             final Workbook wb = WorkbookFactory.create(documentHolder.getResource().getFile());
@@ -111,4 +123,53 @@ class ExcelFormatterTest extends BaseDocument {
         }
     }
 
+    @Test
+    public void testSavePictureToXlsxFile() throws Throwable {
+        final URL url = getClass().getClassLoader().getResource("pic.jpg");
+        Assertions.assertNotNull(url);
+        final DocumentCase documentCase = DocumentCase.create().setName("Test sheet1")
+            .addParts(
+                Picture.create(PictureFormat.JPEG)
+                    .setData(new PathResource(url.toURI()))
+                    .setStyle(
+                        LayoutStyle.create()
+                            .setGeometryDetails(
+                                GeometryDetails.create()
+//                                    .setScaleX(Geometry.create().add("xlsx", Double.MAX_VALUE))
+//                                    .setScaleY(Geometry.create().add("xlsx", Double.MAX_VALUE))
+                                    .setWidth(Geometry.create().add("xlsx", 80 * 128))
+                                    .setHeight(Geometry.create().add("xlsx", (short) (48 * 40)))
+                                    .setAngle(Geometry.create().add("xlsx", 30))
+                            )
+                    )
+            );
+
+        doc = Document
+            .create()
+            .setLabel("Test document")
+            .setAuthor("A1 Systems")
+            .setDescription("meta information")
+            .addPart(documentCase);
+
+        final XlsxFormatter xlsxFormatter = XlsxFormatter.create();
+        try (DocumentHolder documentHolder = xlsxFormatter.handle(doc)) {
+            final Workbook wb = WorkbookFactory.create(documentHolder.getResource().getFile());
+            final Sheet sheet = wb.getSheetAt(0);
+            final XSSFDrawing drawing = (XSSFDrawing) sheet.createDrawingPatriarch();
+            Assertions.assertEquals(1, drawing.getShapes().size());
+            Assertions.assertEquals(XSSFPicture.class, drawing.getShapes().get(0).getClass());
+
+            final XSSFPicture picture = (XSSFPicture) drawing.getShapes().get(0);
+            Assertions.assertEquals(0, picture.getClientAnchor().getCol1());
+            Assertions.assertEquals(1, picture.getClientAnchor().getCol2());
+            Assertions.assertEquals(0, picture.getClientAnchor().getRow1());
+            Assertions.assertEquals(1, picture.getClientAnchor().getRow2());
+            Assertions.assertArrayEquals(
+                IOUtils.toByteArray(new PathResource(url.toURI()).getInputStream()),
+                picture.getPictureData().getData()
+            );
+
+            wb.close();
+        }
+    }
 }

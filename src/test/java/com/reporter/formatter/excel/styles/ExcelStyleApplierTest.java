@@ -2,10 +2,16 @@ package com.reporter.formatter.excel.styles;
 
 import com.model.domain.styles.BorderStyle;
 import com.model.domain.styles.LayoutStyle;
-import com.model.domain.styles.constants.*;
+import com.model.domain.styles.constants.BorderWeight;
+import com.model.domain.styles.constants.Color;
+import com.model.domain.styles.constants.FillPattern;
+import com.model.domain.styles.constants.HorAlignment;
+import com.model.domain.styles.constants.PictureFormat;
+import com.model.domain.styles.constants.VertAlignment;
 import com.model.formatter.excel.styles.ExcelStyleService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +19,12 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static com.model.formatter.excel.styles.ExcelStyleService.*;
+import static com.model.formatter.excel.styles.ExcelStyleService.toExcelBorder;
+import static com.model.formatter.excel.styles.ExcelStyleService.toExcelColor;
+import static com.model.formatter.excel.styles.ExcelStyleService.toExcelFillPattern;
+import static com.model.formatter.excel.styles.ExcelStyleService.toExcelHorAlignment;
+import static com.model.formatter.excel.styles.ExcelStyleService.toExcelPictureFormat;
+import static com.model.formatter.excel.styles.ExcelStyleService.toExcelVertAlignment;
 
 public class ExcelStyleApplierTest {
 
@@ -97,4 +108,14 @@ public class ExcelStyleApplierTest {
         Assertions.assertEquals(cellStyle.getFillPattern(), toExcelFillPattern(layoutStyle.getFillPattern()));
     }
 
+    @Test
+    public void testConvertPictureFormats() {
+        Assertions.assertEquals(Workbook.PICTURE_TYPE_EMF, toExcelPictureFormat(PictureFormat.EMF));
+        Assertions.assertEquals(Workbook.PICTURE_TYPE_WMF, toExcelPictureFormat(PictureFormat.WMF));
+        Assertions.assertEquals(Workbook.PICTURE_TYPE_PICT, toExcelPictureFormat(PictureFormat.PICT));
+        Assertions.assertEquals(Workbook.PICTURE_TYPE_JPEG, toExcelPictureFormat(PictureFormat.JPEG));
+        Assertions.assertEquals(Workbook.PICTURE_TYPE_JPEG, toExcelPictureFormat(PictureFormat.JPG));
+        Assertions.assertEquals(Workbook.PICTURE_TYPE_PNG, toExcelPictureFormat(PictureFormat.PNG));
+        Assertions.assertEquals(Workbook.PICTURE_TYPE_DIB, toExcelPictureFormat(PictureFormat.DIB));
+    }
 }

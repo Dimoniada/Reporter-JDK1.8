@@ -320,67 +320,68 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
      */
     public static void convertGeometryDetails(AbstractElement<?> outerElement, LayoutStyle layoutStyle) {
         final GeometryDetails geometryDetails = layoutStyle.getGeometryDetails();
-        if (geometryDetails != null && outerElement instanceof BlockElement<?>) {
-            // Width
-            if (geometryDetails.getWidth() != null) {
-                geometryDetails
-                    .getWidth()
-                    .getValueFor(EXTENSION)
-                    .ifPresent(value ->
-                        ((BlockElement<?>) outerElement).setWidth(ConverterUtils.<Float>convert(value))
-                    );
-            }
-            // Height
-            if (geometryDetails.getHeight() != null) {
-                geometryDetails
-                    .getHeight()
-                    .getValueFor(EXTENSION)
-                    .ifPresent(value ->
-                        ((BlockElement<?>) outerElement).setHeight(ConverterUtils.<Float>convert(value))
-                    );
-            }
-            // Rotation angle
-            if (geometryDetails.getAngle() != null) {
-                geometryDetails
-                    .getAngle()
-                    .getValueFor(EXTENSION)
-                    .ifPresent(value -> ((BlockElement<?>) outerElement)
-                        .setRotationAngle((float) ConverterUtils.convert(value) * Math.PI / 180f)
-                    );
-            }
+        if (geometryDetails == null || !(outerElement instanceof BlockElement<?>)) {
+            return;
+        }
+        // Width
+        if (geometryDetails.getWidth() != null) {
+            geometryDetails
+                .getWidth()
+                .getValueFor(EXTENSION)
+                .ifPresent(value ->
+                    ((BlockElement<?>) outerElement).setWidth(ConverterUtils.<Float>convert(value))
+                );
+        }
+        // Height
+        if (geometryDetails.getHeight() != null) {
+            geometryDetails
+                .getHeight()
+                .getValueFor(EXTENSION)
+                .ifPresent(value ->
+                    ((BlockElement<?>) outerElement).setHeight(ConverterUtils.<Float>convert(value))
+                );
+        }
+        // Rotation angle
+        if (geometryDetails.getAngle() != null) {
+            geometryDetails
+                .getAngle()
+                .getValueFor(EXTENSION)
+                .ifPresent(value -> ((BlockElement<?>) outerElement)
+                    .setRotationAngle((float) ConverterUtils.convert(value) * Math.PI / 180f)
+                );
+        }
 
-            // Horizontal & Vertical scaling
-            final AtomicReference<Float> scaleX = new AtomicReference<>(1f);
-            if (geometryDetails.getScaleX() != null) {
-                geometryDetails
-                    .getScaleX()
-                    .getValueFor(EXTENSION)
-                    .ifPresent(value -> scaleX.set(ConverterUtils.convert(value)));
-            }
-            final AtomicReference<Float> scaleY = new AtomicReference<>(1f);
-            if (geometryDetails.getScaleY() != null) {
-                geometryDetails
-                    .getScaleY()
-                    .getValueFor(EXTENSION)
-                    .ifPresent(value -> scaleY.set(ConverterUtils.convert(value)));
-            }
-            final UnitValue uv = new UnitValue(UnitValue.POINT, 0);
-            final Transform transform = new Transform(1);
-            transform
-                .addSingleTransform(
-                    new Transform.SingleTransform(scaleX.get(), 0, 0, scaleY.get(), uv, uv)
-                );
-            outerElement
-                .setProperty(
-                    Property.TRANSFORM,
-                    transform
-                );
-            // To apply Rotation center and scales
-            if (outerElement instanceof Paragraph) {
-                outerElement.setNextRenderer(new CustomParagraphRenderer((Paragraph) outerElement, geometryDetails));
-            } else if (outerElement instanceof Cell) {
-                outerElement.setNextRenderer(new CustomCellRenderer((Cell) outerElement, geometryDetails));
-            }
+        // Horizontal & Vertical scaling
+        final AtomicReference<Float> scaleX = new AtomicReference<>(1f);
+        if (geometryDetails.getScaleX() != null) {
+            geometryDetails
+                .getScaleX()
+                .getValueFor(EXTENSION)
+                .ifPresent(value -> scaleX.set(ConverterUtils.convert(value)));
+        }
+        final AtomicReference<Float> scaleY = new AtomicReference<>(1f);
+        if (geometryDetails.getScaleY() != null) {
+            geometryDetails
+                .getScaleY()
+                .getValueFor(EXTENSION)
+                .ifPresent(value -> scaleY.set(ConverterUtils.convert(value)));
+        }
+        final UnitValue uv = new UnitValue(UnitValue.POINT, 0);
+        final Transform transform = new Transform(1);
+        transform
+            .addSingleTransform(
+                new Transform.SingleTransform(scaleX.get(), 0, 0, scaleY.get(), uv, uv)
+            );
+        outerElement
+            .setProperty(
+                Property.TRANSFORM,
+                transform
+            );
+        // To apply Rotation center and scales
+        if (outerElement instanceof Paragraph) {
+            outerElement.setNextRenderer(new CustomParagraphRenderer((Paragraph) outerElement, geometryDetails));
+        } else if (outerElement instanceof Cell) {
+            outerElement.setNextRenderer(new CustomCellRenderer((Cell) outerElement, geometryDetails));
         }
     }
 

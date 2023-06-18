@@ -10,8 +10,7 @@ import org.slf4j.LoggerFactory;
  * The base part of the document, all the rest are inherited from it.
  * If {@link DocumentItem#accept(FormatterVisitor)} is not overridden in the descendant,
  * then an exception "Overridden method "accept" not found for {@link DocumentItem}" will be thrown.
- * <p>
- * Style is used for styling: TextStyle, LayoutStyle or TextLayoutStyle
+ * Contains style, see TextStyle, LayoutStyle or TextLayoutStyle
  *
  */
 public abstract class DocumentItem {

@@ -7,6 +7,7 @@ import com.model.domain.DocumentCase;
 import com.model.domain.Footer;
 import com.model.domain.Heading;
 import com.model.domain.Paragraph;
+import com.model.domain.Picture;
 import com.model.domain.Separator;
 import com.model.domain.Table;
 import com.model.domain.TableCell;
@@ -44,4 +45,6 @@ public interface Visitor {
     void visitSeparator(Separator separatorObj) throws Throwable;
 
     void visitFooter(Footer footerObj) throws Throwable;
+
+    void visitPicture(Picture picture) throws  Throwable;
 }

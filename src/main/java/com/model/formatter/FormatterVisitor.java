@@ -7,6 +7,7 @@ import com.model.domain.DocumentItem;
 import com.model.domain.Footer;
 import com.model.domain.Heading;
 import com.model.domain.Paragraph;
+import com.model.domain.Picture;
 import com.model.domain.Separator;
 import com.model.domain.Table;
 import com.model.domain.TableCell;
@@ -103,5 +104,11 @@ public class FormatterVisitor implements Visitor {
     public void visitFooter(Footer footerObj) throws Throwable {
         log.debug("No overriding for visitFooter: {}", footerObj);
         throw new Throwable("No overriding for visitFooter " + superClassName);
+    }
+
+    @Override
+    public void visitPicture(Picture pictureObj) throws Throwable {
+        log.debug("No overriding for visitPicture: {}", pictureObj);
+        throw new Throwable("No overriding for pictureObj " + superClassName);
     }
 }

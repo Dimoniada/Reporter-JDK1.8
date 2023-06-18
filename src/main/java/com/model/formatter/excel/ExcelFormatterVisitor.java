@@ -5,6 +5,7 @@ import com.model.domain.Document;
 import com.model.domain.DocumentCase;
 import com.model.domain.Heading;
 import com.model.domain.Paragraph;
+import com.model.domain.Picture;
 import com.model.domain.Separator;
 import com.model.domain.Table;
 import com.model.domain.TableCell;
@@ -76,9 +77,9 @@ public abstract class ExcelFormatterVisitor extends Formatter implements BaseDet
         final Sheet sheet = getLastSheet(workbook);
         final Row row = createRow(sheet, 1);
         ((ExcelStyleService) styleService)
-            .fillCellFromItem(
-                createCell(row, 1, CellType.STRING),
-                titleObj
+            .writeItemToCell(
+                titleObj,
+                createCell(row, 1, CellType.STRING)
             );
     }
 
@@ -87,9 +88,9 @@ public abstract class ExcelFormatterVisitor extends Formatter implements BaseDet
         final Sheet sheet = getLastSheet(workbook);
         final Row row = createRow(sheet, 1);
         ((ExcelStyleService) styleService)
-            .fillCellFromItem(
-                createCell(row, 1, CellType.STRING),
-                paragraphObj
+            .writeItemToCell(
+                paragraphObj,
+                createCell(row, 1, CellType.STRING)
             );
     }
 
@@ -99,9 +100,9 @@ public abstract class ExcelFormatterVisitor extends Formatter implements BaseDet
         final Sheet sheet = getLastSheet(workbook);
         final Row row = createRow(sheet, 1);
         ((ExcelStyleService) styleService)
-            .fillCellFromItem(
-                createCell(row, depth + 1, CellType.STRING),
-                headingObj
+            .writeItemToCell(
+                headingObj,
+                createCell(row, depth + 1, CellType.STRING)
             );
     }
 
@@ -122,9 +123,9 @@ public abstract class ExcelFormatterVisitor extends Formatter implements BaseDet
             if (style instanceof TextStyle) {
                 ((ExcelStyleService) styleService).convertTextStyleToCell(cell, (TextStyle) style);
             } else if (style instanceof LayoutStyle) {
-                ((ExcelStyleService) styleService).convertLayoutStyleToCell(cell, (LayoutStyle) style);
+                ((ExcelStyleService) styleService).convertLayoutStyleToCell(cell, (LayoutStyle) style, null);
             } else if (style instanceof LayoutTextStyle) {
-                ((ExcelStyleService) styleService).convertLayoutTextStyleToCell(cell, (LayoutTextStyle) style);
+                ((ExcelStyleService) styleService).convertLayoutTextStyleToCell(cell, (LayoutTextStyle) style, null);
             }
         }
         if (tableObj.getTableHeaderRow().isPresent()) {
@@ -147,7 +148,7 @@ public abstract class ExcelFormatterVisitor extends Formatter implements BaseDet
     public void visitTableHeaderCell(TableHeaderCell tableHeaderCellObj) throws Exception {
         final Row row = getLastRow(getLastSheet(workbook));
         final Cell cell = createCell(row, 1, CellType.STRING);
-        ((ExcelStyleService) styleService).handleTableCustomCell(tableHeaderCellObj, cell);
+        ((ExcelStyleService) styleService).writeItemToCell(tableHeaderCellObj, cell);
 
         final Optional<Style> optStyle = styleService.extractStyleFor(tableHeaderCellObj);
         Style tableHeaderStyle = tableHeaderCellObj.getStyle();
@@ -179,7 +180,7 @@ public abstract class ExcelFormatterVisitor extends Formatter implements BaseDet
     public void visitTableCell(TableCell tableCellObj) throws Exception {
         final Row row = getLastRow(getLastSheet(workbook));
         final Cell cell = createCell(row, 1, CellType.STRING);
-        ((ExcelStyleService) styleService).handleTableCustomCell(tableCellObj, cell);
+        ((ExcelStyleService) styleService).writeItemToCell(tableCellObj, cell);
     }
 
     @Override
@@ -195,9 +196,20 @@ public abstract class ExcelFormatterVisitor extends Formatter implements BaseDet
         final Row row = createRow(sheet, 1);
         createCell(row, 1, CellType.STRING).setCellValue("");
         ((ExcelStyleService) styleService)
-            .fillCellFromItem(
-                createCell(row, 1, CellType.STRING),
-                footerObj
+            .writeItemToCell(
+                footerObj,
+                createCell(row, 1, CellType.STRING)
+            );
+    }
+
+    @Override
+    public void visitPicture(Picture pictureObj) throws Throwable {
+        final Sheet sheet = getLastSheet(workbook);
+        final Row row = createRow(sheet, 1);
+        ((ExcelStyleService) styleService)
+            .writeItemToCell(
+                pictureObj,
+                createCell(row, 1, CellType.STRING)
             );
     }
 
