@@ -41,8 +41,4 @@ public abstract class ExcelFormatter extends ExcelFormatterVisitor {
                 .add("parent", super.toString())
                 .toString();
     }
-
-    public FontCharset getFontCharset() {
-        return fontCharset;
-    }
 }

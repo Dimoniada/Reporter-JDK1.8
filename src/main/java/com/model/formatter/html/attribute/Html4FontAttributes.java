@@ -12,7 +12,7 @@ public class Html4FontAttributes {
     public static final String FONTCOLOR_HTML4 = "color=";
     public static final String FONTFACE_HTML4 = "face=";
 
-    protected Map<String, Object> fontAttributes = new HashMap<>();
+    protected final Map<String, Object> fontAttributes = new HashMap<>();
 
     private final Map<String, Function<Object, String>> fontAttrHtml4Mapper =
         new HashMap<String, Function<Object, String>>() {{

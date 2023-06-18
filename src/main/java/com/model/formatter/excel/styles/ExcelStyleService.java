@@ -108,7 +108,7 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
 
     private static final HSSFPalette palette;
 
-    protected Map<Cell, LayoutStyle> needAdjustHeaderCells = new HashMap<>();
+    protected final Map<Cell, LayoutStyle> needAdjustHeaderCells = new HashMap<>();
 
     private final FontCharset fontCharset;
     private final Map<LayoutStyle, CellStyle> layoutStyles = new HashMap<>();

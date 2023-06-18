@@ -8,7 +8,7 @@ import com.itextpdf.layout.renderer.IRenderer;
 import com.model.domain.styles.geometry.GeometryDetails;
 
 public class CustomCellRenderer extends CellRenderer implements CustomRenderer {
-    GeometryDetails geometryDetails;
+    private final GeometryDetails geometryDetails;
 
     public CustomCellRenderer(
             Cell modelElement,

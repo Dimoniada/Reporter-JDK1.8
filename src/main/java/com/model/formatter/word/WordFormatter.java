@@ -41,8 +41,4 @@ public abstract class WordFormatter extends WordFormatterVisitor {
                 .add("parent", super.toString())
                 .toString();
     }
-
-    public FontCharset getFontCharset() {
-        return fontCharset;
-    }
 }

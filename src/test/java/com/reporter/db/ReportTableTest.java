@@ -252,7 +252,7 @@ public class ReportTableTest extends BaseQueryDocument {
                 rowStyleNormal);
             styleService.setFontService(fontService);
         }
-        try (DocumentHolder documentHolder = formatter.handle(document)) { /**/ }
+        try (DocumentHolder ignored = formatter.handle(document)) { /**/ }
     }
 
     private void redefineStylesPolish() {

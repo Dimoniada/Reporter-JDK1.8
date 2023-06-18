@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 })
 class FormatterFactoryTest extends BaseFormatterContext {
 
-    public List<Class<? extends Formatter>> formattersClassList;
+    public final List<Class<? extends Formatter>> formattersClassList;
 
     final FormatterFactory formatterFactory;
 

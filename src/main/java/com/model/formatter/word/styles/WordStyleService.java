@@ -261,23 +261,6 @@ public class WordStyleService extends StyleService implements DocDetails {
         }
     }
 
-//    private static XWPFStyle createNewStyle(XWPFStyles styles, STStyleType.Enum styleType, String styleId) {
-//        if (styles == null || styleId == null) {
-//            return null;
-//        }
-//        XWPFStyle style = styles.getStyle(styleId);
-//        if (style == null) {
-//            final CTStyle ctStyle = CTStyle.Factory.newInstance();
-//            ctStyle.addNewName().setVal(styleId);
-//            ctStyle.setCustomStyle(STOnOff.GREATER_THAN);
-//            style = new XWPFStyle(ctStyle, styles);
-//            style.setType(styleType);
-//            style.setStyleId(styleId);
-//            styles.addStyle(style);
-//        }
-//        return style;
-//    }
-
     /**
      * Applies the layoutStyle backfill setting to the XWPFParagraph element
      *

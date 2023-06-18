@@ -21,5 +21,5 @@ public interface BaseFormatter extends BaseDetails {
      *
      * @return style service
      */
-    StyleService getStyleService() throws Exception;
+    StyleService getStyleService();
 }

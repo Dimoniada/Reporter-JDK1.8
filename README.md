@@ -466,7 +466,7 @@ zh=
 converters:
 <font size=2>
 > The MS Word converter is represented by a MicrosoftWordBridge instance. This bridge starts MS Word when the connected
-> LocalConverter is started an quits Word once the local converter is shut down. Note that this implies that only a
+> LocalConverter is started and quits Word once the local converter is shut down. Note that this implies that only a
 > single
 > active LocalConverter instance must exist not only for a JVM but for the entire physical machine. Otherwise, MS Word
 > might be shut down by one bridge while it is still required by another instance. This cannot be controlled by

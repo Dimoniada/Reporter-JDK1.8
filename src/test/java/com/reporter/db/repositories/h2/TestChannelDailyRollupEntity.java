@@ -100,7 +100,7 @@ public class TestChannelDailyRollupEntity {
     }
 
     @Basic
-    @Column(name = "price", nullable = true, precision = 0)
+    @Column(name = "price")
     public Double getPrice() {
         return price;
     }
@@ -379,11 +379,7 @@ public class TestChannelDailyRollupEntity {
         if (!Objects.equals(moPrefix, that.moPrefix)) {
             return false;
         }
-        if (!Objects.equals(trafficType, that.trafficType)) {
-            return false;
-        }
-
-        return true;
+        return Objects.equals(trafficType, that.trafficType);
     }
 
     @Override

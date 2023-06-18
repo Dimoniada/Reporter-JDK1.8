@@ -260,11 +260,7 @@ public class TestChannelDailyRollupEntityPK implements Serializable {
         if (!Objects.equals(moPrefix, that.moPrefix)) {
             return false;
         }
-        if (!Objects.equals(trafficType, that.trafficType)) {
-            return false;
-        }
-
-        return true;
+        return Objects.equals(trafficType, that.trafficType);
     }
 
     @Override

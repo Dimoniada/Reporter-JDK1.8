@@ -4,7 +4,6 @@ import com.google.common.base.Objects;
 import com.model.domain.DocumentItem;
 import com.model.domain.styles.Style;
 
-import java.io.IOException;
 import java.util.Locale;
 
 public abstract class HtmlTag extends Html5StyledTag {
@@ -52,9 +51,8 @@ public abstract class HtmlTag extends Html5StyledTag {
      * Writes a closing tag
      *
      * @return this
-     * @throws IOException write error
      */
-    public String close() throws IOException {
+    public String close() {
         return String.format("</%s>", getTagName());
     }
 

@@ -22,8 +22,8 @@ public class BaseDocument {
     public LayoutTextStyle styleForParagraph;
     public LayoutTextStyle styleForSeparator;
 
-    public ByteArrayOutputStream os = new ByteArrayOutputStream();
-    public OutputStreamWriter writer = new OutputStreamWriter(os);
+    public final ByteArrayOutputStream os = new ByteArrayOutputStream();
+    public final OutputStreamWriter writer = new OutputStreamWriter(os);
 
     public FontService fontService;
 

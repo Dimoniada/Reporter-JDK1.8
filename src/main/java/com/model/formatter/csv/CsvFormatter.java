@@ -8,7 +8,6 @@ import org.springframework.core.io.WritableResource;
 import org.springframework.stereotype.Component;
 import org.supercsv.prefs.CsvPreference;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -81,10 +80,10 @@ public class CsvFormatter extends CsvFormatterVisitor implements CsvDetails {
     }
 
     @Override
-    public StyleService getStyleService() throws Exception {
+    public StyleService getStyleService() {
         return null;
     }
 
     @Override
-    public void cleanupResource() throws IOException { /**/ }
+    public void cleanupResource() { /**/ }
 }

@@ -104,7 +104,7 @@ public abstract class WordFormatterVisitor extends Formatter implements BaseDeta
     }
 
     @Override
-    public void visitHeading(Heading headingObj) throws Exception {
+    public void visitHeading(Heading headingObj) {
         final String heading = headingObj.getText();
         final int depth = headingObj.getDepth();
         final XWPFParagraph paragraph = wordDocument.createParagraph();
@@ -287,7 +287,7 @@ public abstract class WordFormatterVisitor extends Formatter implements BaseDeta
     }
 
     @Override
-    public StyleService getStyleService() throws Exception {
+    public StyleService getStyleService() {
         if (styleService == null) {
             styleService = WordStyleService.create(fontCharset, decimalFormat);
         }

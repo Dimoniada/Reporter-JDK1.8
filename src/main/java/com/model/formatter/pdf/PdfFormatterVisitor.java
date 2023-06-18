@@ -170,7 +170,7 @@ public abstract class PdfFormatterVisitor extends Formatter implements BaseDetai
     }
 
     @Override
-    public void visitSeparator(Separator separatorObj) throws Exception {
+    public void visitSeparator(Separator separatorObj) {
         final BorderStyle border = separatorObj.getBorderStyle();
         if (border != null && border.getWeight() != BorderWeight.NONE) {
             final ILineDrawer lineDrawer = PdfStyleService.toPdfILineDrawer(border.getWeight());
@@ -264,7 +264,7 @@ public abstract class PdfFormatterVisitor extends Formatter implements BaseDetai
         return this;
     }
 
-    public StyleService getStyleService() throws Exception {
+    public StyleService getStyleService() {
         if (styleService == null) {
             styleService = PdfStyleService.create(encoding, null, decimalFormat);
         }

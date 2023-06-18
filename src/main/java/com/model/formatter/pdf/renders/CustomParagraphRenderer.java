@@ -8,7 +8,7 @@ import com.itextpdf.layout.renderer.ParagraphRenderer;
 import com.model.domain.styles.geometry.GeometryDetails;
 
 public class CustomParagraphRenderer extends ParagraphRenderer implements CustomRenderer {
-    GeometryDetails geometryDetails;
+    private final GeometryDetails geometryDetails;
 
     public CustomParagraphRenderer(
         Paragraph modelElement,

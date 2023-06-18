@@ -269,9 +269,9 @@ public class TutorialTest {
     }
 
     static class Person {
-        Serializable id;
-        String name;
-        String comment;
+        final Serializable id;
+        final String name;
+        final String comment;
 
         Person(Serializable id, String name, String comment) {
             this.id = id;

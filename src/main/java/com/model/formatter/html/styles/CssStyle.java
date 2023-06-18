@@ -39,10 +39,10 @@ public class CssStyle {
     public static final String BGCOLOR_HTML4 = "bgcolor=";
     public static final String ALIGN_HTML4 = "align=";
 
-    protected Map<String, Object> attributes = new HashMap<>();
+    protected final Map<String, Object> attributes = new HashMap<>();
 
-    protected Map<String, Function<Object, String>> attributeMapper;
-    protected Map<String, Function<Object, String>> attributeHtml4Mapper;
+    protected final Map<String, Function<Object, String>> attributeMapper;
+    protected final Map<String, Function<Object, String>> attributeHtml4Mapper;
 
     public CssStyle() {
         attributeMapper = new HashMap<String, Function<Object, String>>() {{

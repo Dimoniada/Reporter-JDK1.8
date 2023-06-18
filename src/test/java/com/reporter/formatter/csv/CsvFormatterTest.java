@@ -104,7 +104,7 @@ class CsvFormatterTest extends BaseDocument {
         final CsvListWriter csvWriter = new CsvListWriter(writer, csvPreference);
         final CsvFormatter csvFormatter = new CsvFormatter();
 
-        final DecimalFormat df = new DecimalFormat("\u203000");
+        final DecimalFormat df = new DecimalFormat("‰00");
 
         csvFormatter.setOs(os).setWriter(writer).setCsvWriter(csvWriter)
             .setEncoding("ISO-8859-1").setDecimalFormat(df);
@@ -119,7 +119,7 @@ class CsvFormatterTest extends BaseDocument {
     @Test
     public void testDocumentNotSet() {
         final CsvFormatter csvFormatter = new CsvFormatter();
-        final Exception e = Assertions.assertThrows(Exception.class, () -> csvFormatter.handle(null));
+        final Exception e = Assertions.assertThrows(Exception.class, () -> csvFormatter.handle(null).close());
         Assertions.assertTrue("Document not set".contains(e.getMessage()));
     }
 }

@@ -50,7 +50,7 @@ public class FontService {
         put(FontFamilyStyle.MONOSPACED, "Monospaced");
     }};
 
-    protected Map<String, Map.Entry<Font, Map<TextAttribute, Object>>> fonts =
+    protected final Map<String, Map.Entry<Font, Map<TextAttribute, Object>>> fonts =
         new HashMap<String, Map.Entry<Font, Map<TextAttribute, Object>>>() {{
             put("arial_SansSerif_(en-ru Arimo).ttf", null);
             put("courierNew_Monospaced_(en-ru AnonymousPro-Regular).ttf", null);
@@ -86,7 +86,7 @@ public class FontService {
     /**
      * Reads available locales from resource file
      *
-     * @throws IllegalArgumentException if can't open resource file
+     * @throws IllegalArgumentException if it can't open resource file
      */
     public void initializeLocales() throws IllegalArgumentException {
         final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(loader);

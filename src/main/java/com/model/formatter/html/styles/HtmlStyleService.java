@@ -438,10 +438,6 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
                 return false;
             };
 
-//            if (getHtmlColgroupTag().isEnabled() && getHtmlColgroupTag().isWriteStyleInplace()) {
-//                styles.removeIf(s -> !checkConditionClass.apply(TableCell.class, s));
-//            }
-
             final List<Style> rowStyles =
                 styles
                     .stream()
