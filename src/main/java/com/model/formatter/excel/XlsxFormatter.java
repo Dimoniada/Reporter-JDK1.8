@@ -13,6 +13,7 @@ import java.util.Optional;
  */
 @Component
 public class XlsxFormatter extends ExcelFormatter implements XlsxDetails {
+
     public XlsxFormatter() {
         super(FontCharset.DEFAULT);
     }

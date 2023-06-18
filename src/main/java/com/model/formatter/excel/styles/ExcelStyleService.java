@@ -53,7 +53,7 @@ import static com.model.utils.LocalizedNumberUtils.applyDecimalFormat;
  */
 public class ExcelStyleService extends StyleService implements XlsDetails {
     // Apache POI can resolve 1/60000 of degree, minus because of the anticlockwise direction
-    private static final int XLSX_ANGLE_CONST = -60000;
+    private static final int EXCEL_ANGLE_CONST = -60000;
 
     private static final Map<BorderWeight, org.apache.poi.ss.usermodel.BorderStyle> borderMap =
         new HashMap<BorderWeight, org.apache.poi.ss.usermodel.BorderStyle>() {{
@@ -261,7 +261,7 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
                             .getCTPicture()
                             .getSpPr()
                             .getXfrm()
-                            .setRot((int) ConverterUtils.convert(angle) * XLSX_ANGLE_CONST);
+                            .setRot((int) ConverterUtils.convert(angle) * EXCEL_ANGLE_CONST);
                     } else {
                         cellStyle.setRotation(ConverterUtils.convert(angle));
                     }
