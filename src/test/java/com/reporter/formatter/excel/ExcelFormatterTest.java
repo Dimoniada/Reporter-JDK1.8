@@ -137,7 +137,7 @@ class ExcelFormatterTest extends BaseDocument {
                                 GeometryDetails.create()
 //                                    .setScaleX(Geometry.create().add("xlsx", Double.MAX_VALUE))
 //                                    .setScaleY(Geometry.create().add("xlsx", Double.MAX_VALUE))
-                                    .setWidth(Geometry.create().add("xlsx", 80 * 128))
+                                    .setWidth(Geometry.create().add("xlsx", 80 * 100))
                                     .setHeight(Geometry.create().add("xlsx", (short) (48 * 40)))
                                     .setAngle(Geometry.create().add("xlsx", 30))
                             )

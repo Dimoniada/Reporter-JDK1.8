@@ -52,7 +52,8 @@ import static com.model.utils.LocalizedNumberUtils.applyDecimalFormat;
  * {@link org.apache.poi.ss.usermodel.Row}
  */
 public class ExcelStyleService extends StyleService implements XlsDetails {
-    private static final int XLSX_ANGLE_CONST = 60000;
+    // Apache POI can resolve 1/60000 of degree, minus because of the anticlockwise direction
+    private static final int XLSX_ANGLE_CONST = -60000;
 
     private static final Map<BorderWeight, org.apache.poi.ss.usermodel.BorderStyle> borderMap =
         new HashMap<BorderWeight, org.apache.poi.ss.usermodel.BorderStyle>() {{
