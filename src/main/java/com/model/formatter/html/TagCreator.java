@@ -54,7 +54,7 @@ public class TagCreator {
         final boolean isCell = tag instanceof HtmlTableCell;
         if (isUseHtml4Tags) {
             if (!(isCell && useHtmlColgroupTag.isEnabled())) {
-                final LayoutStyle layoutStyle = HtmlStyleService.extractLayoutStyle(style);
+                final LayoutStyle layoutStyle = LayoutStyle.extractLayoutStyle(style);
                 HtmlStyleService.fillHtml4StyleTagsFromStyle(tag, layoutStyle, isHtmlTable);
             }
             write(String.format("<%s%s>", tag.getTagName(), tag.attributesToHtmlString(true)));

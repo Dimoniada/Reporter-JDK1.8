@@ -67,6 +67,22 @@ public class LayoutStyle extends Style {
         return new LayoutStyle();
     }
 
+    /**
+     * Extracts layout style (if any) from general style
+     *
+     * @param style initial style
+     * @return LayoutStyle
+     */
+    public static LayoutStyle extractLayoutStyle(Style style) {
+        LayoutStyle layoutStyle = null;
+        if (style instanceof LayoutStyle) {
+            layoutStyle = (LayoutStyle) style;
+        } else if (style instanceof LayoutTextStyle) {
+            layoutStyle = ((LayoutTextStyle) style).getLayoutStyle();
+        }
+        return layoutStyle;
+    }
+
     @Override
     public LayoutStyle clone() throws CloneNotSupportedException {
         return

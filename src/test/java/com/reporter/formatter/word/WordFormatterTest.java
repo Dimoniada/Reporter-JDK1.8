@@ -1,21 +1,39 @@
 package com.reporter.formatter.word;
 
+import com.model.domain.Document;
 import com.model.domain.DocumentItem;
 import com.model.domain.Footer;
+import com.model.domain.Picture;
+import com.model.domain.Title;
+import com.model.domain.styles.LayoutStyle;
+import com.model.domain.styles.constants.PictureFormat;
+import com.model.domain.styles.geometry.Geometry;
+import com.model.domain.styles.geometry.GeometryDetails;
 import com.model.formatter.DocumentHolder;
 import com.model.formatter.word.DocFormatter;
 import com.model.formatter.word.DocxFormatter;
 import com.model.formatter.word.WordFormatter;
 import com.reporter.formatter.BaseDocument;
+import org.apache.commons.io.IOUtils;
+import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFHeaderFooter;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFPicture;
+import org.apache.poi.xwpf.usermodel.XWPFPictureData;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTPositiveSize2D;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTTransform2D;
+import org.openxmlformats.schemas.drawingml.x2006.picture.CTPicture;
+import org.springframework.core.io.PathResource;
+import org.springframework.core.io.WritableResource;
 
 import java.io.File;
+import java.net.URL;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -110,5 +128,51 @@ public class WordFormatterTest extends BaseDocument {
     public void testSaveTextToDocFile() throws Throwable {
         final WordFormatter docFormatter = DocFormatter.create();
         try (DocumentHolder ignored = docFormatter.handle(doc)) { /**/ }
+    }
+
+    @Test
+    public void testSavePictureToDocxFile() throws Throwable {
+        final WordFormatter docxFormatter = DocxFormatter.create();
+        final URL url = getClass().getClassLoader().getResource("pic.jpg");
+        Assertions.assertNotNull(url);
+        final WritableResource resource = new PathResource(url.toURI());
+        doc = Document.create()
+            .setLabel("docx with picture")
+            .addParts(
+                Title.create().setText("Picture 1"),
+                Picture.create()
+                    .setPictureFormat(PictureFormat.JPG)
+                    .setData(resource)
+                    .setStyle(
+                        LayoutStyle.create()
+                            .setGeometryDetails(
+                                GeometryDetails.create()
+                                    .setWidth(Geometry.create().add(DocxFormatter.EXTENSION, 80))
+                                    .setHeight(Geometry.create().add(DocxFormatter.EXTENSION, 48))
+                                    .setAngle(Geometry.create().add(DocxFormatter.EXTENSION, 90))
+                            )
+                    )
+            );
+
+        try (
+            DocumentHolder documentHolder = docxFormatter.handle(doc);
+            XWPFDocument docx = new XWPFDocument(documentHolder.getResource().getInputStream())
+        ) {
+            final List<XWPFPictureData> resultPicturelist = docx.getAllPictures();
+            Assertions.assertEquals(1, resultPicturelist.size());
+            final XWPFPictureData resultPicture = resultPicturelist.get(0);
+            Assertions.assertArrayEquals(IOUtils.toByteArray(resource.getInputStream()), resultPicture.getData());
+
+            final XWPFRun pictureRun = docx.getParagraphs().get(1).getRuns().get(0);
+            final List<XWPFPicture> xwpfPictureList = pictureRun.getEmbeddedPictures();
+            final XWPFPicture xwpfPicture = xwpfPictureList.get(0);
+            final CTPicture picture = xwpfPicture.getCTPicture();
+            final CTTransform2D transform2D = picture.getSpPr().getXfrm();
+            final int resultAngle = transform2D.getRot();
+            final CTPositiveSize2D ext = transform2D.getExt();
+            Assertions.assertEquals(90, resultAngle);
+            Assertions.assertEquals(80, Units.toPoints(ext.getCx()));
+            Assertions.assertEquals(48, Units.toPoints(ext.getCy()));
+        }
     }
 }

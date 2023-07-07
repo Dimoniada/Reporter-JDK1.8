@@ -541,7 +541,11 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
     }
 
     public void checkAdjustHeaderCells(Cell cell, LayoutStyle layoutStyle) {
-        if (layoutStyle != null && (layoutStyle.isAutoWidth() || layoutStyle.getGeometryDetails().getWidth() != null)) {
+        if (layoutStyle == null) {
+            return;
+        }
+        final GeometryDetails geometryDetails = layoutStyle.getGeometryDetails();
+        if (layoutStyle.isAutoWidth() || geometryDetails != null && geometryDetails.getWidth() != null) {
             needAdjustHeaderCells.put(cell, layoutStyle);
         }
     }

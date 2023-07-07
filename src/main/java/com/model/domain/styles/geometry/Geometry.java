@@ -8,7 +8,9 @@ import java.util.Optional;
  * Key is document extension, value is length/angle (measurable entity).
  * For width Geometry the length is:
  *    for .xlsx(int) it's units of 1/256th of a character width, see setColumnWidth() in {@link org.apache.poi.ss.usermodel.Sheet};
- *    for .docx(int) it's 20ths of a point, twips, see setWidth() in {@link org.apache.poi.xwpf.usermodel.XWPFTable};
+ *    for .docx(int) table/table-cell it's 20ths of a point, twips, see setWidth() in
+ *          {@link org.apache.poi.xwpf.usermodel.XWPFTable} or {@link org.apache.poi.xwpf.usermodel.XWPFTableCell};
+ *    for .docx(int) picture it's EMUs, see addPicture() in {@link org.apache.poi.xwpf.usermodel.XWPFRun};
  *    for .pdf(float) by default it's in points of (1/72)", see setWidth() in {@link com.itextpdf.layout.element.BlockElement};
  *    for .html(String) it's a width with dimension, see attribute width;
  * For height Geometry the length is:

@@ -1,7 +1,9 @@
 package com.model.formatter.word.styles;
 
 import com.google.common.base.MoreObjects;
+import com.model.domain.DocumentItem;
 import com.model.domain.Heading;
+import com.model.domain.Picture;
 import com.model.domain.TextItem;
 import com.model.domain.styles.BorderStyle;
 import com.model.domain.styles.LayoutStyle;
@@ -12,20 +14,27 @@ import com.model.domain.styles.TextStyle;
 import com.model.domain.styles.constants.BorderWeight;
 import com.model.domain.styles.constants.Color;
 import com.model.domain.styles.constants.HorAlignment;
+import com.model.domain.styles.constants.PictureFormat;
 import com.model.domain.styles.constants.VertAlignment;
+import com.model.domain.styles.geometry.GeometryDetails;
 import com.model.formatter.word.DocDetails;
 import com.model.utils.ConverterUtils;
 import com.model.utils.LocalizedNumberUtils;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.Borders;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.TableWidthType;
 import org.apache.poi.xwpf.usermodel.TextAlignment;
 import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFPicture;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTTransform2D;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBorder;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTP;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPBdr;
@@ -39,7 +48,10 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.STBorder;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblWidth;
 import org.springframework.util.StringUtils;
 
+import java.awt.*;
+import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,12 +59,12 @@ public class WordStyleService extends StyleService implements DocDetails {
     /**
      * Reverse twip (1/567) constant for cm
      */
-    private static final int XLSX_HEADING_CONST = 567;
+    private static final int DOCX_HEADING_CONST = 567;
 
     /**
      * Reverse inch (1/1440) constant for width in inch
      */
-    private static final int XLSX_INCH_CONST = 1440;
+    private static final int DOCX_INCH_CONST = 1440;
 
     /**
      * Map of native xwpf border types.
@@ -107,11 +119,97 @@ public class WordStyleService extends StyleService implements DocDetails {
             put(VertAlignment.BOTTOM, XWPFTableCell.XWPFVertAlign.BOTTOM);
         }};
 
+    /**
+     * Map of native xwpf picture types
+     * Key - type PictureFormat, value - integer {@link org.apache.poi.xwpf.usermodel.Document}
+     */
+    private static final Map<PictureFormat, Integer> pictureFormatMap =
+        new HashMap<PictureFormat, Integer>() {{
+            put(null, -1);
+            put(PictureFormat.JPEG, XWPFDocument.PICTURE_TYPE_JPEG);
+            put(PictureFormat.JPG, XWPFDocument.PICTURE_TYPE_JPEG);
+            put(PictureFormat.PNG, XWPFDocument.PICTURE_TYPE_PNG);
+            put(PictureFormat.WMF, XWPFDocument.PICTURE_TYPE_WMF);
+            put(PictureFormat.EMF, XWPFDocument.PICTURE_TYPE_EMF);
+            put(PictureFormat.DIB, XWPFDocument.PICTURE_TYPE_DIB);
+            put(PictureFormat.PICT, XWPFDocument.PICTURE_TYPE_PICT);
+        }};
+
     private final FontCharset fontCharset;
 
     public WordStyleService(FontCharset fontCharset, DecimalFormat decimalFormat) {
         this.fontCharset = fontCharset;
         this.decimalFormat = decimalFormat;
+    }
+
+    protected Dimension getPictureDimension(Picture picture, LayoutStyle layoutStyle) throws IOException {
+        int width = 0;
+        int height = 0;
+        if (layoutStyle != null) {
+            final GeometryDetails geometryDetails = layoutStyle.getGeometryDetails();
+            if (geometryDetails != null) {
+                if (geometryDetails.getHeight() != null
+                    && geometryDetails.getHeight().getValueFor(EXTENSION).isPresent()
+                ) {
+                    height = ConverterUtils.<Integer>convert(geometryDetails.getHeight().getValueFor(EXTENSION).get());
+                } else {
+                    height = picture.getHeightFromData();
+                }
+                if (geometryDetails.getWidth() != null
+                    && geometryDetails.getWidth().getValueFor(EXTENSION).isPresent()
+                ) {
+                    width = ConverterUtils.<Integer>convert(geometryDetails.getWidth().getValueFor(EXTENSION).get());
+                } else {
+                    width = picture.getWidthFromData();
+                }
+            }
+        }
+        return new Dimension(width, height);
+    }
+
+    protected void convertGeometryRotation(XWPFPicture xwpfPicture, LayoutStyle layoutStyle) {
+        final GeometryDetails geometryDetails = layoutStyle.getGeometryDetails();
+        if (geometryDetails == null || geometryDetails.getAngle() == null) {
+            return;
+        }
+        final CTTransform2D transform2D = xwpfPicture.getCTPicture().getSpPr().getXfrm();
+        geometryDetails
+            .getAngle()
+            .getValueFor(EXTENSION)
+            .ifPresent(v -> transform2D.setRot(ConverterUtils.<Integer>convert(v)));
+    }
+
+    /**
+     * Adds text/picture/data to XWPFRun
+     *
+     * @param item  document item
+     * @param run   XWPFRun run
+     * @param style item's style
+     * @throws ParseException         number in string could not be resolved
+     * @throws IOException            if reading the picture-data from the stream fails
+     * @throws InvalidFormatException if the format of the picture is not known
+     */
+    protected void addItemToRun(DocumentItem item, XWPFRun run, Style style)
+        throws ParseException, IOException, InvalidFormatException {
+        if (item instanceof TextItem<?>) {
+            final TextItem<?> textItem = (TextItem<?>) item;
+            final String text = LocalizedNumberUtils.applyDecimalFormat(textItem.getText(), style, decimalFormat);
+            run.setText(text);
+        }
+        if (item instanceof Picture) {
+            final Picture picture = (Picture) item;
+            final LayoutStyle layoutStyle = LayoutStyle.extractLayoutStyle(style);
+            final Dimension dimension = getPictureDimension(picture, layoutStyle);
+            final int picFormat = toWordPictureFormat(picture.getPictureFormat());
+            final XWPFPicture xwpfPicture = run.addPicture(
+                picture.getData().getInputStream(),
+                picFormat,
+                picture.getName(),
+                Units.toEMU(dimension.getWidth()),
+                Units.toEMU(dimension.getHeight())
+            );
+            convertGeometryRotation(xwpfPicture, layoutStyle);
+        }
     }
 
     public static StyleService create(FontCharset fontCharset, DecimalFormat decimalFormat) {
@@ -128,13 +226,13 @@ public class WordStyleService extends StyleService implements DocDetails {
         if (style instanceof LayoutStyle) {
             final LayoutStyle tableLayoutStyle = (LayoutStyle) style;
             final boolean isTableAutoWidth = tableLayoutStyle.isAutoWidth();
-            if (!isTableAutoWidth && tableLayoutStyle.getGeometryDetails().getWidth() != null) {
-                tableLayoutStyle
-                    .getGeometryDetails()
+            final GeometryDetails geometryDetails = tableLayoutStyle.getGeometryDetails();
+            if (geometryDetails != null && geometryDetails.getWidth() != null) {
+                geometryDetails
                     .getWidth()
                     .getValueFor(EXTENSION)
-                    .ifPresent(value -> docxTable.setWidth(ConverterUtils.<Integer>convert(value) * XLSX_INCH_CONST));
-            } else {
+                    .ifPresent(value -> docxTable.setWidth(ConverterUtils.<Integer>convert(value) * DOCX_INCH_CONST));
+            } else if (isTableAutoWidth) {
                 docxTable.setWidth("auto");
             }
         }
@@ -148,25 +246,24 @@ public class WordStyleService extends StyleService implements DocDetails {
      *
      * @param item    text element
      * @param element docx object: XWPFParagraph or XWPFTableCell
-     * @throws Exception on bad decimalFormat or font can't be found error
+     * @throws Exception   on bad decimalFormat or font can't be found error
+     * @throws IOException if picture details reading failure
      */
-    public void handleCustomText(TextItem<?> item, Object element) throws Exception {
+    public void handleCustomItem(DocumentItem item, Object element) throws Exception {
         final Style style = extractStyleFor(item).orElse(item.getStyle());
-        final String text = LocalizedNumberUtils.applyDecimalFormat(item.getText(), item.getStyle(), decimalFormat);
         if (element instanceof XWPFParagraph) {
             final XWPFParagraph paragraph = (XWPFParagraph) element;
             final XWPFRun run = paragraph.createRun();
-            run.setText(text);
-
+            addItemToRun(item, run, style);
             convertStyleToElement(style, run, paragraph);
             if (item instanceof Heading) {
-                paragraph.setIndentationHanging(((Heading) item).getDepth() * XLSX_HEADING_CONST);
+                paragraph.setIndentationHanging(((Heading) item).getDepth() * DOCX_HEADING_CONST);
             }
         } else if (element instanceof XWPFTableCell) {
             final XWPFTableCell cell = (XWPFTableCell) element;
             final XWPFParagraph paragraph = cell.getParagraphs().get(0);
             final XWPFRun run = paragraph.createRun();
-            run.setText(text);
+            addItemToRun(item, run, style);
             if (style instanceof TextStyle) {
                 convertStyleToElement(style, run, paragraph);
             } else if (style instanceof LayoutStyle) {
@@ -247,16 +344,16 @@ public class WordStyleService extends StyleService implements DocDetails {
         convertVerticalAlignmentCell(cell, layoutStyle);
         final boolean isCellAutoWidth = layoutStyle.isAutoWidth();
         final CTTblWidth tblWidth = cell.getCTTc().addNewTcPr().addNewTcW();
-        if (!isCellAutoWidth && layoutStyle.getGeometryDetails().getWidth() != null) {
-            layoutStyle
-                .getGeometryDetails()
+        final GeometryDetails geometryDetails = layoutStyle.getGeometryDetails();
+        if (geometryDetails != null && geometryDetails.getWidth() != null) {
+            geometryDetails
                 .getWidth()
                 .getValueFor(EXTENSION)
                 .ifPresent(value -> {
                     cell.setWidthType(TableWidthType.DXA);
                     cell.setWidth(String.valueOf(ConverterUtils.<Integer>convert(value)));
                 });
-        } else {
+        } else if (isCellAutoWidth) {
             tblWidth.setType(STTblWidth.AUTO);
         }
     }
@@ -446,6 +543,14 @@ public class WordStyleService extends StyleService implements DocDetails {
             return horizontalAlignmentMap.get(horAlignment);
         } else {
             throw new IllegalArgumentException("Undefined HorizontalAlignment type");
+        }
+    }
+
+    public static int toWordPictureFormat(PictureFormat pictureFormat) {
+        if (pictureFormatMap.containsKey(pictureFormat)) {
+            return pictureFormatMap.get(pictureFormat);
+        } else {
+            throw new IllegalArgumentException("Undefined PictureFormat type");
         }
     }
 

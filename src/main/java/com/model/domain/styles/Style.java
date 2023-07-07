@@ -44,5 +44,4 @@ public class Style implements Cloneable {
     public Style clone() throws CloneNotSupportedException {
         return ((Style) super.clone()).setCondition(condition);
     }
-
 }

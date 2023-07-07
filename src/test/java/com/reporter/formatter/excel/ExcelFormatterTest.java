@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.PathResource;
+import org.springframework.core.io.WritableResource;
 
 import java.io.ByteArrayOutputStream;
 import java.net.URL;
@@ -127,10 +128,10 @@ class ExcelFormatterTest extends BaseDocument {
     public void testSavePictureToXlsxFile() throws Throwable {
         final URL url = getClass().getClassLoader().getResource("pic.jpg");
         Assertions.assertNotNull(url);
+        final WritableResource resource = new PathResource(url.toURI());
         final DocumentCase documentCase = DocumentCase.create().setName("Test sheet1")
             .addParts(
-                Picture.create(PictureFormat.JPEG)
-                    .setData(new PathResource(url.toURI()))
+                Picture.create(resource, PictureFormat.JPEG)
                     .setStyle(
                         LayoutStyle.create()
                             .setGeometryDetails(
@@ -165,7 +166,7 @@ class ExcelFormatterTest extends BaseDocument {
             Assertions.assertEquals(0, picture.getClientAnchor().getRow1());
             Assertions.assertEquals(1, picture.getClientAnchor().getRow2());
             Assertions.assertArrayEquals(
-                IOUtils.toByteArray(new PathResource(url.toURI()).getInputStream()),
+                IOUtils.toByteArray(resource.getInputStream()),
                 picture.getPictureData().getData()
             );
 

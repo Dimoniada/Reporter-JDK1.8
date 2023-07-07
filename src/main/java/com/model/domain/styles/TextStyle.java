@@ -9,7 +9,7 @@ import java.text.DecimalFormat;
 import java.util.Locale;
 
 /**
- * Display text style for class {@link TextItem}
+ * Represents text style for class {@link TextItem}
  */
 public class TextStyle extends Style {
     /**
