@@ -4,6 +4,11 @@ import com.model.domain.Document;
 import com.model.domain.DocumentItem;
 import com.model.domain.Footer;
 import com.model.domain.Picture;
+import com.model.domain.Table;
+import com.model.domain.TableCell;
+import com.model.domain.TableHeaderCell;
+import com.model.domain.TableHeaderRow;
+import com.model.domain.TableRow;
 import com.model.domain.Title;
 import com.model.domain.styles.LayoutStyle;
 import com.model.domain.styles.constants.PictureFormat;
@@ -132,6 +137,7 @@ public class WordFormatterTest extends BaseDocument {
 
     @Test
     public void testSavePictureToDocxFile() throws Throwable {
+        final int DOCX_ANGLE_CONST = -60000;
         final WordFormatter docxFormatter = DocxFormatter.create();
         final URL url = getClass().getClassLoader().getResource("pic.jpg");
         Assertions.assertNotNull(url);
@@ -149,7 +155,7 @@ public class WordFormatterTest extends BaseDocument {
                                 GeometryDetails.create()
                                     .setWidth(Geometry.create().add(DocxFormatter.EXTENSION, 80))
                                     .setHeight(Geometry.create().add(DocxFormatter.EXTENSION, 48))
-                                    .setAngle(Geometry.create().add(DocxFormatter.EXTENSION, 90))
+                                    .setAngle(Geometry.create().add(DocxFormatter.EXTENSION, 30))
                             )
                     )
             );
@@ -170,9 +176,52 @@ public class WordFormatterTest extends BaseDocument {
             final CTTransform2D transform2D = picture.getSpPr().getXfrm();
             final int resultAngle = transform2D.getRot();
             final CTPositiveSize2D ext = transform2D.getExt();
-            Assertions.assertEquals(90, resultAngle);
+            Assertions.assertEquals(30 * DOCX_ANGLE_CONST, resultAngle);
             Assertions.assertEquals(80, Units.toPoints(ext.getCx()));
             Assertions.assertEquals(48, Units.toPoints(ext.getCy()));
+        }
+    }
+
+    @Test
+    public void testSavePictureInCellToDocxFile() throws Throwable {
+        final int DOCX_ANGLE_CONST = -60000;
+        final WordFormatter docxFormatter = DocxFormatter.create();
+        final URL url = getClass().getClassLoader().getResource("pic.jpg");
+        Assertions.assertNotNull(url);
+        final WritableResource resource = new PathResource(url.toURI());
+        doc = Document.create()
+            .addParts(
+                Table.create(
+                        TableHeaderRow.create()
+                            .addParts(
+                                TableHeaderCell.create().setText("Header cell 1"),
+                                TableHeaderCell.create().setText("Header cell 2")
+                            )
+                    )
+                    .addParts(
+                        TableRow.create()
+                            .addParts(
+                                TableCell.create().setText("Cell 1"),
+                                TableCell.create().setText("Cell 2")
+                                    .setStyle(
+                                        LayoutStyle.create()
+                                            .setGeometryDetails(
+                                                GeometryDetails.create()
+                                                    .setAngle(
+                                                        Geometry.create()
+                                                            .add("docx", 2)
+                                                    )
+                                            )
+                                    )
+                            )
+                    )
+            );
+
+        try (
+            DocumentHolder documentHolder = docxFormatter.handle(doc);
+            XWPFDocument docx = new XWPFDocument(documentHolder.getResource().getInputStream())
+        ) {
+            /**/
         }
     }
 }

@@ -30,7 +30,7 @@
         <guava.version>31.1-jre</guava.version>
         <itextpdf.version>7.2.5</itextpdf.version>
         <documents4j.version>1.1.10</documents4j.version>
-        <apache.version>5.2.2</apache.version>
+        <apache.version>5.2.3</apache.version>
         <supercsv.version>2.4.0</supercsv.version>
         <jdbc.version>5.3.15</jdbc.version>
         <springjpa.version>2.7.6</springjpa.version>

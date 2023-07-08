@@ -127,7 +127,9 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
     private static String geometryToString(String prefix, Geometry<?> geometry, String suffix) {
         final AtomicReference<String> res = new AtomicReference<>(null);
         if (geometry != null) {
-            geometry.getValueFor(EXTENSION).ifPresent(v -> res.set(prefix + ConverterUtils.convert(v) + suffix));
+            geometry
+                .getValueFor(EXTENSION)
+                .ifPresent(value -> res.set(prefix + ConverterUtils.convert(value) + suffix));
         }
         return res.get();
     }
@@ -179,25 +181,27 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
     public static String toHtmlTransformCenter(Geometry<Map.Entry<HorAlignment, VertAlignment>> transformCenter) {
         final AtomicReference<String> res = new AtomicReference<>(null);
         if (transformCenter != null) {
-            transformCenter.getValueFor(EXTENSION).ifPresent(v -> {
-                if (!horizontalAlignmentMap.containsKey(v.getKey())) {
-                    throw new IllegalArgumentException("Undefined HorAlignment type for transform-origin");
-                }
-                HorAlignment horAlignment = v.getKey();
-                if (horAlignment == HorAlignment.GENERAL) {
-                    horAlignment = HorAlignment.CENTER;
-                }
+            transformCenter
+                .getValueFor(EXTENSION)
+                .ifPresent(value -> {
+                    if (!horizontalAlignmentMap.containsKey(value.getKey())) {
+                        throw new IllegalArgumentException("Undefined HorAlignment type for transform-origin");
+                    }
+                    HorAlignment horAlignment = value.getKey();
+                    if (horAlignment == HorAlignment.GENERAL) {
+                        horAlignment = HorAlignment.CENTER;
+                    }
 
-                if (!verticalAlignmentMap.containsKey(v.getValue())) {
-                    throw new IllegalArgumentException("Undefined VertAlignment type for transform-origin");
-                }
-                res.set(
-                    String.join(" ",
-                        horizontalAlignmentMap.get(horAlignment),
-                        verticalAlignmentMap.get(v.getValue())
-                    )
-                );
-            });
+                    if (!verticalAlignmentMap.containsKey(value.getValue())) {
+                        throw new IllegalArgumentException("Undefined VertAlignment type for transform-origin");
+                    }
+                    res.set(
+                        String.join(" ",
+                            horizontalAlignmentMap.get(horAlignment),
+                            verticalAlignmentMap.get(value.getValue())
+                        )
+                    );
+                });
         }
         return res.get();
     }

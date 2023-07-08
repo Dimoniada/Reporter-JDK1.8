@@ -46,6 +46,7 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTcBorders;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTcPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STBorder;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblWidth;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTextDirection;
 import org.springframework.util.StringUtils;
 
 import java.awt.*;
@@ -54,6 +55,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class WordStyleService extends StyleService implements DocDetails {
     /**
@@ -66,6 +68,8 @@ public class WordStyleService extends StyleService implements DocDetails {
      */
     private static final int DOCX_INCH_CONST = 1440;
 
+    // Apache POI can resolve 1/60000 of degree, minus because of the anticlockwise direction
+    private static final int DOCX_ANGLE_CONST = -60000;
     /**
      * Map of native xwpf border types.
      * Key - type BorderWeight, value - Border
@@ -143,40 +147,27 @@ public class WordStyleService extends StyleService implements DocDetails {
     }
 
     protected Dimension getPictureDimension(Picture picture, LayoutStyle layoutStyle) throws IOException {
-        int width = 0;
-        int height = 0;
-        if (layoutStyle != null) {
-            final GeometryDetails geometryDetails = layoutStyle.getGeometryDetails();
-            if (geometryDetails != null) {
-                if (geometryDetails.getHeight() != null
-                    && geometryDetails.getHeight().getValueFor(EXTENSION).isPresent()
-                ) {
-                    height = ConverterUtils.<Integer>convert(geometryDetails.getHeight().getValueFor(EXTENSION).get());
-                } else {
-                    height = picture.getHeightFromData();
-                }
-                if (geometryDetails.getWidth() != null
-                    && geometryDetails.getWidth().getValueFor(EXTENSION).isPresent()
-                ) {
-                    width = ConverterUtils.<Integer>convert(geometryDetails.getWidth().getValueFor(EXTENSION).get());
-                } else {
-                    width = picture.getWidthFromData();
-                }
+        final AtomicInteger width = new AtomicInteger(picture.getWidthFromData());
+        final AtomicInteger height = new AtomicInteger(picture.getHeightFromData());
+        if (layoutStyle == null) {
+            return new Dimension(width.get(), height.get());
+        }
+        final GeometryDetails geometryDetails = layoutStyle.getGeometryDetails();
+        if (geometryDetails != null) {
+            if (geometryDetails.getHeight() != null) {
+                geometryDetails
+                    .getHeight()
+                    .getValueFor(EXTENSION)
+                    .ifPresent(value -> height.set(ConverterUtils.<Integer>convert(value)));
+            }
+            if (geometryDetails.getWidth() != null) {
+                geometryDetails
+                    .getWidth()
+                    .getValueFor(EXTENSION)
+                    .ifPresent(value -> width.set(ConverterUtils.<Integer>convert(value)));
             }
         }
-        return new Dimension(width, height);
-    }
-
-    protected void convertGeometryRotation(XWPFPicture xwpfPicture, LayoutStyle layoutStyle) {
-        final GeometryDetails geometryDetails = layoutStyle.getGeometryDetails();
-        if (geometryDetails == null || geometryDetails.getAngle() == null) {
-            return;
-        }
-        final CTTransform2D transform2D = xwpfPicture.getCTPicture().getSpPr().getXfrm();
-        geometryDetails
-            .getAngle()
-            .getValueFor(EXTENSION)
-            .ifPresent(v -> transform2D.setRot(ConverterUtils.<Integer>convert(v)));
+        return new Dimension(width.get(), height.get());
     }
 
     /**
@@ -208,7 +199,7 @@ public class WordStyleService extends StyleService implements DocDetails {
                 Units.toEMU(dimension.getWidth()),
                 Units.toEMU(dimension.getHeight())
             );
-            convertGeometryRotation(xwpfPicture, layoutStyle);
+            convertPictureGeometryDetails(xwpfPicture, layoutStyle);
         }
     }
 
@@ -225,14 +216,14 @@ public class WordStyleService extends StyleService implements DocDetails {
     public void handleTable(Style style, XWPFTable docxTable) {
         if (style instanceof LayoutStyle) {
             final LayoutStyle tableLayoutStyle = (LayoutStyle) style;
-            final boolean isTableAutoWidth = tableLayoutStyle.isAutoWidth();
+            final Boolean isTableAutoWidth = tableLayoutStyle.isAutoWidth();
             final GeometryDetails geometryDetails = tableLayoutStyle.getGeometryDetails();
             if (geometryDetails != null && geometryDetails.getWidth() != null) {
                 geometryDetails
                     .getWidth()
                     .getValueFor(EXTENSION)
                     .ifPresent(value -> docxTable.setWidth(ConverterUtils.<Integer>convert(value) * DOCX_INCH_CONST));
-            } else if (isTableAutoWidth) {
+            } else if (isTableAutoWidth != null && isTableAutoWidth) {
                 docxTable.setWidth("auto");
             }
         }
@@ -334,6 +325,7 @@ public class WordStyleService extends StyleService implements DocDetails {
         convertBorders(element, layoutStyle);
         convertHorizontalAlignment(element, layoutStyle);
         convertVerticalAlignment(element, layoutStyle);
+        convertGeometryDetails(element, layoutStyle);
     }
 
     public void convertLayoutStyleToCell(XWPFTableCell cell, LayoutStyle layoutStyle) {
@@ -342,10 +334,16 @@ public class WordStyleService extends StyleService implements DocDetails {
         final XWPFParagraph paragraph = cell.getParagraphs().get(0);
         convertHorizontalAlignment(paragraph, layoutStyle);
         convertVerticalAlignmentCell(cell, layoutStyle);
-        final boolean isCellAutoWidth = layoutStyle.isAutoWidth();
+        final Boolean isCellAutoWidth = layoutStyle.isAutoWidth();
         final CTTblWidth tblWidth = cell.getCTTc().addNewTcPr().addNewTcW();
+        if (isCellAutoWidth != null && isCellAutoWidth) {
+            tblWidth.setType(STTblWidth.AUTO);
+        }
         final GeometryDetails geometryDetails = layoutStyle.getGeometryDetails();
-        if (geometryDetails != null && geometryDetails.getWidth() != null) {
+        if (geometryDetails == null) {
+            return;
+        }
+        if (geometryDetails.getWidth() != null && (isCellAutoWidth == null || !isCellAutoWidth)) {
             geometryDetails
                 .getWidth()
                 .getValueFor(EXTENSION)
@@ -353,13 +351,33 @@ public class WordStyleService extends StyleService implements DocDetails {
                     cell.setWidthType(TableWidthType.DXA);
                     cell.setWidth(String.valueOf(ConverterUtils.<Integer>convert(value)));
                 });
-        } else if (isCellAutoWidth) {
-            tblWidth.setType(STTblWidth.AUTO);
+        }
+        if (geometryDetails.getHeight() != null) {
+            geometryDetails
+                .getHeight()
+                .getValueFor(EXTENSION)
+                .ifPresent(value ->
+                    cell.getTableRow().setHeight(ConverterUtils.<Integer>convert(value))
+                );
+        }
+        if (geometryDetails.getAngle() != null) {
+            geometryDetails
+                .getAngle()
+                .getValueFor(EXTENSION)
+                .ifPresent(value ->
+                    cell
+                        .getCTTc()
+                        .addNewTcPr()
+                        .addNewTextDirection()
+                        .setVal(
+                            STTextDirection.Enum.forInt(ConverterUtils.<Integer>convert(value))
+                        )
+                );
         }
     }
 
     /**
-     * Applies the layoutStyle backfill setting to the XWPFParagraph element
+     * Applies the layoutStyle back-fill color to the XWPFParagraph element
      *
      * @param element     XWPFParagraph element
      * @param layoutStyle input style
@@ -424,19 +442,29 @@ public class WordStyleService extends StyleService implements DocDetails {
         final CTTcPr tcPr = ctTc.addNewTcPr();
         final CTTcBorders border = tcPr.addNewTcBorders();
 
-        final CTBorder top = border.addNewTop();
-        final CTBorder left = border.addNewLeft();
-        final CTBorder right = border.addNewRight();
-        final CTBorder bottom = border.addNewBottom();
+        if (borderTop != null) {
+            final CTBorder top = border.addNewTop();
+            top.setColor(toWordColor(borderTop.getColor()));
+            top.setVal(STBorder.Enum.forInt(toWordBorder(borderTop.getWeight()).getValue()));
+        }
 
-        top.setColor(toWordColor(borderTop.getColor()));
-        top.setVal(STBorder.Enum.forInt(toWordBorder(borderTop.getWeight()).getValue()));
-        left.setColor(toWordColor(borderLeft.getColor()));
-        left.setVal(STBorder.Enum.forInt(toWordBorder(borderLeft.getWeight()).getValue()));
-        right.setColor(toWordColor(borderRight.getColor()));
-        right.setVal(STBorder.Enum.forInt(toWordBorder(borderRight.getWeight()).getValue()));
-        bottom.setColor(toWordColor(borderBottom.getColor()));
-        bottom.setVal(STBorder.Enum.forInt(toWordBorder(borderBottom.getWeight()).getValue()));
+        if (borderLeft != null) {
+            final CTBorder left = border.addNewLeft();
+            left.setColor(toWordColor(borderLeft.getColor()));
+            left.setVal(STBorder.Enum.forInt(toWordBorder(borderLeft.getWeight()).getValue()));
+        }
+
+        if (borderRight != null) {
+            final CTBorder right = border.addNewRight();
+            right.setColor(toWordColor(borderRight.getColor()));
+            right.setVal(STBorder.Enum.forInt(toWordBorder(borderRight.getWeight()).getValue()));
+        }
+
+        if (borderBottom != null) {
+            final CTBorder bottom = border.addNewBottom();
+            bottom.setColor(toWordColor(borderBottom.getColor()));
+            bottom.setVal(STBorder.Enum.forInt(toWordBorder(borderBottom.getWeight()).getValue()));
+        }
     }
 
     public static void convertBorderTop(BorderStyle borderStyle, XWPFParagraph element, CTPBdr pbd) {
@@ -501,6 +529,44 @@ public class WordStyleService extends StyleService implements DocDetails {
         final XWPFTableCell.XWPFVertAlign vertAlignmentCell = toWordVertAlignmentCell(layoutStyle.getVertAlignment());
         if (vertAlignmentCell != null) {
             cell.setVerticalAlignment(vertAlignmentCell);
+        }
+    }
+
+    protected void convertPictureGeometryDetails(XWPFPicture xwpfPicture, LayoutStyle layoutStyle) {
+        if (layoutStyle == null) {
+            return;
+        }
+        final GeometryDetails geometryDetails = layoutStyle.getGeometryDetails();
+        if (geometryDetails == null || geometryDetails.getAngle() == null) {
+            return;
+        }
+        final CTTransform2D transform2D = xwpfPicture.getCTPicture().getSpPr().getXfrm();
+        geometryDetails
+            .getAngle()
+            .getValueFor(EXTENSION)
+            .ifPresent(value -> {
+                transform2D.setRot(ConverterUtils.<Integer>convert(value) * DOCX_ANGLE_CONST);
+            });
+    }
+
+    protected void convertGeometryDetails(XWPFParagraph element, LayoutStyle layoutStyle) {
+        final GeometryDetails geometryDetails = layoutStyle.getGeometryDetails();
+        if (geometryDetails == null) {
+            return;
+        }
+        if (geometryDetails.getAngle() != null) {
+            geometryDetails
+                .getAngle()
+                .getValueFor(EXTENSION)
+                .ifPresent(value ->
+                    element
+                        .getCTP()
+                        .addNewPPr()
+                        .addNewTextDirection()
+                        .setVal(
+                            STTextDirection.Enum.forInt(ConverterUtils.<Integer>convert(value))
+                        )
+                );
         }
     }
 
