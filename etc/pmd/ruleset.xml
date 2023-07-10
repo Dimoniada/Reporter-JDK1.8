@@ -2,11 +2,11 @@
 
 <ruleset name="Reporter-JDK1.8 PMD Rule set"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset_3_0_0 http://pmd.sourceforge.net/ruleset_3_0_0.xsd">
+         xsi:schemaLocation="https://pmd.sourceforge.net/ruleset_3_0_0 https://pmd.sourceforge.net/ruleset_3_0_0.xsd">
 
     <description>
-        The A1S ruleset contains a collection of good practices which should be followed in JOffice project.
-        This rule sets checks our code for bad stuff!!!
+        The GC ruleset contains a collection of good practices which should be followed in project.
+        This rule sets checks our code for bad stuff.
     </description>
 
     <!-- @see http://pmd.sourceforge.net/pmd-5.0.5/howtomakearuleset.html -->
@@ -75,5 +75,11 @@
     <rule ref="rulesets/java/optimizations.xml/AddEmptyString" />
     <rule ref="rulesets/java/optimizations.xml/RedundantFieldInitializer" />
     <rule ref="rulesets/java/optimizations.xml/PrematureDeclaration" />
+
+    <rule ref="rulesets/java/design.xml/AvoidDeeplyNestedIfStmts">
+        <properties>
+            <property name="problemDepth" value="3"/>
+        </properties>
+    </rule>
 
 </ruleset>

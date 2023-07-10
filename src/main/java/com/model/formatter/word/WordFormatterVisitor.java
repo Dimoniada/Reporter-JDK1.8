@@ -101,7 +101,7 @@ public abstract class WordFormatterVisitor extends Formatter implements BaseDeta
 
     @Override
     public void visitTitle(Title titleObj) throws Exception {
-        handleCustomTextItem(titleObj, wordDocument.createParagraph());
+        handleCustomItem(titleObj, wordDocument.createParagraph());
     }
 
     @Override
@@ -157,7 +157,7 @@ public abstract class WordFormatterVisitor extends Formatter implements BaseDeta
 
     @Override
     public void visitParagraph(Paragraph paragraphObj) throws Exception {
-        handleCustomTextItem(paragraphObj, wordDocument.createParagraph());
+        handleCustomItem(paragraphObj, wordDocument.createParagraph());
     }
 
     @Override
@@ -196,7 +196,7 @@ public abstract class WordFormatterVisitor extends Formatter implements BaseDeta
     public void visitTableHeaderCell(TableHeaderCell tableHeaderCellObj) throws Exception {
         final XWPFTableRow headerRow = docxTable.getRow(0);
         final XWPFTableCell cell = headerRow.createCell();
-        handleCustomTextItem(tableHeaderCellObj, cell);
+        handleCustomItem(tableHeaderCellObj, cell);
     }
 
     @Override
@@ -212,7 +212,7 @@ public abstract class WordFormatterVisitor extends Formatter implements BaseDeta
     public void visitTableCell(TableCell tableCellObj) throws Exception {
         final XWPFTableRow row = docxTable.getRow(docxTable.getNumberOfRows() - 1);
         final XWPFTableCell cell = row.createCell();
-        handleCustomTextItem(tableCellObj, cell);
+        handleCustomItem(tableCellObj, cell);
     }
 
     @Override
@@ -229,7 +229,7 @@ public abstract class WordFormatterVisitor extends Formatter implements BaseDeta
         final XWPFHeaderFooterPolicy headerFooterPolicy = new XWPFHeaderFooterPolicy(wordDocument, sectPr);
         final CTP ctp = CTP.Factory.newInstance();
         final XWPFParagraph paragraph = new XWPFParagraph(ctp, wordDocument);
-        handleCustomTextItem(footerObj, paragraph);
+        handleCustomItem(footerObj, paragraph);
         headerFooterPolicy
             .createFooter(STHdrFtr.DEFAULT, new XWPFParagraph[]{paragraph});
     }
@@ -239,7 +239,7 @@ public abstract class WordFormatterVisitor extends Formatter implements BaseDeta
         ((WordStyleService) styleService).handleCustomItem(pictureObj, wordDocument.createParagraph());
     }
 
-    public void handleCustomTextItem(TextItem<?> item, Object element) throws Exception {
+    public void handleCustomItem(TextItem<?> item, Object element) throws Exception {
         ((WordStyleService) styleService).handleCustomItem(item, element);
     }
 

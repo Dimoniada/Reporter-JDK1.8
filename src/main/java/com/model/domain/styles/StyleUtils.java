@@ -60,33 +60,31 @@ public final class StyleUtils {
      */
     public static void joinWith(Style styleFrom, Style styleTo) throws Exception {
         log.debug("Style {} will unite with style {} ", styleFrom, styleTo);
-        if (styleFrom != null && styleTo != null) {
-            if (styleTo.equals(styleFrom)) {
-                return;
-            }
-            if (styleFrom instanceof LayoutTextStyle && styleTo instanceof LayoutTextStyle) {
-                StyleUtils.joinWith(
-                    ((LayoutTextStyle) styleFrom).getLayoutStyle(),
-                    ((LayoutTextStyle) styleTo).getLayoutStyle()
-                );
-                StyleUtils.joinWith(
-                    ((LayoutTextStyle) styleFrom).getTextStyle(),
-                    ((LayoutTextStyle) styleTo).getTextStyle()
-                );
-            }
-            final Style model = styleFrom.getClass().getDeclaredConstructor().newInstance();
-            if (styleTo.getClass() == styleFrom.getClass()) {
-                final Map<String, Object> diff = compare(model, styleFrom);
-                final Field[] fields = styleTo.getClass().getDeclaredFields();
-                final ConfigurablePropertyAccessor propAcc = PropertyAccessorFactory.forDirectFieldAccess(styleTo);
-                Arrays.stream(fields).map(Field::getName).forEach(name -> {
-                    if (diff.containsKey(name)) {
-                        propAcc.setPropertyValue(name, diff.get(name));
-                    }
-                });
-            }
-            log.debug("Style {} was merged into result style {} ", styleFrom, styleTo);
+        if (styleFrom == null || styleTo == null || styleTo.equals(styleFrom)) {
+            return;
         }
+        if (styleFrom instanceof LayoutTextStyle && styleTo instanceof LayoutTextStyle) {
+            StyleUtils.joinWith(
+                ((LayoutTextStyle) styleFrom).getLayoutStyle(),
+                ((LayoutTextStyle) styleTo).getLayoutStyle()
+            );
+            StyleUtils.joinWith(
+                ((LayoutTextStyle) styleFrom).getTextStyle(),
+                ((LayoutTextStyle) styleTo).getTextStyle()
+            );
+        }
+        final Style model = styleFrom.getClass().getDeclaredConstructor().newInstance();
+        if (styleTo.getClass() == styleFrom.getClass()) {
+            final Map<String, Object> diff = compare(model, styleFrom);
+            final Field[] fields = styleTo.getClass().getDeclaredFields();
+            final ConfigurablePropertyAccessor propAcc = PropertyAccessorFactory.forDirectFieldAccess(styleTo);
+            Arrays.stream(fields).map(Field::getName).forEach(name -> {
+                if (diff.containsKey(name)) {
+                    propAcc.setPropertyValue(name, diff.get(name));
+                }
+            });
+        }
+        log.debug("Style {} was merged into result style {} ", styleFrom, styleTo);
     }
 
     @Override
