@@ -20,6 +20,7 @@
 
     <!--<rule ref="rulesets/java/strings.xml" />-->
     <!--<rule ref="rulesets/java/javabeans.xml" />-->
+
     <rule ref="rulesets/java/design.xml">
         <exclude name="ConfusingTernary"/>
         <exclude name="CloseResource"/>
@@ -29,6 +30,7 @@
         <exclude name="ReturnEmptyArrayRatherThanNull"/>
         <exclude name="AvoidDeeplyNestedIfStmts"/>
     </rule>
+
     <!--<rule ref="rulesets/java/coupling.xml" />-->
     <!--<rule ref="rulesets/java/design.xml" />-->
     <!--<rule ref="rulesets/java/controversial.xml" />-->
@@ -48,38 +50,37 @@
     <!--<rule ref="rulesets/java/typeresolution.xml" />-->
     <!--<rule ref="rulesets/java/optimizations.xml" />-->
 
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyCatchBlock" />
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyIfStmt" />
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyWhileStmt" />
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyTryBlock" />
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyFinallyBlock" />
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptySwitchStatements" />
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptySynchronizedBlock" />
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyStatementNotInLoop" />
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyInitializer" />
-    <rule deprecated="true" ref="rulesets/java/empty.xml/EmptyStatementBlock" />
+    <rule deprecated="true" ref="category/java/errorprone.xml/EmptyCatchBlock" />
+    <rule deprecated="true" ref="category/java/errorprone.xml/EmptyIfStmt" />
+    <rule deprecated="true" ref="category/java/errorprone.xml/EmptyWhileStmt" />
+    <rule deprecated="true" ref="category/java/errorprone.xml/EmptyTryBlock" />
+    <rule deprecated="true" ref="category/java/errorprone.xml/EmptyFinallyBlock" />
+    <rule deprecated="true" ref="category/java/errorprone.xml/EmptySwitchStatements" />
+    <rule deprecated="true" ref="category/java/errorprone.xml/EmptySynchronizedBlock" />
+    <rule deprecated="true" ref="category/java/errorprone.xml/EmptyStatementNotInLoop" />
+    <rule deprecated="true" ref="category/java/errorprone.xml/EmptyInitializer" />
+    <rule deprecated="true" ref="category/java/errorprone.xml/EmptyStatementBlock" />
 
-    <rule deprecated="true" ref="rulesets/java/unnecessary.xml/UnnecessaryConversionTemporary" />
-    <rule deprecated="true" ref="rulesets/java/unnecessary.xml/UnnecessaryReturn" />
-    <rule deprecated="true" ref="rulesets/java/unnecessary.xml/UnnecessaryModifier" />
-    <rule deprecated="true" ref="rulesets/java/unnecessary.xml/UselessOverridingMethod" />
-    <rule deprecated="true" ref="rulesets/java/unnecessary.xml/UselessOperationOnImmutable" />
-    <rule deprecated="true" ref="rulesets/java/unnecessary.xml/UnusedNullCheckInEquals" />
-    <rule deprecated="true" ref="rulesets/java/unnecessary.xml/UselessParentheses" />
+    <rule deprecated="true" ref="category/java/errorprone.xml/UnnecessaryConversionTemporary" />
+    <rule deprecated="true" ref="category/java/codestyle.xml/UnnecessaryReturn" />
+    <rule deprecated="true" ref="category/java/codestyle.xml/UnnecessaryModifier" />
+    <rule deprecated="true" ref="category/java/design.xml/UselessOverridingMethod" />
+    <rule deprecated="true" ref="category/java/errorprone.xml/UselessOperationOnImmutable" />
+    <rule deprecated="true" ref="category/java/errorprone.xml/UnusedNullCheckInEquals" />
+    <rule deprecated="true" ref="category/java/codestyle.xml/UselessParentheses" />
 
-    <rule ref="rulesets/java/optimizations.xml/LocalVariableCouldBeFinal" />
-    <rule ref="rulesets/java/optimizations.xml/UseArrayListInsteadOfVector" />
-    <rule ref="rulesets/java/optimizations.xml/UseStringBufferForStringAppends" />
-    <rule ref="rulesets/java/optimizations.xml/AvoidArrayLoops" />
-    <rule ref="rulesets/java/optimizations.xml/UnnecessaryWrapperObjectCreation" />
-    <rule ref="rulesets/java/optimizations.xml/AddEmptyString" />
-    <rule ref="rulesets/java/optimizations.xml/RedundantFieldInitializer" />
-    <rule ref="rulesets/java/optimizations.xml/PrematureDeclaration" />
+    <rule ref="category/java/codestyle.xml/LocalVariableCouldBeFinal" />
+    <rule ref="category/java/performance.xml/UseArrayListInsteadOfVector" />
+    <rule ref="category/java/performance.xml/UseStringBufferForStringAppends" />
+    <rule ref="category/java/performance.xml/AvoidArrayLoops" />
+    <rule ref="category/java/performance.xml/UnnecessaryWrapperObjectCreation" />
+    <rule ref="category/java/performance.xml/AddEmptyString" />
+    <rule ref="category/java/performance.xml/RedundantFieldInitializer" />
+    <rule ref="category/java/codestyle.xml/PrematureDeclaration" />
 
-    <rule ref="rulesets/java/design.xml/AvoidDeeplyNestedIfStmts">
+    <rule ref="category/java/design.xml/AvoidDeeplyNestedIfStmts">
         <properties>
             <property name="problemDepth" value="3"/>
         </properties>
     </rule>
-
 </ruleset>
