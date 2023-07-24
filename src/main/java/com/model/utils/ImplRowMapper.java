@@ -2,7 +2,11 @@ package com.model.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.*;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.NotWritablePropertyException;
+import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.JdbcUtils;
 

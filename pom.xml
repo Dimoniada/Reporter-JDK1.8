@@ -21,20 +21,20 @@
     <name>Reporter-JDK1.8</name>
     <description>Reporter-JDK1.8</description>
     <properties>
-        <property name="hibernate.hbm2ddl.charset_name" value="UTF-8" />
+        <property name="hibernate.hbm2ddl.charset_name" value="UTF-8"/>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.plugin.source>1.8</maven.compiler.plugin.source>
         <maven.compiler.plugin.target>1.8</maven.compiler.plugin.target>
         <java.version>1.8</java.version>
         <!-- DEPENDENCY VERSIONS -->
-        <guava.version>31.1-jre</guava.version>
+        <guava.version>32.1.1-jre</guava.version>
         <itextpdf.version>7.2.5</itextpdf.version>
         <documents4j.version>1.1.10</documents4j.version>
         <apache.version>5.2.3</apache.version>
         <supercsv.version>2.4.0</supercsv.version>
-        <jdbc.version>5.3.28</jdbc.version>
-        <old.spring.version>5.3.28</old.spring.version>
-        <springjpa.version>2.7.13</springjpa.version>
+        <jdbc.version>5.3.29</jdbc.version>
+        <old.spring.version>5.3.29</old.spring.version>
+        <springjpa.version>2.7.14</springjpa.version>
         <javax.version>2.2</javax.version>
         <h2.test.version>2.2.220</h2.test.version>
         <!-- PMD, CHECKSTYLE PLUGINS-->
@@ -127,10 +127,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
             <version>${old.spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
         <!-- For QueryTable class -->
         <dependency>
@@ -231,6 +227,19 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
             <scope>test</scope>
+            <version>${old.spring.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-expression</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
+            <scope>test</scope>
+            <version>${old.spring.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.persistence</groupId>
