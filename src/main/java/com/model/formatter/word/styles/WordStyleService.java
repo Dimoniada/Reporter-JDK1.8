@@ -544,9 +544,7 @@ public class WordStyleService extends StyleService implements DocDetails {
         geometryDetails
             .getAngle()
             .getValueFor(EXTENSION)
-            .ifPresent(value -> {
-                transform2D.setRot(ConverterUtils.<Integer>convert(value) * DOCX_ANGLE_CONST);
-            });
+            .ifPresent(value -> transform2D.setRot(ConverterUtils.<Integer>convert(value) * DOCX_ANGLE_CONST));
     }
 
     protected void convertGeometryDetails(XWPFParagraph element, LayoutStyle layoutStyle) {

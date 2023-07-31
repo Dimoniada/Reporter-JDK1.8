@@ -25,7 +25,6 @@ import org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy;
 import org.apache.poi.xwpf.usermodel.BreakType;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFStyle;
 import org.apache.poi.xwpf.usermodel.XWPFStyles;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
@@ -170,10 +169,12 @@ public abstract class WordFormatterVisitor extends Formatter implements BaseDeta
                 .orElse(tableObj.getStyle());
         final String label = tableObj.getLabel();
         if (StringUtils.hasText(label)) {
-            final XWPFParagraph paragraph = wordDocument.createParagraph();
-            final XWPFRun run = paragraph.createRun();
-            ((WordStyleService) styleService).convertStyleToElement(style, run, paragraph);
-            run.setText(label);
+            final Paragraph tableLabel = Paragraph.create(label).setStyle(style);
+            ((WordStyleService) styleService)
+                .handleCustomItem(
+                    tableLabel,
+                    wordDocument.createParagraph()
+                );
         }
         createEmptyTable();
         ((WordStyleService) styleService).handleTable(style, docxTable);
