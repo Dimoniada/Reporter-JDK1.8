@@ -10,7 +10,13 @@ import com.model.domain.TableHeaderCell;
 import com.model.domain.TableHeaderRow;
 import com.model.domain.TableRow;
 import com.model.domain.Title;
+import com.model.domain.styles.BorderStyle;
 import com.model.domain.styles.LayoutStyle;
+import com.model.domain.styles.LayoutTextStyle;
+import com.model.domain.styles.Style;
+import com.model.domain.styles.TextStyle;
+import com.model.domain.styles.constants.BorderWeight;
+import com.model.domain.styles.constants.Color;
 import com.model.domain.styles.constants.PictureFormat;
 import com.model.domain.styles.geometry.Geometry;
 import com.model.domain.styles.geometry.GeometryDetails;
@@ -95,6 +101,54 @@ public class WordFormatterTest extends BaseDocument {
     }
 
     @Test
+    public void testSaveRotatedTextAsPictureToDocxFile() throws Throwable {
+        final WordFormatter docxFormatter = DocxFormatter.create();
+        final Style bordersStyle = LayoutStyle.create()
+            .setBorderTop(BorderStyle.create(Color.BLACK, BorderWeight.THICK))
+            .setBorderLeft(BorderStyle.create(Color.BLACK, BorderWeight.THICK))
+            .setBorderRight(BorderStyle.create(Color.BLACK, BorderWeight.THICK))
+            .setBorderBottom(BorderStyle.create(Color.BLACK, BorderWeight.THICK));
+        doc = Document.create()
+            .addParts(
+                Table.create(
+                        TableHeaderRow.create(
+                                TableHeaderCell.create("Test Header1"),
+                                TableHeaderCell.create("Test Header2")
+                            )
+                            .spreadStyleToParts(bordersStyle)
+                    )
+                    .addParts(
+                        TableRow.create(
+                            TableCell.create("test1")
+                                .setStyle(
+                                    LayoutTextStyle.create(
+                                        TextStyle.create()
+                                            .setUnderline((byte) 1)
+                                            .setItalic(true),
+                                        LayoutStyle.create()
+                                            .setGeometryDetails(
+                                                GeometryDetails.create()
+                                                    .setAngle(
+                                                        Geometry.create()
+                                                            .add("docx", 20)
+                                                    )
+                                            )
+
+                                    )
+                                ),
+                            TableCell.create("test2")
+                        )
+                    )
+                    .spreadStyleToParts(bordersStyle)
+            );
+
+
+        try (DocumentHolder ignored = docxFormatter.handle(doc)) {
+            /**/
+        }
+    }
+
+    @Test
     public void testFooter() throws Throwable {
         final DocxFormatter docxFormatter = DocxFormatter.create();
         docxFormatter.setFileName("test_file");
@@ -148,7 +202,7 @@ public class WordFormatterTest extends BaseDocument {
                 Title.create().setText("Picture 1"),
                 Picture.create()
                     .setPictureFormat(PictureFormat.JPG)
-                    .setData(resource)
+                    .setData(IOUtils.toByteArray(resource.getInputStream()))
                     .setStyle(
                         LayoutStyle.create()
                             .setGeometryDetails(
@@ -184,11 +238,9 @@ public class WordFormatterTest extends BaseDocument {
 
     @Test
     public void testSavePictureInCellToDocxFile() throws Throwable {
-        final int DOCX_ANGLE_CONST = -60000;
         final WordFormatter docxFormatter = DocxFormatter.create();
         final URL url = getClass().getClassLoader().getResource("pic.jpg");
         Assertions.assertNotNull(url);
-        final WritableResource resource = new PathResource(url.toURI());
         doc = Document.create()
             .addParts(
                 Table.create(
@@ -217,10 +269,7 @@ public class WordFormatterTest extends BaseDocument {
                     )
             );
 
-        try (
-            DocumentHolder documentHolder = docxFormatter.handle(doc);
-            XWPFDocument docx = new XWPFDocument(documentHolder.getResource().getInputStream())
-        ) {
+        try (DocumentHolder ignored = docxFormatter.handle(doc)) {
             /**/
         }
     }

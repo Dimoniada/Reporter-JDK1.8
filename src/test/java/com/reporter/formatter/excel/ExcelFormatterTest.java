@@ -131,7 +131,7 @@ class ExcelFormatterTest extends BaseDocument {
         final WritableResource resource = new PathResource(url.toURI());
         final DocumentCase documentCase = DocumentCase.create().setName("Test sheet1")
             .addParts(
-                Picture.create(resource, PictureFormat.JPEG)
+                Picture.create(IOUtils.toByteArray(resource.getInputStream()), PictureFormat.JPEG)
                     .setStyle(
                         LayoutStyle.create()
                             .setGeometryDetails(

@@ -13,6 +13,7 @@ import java.util.Collection;
  * contains Iterable(K extends {@link DocumentItem}) elements
  */
 public abstract class CompositionPart<T extends CompositionPart<?, ?>, K extends DocumentItem> extends DocumentItem {
+
     protected Iterable<K> parts;
 
     @Override
@@ -27,13 +28,6 @@ public abstract class CompositionPart<T extends CompositionPart<?, ?>, K extends
     @SuppressWarnings("unchecked")
     public T setParts(Iterable<K> parts) {
         this.parts = parts;
-        return (T) this;
-    }
-
-    @SuppressWarnings("unchecked")
-    public T setParts(K... parts) {
-        checkPartsForAppend();
-        this.parts = Arrays.asList(parts);
         return (T) this;
     }
 

@@ -4,6 +4,7 @@ import com.google.common.base.MoreObjects;
 import com.model.formatter.FormatterVisitor;
 
 import java.time.Instant;
+import java.util.Arrays;
 
 /**
  * Class {@link Document Document} contains meta-information about the document
@@ -31,7 +32,7 @@ public class Document extends CompositionPart<Document, DocumentItem> {
     }
 
     public static Document create(DocumentItem... parts) {
-        return new Document().setParts(parts);
+        return new Document().setParts(Arrays.asList(parts));
     }
 
     @Override

@@ -34,6 +34,7 @@ import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFPicture;
 import org.springframework.util.StringUtils;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
@@ -421,7 +422,7 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
             }
         } else if (item instanceof Picture) {
             final Picture picture = (Picture) item;
-            final InputStream pictureStream = picture.getData().getInputStream();
+            final InputStream pictureStream = new ByteArrayInputStream(picture.getData());
             final int picInd =
                 workbook.addPicture(
                     IOUtils.toByteArray(pictureStream),

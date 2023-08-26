@@ -11,6 +11,9 @@ import org.junit.jupiter.api.Test;
 
 import java.awt.*;
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
@@ -74,17 +77,27 @@ class FontServiceTest {
     @Test
     void testGetFontResource() {
         final TextStyle testStyle = TextStyle.create("helvetica_SansSerif_(en-ru OpenSans).ttf");
-        final AtomicReference<byte[]> fontResource = new AtomicReference<>();
+        final AtomicReference<Font> fontRef = new AtomicReference<>();
         Assertions.assertDoesNotThrow(() -> {
             fontService.initializeFonts();
-            fontResource.set(fontService.getFontResource(testStyle, Locale.forLanguageTag("en")));
+            fontRef.set(fontService.getFontResource(testStyle, Locale.forLanguageTag("en")));
         });
-        Assertions.assertDoesNotThrow(() ->
-            PdfFontFactory.createFont(
-                fontResource.get(),
-                PdfEncodings.IDENTITY_H,
-                PdfFontFactory.EmbeddingStrategy.FORCE_EMBEDDED
-            )
+
+        Assertions.assertDoesNotThrow(() -> {
+                final Method method = Font.class.getDeclaredMethod("getFont2D");
+                method.setAccessible(true);
+                String rawFont = method.invoke(fontRef.get()).toString();
+                rawFont = rawFont
+                    .substring(rawFont.indexOf(" fileName=") + 10)
+                    .replace("\r\n", "\n") + "\n";
+                rawFont = rawFont.substring(0, rawFont.indexOf("\n"));
+                final byte[] fontResource = Files.readAllBytes(Paths.get(rawFont));
+                PdfFontFactory.createFont(
+                    fontResource,
+                    PdfEncodings.IDENTITY_H,
+                    PdfFontFactory.EmbeddingStrategy.FORCE_EMBEDDED
+                );
+            }
         );
     }
 }

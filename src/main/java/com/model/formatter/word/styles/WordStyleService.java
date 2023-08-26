@@ -2,6 +2,7 @@ package com.model.formatter.word.styles;
 
 import com.google.common.base.MoreObjects;
 import com.model.domain.DocumentItem;
+import com.model.domain.FontService;
 import com.model.domain.Heading;
 import com.model.domain.Picture;
 import com.model.domain.TextItem;
@@ -17,6 +18,7 @@ import com.model.domain.styles.constants.HorAlignment;
 import com.model.domain.styles.constants.PictureFormat;
 import com.model.domain.styles.constants.VertAlignment;
 import com.model.domain.styles.geometry.GeometryDetails;
+import com.model.domain.styles.geometry.GeometryUtils;
 import com.model.formatter.word.DocDetails;
 import com.model.utils.ConverterUtils;
 import com.model.utils.LocalizedNumberUtils;
@@ -46,16 +48,19 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTcBorders;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTcPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STBorder;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblWidth;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTextDirection;
 import org.springframework.util.StringUtils;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class WordStyleService extends StyleService implements DocDetails {
     /**
@@ -146,30 +151,6 @@ public class WordStyleService extends StyleService implements DocDetails {
         this.decimalFormat = decimalFormat;
     }
 
-    protected Dimension getPictureDimension(Picture picture, LayoutStyle layoutStyle) throws IOException {
-        final AtomicInteger width = new AtomicInteger(picture.getWidthFromData());
-        final AtomicInteger height = new AtomicInteger(picture.getHeightFromData());
-        if (layoutStyle == null) {
-            return new Dimension(width.get(), height.get());
-        }
-        final GeometryDetails geometryDetails = layoutStyle.getGeometryDetails();
-        if (geometryDetails != null) {
-            if (geometryDetails.getHeight() != null) {
-                geometryDetails
-                    .getHeight()
-                    .getValueFor(EXTENSION)
-                    .ifPresent(value -> height.set(ConverterUtils.<Integer>convert(value)));
-            }
-            if (geometryDetails.getWidth() != null) {
-                geometryDetails
-                    .getWidth()
-                    .getValueFor(EXTENSION)
-                    .ifPresent(value -> width.set(ConverterUtils.<Integer>convert(value)));
-            }
-        }
-        return new Dimension(width.get(), height.get());
-    }
-
     /**
      * Adds text/picture/data to XWPFRun
      *
@@ -189,17 +170,16 @@ public class WordStyleService extends StyleService implements DocDetails {
         }
         if (item instanceof Picture) {
             final Picture picture = (Picture) item;
-            final LayoutStyle layoutStyle = LayoutStyle.extractLayoutStyle(style);
-            final Dimension dimension = getPictureDimension(picture, layoutStyle);
+            final Dimension dimension = GeometryUtils.getPictureDimension(picture, style, EXTENSION);
             final int picFormat = toWordPictureFormat(picture.getPictureFormat());
             final XWPFPicture xwpfPicture = run.addPicture(
-                picture.getData().getInputStream(),
+                new ByteArrayInputStream(picture.getData()),
                 picFormat,
-                picture.getName(),
+                picture.getText(),
                 Units.toEMU(dimension.getWidth()),
                 Units.toEMU(dimension.getHeight())
             );
-            convertPictureGeometryDetails(xwpfPicture, layoutStyle);
+            convertPictureGeometryDetails(xwpfPicture, style);
         }
     }
 
@@ -317,15 +297,15 @@ public class WordStyleService extends StyleService implements DocDetails {
     /**
      * Decorates the native XWPFParagraph with a LayoutStyle
      *
-     * @param element     decoration element
+     * @param paragraph   decoration element
      * @param layoutStyle input LayoutStyle style
      */
-    public void convertLayoutStyleToElement(XWPFParagraph element, LayoutStyle layoutStyle) {
-        convertGroundColor(element, layoutStyle);
-        convertBorders(element, layoutStyle);
-        convertHorizontalAlignment(element, layoutStyle);
-        convertVerticalAlignment(element, layoutStyle);
-        convertGeometryDetails(element, layoutStyle);
+    public void convertLayoutStyleToElement(XWPFParagraph paragraph, LayoutStyle layoutStyle) {
+        convertGroundColor(paragraph, layoutStyle);
+        convertBorders(paragraph, layoutStyle);
+        convertHorizontalAlignment(paragraph, layoutStyle);
+        convertVerticalAlignment(paragraph, layoutStyle);
+        convertGeometryDetails(paragraph, layoutStyle);
     }
 
     public void convertLayoutStyleToCell(XWPFTableCell cell, LayoutStyle layoutStyle) {
@@ -360,19 +340,12 @@ public class WordStyleService extends StyleService implements DocDetails {
                     cell.getTableRow().setHeight(ConverterUtils.<Integer>convert(value))
                 );
         }
+
         if (geometryDetails.getAngle() != null) {
             geometryDetails
                 .getAngle()
                 .getValueFor(EXTENSION)
-                .ifPresent(value ->
-                    cell
-                        .getCTTc()
-                        .addNewTcPr()
-                        .addNewTextDirection()
-                        .setVal(
-                            STTextDirection.Enum.forInt(ConverterUtils.<Integer>convert(value))
-                        )
-                );
+                .ifPresent(angle -> renderXWPFParagraphAsPNGImage(cell.getParagraphs().get(0), layoutStyle));
         }
     }
 
@@ -532,39 +505,104 @@ public class WordStyleService extends StyleService implements DocDetails {
         }
     }
 
-    protected void convertPictureGeometryDetails(XWPFPicture xwpfPicture, LayoutStyle layoutStyle) {
+    protected void convertPictureGeometryDetails(XWPFPicture xwpfPicture, Style style) {
+        final LayoutStyle layoutStyle = LayoutStyle.extractLayoutStyle(style);
         if (layoutStyle == null) {
             return;
         }
         final GeometryDetails geometryDetails = layoutStyle.getGeometryDetails();
-        if (geometryDetails == null || geometryDetails.getAngle() == null) {
-            return;
-        }
-        final CTTransform2D transform2D = xwpfPicture.getCTPicture().getSpPr().getXfrm();
-        geometryDetails
-            .getAngle()
-            .getValueFor(EXTENSION)
-            .ifPresent(value -> transform2D.setRot(ConverterUtils.<Integer>convert(value) * DOCX_ANGLE_CONST));
-    }
-
-    protected void convertGeometryDetails(XWPFParagraph element, LayoutStyle layoutStyle) {
-        final GeometryDetails geometryDetails = layoutStyle.getGeometryDetails();
-        if (geometryDetails == null) {
-            return;
-        }
-        if (geometryDetails.getAngle() != null) {
+        if (geometryDetails != null && geometryDetails.getAngle() != null) {
             geometryDetails
                 .getAngle()
                 .getValueFor(EXTENSION)
-                .ifPresent(value ->
-                    element
-                        .getCTP()
-                        .addNewPPr()
-                        .addNewTextDirection()
-                        .setVal(
-                            STTextDirection.Enum.forInt(ConverterUtils.<Integer>convert(value))
-                        )
-                );
+                .ifPresent(value -> {
+                    final CTTransform2D transform2D = xwpfPicture.getCTPicture().getSpPr().getXfrm();
+                    transform2D.setRot(ConverterUtils.<Integer>convert(value) * DOCX_ANGLE_CONST);
+                });
+        }
+    }
+
+    protected void convertGeometryDetails(XWPFParagraph paragraph, LayoutStyle layoutStyle) {
+        final GeometryDetails geometryDetails = layoutStyle.getGeometryDetails();
+        if (geometryDetails != null && geometryDetails.getAngle() != null) {
+            geometryDetails
+                .getAngle()
+                .getValueFor(EXTENSION)
+                .ifPresent(angle -> renderXWPFParagraphAsPNGImage(paragraph, layoutStyle));
+        }
+    }
+
+    protected void renderXWPFParagraphAsPNGImage(XWPFParagraph paragraph, LayoutStyle layoutStyle) {
+        final List<XWPFRun> runs = paragraph.getRuns();
+        if (runs.isEmpty()) {
+            return;
+        }
+
+        final XWPFRun run = runs.get(0);
+        final String text = run.getText(0);
+
+        if (!StringUtils.hasText(text)) {
+            return;
+        }
+
+        final String fontName = run.getFontName();
+        final Double fontSize = run.getFontSizeAsDouble();
+        final Boolean isItalic = run.isItalic();
+        final Boolean isBold = run.isBold();
+        final byte underline = run.getUnderline() == UnderlinePatterns.NONE ? (byte) 0 : (byte) 1;
+        final String fontColor = run.getColor();
+        paragraph.removeRun(0);
+
+        final TextStyle textStyle = TextStyle.create(fontName);
+        textStyle.setFontSize(fontSize != null ? fontSize.shortValue() : (short) 14);
+        textStyle.setItalic(isItalic);
+        textStyle.setBold(isBold);
+        textStyle.setUnderline(underline);
+        textStyle.setColor(
+            fontColor != null ? Color.fromString(fontColor) : Color.BLACK
+        );
+
+        final Dimension textDimension = GeometryUtils.getTextDimension(text, textStyle);
+        final int width = textDimension.width;
+        final int height = textDimension.height;
+
+        final BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        final Graphics2D graphics2D = image.createGraphics();
+        graphics2D.setRenderingHint(
+            RenderingHints.KEY_ALPHA_INTERPOLATION,
+            RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY
+        );
+        graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        graphics2D.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+        graphics2D.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
+        graphics2D.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+        graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        graphics2D.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+
+        graphics2D.setColor(java.awt.Color.WHITE);
+        graphics2D.fillRect(0, 0, width, height);
+
+        final Font font = FontService.getFontResourceByTextStyle(textStyle);
+
+        graphics2D.setFont(font);
+        graphics2D.setColor(java.awt.Color.BLACK);
+        final FontMetrics fontMetrics = graphics2D.getFontMetrics();
+        graphics2D.drawString(text, 0, fontMetrics.getAscent());
+        graphics2D.dispose();
+
+        final PictureFormat pictureFormat = PictureFormat.PNG;
+
+        try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+            ImageIO.write(image, pictureFormat.name(), os);
+            final Picture pictureFromText = Picture.create(os.toByteArray(), pictureFormat).setText(text);
+            addItemToRun(
+                pictureFromText,
+                paragraph.createRun(),
+                layoutStyle
+            );
+        } catch (IOException | ParseException | InvalidFormatException e) {
+            throw new RuntimeException("Can't draw a picture from text and rotate it", e);
         }
     }
 

@@ -13,19 +13,12 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.util.StringUtils;
 
-import java.awt.Font;
-import java.awt.FontFormatException;
+import java.awt.*;
 import java.awt.font.TextAttribute;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.AbstractMap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -150,29 +143,33 @@ public class FontService {
     }
 
     /**
+     * Returns one of embedded *.ttf fonts as a java.awt.Font, see {@link free_fonts} folder
+     * <p>
      * Font styles (like Bold/Italic/Underline) can be obtained using software methods
-     * (See {@link com.itextpdf.layout.element.AbstractElement#setBold or setItalic or setUnderline})
+     * (for instance, see {@link com.itextpdf.layout.element.AbstractElement#setBold or setItalic or setUnderline})
      * or directly from a stylized font-file.
      * <p>
      * If a stylized font-file is used, then you must specify the font-file name in
-     * TextStyle#fontNameResource
+     * TextStyle#fontNameResource and set {@link TextStyle.useTtfFontAttributes} to true
      * and must not set the corresponding parameter(s) in {@link TextStyle},
      * they will be taken from font-file automatically
      *
      * @param textStyle The text style of the element for which the matching font is being searched
      * @param locale    provided to check: font glyphs can be displayed, and they can cover alphabet of locale
      * @return {@link PdfFont}
-     * @throws IOException error reading font resource
+     * @throws FontFormatException invalid font entry format
+     * @throws IOException         error reading font resource
      */
-    public byte[] getFontResource(TextStyle textStyle, Locale locale) throws IOException {
+    @SuppressWarnings("unchecked")
+    public Font getFontResource(TextStyle textStyle, Locale locale) throws IOException, FontFormatException {
 //        log.info("Calling getFont() for present locale {}", locale);
+        final Boolean useTtfFontAttributes = textStyle.isUseTtfFontAttributes();
         final Optional<Map.Entry<String, Map.Entry<Font, Map<TextAttribute, Object>>>> fontFileWithAttributes =
             fonts
                 .entrySet()
                 .stream()
                 .filter(entry -> {
                     boolean fit = true;
-                    final Boolean useTtfFontAttributes = textStyle.isUseTtfFontAttributes();
                     final Map<TextAttribute, Object> attr = entry.getValue().getValue();
                     if (useTtfFontAttributes != null && useTtfFontAttributes) {
                         fit = checkFitBold(textStyle, attr)
@@ -205,12 +202,66 @@ public class FontService {
                     );
                 }
                 checkCanDisplayFont(fontName, locale);
-                return IOUtils.toByteArray(fontStream);
+                if (useTtfFontAttributes != null && useTtfFontAttributes) {
+                    return Font.createFont(Font.TRUETYPE_FONT, fontStream);
+                }
+                final Map<TextAttribute, Object> attr = new HashMap<TextAttribute, Object>() {{
+                    put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_REGULAR);
+                    put(TextAttribute.POSTURE, TextAttribute.POSTURE_REGULAR);
+                    put(TextAttribute.UNDERLINE, -1);
+                    put(TextAttribute.SIZE, 12);
+                    put(TextAttribute.FOREGROUND, Color.BLACK);
+                }};
+                if (Boolean.TRUE.equals(textStyle.isBold())) {
+                    attr.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
+                }
+                if (Boolean.TRUE.equals(textStyle.isItalic())) {
+                    attr.put(TextAttribute.POSTURE, TextAttribute.POSTURE_OBLIQUE);
+                }
+                if (textStyle.getUnderline() != null && textStyle.getUnderline() != 0) {
+                    attr.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
+                }
+                if (textStyle.getFontSize() != null) {
+                    attr.put(TextAttribute.SIZE, textStyle.getFontSize());
+                }
+                if (textStyle.getColor() != null) {
+                    attr.put(
+                        TextAttribute.FOREGROUND,
+                        Color.decode("0x" + textStyle.getColor().buildColorString())
+                    );
+                }
+                return Font.createFont(Font.TRUETYPE_FONT, fontStream).deriveFont(attr);
             }
         }
         throw new IllegalArgumentException(
             String.format("Can't find valid font with attributes: %s for locale %s", textStyle, locale)
         );
+    }
+
+    /**
+     * Returns one of embedded *.ttf fonts as a java.awt.Font, see {@link free_fonts} folder
+     * based on TextStyle
+     **/
+    public static Font getFontResourceByTextStyle(TextStyle textStyle) {
+        final Locale fontLocale = textStyle.getFontLocale();
+        try {
+            return FontService
+                .create()
+                .initializeFonts()
+                .getFontResource(textStyle, fontLocale);
+        } catch (FontFormatException e) {
+            throw new IllegalStateException(
+                "While rendering text as a picture: " +
+                    "the fontStream data does not contain the required font tables for the specified format",
+                e
+            );
+        } catch (IOException e) {
+            throw new IllegalStateException(
+                "While rendering text as a picture: " +
+                    "the fontStream cannot be completely read",
+                e
+            );
+        }
     }
 
     private void checkCanDisplayFont(String fontName, Locale locale) {

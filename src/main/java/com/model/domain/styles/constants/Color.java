@@ -1,5 +1,10 @@
 package com.model.domain.styles.constants;
 
+import com.model.utils.StringMetricUtils;
+import org.springframework.util.StringUtils;
+
+import java.util.Arrays;
+
 /**
  * Excel uses only ~40 colors (backward compatibility for .xls format),
  * passing Color to ExcelFormatter will lead it to find the most similar
@@ -34,6 +39,23 @@ public enum Color {
         this.r = r;
         this.g = g;
         this.b = b;
+    }
+
+    public static Color fromString(String colorString) {
+        return Arrays.stream(Color.values())
+            .reduce(
+                (color1, color2) -> {
+                    final int distanceColor1 = StringMetricUtils
+                        .levenshteinDistance(color1.toString(), colorString);
+                    final int distanceColor2 = StringMetricUtils
+                        .levenshteinDistance(color1.toString(), colorString);
+                    return StringUtils.hasText(colorString)
+                        && distanceColor1 < distanceColor2
+                        ? color1
+                        : color2;
+                }
+            )
+            .orElse(BLACK);
     }
 
     public String buildColorString() {

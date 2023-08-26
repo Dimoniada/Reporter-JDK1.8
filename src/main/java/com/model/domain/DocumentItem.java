@@ -1,5 +1,6 @@
 package com.model.domain;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.google.common.base.MoreObjects;
 import com.model.domain.styles.Style;
 import com.model.formatter.FormatterVisitor;
@@ -11,8 +12,8 @@ import org.slf4j.LoggerFactory;
  * If {@link DocumentItem#accept(FormatterVisitor)} is not overridden in the descendant,
  * then an exception "Overridden method "accept" not found for {@link DocumentItem}" will be thrown.
  * Contains style, see TextStyle, LayoutStyle or TextLayoutStyle
- *
  */
+@JsonTypeInfo(include = JsonTypeInfo.As.WRAPPER_OBJECT, use = JsonTypeInfo.Id.NAME)
 public abstract class DocumentItem {
     private static final Logger log = LoggerFactory.getLogger(DocumentItem.class);
     protected Style style;

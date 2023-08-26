@@ -44,8 +44,12 @@ import com.model.utils.LocalizedNumberUtils;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.springframework.util.StringUtils;
 
+import java.awt.*;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Locale;
@@ -87,11 +91,11 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
         new HashMap<BorderWeight, com.itextpdf.kernel.pdf.canvas.draw.ILineDrawer>() {{
             put(null, null);
             put(BorderWeight.NONE, null);
-            put(BorderWeight.THIN, new SolidLine(1));   //width - distance between borders
-            put(BorderWeight.MEDIUM, new SolidLine(2));   //width - distance between borders
+            put(BorderWeight.THIN, new SolidLine(1));    //width - distance between borders
+            put(BorderWeight.MEDIUM, new SolidLine(2));  //width - distance between borders
             put(BorderWeight.THICK, new SolidLine(3));   //width - distance between borders
-            put(BorderWeight.DOTTED, new DottedLine(1));   //width – width of the border
-            put(BorderWeight.DASHED, new DashedLine(1));   //width – width of the border
+            put(BorderWeight.DOTTED, new DottedLine(1)); //width – width of the border
+            put(BorderWeight.DASHED, new DashedLine(1)); //width – width of the border
         }};
 
     /**
@@ -215,8 +219,7 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
 
     public static PdfStyleService create(
         String encoding,
-        FontService
-            fontService,
+        FontService fontService,
         DecimalFormat decimalFormat
     ) {
         return new PdfStyleService(encoding, fontService, decimalFormat);
@@ -483,7 +486,15 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
         } else {
             if (fontLocale == null || fontService.checkAvailableFontsLocale(fontLocale)) {
                 try {
-                    final byte[] fontResource = fontService.getFontResource(textStyle, fontLocale);
+                    final Font embeddedFont = fontService.getFontResource(textStyle, fontLocale);
+                    final Method method = Font.class.getDeclaredMethod("getFont2D");
+                    method.setAccessible(true);
+                    String rawFont = method.invoke(embeddedFont).toString();
+                    rawFont = rawFont
+                        .substring(rawFont.indexOf(" fileName=") + 10)
+                        .replace("\r\n", "\n") + "\n";
+                    rawFont = rawFont.substring(0, rawFont.indexOf("\n"));
+                    final byte[] fontResource = Files.readAllBytes(Paths.get(rawFont));
                     if (StandardCharsets.UTF_8.name().equals(encoding)) {
                         font =
                             PdfFontFactory.createFont(
@@ -504,7 +515,7 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
             } else {
                 if (StringUtils.hasText(textStyle.getFontNameResource())) {
                     try {
-                        // encoding matches the font resource, otherwise IOException
+                        // encoding must match the font resource, otherwise IOException
                         font = PdfFontFactory.createFont(
                             textStyle.getFontNameResource(),
                             encoding,
@@ -539,13 +550,16 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
                 .setFontSize(textStyle.getFontSize())
                 .setFontColor(toPdfColor(textStyle.getColor()));
         }
-        if (useTtfAttributes != null && !useTtfAttributes && textStyle.isBold()) {
+        if (useTtfAttributes == null || useTtfAttributes) {
+            return;
+        }
+        if (Boolean.TRUE.equals(textStyle.isBold())) {
             element.setBold();
         }
-        if (useTtfAttributes != null && !useTtfAttributes && textStyle.isItalic()) {
+        if (Boolean.TRUE.equals(textStyle.isItalic())) {
             element.setItalic();
         }
-        if (useTtfAttributes != null && !useTtfAttributes && textStyle.getUnderline() != 0) {
+        if (textStyle.getUnderline() != null && textStyle.getUnderline() != 0) {
             element.setUnderline();
         }
     }

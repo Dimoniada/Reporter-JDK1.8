@@ -3,23 +3,33 @@ package com.model.domain;
 import com.google.common.base.MoreObjects;
 import com.model.domain.styles.constants.PictureFormat;
 import com.model.formatter.FormatterVisitor;
-import org.springframework.core.io.WritableResource;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
+/**
+ * Picture class,
+ * contains InputStream data, picture format {@link PictureFormat} and picture text if data == null
+ */
 public class Picture extends DocumentItem {
 
     protected PictureFormat pictureFormat;
 
-    protected WritableResource data;
+    protected byte[] data;
 
-    protected String name;
+    protected String text;
 
-    public static Picture create(WritableResource data, PictureFormat pictureFormat) {
+    public static Picture create(byte[] data, PictureFormat pictureFormat) {
         return new Picture()
             .setData(data)
+            .setPictureFormat(pictureFormat);
+    }
+
+    public static Picture create(String text, PictureFormat pictureFormat) {
+        return new Picture()
+            .setText(text)
             .setPictureFormat(pictureFormat);
     }
 
@@ -29,25 +39,25 @@ public class Picture extends DocumentItem {
 
     /**
      * @return picture height in pixels
-     * @throws IOException if an error occurs during reading
+     * @throws IOException if an error occurs during picture data reading
      */
-    public int getHeightFromData() throws IOException {
+    public int getPictureHeight() throws IOException {
         if (data == null) {
             return 0;
         }
-        final BufferedImage buf = ImageIO.read(data.getInputStream());
+        final BufferedImage buf = ImageIO.read(new ByteArrayInputStream(data));
         return buf.getHeight();
     }
 
     /**
      * @return picture width in pixels
-     * @throws IOException if an error occurs during reading
+     * @throws IOException if an error occurs during picture data reading
      */
-    public int getWidthFromData() throws IOException {
+    public int getPictureWidth() throws IOException {
         if (data == null) {
             return 0;
         }
-        final BufferedImage buf = ImageIO.read(data.getInputStream());
+        final BufferedImage buf = ImageIO.read(new ByteArrayInputStream(data));
         return buf.getWidth();
     }
 
@@ -60,21 +70,21 @@ public class Picture extends DocumentItem {
         return this;
     }
 
-    public WritableResource getData() {
+    public byte[] getData() {
         return data;
     }
 
-    public Picture setData(WritableResource data) {
+    public Picture setData(byte[] data) {
         this.data = data;
         return this;
     }
 
-    public String getName() {
-        return name;
+    public String getText() {
+        return text;
     }
 
-    public Picture setName(String name) {
-        this.name = name;
+    public Picture setText(String text) {
+        this.text = text;
         return this;
     }
 
@@ -89,7 +99,7 @@ public class Picture extends DocumentItem {
         return MoreObjects.toStringHelper(this)
             .add("pictureFormat", pictureFormat)
             .add("data", data)
-            .add("name", name)
+            .add("text", text)
             .toString();
     }
 }
