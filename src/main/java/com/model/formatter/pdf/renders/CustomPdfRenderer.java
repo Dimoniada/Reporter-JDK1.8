@@ -11,14 +11,13 @@ import com.itextpdf.layout.properties.Transform;
 import com.model.domain.style.constant.HorAlignment;
 import com.model.domain.style.constant.VertAlignment;
 import com.model.domain.style.geometry.GeometryDetails;
+import com.model.formatter.pdf.PdfDetails;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import static com.model.formatter.pdf.PdfDetails.EXTENSION;
-
-public interface CustomRenderer {
+public interface CustomPdfRenderer {
     GeometryDetails getGeometryDetails();
     Rectangle getOccupiedAreaBBox();
     IPropertyContainer getModelElement();
@@ -30,7 +29,7 @@ public interface CustomRenderer {
         if (getGeometryDetails().getTransformCenter() != null) {
             getGeometryDetails()
                 .getTransformCenter()
-                .getValueFor(EXTENSION)
+                .getValueFor(PdfDetails.EXTENSION)
                 .ifPresent(center -> {
                     final Rectangle rectangle = getOccupiedAreaBBox();
 

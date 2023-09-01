@@ -19,6 +19,7 @@ import com.model.domain.style.constant.VertAlignment;
 import com.model.domain.style.geometry.GeometryDetails;
 import com.model.formatter.excel.XlsDetails;
 import com.model.utils.ConverterUtils;
+import com.model.utils.LocalizedNumberUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.apache.poi.hssf.usermodel.HSSFPalette;
@@ -42,8 +43,6 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
-
-import static com.model.utils.LocalizedNumberUtils.applyDecimalFormat;
 
 /**
  * The class caches {@link Style} styles,
@@ -416,7 +415,9 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
             final TextItem<?> textItem = (TextItem<?>) item;
             workbook.getFontAt(cellObj.getCellStyle().getFontIndex()).setCharSet(fontCharset.getNativeId());
             if (StringUtils.hasText(textItem.getText())) {
-                cellObj.setCellValue(applyDecimalFormat(textItem.getText(), textItem.getStyle(), decimalFormat));
+                cellObj.setCellValue(
+                    LocalizedNumberUtils.applyDecimalFormat(textItem.getText(), textItem.getStyle(), decimalFormat)
+                );
             } else {
                 cellObj.setCellValue("");
             }

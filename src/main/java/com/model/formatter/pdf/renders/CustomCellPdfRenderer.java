@@ -7,10 +7,10 @@ import com.itextpdf.layout.renderer.CellRenderer;
 import com.itextpdf.layout.renderer.IRenderer;
 import com.model.domain.style.geometry.GeometryDetails;
 
-public class CustomCellRenderer extends CellRenderer implements CustomRenderer {
+public class CustomCellPdfRenderer extends CellRenderer implements CustomPdfRenderer {
     private final GeometryDetails geometryDetails;
 
-    public CustomCellRenderer(
+    public CustomCellPdfRenderer(
             Cell modelElement,
             GeometryDetails geometryDetails
     ) {
@@ -20,7 +20,7 @@ public class CustomCellRenderer extends CellRenderer implements CustomRenderer {
 
     @Override
     public IRenderer getNextRenderer() {
-        return new CustomCellRenderer((Cell) modelElement, geometryDetails);
+        return new CustomCellPdfRenderer((Cell) modelElement, geometryDetails);
     }
 
     @Override

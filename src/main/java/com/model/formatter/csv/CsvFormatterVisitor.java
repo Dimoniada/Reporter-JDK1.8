@@ -17,6 +17,7 @@ import com.model.domain.TableRow;
 import com.model.domain.Title;
 import com.model.formatter.BaseDetails;
 import com.model.formatter.Formatter;
+import com.model.utils.LocalizedNumberUtils;
 import org.supercsv.io.CsvListWriter;
 import org.supercsv.prefs.CsvPreference;
 
@@ -27,8 +28,6 @@ import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.model.utils.LocalizedNumberUtils.applyDecimalFormat;
 
 /**
  * The class generates a csv representation of the document {@link Document}
@@ -70,17 +69,17 @@ public abstract class CsvFormatterVisitor extends Formatter implements BaseDetai
 
     @Override
     public void visitTitle(Title titleObj) throws Exception {
-        csvWriter.write(applyDecimalFormat(titleObj.getText(), titleObj.getStyle(), decimalFormat));
+        csvWriter.write(LocalizedNumberUtils.applyDecimalFormat(titleObj.getText(), titleObj.getStyle(), decimalFormat));
     }
 
     @Override
     public void visitHeading(Heading headingObj) throws Exception {
-        csvWriter.write(applyDecimalFormat(headingObj.getText(), headingObj.getStyle(), decimalFormat));
+        csvWriter.write(LocalizedNumberUtils.applyDecimalFormat(headingObj.getText(), headingObj.getStyle(), decimalFormat));
     }
 
     @Override
     public void visitParagraph(Paragraph paragraphObj) throws Exception {
-        csvWriter.write(applyDecimalFormat(paragraphObj.getText(), paragraphObj.getStyle(), decimalFormat));
+        csvWriter.write(LocalizedNumberUtils.applyDecimalFormat(paragraphObj.getText(), paragraphObj.getStyle(), decimalFormat));
     }
 
     @Override
@@ -95,7 +94,7 @@ public abstract class CsvFormatterVisitor extends Formatter implements BaseDetai
     public void visitTableHeaderRow(TableHeaderRow tableHeaderRowObj) throws Throwable {
         final List<String> tableRow = new ArrayList<>();
         for (final TableHeaderCell o : tableHeaderRowObj.getParts()) {
-            tableRow.add(applyDecimalFormat(o.getText(), o.getStyle(), decimalFormat));
+            tableRow.add(LocalizedNumberUtils.applyDecimalFormat(o.getText(), o.getStyle(), decimalFormat));
         }
         csvWriter.write(tableRow);
     }
@@ -104,7 +103,7 @@ public abstract class CsvFormatterVisitor extends Formatter implements BaseDetai
     public void visitTableRow(TableRow tableRowObj) throws Throwable {
         final List<String> tableRow = new ArrayList<>();
         for (final TableCell o : tableRowObj.getParts()) {
-            tableRow.add(applyDecimalFormat(o.getText(), o.getStyle(), decimalFormat));
+            tableRow.add(LocalizedNumberUtils.applyDecimalFormat(o.getText(), o.getStyle(), decimalFormat));
         }
         csvWriter.write(tableRow);
     }

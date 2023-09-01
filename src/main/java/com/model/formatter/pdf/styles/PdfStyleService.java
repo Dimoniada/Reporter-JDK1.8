@@ -37,8 +37,8 @@ import com.model.domain.style.constant.HorAlignment;
 import com.model.domain.style.constant.VertAlignment;
 import com.model.domain.style.geometry.GeometryDetails;
 import com.model.formatter.pdf.PdfDetails;
-import com.model.formatter.pdf.renders.CustomCellRenderer;
-import com.model.formatter.pdf.renders.CustomParagraphRenderer;
+import com.model.formatter.pdf.renders.CustomCellPdfRenderer;
+import com.model.formatter.pdf.renders.CustomParagraphPdfRenderer;
 import com.model.utils.ConverterUtils;
 import com.model.utils.LocalizedNumberUtils;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
@@ -382,9 +382,9 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
             );
         // To apply Rotation center and scales
         if (outerElement instanceof Paragraph) {
-            outerElement.setNextRenderer(new CustomParagraphRenderer((Paragraph) outerElement, geometryDetails));
+            outerElement.setNextRenderer(new CustomParagraphPdfRenderer((Paragraph) outerElement, geometryDetails));
         } else if (outerElement instanceof Cell) {
-            outerElement.setNextRenderer(new CustomCellRenderer((Cell) outerElement, geometryDetails));
+            outerElement.setNextRenderer(new CustomCellPdfRenderer((Cell) outerElement, geometryDetails));
         }
     }
 

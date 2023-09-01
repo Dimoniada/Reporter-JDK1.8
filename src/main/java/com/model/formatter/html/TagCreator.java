@@ -12,14 +12,13 @@ import com.model.formatter.html.tag.HtmlCol;
 import com.model.formatter.html.tag.HtmlTable;
 import com.model.formatter.html.tag.HtmlTableCell;
 import com.model.formatter.html.tag.HtmlTag;
+import com.model.utils.LocalizedNumberUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.text.DecimalFormat;
 import java.text.ParseException;
-
-import static com.model.utils.LocalizedNumberUtils.applyDecimalFormat;
 
 public class TagCreator {
     protected OutputStreamWriter outputStreamWriter;
@@ -60,7 +59,9 @@ public class TagCreator {
             write(String.format("<%s%s>", tag.getTagName(), tag.attributesToHtmlString(true)));
             if (StringUtils.hasText(text)) {
                 final String formattedText =
-                    HtmlStyleService.escapeHtml(applyDecimalFormat(text, style, decimalFormat));
+                    HtmlStyleService.escapeHtml(
+                        LocalizedNumberUtils.applyDecimalFormat(text, style, decimalFormat)
+                    );
                 final TextStyle textStyle = HtmlStyleService.extractTextStyle(style);
                 if (textStyle != null) {
                     final Html4Font html4Font = HtmlStyleService.convertHtml4Font(textStyle);
@@ -99,7 +100,12 @@ public class TagCreator {
             }
             write(String.format("<%s%s>", tag.getTagName(), tag.attributesToHtmlString(false)));
             if (StringUtils.hasText(text)) {
-                write(HtmlStyleService.escapeHtml(applyDecimalFormat(text, style, decimalFormat)));
+                write(
+                    HtmlStyleService
+                        .escapeHtml(
+                            LocalizedNumberUtils.applyDecimalFormat(text, style, decimalFormat)
+                        )
+                );
             }
         }
         if (needCloseTag) {
