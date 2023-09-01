@@ -10,7 +10,7 @@ import com.model.domain.style.geometry.GeometryDetails;
 import com.model.formatter.DocumentHolder;
 import com.model.formatter.excel.XlsFormatter;
 import com.model.formatter.excel.XlsxFormatter;
-import com.model.formatter.excel.styles.ExcelStyleService;
+import com.model.formatter.excel.style.ExcelStyleService;
 import com.reporter.formatter.BaseDocument;
 import org.apache.commons.io.IOUtils;
 import org.apache.poi.common.usermodel.fonts.FontCharset;

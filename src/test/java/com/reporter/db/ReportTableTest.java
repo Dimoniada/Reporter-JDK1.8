@@ -32,7 +32,7 @@ import com.model.formatter.FormatterFactory;
 import com.model.formatter.csv.CsvFormatter;
 import com.model.formatter.excel.XlsFormatter;
 import com.model.formatter.html.HtmlFormatter;
-import com.model.formatter.html.styles.HtmlStyleService;
+import com.model.formatter.html.style.HtmlStyleService;
 import com.model.formatter.pdf.PdfFormatter;
 import com.reporter.db.repositories.h2.TestCDRPeriodStatisticByPartner;
 import com.reporter.db.repositories.h2.TestChannelDailyRollupRepository;

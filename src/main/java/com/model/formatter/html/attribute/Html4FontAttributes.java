@@ -1,6 +1,6 @@
 package com.model.formatter.html.attribute;
 
-import com.model.formatter.html.styles.CssStyle;
+import com.model.formatter.html.style.CssStyle;
 
 import java.util.HashMap;
 import java.util.Map;

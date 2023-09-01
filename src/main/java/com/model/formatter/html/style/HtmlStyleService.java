@@ -1,4 +1,4 @@
-package com.model.formatter.html.styles;
+package com.model.formatter.html.style;
 
 import com.google.common.base.MoreObjects;
 import com.model.domain.DocumentItem;

@@ -2,7 +2,7 @@ package com.model.formatter.html.tag;
 
 import com.model.formatter.html.attribute.HtmlClassAttribute;
 import com.model.formatter.html.attribute.HtmlStyleAttribute;
-import com.model.formatter.html.styles.CssStyle;
+import com.model.formatter.html.style.CssStyle;
 
 import java.util.Map;
 import java.util.stream.Collectors;

@@ -21,7 +21,7 @@ import com.model.domain.style.StyleUtils;
 import com.model.domain.style.TextStyle;
 import com.model.formatter.BaseDetails;
 import com.model.formatter.Formatter;
-import com.model.formatter.excel.styles.ExcelStyleService;
+import com.model.formatter.excel.style.ExcelStyleService;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;

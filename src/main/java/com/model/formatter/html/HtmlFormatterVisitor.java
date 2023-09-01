@@ -22,7 +22,7 @@ import com.model.domain.style.constant.BorderWeight;
 import com.model.domain.style.constant.Color;
 import com.model.formatter.BaseDetails;
 import com.model.formatter.Formatter;
-import com.model.formatter.html.styles.HtmlStyleService;
+import com.model.formatter.html.style.HtmlStyleService;
 import com.model.formatter.html.tag.Html;
 import com.model.formatter.html.tag.HtmlBody;
 import com.model.formatter.html.tag.HtmlCol;

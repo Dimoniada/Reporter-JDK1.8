@@ -34,7 +34,7 @@ import com.model.domain.style.geometry.Geometry;
 import com.model.domain.style.geometry.GeometryDetails;
 import com.model.formatter.DocumentHolder;
 import com.model.formatter.pdf.PdfFormatter;
-import com.model.formatter.pdf.styles.PdfStyleService;
+import com.model.formatter.pdf.style.PdfStyleService;
 import com.model.utils.LocalizedNumberUtils;
 import com.reporter.formatter.BaseDocument;
 import org.junit.jupiter.api.Assertions;

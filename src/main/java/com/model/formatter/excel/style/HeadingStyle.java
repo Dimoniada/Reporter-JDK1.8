@@ -1,4 +1,4 @@
-package com.model.formatter.excel.styles;
+package com.model.formatter.excel.style;
 
 import com.model.domain.style.BorderStyle;
 import com.model.domain.style.LayoutStyle;

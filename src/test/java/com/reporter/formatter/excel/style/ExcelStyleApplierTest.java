@@ -1,4 +1,4 @@
-package com.reporter.formatter.excel.styles;
+package com.reporter.formatter.excel.style;
 
 import com.model.domain.style.BorderStyle;
 import com.model.domain.style.LayoutStyle;
@@ -8,7 +8,7 @@ import com.model.domain.style.constant.FillPattern;
 import com.model.domain.style.constant.HorAlignment;
 import com.model.domain.style.constant.PictureFormat;
 import com.model.domain.style.constant.VertAlignment;
-import com.model.formatter.excel.styles.ExcelStyleService;
+import com.model.formatter.excel.style.ExcelStyleService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -19,12 +19,12 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static com.model.formatter.excel.styles.ExcelStyleService.toExcelBorder;
-import static com.model.formatter.excel.styles.ExcelStyleService.toExcelColor;
-import static com.model.formatter.excel.styles.ExcelStyleService.toExcelFillPattern;
-import static com.model.formatter.excel.styles.ExcelStyleService.toExcelHorAlignment;
-import static com.model.formatter.excel.styles.ExcelStyleService.toExcelPictureFormat;
-import static com.model.formatter.excel.styles.ExcelStyleService.toExcelVertAlignment;
+import static com.model.formatter.excel.style.ExcelStyleService.toExcelBorder;
+import static com.model.formatter.excel.style.ExcelStyleService.toExcelColor;
+import static com.model.formatter.excel.style.ExcelStyleService.toExcelFillPattern;
+import static com.model.formatter.excel.style.ExcelStyleService.toExcelHorAlignment;
+import static com.model.formatter.excel.style.ExcelStyleService.toExcelPictureFormat;
+import static com.model.formatter.excel.style.ExcelStyleService.toExcelVertAlignment;
 
 public class ExcelStyleApplierTest {
 

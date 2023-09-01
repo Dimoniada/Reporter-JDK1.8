@@ -21,7 +21,7 @@ import com.model.domain.style.constant.Color;
 import com.model.formatter.DocumentHolder;
 import com.model.formatter.csv.CsvFormatter;
 import com.model.formatter.excel.XlsxFormatter;
-import com.model.formatter.excel.styles.ExcelStyleService;
+import com.model.formatter.excel.style.ExcelStyleService;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.apache.poi.ss.usermodel.Sheet;

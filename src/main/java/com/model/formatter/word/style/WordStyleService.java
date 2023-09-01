@@ -1,4 +1,4 @@
-package com.model.formatter.word.styles;
+package com.model.formatter.word.style;
 
 import com.google.common.base.MoreObjects;
 import com.model.domain.DocumentItem;

@@ -1,11 +1,11 @@
-package com.reporter.formatter.word.styles;
+package com.reporter.formatter.word.style;
 
 import com.model.domain.style.constant.PictureFormat;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static com.model.formatter.word.styles.WordStyleService.toWordPictureFormat;
+import static com.model.formatter.word.style.WordStyleService.toWordPictureFormat;
 
 public class WordStyleApplierTest {
 

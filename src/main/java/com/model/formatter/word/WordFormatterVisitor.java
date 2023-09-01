@@ -19,7 +19,7 @@ import com.model.domain.style.Style;
 import com.model.domain.style.StyleService;
 import com.model.formatter.BaseDetails;
 import com.model.formatter.Formatter;
-import com.model.formatter.word.styles.WordStyleService;
+import com.model.formatter.word.style.WordStyleService;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy;
 import org.apache.poi.xwpf.usermodel.BreakType;

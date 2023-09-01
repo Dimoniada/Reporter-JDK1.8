@@ -1,4 +1,4 @@
-package com.model.formatter.pdf.styles;
+package com.model.formatter.pdf.style;
 
 import com.google.common.base.MoreObjects;
 import com.itextpdf.io.font.PdfEncodings;

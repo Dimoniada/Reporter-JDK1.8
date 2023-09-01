@@ -1,7 +1,7 @@
-package com.reporter.formatter.html.styles;
+package com.reporter.formatter.html.style;
 
 import com.model.domain.style.constant.Color;
-import com.model.formatter.html.styles.CssStyle;
+import com.model.formatter.html.style.CssStyle;
 import com.model.formatter.html.tag.Html4Font;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

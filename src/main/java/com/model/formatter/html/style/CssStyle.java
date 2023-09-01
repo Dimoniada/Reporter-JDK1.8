@@ -1,4 +1,4 @@
-package com.model.formatter.html.styles;
+package com.model.formatter.html.style;
 
 import org.springframework.util.StringUtils;
 

@@ -1,4 +1,4 @@
-package com.reporter.formatter.pdf.styles;
+package com.reporter.formatter.pdf.style;
 
 import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.Text;
@@ -9,7 +9,7 @@ import com.model.domain.style.LayoutStyle;
 import com.model.domain.style.constant.BorderWeight;
 import com.model.domain.style.constant.Color;
 import com.model.domain.style.constant.HorAlignment;
-import com.model.formatter.pdf.styles.PdfStyleService;
+import com.model.formatter.pdf.style.PdfStyleService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

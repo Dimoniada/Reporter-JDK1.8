@@ -1,4 +1,4 @@
-package com.model.formatter.excel.styles;
+package com.model.formatter.excel.style;
 
 import com.google.common.base.MoreObjects;
 import com.model.domain.DocumentItem;
