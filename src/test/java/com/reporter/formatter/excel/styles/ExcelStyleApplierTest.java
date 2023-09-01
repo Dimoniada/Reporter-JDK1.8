@@ -1,13 +1,13 @@
 package com.reporter.formatter.excel.styles;
 
-import com.model.domain.styles.BorderStyle;
-import com.model.domain.styles.LayoutStyle;
-import com.model.domain.styles.constants.BorderWeight;
-import com.model.domain.styles.constants.Color;
-import com.model.domain.styles.constants.FillPattern;
-import com.model.domain.styles.constants.HorAlignment;
-import com.model.domain.styles.constants.PictureFormat;
-import com.model.domain.styles.constants.VertAlignment;
+import com.model.domain.style.BorderStyle;
+import com.model.domain.style.LayoutStyle;
+import com.model.domain.style.constant.BorderWeight;
+import com.model.domain.style.constant.Color;
+import com.model.domain.style.constant.FillPattern;
+import com.model.domain.style.constant.HorAlignment;
+import com.model.domain.style.constant.PictureFormat;
+import com.model.domain.style.constant.VertAlignment;
 import com.model.formatter.excel.styles.ExcelStyleService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;

@@ -1,7 +1,7 @@
 package com.model.domain;
 
 import com.google.common.base.MoreObjects;
-import com.model.domain.styles.TextStyle;
+import com.model.domain.style.TextStyle;
 import com.model.formatter.FormatterVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

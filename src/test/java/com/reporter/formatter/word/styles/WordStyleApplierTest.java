@@ -1,6 +1,6 @@
 package com.reporter.formatter.word.styles;
 
-import com.model.domain.styles.constants.PictureFormat;
+import com.model.domain.style.constant.PictureFormat;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

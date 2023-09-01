@@ -1,4 +1,4 @@
-package com.model.domain.styles;
+package com.model.domain.style;
 
 /**
  * Styles (classes) of related fonts

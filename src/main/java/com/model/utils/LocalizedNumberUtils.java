@@ -1,7 +1,7 @@
 package com.model.utils;
 
-import com.model.domain.styles.Style;
-import com.model.domain.styles.TextStyle;
+import com.model.domain.style.Style;
+import com.model.domain.style.TextStyle;
 import org.springframework.util.StringUtils;
 
 import java.math.RoundingMode;

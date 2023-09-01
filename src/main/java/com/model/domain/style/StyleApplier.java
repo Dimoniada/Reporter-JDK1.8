@@ -1,4 +1,4 @@
-package com.model.domain.styles;
+package com.model.domain.style;
 
 import java.io.OutputStreamWriter;
 

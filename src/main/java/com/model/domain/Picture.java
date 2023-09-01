@@ -1,7 +1,7 @@
 package com.model.domain;
 
 import com.google.common.base.MoreObjects;
-import com.model.domain.styles.constants.PictureFormat;
+import com.model.domain.style.constant.PictureFormat;
 import com.model.formatter.FormatterVisitor;
 
 import javax.imageio.ImageIO;

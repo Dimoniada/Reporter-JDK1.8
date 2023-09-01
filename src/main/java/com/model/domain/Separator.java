@@ -2,7 +2,7 @@ package com.model.domain;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.model.domain.styles.BorderStyle;
+import com.model.domain.style.BorderStyle;
 import com.model.formatter.FormatterVisitor;
 
 /**

@@ -1,9 +1,9 @@
-package com.model.domain.styles;
+package com.model.domain.style;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.model.domain.TextItem;
-import com.model.domain.styles.constants.Color;
+import com.model.domain.style.constant.Color;
 
 import java.text.DecimalFormat;
 import java.util.Locale;

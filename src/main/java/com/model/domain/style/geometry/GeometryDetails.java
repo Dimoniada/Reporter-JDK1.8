@@ -1,8 +1,8 @@
-package com.model.domain.styles.geometry;
+package com.model.domain.style.geometry;
 
 import com.google.common.base.MoreObjects;
-import com.model.domain.styles.constants.HorAlignment;
-import com.model.domain.styles.constants.VertAlignment;
+import com.model.domain.style.constant.HorAlignment;
+import com.model.domain.style.constant.VertAlignment;
 
 import java.util.Map;
 
@@ -36,8 +36,8 @@ public class GeometryDetails {
      *      key = extension (String)
      *      value = center position, relative itself (AbstractMap.SimpleEntry(HorAlignment, VertAlignment))
      * See
-     *      {@link com.model.domain.styles.constants.HorAlignment},
-     *      {@link com.model.domain.styles.constants.VertAlignment}
+     *      {@link com.model.domain.style.constant.HorAlignment},
+     *      {@link com.model.domain.style.constant.VertAlignment}
      */
     protected Geometry<Map.Entry<HorAlignment, VertAlignment>> transformCenter;
 

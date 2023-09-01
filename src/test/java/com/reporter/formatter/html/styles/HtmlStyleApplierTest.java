@@ -1,6 +1,6 @@
 package com.reporter.formatter.html.styles;
 
-import com.model.domain.styles.constants.Color;
+import com.model.domain.style.constant.Color;
 import com.model.formatter.html.styles.CssStyle;
 import com.model.formatter.html.tag.Html4Font;
 import org.junit.jupiter.api.Assertions;

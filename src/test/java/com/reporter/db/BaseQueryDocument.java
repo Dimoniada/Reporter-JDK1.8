@@ -1,8 +1,22 @@
 package com.reporter.db;
 
-import com.model.domain.*;
-import com.model.domain.styles.*;
-import com.model.domain.styles.constants.*;
+import com.model.domain.Document;
+import com.model.domain.FontService;
+import com.model.domain.TableCell;
+import com.model.domain.TableHeaderCell;
+import com.model.domain.TableRow;
+import com.model.domain.Title;
+import com.model.domain.style.BorderStyle;
+import com.model.domain.style.FontFamilyStyle;
+import com.model.domain.style.LayoutStyle;
+import com.model.domain.style.LayoutTextStyle;
+import com.model.domain.style.StyleCondition;
+import com.model.domain.style.TextStyle;
+import com.model.domain.style.constant.BorderWeight;
+import com.model.domain.style.constant.Color;
+import com.model.domain.style.constant.FillPattern;
+import com.model.domain.style.constant.HorAlignment;
+import com.model.domain.style.constant.VertAlignment;
 import com.model.utils.LocalizedNumberUtils;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.StringUtils;

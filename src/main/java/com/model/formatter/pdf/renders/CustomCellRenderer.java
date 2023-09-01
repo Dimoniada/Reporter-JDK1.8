@@ -5,7 +5,7 @@ import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.renderer.CellRenderer;
 import com.itextpdf.layout.renderer.IRenderer;
-import com.model.domain.styles.geometry.GeometryDetails;
+import com.model.domain.style.geometry.GeometryDetails;
 
 public class CustomCellRenderer extends CellRenderer implements CustomRenderer {
     private final GeometryDetails geometryDetails;

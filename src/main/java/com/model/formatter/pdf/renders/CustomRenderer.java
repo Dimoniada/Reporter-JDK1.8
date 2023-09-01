@@ -8,9 +8,9 @@ import com.itextpdf.layout.layout.LayoutArea;
 import com.itextpdf.layout.layout.LayoutPosition;
 import com.itextpdf.layout.properties.Property;
 import com.itextpdf.layout.properties.Transform;
-import com.model.domain.styles.constants.HorAlignment;
-import com.model.domain.styles.constants.VertAlignment;
-import com.model.domain.styles.geometry.GeometryDetails;
+import com.model.domain.style.constant.HorAlignment;
+import com.model.domain.style.constant.VertAlignment;
+import com.model.domain.style.geometry.GeometryDetails;
 
 import java.util.HashMap;
 import java.util.Map;

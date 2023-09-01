@@ -1,4 +1,4 @@
-package com.model.domain.styles.constants;
+package com.model.domain.style.constant;
 
 public enum BorderWeight {
     NONE,

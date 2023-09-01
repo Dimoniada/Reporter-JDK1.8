@@ -1,7 +1,7 @@
 package com.model.domain;
 
 import com.google.common.base.MoreObjects;
-import com.model.domain.styles.TextStyle;
+import com.model.domain.style.TextStyle;
 
 /**
  * Base text class,

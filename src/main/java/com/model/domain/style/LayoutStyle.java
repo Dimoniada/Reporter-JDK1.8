@@ -1,12 +1,12 @@
-package com.model.domain.styles;
+package com.model.domain.style;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.model.domain.styles.constants.Color;
-import com.model.domain.styles.constants.FillPattern;
-import com.model.domain.styles.constants.HorAlignment;
-import com.model.domain.styles.constants.VertAlignment;
-import com.model.domain.styles.geometry.GeometryDetails;
+import com.model.domain.style.constant.Color;
+import com.model.domain.style.constant.FillPattern;
+import com.model.domain.style.constant.HorAlignment;
+import com.model.domain.style.constant.VertAlignment;
+import com.model.domain.style.geometry.GeometryDetails;
 
 /**
  * The style is used to set:

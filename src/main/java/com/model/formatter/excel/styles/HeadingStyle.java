@@ -1,13 +1,13 @@
 package com.model.formatter.excel.styles;
 
-import com.model.domain.styles.BorderStyle;
-import com.model.domain.styles.LayoutStyle;
-import com.model.domain.styles.LayoutTextStyle;
-import com.model.domain.styles.TextStyle;
-import com.model.domain.styles.constants.Color;
-import com.model.domain.styles.constants.FillPattern;
-import com.model.domain.styles.constants.HorAlignment;
-import com.model.domain.styles.constants.VertAlignment;
+import com.model.domain.style.BorderStyle;
+import com.model.domain.style.LayoutStyle;
+import com.model.domain.style.LayoutTextStyle;
+import com.model.domain.style.TextStyle;
+import com.model.domain.style.constant.Color;
+import com.model.domain.style.constant.FillPattern;
+import com.model.domain.style.constant.HorAlignment;
+import com.model.domain.style.constant.VertAlignment;
 
 
 /**

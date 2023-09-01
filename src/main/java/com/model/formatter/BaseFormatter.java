@@ -1,7 +1,7 @@
 package com.model.formatter;
 
 import com.model.domain.Document;
-import com.model.domain.styles.StyleService;
+import com.model.domain.style.StyleService;
 
 /**
  * Contains common formatter methods

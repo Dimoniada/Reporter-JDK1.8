@@ -143,7 +143,7 @@ public class ReporterApplication {
 
 Styles are written in each html-element because we assign them directly to elements through
 setStyle() or spreadStyleToParts(). It is convenient when using html4 specification.
-But in html5 using [StyleService](src/main/java/com/model/domain/styles/StyleService.java)
+But in html5 using [StyleService](src/main/java/com/model/domain/style/StyleService.java)
 styles can be written in header section with unique indexes. For more details see the examples below.
 
 Ok, seems we need some table borders:
@@ -450,7 +450,7 @@ public class ReporterApplication {
 ```
 
 The font file name should contain
-[FontFamilyStyle](src/main/java/com/model/domain/styles/FontFamilyStyle.java) name
+[FontFamilyStyle](src/main/java/com/model/domain/style/FontFamilyStyle.java) name
 embracing in "_", like file names in [free_fonts](src/main/resources/free_fonts) folder
 
 2) Add language (necessary) and its alphabet (optionally) to

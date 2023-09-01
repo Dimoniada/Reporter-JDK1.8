@@ -1,11 +1,27 @@
 package com.reporter.formatter;
 
-import com.model.domain.*;
-import com.model.domain.styles.*;
-import com.model.domain.styles.constants.BorderWeight;
-import com.model.domain.styles.constants.Color;
-import com.model.domain.styles.geometry.Geometry;
-import com.model.domain.styles.geometry.GeometryDetails;
+import com.model.domain.Document;
+import com.model.domain.DocumentCase;
+import com.model.domain.FontService;
+import com.model.domain.Heading;
+import com.model.domain.Paragraph;
+import com.model.domain.Separator;
+import com.model.domain.Table;
+import com.model.domain.TableCell;
+import com.model.domain.TableHeaderCell;
+import com.model.domain.TableHeaderRow;
+import com.model.domain.TableRow;
+import com.model.domain.Title;
+import com.model.domain.style.BorderStyle;
+import com.model.domain.style.FontFamilyStyle;
+import com.model.domain.style.LayoutStyle;
+import com.model.domain.style.LayoutTextStyle;
+import com.model.domain.style.StyleCondition;
+import com.model.domain.style.TextStyle;
+import com.model.domain.style.constant.BorderWeight;
+import com.model.domain.style.constant.Color;
+import com.model.domain.style.geometry.Geometry;
+import com.model.domain.style.geometry.GeometryDetails;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;

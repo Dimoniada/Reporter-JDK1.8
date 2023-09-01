@@ -1,8 +1,8 @@
 package com.model.domain;
 
 import com.google.common.base.MoreObjects;
-import com.model.domain.styles.Style;
-import com.model.domain.styles.StyleCondition;
+import com.model.domain.style.Style;
+import com.model.domain.style.StyleCondition;
 
 import java.util.ArrayList;
 import java.util.Arrays;

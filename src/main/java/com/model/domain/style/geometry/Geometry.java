@@ -1,4 +1,4 @@
-package com.model.domain.styles.geometry;
+package com.model.domain.style.geometry;
 
 import java.util.HashMap;
 import java.util.Optional;

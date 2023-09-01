@@ -1,5 +1,9 @@
 package com.reporter.formatter.word;
 
+import com.microsoft.schemas.office.word.STWrapType;
+import com.microsoft.schemas.vml.CTGroup;
+import com.microsoft.schemas.vml.CTShape;
+import com.microsoft.schemas.vml.CTTextbox;
 import com.model.domain.Document;
 import com.model.domain.DocumentItem;
 import com.model.domain.Footer;
@@ -10,16 +14,16 @@ import com.model.domain.TableHeaderCell;
 import com.model.domain.TableHeaderRow;
 import com.model.domain.TableRow;
 import com.model.domain.Title;
-import com.model.domain.styles.BorderStyle;
-import com.model.domain.styles.LayoutStyle;
-import com.model.domain.styles.LayoutTextStyle;
-import com.model.domain.styles.Style;
-import com.model.domain.styles.TextStyle;
-import com.model.domain.styles.constants.BorderWeight;
-import com.model.domain.styles.constants.Color;
-import com.model.domain.styles.constants.PictureFormat;
-import com.model.domain.styles.geometry.Geometry;
-import com.model.domain.styles.geometry.GeometryDetails;
+import com.model.domain.style.BorderStyle;
+import com.model.domain.style.LayoutStyle;
+import com.model.domain.style.LayoutTextStyle;
+import com.model.domain.style.Style;
+import com.model.domain.style.TextStyle;
+import com.model.domain.style.constant.BorderWeight;
+import com.model.domain.style.constant.Color;
+import com.model.domain.style.constant.PictureFormat;
+import com.model.domain.style.geometry.Geometry;
+import com.model.domain.style.geometry.GeometryDetails;
 import com.model.formatter.DocumentHolder;
 import com.model.formatter.word.DocFormatter;
 import com.model.formatter.word.DocxFormatter;
@@ -34,18 +38,26 @@ import org.apache.poi.xwpf.usermodel.XWPFPicture;
 import org.apache.poi.xwpf.usermodel.XWPFPictureData;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
+import org.apache.xmlbeans.XmlCursor;
+import org.apache.xmlbeans.XmlObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openxmlformats.schemas.drawingml.x2006.main.CTPositiveSize2D;
 import org.openxmlformats.schemas.drawingml.x2006.main.CTTransform2D;
 import org.openxmlformats.schemas.drawingml.x2006.picture.CTPicture;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTDrawing;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTR;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTxbxContent;
 import org.springframework.core.io.PathResource;
 import org.springframework.core.io.WritableResource;
+import org.w3c.dom.Node;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.net.URL;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -272,5 +284,58 @@ public class WordFormatterTest extends BaseDocument {
         try (DocumentHolder ignored = docxFormatter.handle(doc)) {
             /**/
         }
+    }
+
+    private static List<CTDrawing> getAllDrawings(XWPFRun run) throws Exception {
+        final CTR ctR = run.getCTR();
+        final XmlCursor cursor = ctR.newCursor();
+        cursor.selectPath("declare namespace w='http://schemas.openxmlformats.org/wordprocessingml/2006/main' .//*/w:drawing");
+        final List<CTDrawing> drawings = new ArrayList<>();
+        while (cursor.hasNextSelection()) {
+            cursor.toNextSelection();
+            final XmlObject obj = cursor.getObject();
+            final CTDrawing drawing = CTDrawing.Factory.parse(obj.newInputStream());
+            drawings.add(drawing);
+        }
+        cursor.close();
+        return drawings;
+    }
+
+    @Test
+    public void parseTextBox() throws Exception {
+        final XWPFDocument doc = new XWPFDocument();
+
+        final XWPFParagraph paragraph = doc.createParagraph();
+
+        final CTGroup ctGroup = CTGroup.Factory.newInstance();
+
+        final CTShape ctShape = ctGroup.addNewShape();
+
+        ctShape.addNewWrap().setType(STWrapType.SQUARE);
+        ctShape.setStyle("position:absolute;mso-position-horizontal:center;margin-top:40pt;width:100pt;height:24pt;rotation:45");
+        final CTTextbox ctTextbox = ctShape.addNewTextbox();
+        ctTextbox.setStyle("rotation:45000");
+        final CTTxbxContent ctTxbxContent = ctTextbox.addNewTxbxContent();
+        ctTxbxContent.addNewP().addNewR().addNewT().setStringValue("The TextBox text...");
+
+        final Node ctGroupNode = ctGroup.getDomNode();
+        final org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPicture ctPicture =
+            org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPicture.Factory.parse(ctGroupNode);
+        final XWPFRun run = paragraph.createRun();
+        final CTR cTR = run.getCTR();
+        cTR.addNewPict();
+        cTR.setPictArray(0, ctPicture);
+
+        final FileOutputStream out = new FileOutputStream("test2.docx");
+        doc.write(out);
+        out.close();
+        doc.close();
+
+        final File file = new File("test.docx");
+        final XWPFDocument docx = new XWPFDocument(Files.newInputStream(file.toPath()));
+        final List<XWPFParagraph> paragraphList = docx.getParagraphs();
+        final List<CTDrawing> ctDrawings = getAllDrawings(paragraphList.get(0).getRuns().get(0));
+
+        ctDrawings.get(0).getAnchorArray();
     }
 }

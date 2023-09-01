@@ -1,9 +1,9 @@
-package com.model.domain.styles;
+package com.model.domain.style;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.model.domain.styles.constants.BorderWeight;
-import com.model.domain.styles.constants.Color;
+import com.model.domain.style.constant.BorderWeight;
+import com.model.domain.style.constant.Color;
 
 /**
  * Describes the line style (border or separator)

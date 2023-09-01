@@ -5,7 +5,7 @@ import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.renderer.IRenderer;
 import com.itextpdf.layout.renderer.ParagraphRenderer;
-import com.model.domain.styles.geometry.GeometryDetails;
+import com.model.domain.style.geometry.GeometryDetails;
 
 public class CustomParagraphRenderer extends ParagraphRenderer implements CustomRenderer {
     private final GeometryDetails geometryDetails;

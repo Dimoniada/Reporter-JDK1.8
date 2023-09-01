@@ -2,7 +2,7 @@ package com.model.formatter.csv;
 
 import com.google.common.base.MoreObjects;
 import com.model.domain.Document;
-import com.model.domain.styles.StyleService;
+import com.model.domain.style.StyleService;
 import com.model.formatter.FormatterContext;
 import org.springframework.core.io.WritableResource;
 import org.springframework.stereotype.Component;

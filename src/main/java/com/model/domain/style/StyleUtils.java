@@ -1,4 +1,4 @@
-package com.model.domain.styles;
+package com.model.domain.style;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

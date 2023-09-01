@@ -1,10 +1,10 @@
-package com.model.domain.styles.geometry;
+package com.model.domain.style.geometry;
 
 import com.model.domain.FontService;
 import com.model.domain.Picture;
-import com.model.domain.styles.LayoutStyle;
-import com.model.domain.styles.Style;
-import com.model.domain.styles.TextStyle;
+import com.model.domain.style.LayoutStyle;
+import com.model.domain.style.Style;
+import com.model.domain.style.TextStyle;
 import com.model.utils.ConverterUtils;
 
 import java.awt.*;

@@ -1,9 +1,9 @@
 package com.model.formatter.html;
 
 import com.google.common.base.Objects;
-import com.model.domain.styles.LayoutStyle;
-import com.model.domain.styles.Style;
-import com.model.domain.styles.TextStyle;
+import com.model.domain.style.LayoutStyle;
+import com.model.domain.style.Style;
+import com.model.domain.style.TextStyle;
 import com.model.formatter.html.styles.CssStyle;
 import com.model.formatter.html.styles.HtmlColgroupTag;
 import com.model.formatter.html.styles.HtmlStyleService;
