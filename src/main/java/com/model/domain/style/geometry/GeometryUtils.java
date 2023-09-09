@@ -7,7 +7,10 @@ import com.model.domain.style.Style;
 import com.model.domain.style.TextStyle;
 import com.model.utils.ConverterUtils;
 
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -32,8 +35,8 @@ public abstract class GeometryUtils {
     /**
      * Retrieves picture dimensions regarding layout style
      *
-     * @param picture input picture
-     * @param style layout style with geometry details
+     * @param picture   input picture
+     * @param style     layout style with geometry details
      * @param extension input formatter extension to get details from style
      * @return dimension of picture regarding layout style
      * @throws IOException if an error occurs during picture data reading

@@ -1,6 +1,12 @@
 package com.reporter.domain;
 
-import com.model.domain.*;
+import com.model.domain.CompositionPart;
+import com.model.domain.Document;
+import com.model.domain.Table;
+import com.model.domain.TableCell;
+import com.model.domain.TableHeaderCell;
+import com.model.domain.TableHeaderRow;
+import com.model.domain.TableRow;
 import com.model.formatter.DocumentHolder;
 import com.model.formatter.excel.XlsFormatter;
 import org.junit.jupiter.api.Assertions;

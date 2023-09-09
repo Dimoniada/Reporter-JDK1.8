@@ -46,5 +46,5 @@ public interface Visitor {
 
     void visitFooter(Footer footerObj) throws Throwable;
 
-    void visitPicture(Picture picture) throws  Throwable;
+    void visitPicture(Picture picture) throws Throwable;
 }

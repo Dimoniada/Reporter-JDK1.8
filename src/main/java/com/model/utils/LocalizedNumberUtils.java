@@ -34,8 +34,8 @@ public final class LocalizedNumberUtils {
     }
 
     /**
-     * @param text input string
-     * @param style domain style
+     * @param text          input string
+     * @param style         domain style
      * @param decimalFormat number format
      * @return formatted string if it is a number or input string if it has text, empty string otherwise
      * @throws ParseException number in string could not be resolved

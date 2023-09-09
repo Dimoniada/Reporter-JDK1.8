@@ -12,7 +12,7 @@ import java.util.Collection;
  * The compositional part of the document's presentation,
  * contains Iterable(K extends {@link DocumentItem}) elements
  */
-public abstract class CompositionPart<T extends CompositionPart<?, ?>, K extends DocumentItem> extends DocumentItem {
+public abstract class CompositionPart<T, K extends DocumentItem> extends DocumentItem {
 
     protected Iterable<K> parts;
 
