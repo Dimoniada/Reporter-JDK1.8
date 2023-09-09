@@ -134,6 +134,19 @@
             <artifactId>spring-jdbc</artifactId>
             <version>${jdbc.version}</version>
         </dependency>
+        <!-- For groovy script runtime call -->
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>3.0.19</version>
+            <type>pom</type>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.testng</groupId>
+                    <artifactId>testng</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         <!-- PDF Library iTEXT -->
         <dependency>
             <groupId>com.itextpdf</groupId>

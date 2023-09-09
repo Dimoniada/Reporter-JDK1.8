@@ -9,16 +9,17 @@ docx, csv
 Use as lib: add folder "Reporter-JDK1.8" to your project.\
 Use as service: ... (in development)
 
-|       Dependencies       |      Usage      |
-|:------------------------:|:---------------:|
-|   org.springframework    |                 |
-| org.springframework.boot |                 |
-|       com.itextpdf       |       pdf       |
-|      org.apache.poi      | xls, xlsx, docx |
-|     com.documents4j      |       doc       |
-|     net.sf.supercsv      |       csv       |
-|        org.slf4j         |     logging     |
-|     com.google.guava     |   toString()    |
+|       Dependencies       |              Usage              |
+|:------------------------:|:-------------------------------:|
+|   org.springframework    |                                 |
+| org.springframework.boot |                                 |
+|       com.itextpdf       |               pdf               |
+|      org.apache.poi      |         xls, xlsx, docx         |
+|     com.documents4j      |               doc               |
+|     net.sf.supercsv      |               csv               |
+|        org.slf4j         |             logging             |
+|     com.google.guava     |           toString()            |
+|     org.codehaus.groovy  | groovy scripts <br/>remote call |
 
 Documentation in progress.
 
