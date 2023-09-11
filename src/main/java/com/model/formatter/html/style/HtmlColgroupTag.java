@@ -9,6 +9,10 @@ public class HtmlColgroupTag {
      * In-place style in <col> tag or move it to header section and provide only class reference
      */
     protected boolean writeStyleInplace = true;
+    /**
+     * Collapsing borders in table
+     */
+    protected boolean borderCollapse;
 
     public static HtmlColgroupTag create() {
         return new HtmlColgroupTag();
@@ -37,6 +41,15 @@ public class HtmlColgroupTag {
 
     public HtmlColgroupTag setWriteStyleInplace(Boolean writeInplace) {
         this.writeStyleInplace = writeInplace;
+        return this;
+    }
+
+    public boolean isBorderCollapse() {
+        return borderCollapse;
+    }
+
+    public HtmlColgroupTag setBorderCollapse(boolean borderCollapse) {
+        this.borderCollapse = borderCollapse;
         return this;
     }
 }

@@ -51,6 +51,8 @@ public class TagCreator {
         final boolean isHtmlTable = tag instanceof HtmlTable;
         final boolean isCol = tag instanceof HtmlCol;
         final boolean isCell = tag instanceof HtmlTableCell;
+        final boolean isNeedToCollapseBorder = isHtmlTable
+            && (useHtmlColgroupTag.isEnabled() || useHtmlColgroupTag.isBorderCollapse());
         if (isUseHtml4Tags) {
             if (!(isCell && useHtmlColgroupTag.isEnabled())) {
                 final LayoutStyle layoutStyle = LayoutStyle.extractLayoutStyle(style);
@@ -87,7 +89,7 @@ public class TagCreator {
                 } else if (!(isCell && useHtmlColgroupTag.isEnabled())) {
                     tag.setClass(htmlStyleId(style));
                 }
-            } else if (isHtmlTable && useHtmlColgroupTag.isEnabled()) {
+            } else if (isNeedToCollapseBorder) {
                 HtmlStyleService.fillCssStyleFromStyle(cssStyle, style, true, false);
                 cssStyle.setBorderCollapse("collapse");
                 tag.setStyle(cssStyle);

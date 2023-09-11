@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 /**
  * A set of methods for representing numbers in different {@link DecimalFormat} locales
  */
-public final class LocalizedNumberUtils {
+public abstract class LocalizedNumberUtils {
     /**
      * Number pattern per line
      */
@@ -28,10 +28,6 @@ public final class LocalizedNumberUtils {
      * The number of digits of the fractional part of the number
      */
     private static final int DEFAULT_DECIMAL_FRACTION_DIGITS = 3;
-
-    private LocalizedNumberUtils() {
-        /**/
-    }
 
     /**
      * @param text          input string

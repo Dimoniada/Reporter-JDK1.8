@@ -128,6 +128,7 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
         Style style = styleService.extractStyleFor(tableObj).orElse(tableObj.getStyle());
         final HtmlStyleService htmlStyleService = (HtmlStyleService) styleService;
         final boolean isUseColgroupTag = htmlStyleService.getHtmlColgroupTag().isEnabled();
+        final boolean isBorderCollapse = htmlStyleService.getHtmlColgroupTag().isBorderCollapse();
         final boolean isUseHtml4Tags = htmlStyleService.isUseHtml4Tags();
         if (isUseHtml4Tags) {
             if (style == null) {
@@ -139,7 +140,7 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
                 handleTag(htmlTable, tableObj.getLabel(), style, false);
             }
         } else {
-            if (isUseColgroupTag) {
+            if (isUseColgroupTag || isBorderCollapse) {
                 handleColgroupTag(tableObj, style);
             } else {
                 outputStreamWriter.write(htmlTable.open());
