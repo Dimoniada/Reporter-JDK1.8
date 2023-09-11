@@ -19,67 +19,6 @@ import java.util.List;
 
 public class GroovyScriptTest {
 
-    public static final String expected = "<!doctype html><html><head><meta charset=\"UTF-8\"><title>Test document" +
-        "</title></head><body><h1>Title 1</h1><p style=\"font-family:" +
-        "courierNew,monospace;font-size:10pt;font-weight:bold\">paragraph 1</p><table><tr><th style=" +
-        "\"border-bottom:double #000000;border-collapse:collapse;border-left:double #000000;border-right:" +
-        "double #000000;border-top:double #000000;font-family:arial,monospace;font-size:14pt;" +
-        "font-weight:bold;height:15px;transform:rotate(10deg);width:20px\">column1</th><th style=" +
-        "\"border-bottom:double #000000;border-collapse:collapse;border-left:double #000000;border-right:" +
-        "double #000000;border-top:double #000000;font-family:arial,monospace;font-size:14pt;" +
-        "font-weight:bold;height:15px;transform:rotate(10deg);width:20px\">column2 (столбец2)</th></tr><tr>" +
-        "<td style=\"font-family:arial,monospace;font-size:14pt;font-weight:bold\">1,000</td>" +
-        "<td style=\"font-family:arial,monospace;font-size:14pt;font-weight:bold\">2,000</td></tr>" +
-        "<tr><td style=\"font-family:arial,monospace;font-size:14pt;font-weight:bold\">3,000</td>" +
-        "<td style=\"font-family:arial,monospace;font-size:14pt;font-weight:bold\">4,000</td></tr>" +
-        "<tr><td style=\"font-family:arial,monospace;font-size:14pt;font-weight:bold\">5,000</td>" +
-        "<td style=\"font-family:arial,monospace;font-size:14pt;font-weight:bold\">6,000</td></tr>" +
-        "</table><h1 style=\"font-size:20pt\">Test document v.1</h1><hr " +
-        "style=\"border-bottom:1px solid #008080;border-collapse:collapse\"><h1 style=\"" +
-        "font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">Chapter 1</h1>" +
-        "<h2 style=\"font-family:courierNew,monospace;font-size:10pt;" +
-        "font-weight:bold\">Chapter 1.1</h2><h3 style=\"font-family:" +
-        "courierNew,monospace;font-size:10pt;font-weight:bold\">Chapter 1.1.1</h3><p style=\"" +
-        "font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">This is an " +
-        "example of text in paragraph</p><table><tr><th style=\"border-bottom:double #000000;border-collapse:" +
-        "collapse;border-left:double #000000;border-right:double #000000;border-top:double #000000;" +
-        "font-family:arial,monospace;font-size:14pt;font-weight:bold;height:15px;transform:rotate(10deg);width:20px" +
-        "\">Column 1</th><th style=\"border-bottom:double #000000;border-collapse:collapse;border-left:" +
-        "double #000000;border-right:double #000000;border-top:double #000000;font-family:arial," +
-        "monospace;font-size:14pt;font-weight:bold;height:15px;transform:rotate(10deg);width:20px\">Column 2</th>" +
-        "</tr><tr><td style=\"font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">" +
-        "Cell 1.1</td><td style=\"font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">" +
-        "Cell 1.2</td></tr><tr><td style=\"font-family:courierNew,monospace;font-size:10pt;font-weight:" +
-        "bold\">Cell 2.1</td><td style=\"font-family:courierNew,monospace;font-size:10pt;font-weight:" +
-        "bold\">Cell 2.2</td></tr><tr><td style=\"font-family:courierNew,monospace;font-size:10pt;" +
-        "font-weight:bold\">Cell 3.1</td><td style=\"font-family:courierNew,monospace;font-size:10pt;" +
-        "font-weight:bold\">Cell 3.2</td></tr><tr><td style=\"font-family:courierNew,monospace;" +
-        "font-size:10pt;font-weight:bold\">Cell 4.1</td><td style=\"font-family:courierNew,monospace;" +
-        "font-size:10pt;font-weight:bold\">Cell 4.2</td></tr></table><h1 style=\"" +
-        "font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">Chapter 2</h1><h2 style=" +
-        "\"font-family:courierNew,monospace;font-size:10pt;font-weight:" +
-        "bold\">Chapter 2.1</h2><h3 style=\"font-family:courierNew,monospace;" +
-        "font-size:10pt;font-weight:bold\">Chapter 2.1.1</h3><p style=\"" +
-        "font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">This is an example of text in paragraph" +
-        " 2</p><table><tr><th style=\"border-bottom:double #000000;border-collapse:collapse;border-left:double " +
-        "#000000;border-right:double #000000;border-top:double #000000;font-family:arial,monospace;" +
-        "font-size:14pt;font-weight:bold;height:15px;transform:rotate(10deg);width:20px\">Column 1</th><th " +
-        "style=\"border-bottom:double #000000;border-collapse:collapse;border-left:double #000000;border-right:" +
-        "double #000000;border-top:double #000000;font-family:arial,monospace;font-size:14pt;" +
-        "font-weight:bold;height:15px;transform:rotate(10deg);width:20px\">Column 2</th></tr><tr><td style=" +
-        "\"font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">Cell 1.1</td><td style=" +
-        "\"font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">Cell 1.2</td></tr><tr>" +
-        "<td style=\"font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">Cell 2.1</td>" +
-        "<td style=\"font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">Cell 2.2</td>" +
-        "</tr></table><h1>Title 1</h1><p>paragraph 1</p><h2>shifted heading</h2><table><tr><th>столбец1</th><th>" +
-        "column2</th></tr><tr><td style=\"font-family:courierNew,monospace;font-size:10pt;font-weight:" +
-        "bold\">1,000</td><td style=\"font-family:courierNew,monospace;font-size:10pt;font-weight:" +
-        "bold\">2,000</td></tr><tr><td style=\"font-family:courierNew,monospace;font-size:10pt;" +
-        "font-weight:bold\">3,000</td><td style=\"font-family:courierNew,monospace;font-size:10pt;" +
-        "font-weight:bold\">4 and some escape characters (символы) %;;;;;\\/</td></tr><tr><td style=\"" +
-        "font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">5,000</td><td style=\"" +
-        "font-family:courierNew,monospace;font-size:10pt;font-weight:bold\">6,000</td></tr></table></body></html>";
-
     @Test
     public void testGroovyScriptCallWithStyleConditions() throws Throwable {
         final Binding binding = new Binding();
@@ -89,7 +28,7 @@ public class GroovyScriptTest {
         final List<URL> urlList = Collections.singletonList(url);
 
         final GroovyScriptEngine engine = new GroovyScriptEngine(urlList.toArray(new URL[0]));
-        final Object[] res = (Object[]) engine.run("htmlDocument.groovy", binding);
+        final Object[] res = (Object[]) engine.run("HtmlDocument.groovy", binding);
 
         final HtmlFormatter htmlFormatter = HtmlFormatter.create().setStyleService((StyleService) res[1]);
         try (DocumentHolder documentHolder = htmlFormatter.handle((Document) res[0])) {
@@ -116,7 +55,7 @@ public class GroovyScriptTest {
         final List<URL> urlList = Collections.singletonList(url);
 
         final GroovyScriptEngine engine = new GroovyScriptEngine(urlList.toArray(new URL[0]));
-        final Object[] res = (Object[]) engine.run("bigDocument.groovy", binding);
+        final Object[] res = (Object[]) engine.run("HtmlDocumentBase.groovy", binding);
 
         final HtmlFormatter htmlFormatter = HtmlFormatter.create().setStyleService((StyleService) res[2]);
 
