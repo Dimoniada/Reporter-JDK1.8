@@ -127,7 +127,7 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
         final HtmlTable htmlTable = new HtmlTable();
         Style style = styleService.extractStyleFor(tableObj).orElse(tableObj.getStyle());
         final HtmlStyleService htmlStyleService = (HtmlStyleService) styleService;
-        final boolean isUseColgroupTag = htmlStyleService.getHtmlColgroupTag().isEnabled();
+        final boolean isUseColgroupTag = htmlStyleService.getHtmlColgroupTag().isColGroup();
         final boolean isBorderCollapse = htmlStyleService.getHtmlColgroupTag().isBorderCollapse();
         final boolean isUseHtml4Tags = htmlStyleService.isUseHtml4Tags();
         if (isUseHtml4Tags) {

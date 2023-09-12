@@ -5,7 +5,7 @@ import com.model.domain.style.LayoutStyle;
 import com.model.domain.style.Style;
 import com.model.domain.style.TextStyle;
 import com.model.formatter.html.style.CssStyle;
-import com.model.formatter.html.style.HtmlColgroupTag;
+import com.model.formatter.html.style.HtmlColGroupStyle;
 import com.model.formatter.html.style.HtmlStyleService;
 import com.model.formatter.html.tag.Html4Font;
 import com.model.formatter.html.tag.HtmlCol;
@@ -44,7 +44,7 @@ public class TagCreator {
         Style style,
         boolean isUseHtml4Tags,
         boolean isStyleInHeader,
-        HtmlColgroupTag useHtmlColgroupTag,
+        HtmlColGroupStyle useHtmlColGroupStyle,
         Boolean needCloseTag
     ) throws IOException, ParseException {
         final CssStyle cssStyle = new CssStyle();
@@ -52,9 +52,9 @@ public class TagCreator {
         final boolean isCol = tag instanceof HtmlCol;
         final boolean isCell = tag instanceof HtmlTableCell;
         final boolean isNeedToCollapseBorder = isHtmlTable
-            && (useHtmlColgroupTag.isEnabled() || useHtmlColgroupTag.isBorderCollapse());
+            && (useHtmlColGroupStyle.isColGroup() || useHtmlColGroupStyle.isBorderCollapse());
         if (isUseHtml4Tags) {
-            if (!(isCell && useHtmlColgroupTag.isEnabled())) {
+            if (!(isCell && useHtmlColGroupStyle.isColGroup())) {
                 final LayoutStyle layoutStyle = LayoutStyle.extractLayoutStyle(style);
                 HtmlStyleService.fillHtml4StyleTagsFromStyle(tag, layoutStyle, isHtmlTable);
             }
@@ -83,10 +83,10 @@ public class TagCreator {
             }
         } else {
             if (isStyleInHeader) {
-                if (isCol && useHtmlColgroupTag.isWriteStyleInplace()) {
+                if (isCol && useHtmlColGroupStyle.isStyleInplace()) {
                     HtmlStyleService.fillCssStyleFromStyle(cssStyle, style, false, false);
                     tag.setStyle(cssStyle);
-                } else if (!(isCell && useHtmlColgroupTag.isEnabled())) {
+                } else if (!(isCell && useHtmlColGroupStyle.isColGroup())) {
                     tag.setClass(htmlStyleId(style));
                 }
             } else if (isNeedToCollapseBorder) {
@@ -96,7 +96,7 @@ public class TagCreator {
             } else if (isCol) {
                 HtmlStyleService.fillCssStyleFromStyle(cssStyle, style, false, false);
                 tag.setStyle(cssStyle);
-            } else if (style != null && !(isCell && useHtmlColgroupTag.isEnabled())) {
+            } else if (style != null && !(isCell && useHtmlColGroupStyle.isColGroup())) {
                 HtmlStyleService.fillCssStyleFromStyle(cssStyle, style, isHtmlTable, false);
                 tag.setStyle(cssStyle);
             }

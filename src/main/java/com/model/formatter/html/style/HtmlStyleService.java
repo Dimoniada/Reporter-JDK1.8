@@ -110,17 +110,17 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
      * If true then style will be written inside HTML5 tags,
      */
     protected boolean writeStyleInplace;
-    protected HtmlColgroupTag htmlColgroupTag;
+    protected HtmlColGroupStyle htmlColgroupStyle;
 
     public HtmlStyleService(
         boolean useHtml4Tags,
         boolean writeStyleInplace,
-        HtmlColgroupTag htmlColgroupTag,
+        HtmlColGroupStyle htmlColgroupStyle,
         DecimalFormat decimalFormat
     ) {
         this.useHtml4Tags = useHtml4Tags;
         this.writeStyleInplace = writeStyleInplace;
-        this.htmlColgroupTag = htmlColgroupTag;
+        this.htmlColgroupStyle = htmlColgroupStyle;
         this.decimalFormat = decimalFormat;
     }
 
@@ -223,22 +223,22 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
     public static HtmlStyleService create(
         boolean useHtml4Tags,
         boolean writeStyleInplace,
-        HtmlColgroupTag useHtmlColgroupTag,
+        HtmlColGroupStyle useHtmlColGroupStyle,
         DecimalFormat decimalFormat
     ) {
-        return new HtmlStyleService(useHtml4Tags, writeStyleInplace, useHtmlColgroupTag, decimalFormat);
+        return new HtmlStyleService(useHtml4Tags, writeStyleInplace, useHtmlColGroupStyle, decimalFormat);
     }
 
     public static HtmlStyleService create(boolean useHtml4Tags, DecimalFormat decimalFormat) {
-        return create(useHtml4Tags, true, HtmlColgroupTag.create(), decimalFormat);
+        return create(useHtml4Tags, true, HtmlColGroupStyle.create(), decimalFormat);
     }
 
     public static HtmlStyleService create(boolean useHtml4Tags) {
-        return create(useHtml4Tags, true, HtmlColgroupTag.create(), null);
+        return create(useHtml4Tags, true, HtmlColGroupStyle.create(), null);
     }
 
     public static HtmlStyleService create() {
-        return create(false, true, HtmlColgroupTag.create(), null);
+        return create(false, true, HtmlColGroupStyle.create(), null);
     }
 
     public static TextStyle extractTextStyle(Style style) {
@@ -401,8 +401,8 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
      * @return cell style
      */
     public Style getCustomTableCellStyle(DocumentItem documentItem) throws Exception {
-        final boolean skipStyleInplace = htmlColgroupTag.isEnabled()
-            && !htmlColgroupTag.isWriteStyleInplace()
+        final boolean skipStyleInplace = htmlColgroupStyle.isColGroup()
+            && !htmlColgroupStyle.isStyleInplace()
             && documentItem instanceof TableCell;
         if (skipStyleInplace) {
             return null;
@@ -510,12 +510,12 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
         return this;
     }
 
-    public HtmlColgroupTag getHtmlColgroupTag() {
-        return htmlColgroupTag;
+    public HtmlColGroupStyle getHtmlColgroupTag() {
+        return htmlColgroupStyle;
     }
 
-    public HtmlStyleService setHtmlColgroupTag(HtmlColgroupTag htmlColgroupTag) {
-        this.htmlColgroupTag = htmlColgroupTag;
+    public HtmlStyleService setHtmlColgroupTag(HtmlColGroupStyle htmlColgroupStyle) {
+        this.htmlColgroupStyle = htmlColgroupStyle;
         return this;
     }
 }
