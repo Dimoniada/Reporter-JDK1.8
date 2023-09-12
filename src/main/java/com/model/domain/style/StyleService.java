@@ -35,8 +35,8 @@ public abstract class StyleService implements StyleApplier {
     protected FontService fontService;
 
     /**
-     * Returns first matching style from List of Styles for the item object,
-     * checking style's {@link StyleCondition}.
+     * Returns first matching style from {@link styles} of Styles for the item o,
+     * which matches style's {@link StyleCondition}.
      * A style with {@link StyleCondition} equals null is returned as appropriate.
      *
      * @param o the object on which to test the conditions of styles.

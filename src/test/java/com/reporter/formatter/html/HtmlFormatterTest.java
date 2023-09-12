@@ -323,7 +323,7 @@ public class HtmlFormatterTest extends BaseDocument {
             HtmlStyleService
                 .create()
                 .setWriteStyleInplace(false)
-                .setHtmlColgroupTag(HtmlColGroupStyle.create(true, true))
+                .setHtmlColgroupStyle(HtmlColGroupStyle.create(true, true))
                 .addStyles(
                     cellStyle,
                     headerCellstyle

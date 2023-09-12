@@ -510,11 +510,11 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
         return this;
     }
 
-    public HtmlColGroupStyle getHtmlColgroupTag() {
+    public HtmlColGroupStyle getHtmlColgroupStyle() {
         return htmlColgroupStyle;
     }
 
-    public HtmlStyleService setHtmlColgroupTag(HtmlColGroupStyle htmlColgroupStyle) {
+    public HtmlStyleService setHtmlColgroupStyle(HtmlColGroupStyle htmlColgroupStyle) {
         this.htmlColgroupStyle = htmlColgroupStyle;
         return this;
     }

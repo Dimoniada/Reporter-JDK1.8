@@ -127,8 +127,8 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
         final HtmlTable htmlTable = new HtmlTable();
         Style style = styleService.extractStyleFor(tableObj).orElse(tableObj.getStyle());
         final HtmlStyleService htmlStyleService = (HtmlStyleService) styleService;
-        final boolean isUseColgroupTag = htmlStyleService.getHtmlColgroupTag().isColGroup();
-        final boolean isBorderCollapse = htmlStyleService.getHtmlColgroupTag().isBorderCollapse();
+        final boolean isUseColgroupTag = htmlStyleService.getHtmlColgroupStyle().isColGroup();
+        final boolean isBorderCollapse = htmlStyleService.getHtmlColgroupStyle().isBorderCollapse();
         final boolean isUseHtml4Tags = htmlStyleService.isUseHtml4Tags();
         if (isUseHtml4Tags) {
             if (style == null) {
@@ -212,7 +212,7 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
                 style,
                 htmlStyleService.isUseHtml4Tags(),
                 htmlStyleService.contains(style) && !htmlStyleService.isWriteStyleInplace(),
-                htmlStyleService.getHtmlColgroupTag(),
+                htmlStyleService.getHtmlColgroupStyle(),
                 needCloseTag
             );
     }

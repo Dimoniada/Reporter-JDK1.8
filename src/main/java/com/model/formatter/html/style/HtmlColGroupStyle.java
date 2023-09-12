@@ -12,7 +12,7 @@ public class HtmlColGroupStyle {
     /**
      * Collapsing borders in table
      */
-    protected boolean isBorderCollapse = true;
+    protected boolean isBorderCollapse;
 
     public static HtmlColGroupStyle create() {
         return new HtmlColGroupStyle();

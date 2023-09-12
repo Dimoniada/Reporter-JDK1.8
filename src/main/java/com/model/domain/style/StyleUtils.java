@@ -50,7 +50,7 @@ public final class StyleUtils {
     }
 
     /**
-     * Applies styleFrom properties to styleTo properties, replacing them.
+     * Copies styleFrom properties to styleTo properties, replacing those properties.
      * Applies only those properties that differ from
      * default properties for a new instance of styleFrom class (see {@link StyleUtils#compare(Style, Style)})
      *

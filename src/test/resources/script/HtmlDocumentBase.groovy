@@ -258,7 +258,7 @@ FontService fontService;
             );
 
 final HtmlStyleService styleService = HtmlStyleService.create()
-        .setHtmlColgroupTag(HtmlColGroupStyle.create().setBorderCollapse(true))
+        .setHtmlColgroupStyle(HtmlColGroupStyle.create())
         .addStyles(layoutStyleForCells);
 
 return new Object[] {doc, textStyleCell, styleService};
