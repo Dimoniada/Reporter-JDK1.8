@@ -23,7 +23,7 @@ import com.model.domain.style.constant.Color
 import com.model.domain.style.geometry.Geometry
 import com.model.domain.style.geometry.GeometryDetails
 import com.model.formatter.html.style.HtmlStyleService
-import com.model.formatter.html.style.HtmlColGroupStyle
+import com.model.formatter.html.style.HtmlColStyle
 
 Document doc;
 TextStyle textStyle1;
@@ -258,7 +258,7 @@ FontService fontService;
             );
 
 final HtmlStyleService styleService = HtmlStyleService.create()
-        .setHtmlColgroupStyle(HtmlColGroupStyle.create())
+        .setHtmlColStyle(HtmlColStyle.create())
         .addStyles(layoutStyleForCells);
 
 return new Object[] {doc, textStyleCell, styleService};

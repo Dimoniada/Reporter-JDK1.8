@@ -8,7 +8,7 @@ import com.model.formatter.FormatterVisitor;
  * Table cell,
  * contains data in text form,
  * base {@link TextStyle style} text
- * and customIndex (default parent-row index)
+ * and customIndex (default is parent-row index)
  */
 public class TableCell extends TextItem<TableCell> {
 

@@ -25,7 +25,7 @@ import com.model.domain.style.geometry.GeometryDetails;
 import com.model.formatter.DocumentHolder;
 import com.model.formatter.html.HtmlFormatter;
 import com.model.formatter.html.HtmlFormatterVisitor;
-import com.model.formatter.html.style.HtmlColGroupStyle;
+import com.model.formatter.html.style.HtmlColStyle;
 import com.model.formatter.html.style.HtmlStyleService;
 import com.model.formatter.html.tag.HtmlDiv;
 import com.model.formatter.html.tag.HtmlFooter;
@@ -323,7 +323,7 @@ public class HtmlFormatterTest extends BaseDocument {
             HtmlStyleService
                 .create()
                 .setWriteStyleInplace(false)
-                .setHtmlColgroupStyle(HtmlColGroupStyle.create(true, true))
+                .setHtmlColStyle(HtmlColStyle.create(cellStyle, true))
                 .addStyles(
                     cellStyle,
                     headerCellstyle

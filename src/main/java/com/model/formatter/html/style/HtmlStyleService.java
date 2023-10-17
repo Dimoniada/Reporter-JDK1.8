@@ -110,17 +110,17 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
      * If true then style will be written inside HTML5 tags,
      */
     protected boolean writeStyleInplace;
-    protected HtmlColGroupStyle htmlColgroupStyle;
+    protected HtmlColStyle htmlColStyle;
 
     public HtmlStyleService(
         boolean useHtml4Tags,
         boolean writeStyleInplace,
-        HtmlColGroupStyle htmlColgroupStyle,
+        HtmlColStyle htmlColStyle,
         DecimalFormat decimalFormat
     ) {
         this.useHtml4Tags = useHtml4Tags;
         this.writeStyleInplace = writeStyleInplace;
-        this.htmlColgroupStyle = htmlColgroupStyle;
+        this.htmlColStyle = htmlColStyle;
         this.decimalFormat = decimalFormat;
     }
 
@@ -223,22 +223,22 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
     public static HtmlStyleService create(
         boolean useHtml4Tags,
         boolean writeStyleInplace,
-        HtmlColGroupStyle useHtmlColGroupStyle,
+        HtmlColStyle htmlColStyle,
         DecimalFormat decimalFormat
     ) {
-        return new HtmlStyleService(useHtml4Tags, writeStyleInplace, useHtmlColGroupStyle, decimalFormat);
+        return new HtmlStyleService(useHtml4Tags, writeStyleInplace, htmlColStyle, decimalFormat);
     }
 
     public static HtmlStyleService create(boolean useHtml4Tags, DecimalFormat decimalFormat) {
-        return create(useHtml4Tags, true, HtmlColGroupStyle.create(), decimalFormat);
+        return create(useHtml4Tags, true, HtmlColStyle.create(), decimalFormat);
     }
 
     public static HtmlStyleService create(boolean useHtml4Tags) {
-        return create(useHtml4Tags, true, HtmlColGroupStyle.create(), null);
+        return create(useHtml4Tags, true, HtmlColStyle.create(), null);
     }
 
     public static HtmlStyleService create() {
-        return create(false, true, HtmlColGroupStyle.create(), null);
+        return create(false, true, HtmlColStyle.create(), null);
     }
 
     public static TextStyle extractTextStyle(Style style) {
@@ -401,12 +401,6 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
      * @return cell style
      */
     public Style getCustomTableCellStyle(DocumentItem documentItem) throws Exception {
-        final boolean skipStyleInplace = htmlColgroupStyle.isColGroup()
-            && !htmlColgroupStyle.isStyleInplace()
-            && documentItem instanceof TableCell;
-        if (skipStyleInplace) {
-            return null;
-        }
         return prepareStyleFrom(documentItem);
     }
 
@@ -510,12 +504,12 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
         return this;
     }
 
-    public HtmlColGroupStyle getHtmlColgroupStyle() {
-        return htmlColgroupStyle;
+    public HtmlColStyle getHtmlColStyle() {
+        return htmlColStyle;
     }
 
-    public HtmlStyleService setHtmlColgroupStyle(HtmlColGroupStyle htmlColgroupStyle) {
-        this.htmlColgroupStyle = htmlColgroupStyle;
+    public HtmlStyleService setHtmlColStyle(HtmlColStyle htmlColStyle) {
+        this.htmlColStyle = htmlColStyle;
         return this;
     }
 }

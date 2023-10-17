@@ -9,6 +9,11 @@ import com.model.formatter.FormatterVisitor;
  */
 public class TableHeaderCell extends TextItem<TableHeaderCell> {
     /**
+     * Default is parent-column index
+     */
+    protected int customIndex;
+
+    /**
      * Real column name in SQL view
      */
     protected String aliasName = "";
@@ -29,8 +34,8 @@ public class TableHeaderCell extends TextItem<TableHeaderCell> {
 
     @Override
     public String toString() {
-        return
-            MoreObjects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
+                .add("customIndex", customIndex)
                 .add("aliasName", aliasName)
                 .add("parent", super.toString())
                 .toString();
@@ -42,6 +47,15 @@ public class TableHeaderCell extends TextItem<TableHeaderCell> {
 
     public TableHeaderCell setAliasName(String aliasName) {
         this.aliasName = aliasName;
+        return this;
+    }
+
+    public int getCustomIndex() {
+        return customIndex;
+    }
+
+    public TableHeaderCell setCustomIndex(int customIndex) {
+        this.customIndex = customIndex;
         return this;
     }
 }

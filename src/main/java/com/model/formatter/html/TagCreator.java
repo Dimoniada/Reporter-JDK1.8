@@ -5,12 +5,11 @@ import com.model.domain.style.LayoutStyle;
 import com.model.domain.style.Style;
 import com.model.domain.style.TextStyle;
 import com.model.formatter.html.style.CssStyle;
-import com.model.formatter.html.style.HtmlColGroupStyle;
+import com.model.formatter.html.style.HtmlColStyle;
 import com.model.formatter.html.style.HtmlStyleService;
 import com.model.formatter.html.tag.Html4Font;
 import com.model.formatter.html.tag.HtmlCol;
 import com.model.formatter.html.tag.HtmlTable;
-import com.model.formatter.html.tag.HtmlTableCell;
 import com.model.formatter.html.tag.HtmlTag;
 import com.model.utils.LocalizedNumberUtils;
 import org.springframework.util.StringUtils;
@@ -39,43 +38,39 @@ public class TagCreator {
     }
 
     public void writeTag(
-        HtmlTag tag,
-        String text,
-        Style style,
-        boolean isUseHtml4Tags,
-        boolean isStyleInHeader,
-        HtmlColGroupStyle useHtmlColGroupStyle,
-        Boolean needCloseTag
+            HtmlTag tag,
+            String text,
+            Style style,
+            boolean isUseHtml4Tags,
+            boolean isStyleInHeader,
+            HtmlColStyle htmlColStyle,
+            Boolean needCloseTag
     ) throws IOException, ParseException {
         final CssStyle cssStyle = new CssStyle();
         final boolean isHtmlTable = tag instanceof HtmlTable;
         final boolean isCol = tag instanceof HtmlCol;
-        final boolean isCell = tag instanceof HtmlTableCell;
-        final boolean isNeedToCollapseBorder = isHtmlTable
-            && (useHtmlColGroupStyle.isColGroup() || useHtmlColGroupStyle.isBorderCollapse());
+        final boolean isNeedToCollapseBorder = htmlColStyle.isBorderCollapse();
         if (isUseHtml4Tags) {
-            if (!(isCell && useHtmlColGroupStyle.isColGroup())) {
-                final LayoutStyle layoutStyle = LayoutStyle.extractLayoutStyle(style);
-                HtmlStyleService.fillHtml4StyleTagsFromStyle(tag, layoutStyle, isHtmlTable);
-            }
+            final LayoutStyle layoutStyle = LayoutStyle.extractLayoutStyle(style);
+            HtmlStyleService.fillHtml4StyleTagsFromStyle(tag, layoutStyle, isHtmlTable);
             write(String.format("<%s%s>", tag.getTagName(), tag.attributesToHtmlString(true)));
             if (StringUtils.hasText(text)) {
                 final String formattedText =
-                    HtmlStyleService.escapeHtml(
-                        LocalizedNumberUtils.applyDecimalFormat(text, style, decimalFormat)
-                    );
+                        HtmlStyleService.escapeHtml(
+                                LocalizedNumberUtils.applyDecimalFormat(text, style, decimalFormat)
+                        );
                 final TextStyle textStyle = HtmlStyleService.extractTextStyle(style);
                 if (textStyle != null) {
                     final Html4Font html4Font = HtmlStyleService.convertHtml4Font(textStyle);
                     write(
-                        String
-                            .format(
-                                "<%s%s>",
-                                html4Font.getTagName(),
-                                html4Font.attributesToHtmlString(true)
-                            )
-                            + formattedText
-                            + html4Font.close()
+                            String
+                                    .format(
+                                            "<%s%s>",
+                                            html4Font.getTagName(),
+                                            html4Font.attributesToHtmlString(true)
+                                    )
+                                    + formattedText
+                                    + html4Font.close()
                     );
                 } else {
                     write(formattedText);
@@ -83,12 +78,7 @@ public class TagCreator {
             }
         } else {
             if (isStyleInHeader) {
-                if (isCol && useHtmlColGroupStyle.isStyleInplace()) {
-                    HtmlStyleService.fillCssStyleFromStyle(cssStyle, style, false, false);
-                    tag.setStyle(cssStyle);
-                } else if (!(isCell && useHtmlColGroupStyle.isColGroup())) {
-                    tag.setClass(htmlStyleId(style));
-                }
+                tag.setClass(htmlStyleId(style));
             } else if (isNeedToCollapseBorder) {
                 HtmlStyleService.fillCssStyleFromStyle(cssStyle, style, true, false);
                 cssStyle.setBorderCollapse("collapse");
@@ -96,17 +86,17 @@ public class TagCreator {
             } else if (isCol) {
                 HtmlStyleService.fillCssStyleFromStyle(cssStyle, style, false, false);
                 tag.setStyle(cssStyle);
-            } else if (style != null && !(isCell && useHtmlColGroupStyle.isColGroup())) {
+            } else if (style != null) {
                 HtmlStyleService.fillCssStyleFromStyle(cssStyle, style, isHtmlTable, false);
                 tag.setStyle(cssStyle);
             }
             write(String.format("<%s%s>", tag.getTagName(), tag.attributesToHtmlString(false)));
             if (StringUtils.hasText(text)) {
                 write(
-                    HtmlStyleService
-                        .escapeHtml(
-                            LocalizedNumberUtils.applyDecimalFormat(text, style, decimalFormat)
-                        )
+                        HtmlStyleService
+                                .escapeHtml(
+                                        LocalizedNumberUtils.applyDecimalFormat(text, style, decimalFormat)
+                                )
                 );
             }
         }
