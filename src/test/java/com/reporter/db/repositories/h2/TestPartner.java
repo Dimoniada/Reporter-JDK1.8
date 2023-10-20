@@ -55,7 +55,6 @@ public class TestPartner
         return MoreObjects.toStringHelper(this)
             .add("id", id)
             .add("name", name)
-            .add("person", super.toString())
             .add("inn", inn)
             .add("legalPersonName", legalPersonName)
             .add("ownerPartnerId", ownerPartnerId)

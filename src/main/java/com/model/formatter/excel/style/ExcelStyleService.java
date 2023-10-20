@@ -538,7 +538,6 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
                 .add("layoutStyles", layoutStyles)
                 .add("textStyles", textStyles)
                 .add("layoutTextStyles", layoutTextStyles)
-                .add("parent", super.toString())
                 .toString();
     }
 

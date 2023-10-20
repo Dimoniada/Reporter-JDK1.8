@@ -66,7 +66,6 @@ public class HtmlFormatter extends HtmlFormatterVisitor implements HtmlDetails {
                 .add("attachments", attachments)
                 .add("resource", resource)
                 .add("fileName", fileName)
-                .add("parent", super.toString())
                 .toString();
     }
 

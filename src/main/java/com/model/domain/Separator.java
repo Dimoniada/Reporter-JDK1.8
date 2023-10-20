@@ -45,7 +45,6 @@ public class Separator extends DocumentItem {
         return
             MoreObjects.toStringHelper(this)
                 .add("borderStyle", borderStyle)
-                .add("parent", super.toString())
                 .toString();
     }
 

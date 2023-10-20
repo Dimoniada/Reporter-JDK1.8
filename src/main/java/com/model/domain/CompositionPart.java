@@ -21,20 +21,21 @@ public abstract class CompositionPart<T, K extends DocumentItem> extends Documen
         return
             MoreObjects.toStringHelper(this)
                 .add("parts", parts)
-                .add("parent", super.toString())
                 .toString();
     }
 
     @SuppressWarnings("unchecked")
     public T setParts(Iterable<K> parts) {
         this.parts = parts;
+        parts.forEach(part -> part.setParentObject(this));
         return (T) this;
     }
 
     @SuppressWarnings("unchecked")
-    public T addPart(K parts) {
+    public T addPart(K part) {
         checkPartsForAppend();
-        ((Collection<K>) this.parts).add(parts);
+        ((Collection<K>) this.parts).add(part);
+        part.setParentObject(this);
         return (T) this;
     }
 
@@ -42,6 +43,9 @@ public abstract class CompositionPart<T, K extends DocumentItem> extends Documen
     public T addParts(K... parts) {
         checkPartsForAppend();
         ((Collection<K>) this.parts).addAll(Arrays.asList(parts));
+        for (final K part : parts) {
+            part.setParentObject(this);
+        }
         return (T) this;
     }
 

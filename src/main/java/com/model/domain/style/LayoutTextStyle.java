@@ -57,7 +57,6 @@ public class LayoutTextStyle extends Style {
             MoreObjects.toStringHelper(this)
                 .add("layoutStyle", layoutStyle)
                 .add("textStyle", textStyle)
-                .add("parent", super.toString())
                 .toString();
     }
 

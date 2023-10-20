@@ -1,18 +1,22 @@
 package com.model.domain;
 
 import com.google.common.base.MoreObjects;
-import com.model.domain.style.TextStyle;
 import com.model.formatter.FormatterVisitor;
 
 /**
  * Table cell,
  * contains data in text form,
- * base {@link TextStyle style} text
- * and customIndex (default is parent-row index)
+ * rowIndex and columnIndex
  */
 public class TableCell extends TextItem<TableCell> {
-
-    protected int customIndex;
+    /**
+     * Row index
+     */
+    protected long rowIndex;
+    /**
+     * Column index
+     */
+    protected long columnIndex;
 
     public static TableCell create(String text) {
         return new TableCell().setText(text);
@@ -31,17 +35,26 @@ public class TableCell extends TextItem<TableCell> {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-            .add("customIndex", customIndex)
-            .add("parent", super.toString())
+            .add("rowIndex", rowIndex)
+            .add("columnIndex", columnIndex)
             .toString();
     }
 
-    public int getCustomIndex() {
-        return customIndex;
+    public long getRowIndex() {
+        return rowIndex;
     }
 
-    public TableCell setCustomIndex(int customIndex) {
-        this.customIndex = customIndex;
+    public TableCell setRowIndex(long rowIndex) {
+        this.rowIndex = rowIndex;
+        return this;
+    }
+
+    public long getColumnIndex() {
+        return columnIndex;
+    }
+
+    public TableCell setColumnIndex(long columnIndex) {
+        this.columnIndex = columnIndex;
         return this;
     }
 }

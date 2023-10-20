@@ -110,17 +110,14 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
      * If true then style will be written inside HTML5 tags,
      */
     protected boolean writeStyleInplace;
-    protected HtmlColStyle htmlColStyle;
 
     public HtmlStyleService(
         boolean useHtml4Tags,
         boolean writeStyleInplace,
-        HtmlColStyle htmlColStyle,
         DecimalFormat decimalFormat
     ) {
         this.useHtml4Tags = useHtml4Tags;
         this.writeStyleInplace = writeStyleInplace;
-        this.htmlColStyle = htmlColStyle;
         this.decimalFormat = decimalFormat;
     }
 
@@ -222,23 +219,22 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
 
     public static HtmlStyleService create(
         boolean useHtml4Tags,
-        boolean writeStyleInplace,
-        HtmlColStyle htmlColStyle,
-        DecimalFormat decimalFormat
+        DecimalFormat decimalFormat,
+        boolean writeStyleInplace
     ) {
-        return new HtmlStyleService(useHtml4Tags, writeStyleInplace, htmlColStyle, decimalFormat);
+        return new HtmlStyleService(useHtml4Tags, writeStyleInplace, decimalFormat);
     }
 
     public static HtmlStyleService create(boolean useHtml4Tags, DecimalFormat decimalFormat) {
-        return create(useHtml4Tags, true, HtmlColStyle.create(), decimalFormat);
+        return create(useHtml4Tags, decimalFormat, true);
     }
 
     public static HtmlStyleService create(boolean useHtml4Tags) {
-        return create(useHtml4Tags, true, HtmlColStyle.create(), null);
+        return create(useHtml4Tags, null, true);
     }
 
     public static HtmlStyleService create() {
-        return create(false, true, HtmlColStyle.create(), null);
+        return create(false, null, true);
     }
 
     public static TextStyle extractTextStyle(Style style) {
@@ -358,6 +354,9 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
                 cssStyle.setAlignHtml4(toHtml4HorAlignment(layoutStyle.getHorAlignment()));
             }
         } else if (style instanceof LayoutTextStyle) {
+            if (style instanceof HtmlLayoutTextStyle && ((HtmlLayoutTextStyle) style).isBordersCollapse()) {
+                cssStyle.setBorderCollapse("collapse");
+            }
             final LayoutTextStyle layoutTextStyle = (LayoutTextStyle) style;
             fillCssStyleFromStyle(cssStyle, layoutTextStyle.getTextStyle(), isTable, useHtml4Tags);
             fillCssStyleFromStyle(cssStyle, layoutTextStyle.getLayoutStyle(), isTable, useHtml4Tags);
@@ -482,7 +481,6 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
         return
             MoreObjects.toStringHelper(this)
                 .add("useHtml4Tags", useHtml4Tags)
-                .add("parent", super.toString())
                 .toString();
     }
 
@@ -501,15 +499,6 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
 
     public HtmlStyleService setWriteStyleInplace(boolean writeStyleInplace) {
         this.writeStyleInplace = writeStyleInplace;
-        return this;
-    }
-
-    public HtmlColStyle getHtmlColStyle() {
-        return htmlColStyle;
-    }
-
-    public HtmlStyleService setHtmlColStyle(HtmlColStyle htmlColStyle) {
-        this.htmlColStyle = htmlColStyle;
         return this;
     }
 }

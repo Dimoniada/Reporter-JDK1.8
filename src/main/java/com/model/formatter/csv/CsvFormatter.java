@@ -66,7 +66,6 @@ public class CsvFormatter extends CsvFormatterVisitor implements CsvDetails {
                 .add("attachments", attachments)
                 .add("resource", resource)
                 .add("fileName", fileName)
-                .add("parent", super.toString())
                 .toString();
     }
 

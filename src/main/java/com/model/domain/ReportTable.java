@@ -153,7 +153,6 @@ public class ReportTable extends Table {
             MoreObjects.toStringHelper(this)
                 .add("isTableHeaderRowFromData", isTableHeaderRowFromData)
                 .add("dataItems", dataItems)
-                .add("parent", super.toString())
                 .toString();
     }
 

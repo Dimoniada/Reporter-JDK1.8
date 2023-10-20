@@ -38,7 +38,6 @@ public class Heading extends TextItem<Heading> {
         return
             MoreObjects.toStringHelper(this)
                 .add("depth", depth)
-                .add("parent", super.toString())
                 .toString();
     }
 

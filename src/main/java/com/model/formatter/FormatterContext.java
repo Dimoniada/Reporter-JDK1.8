@@ -154,7 +154,7 @@ public class FormatterContext {
         final BorderStyle borderHeader = BorderStyle
             .create(Color.GREY_50_PERCENT, BorderWeight.THIN);
         final Predicate<Object> isTableCell = o -> o instanceof TableCell;
-        final Predicate<Object> isInterlinear = o -> ((TableCell) o).getCustomIndex() % 2 == 1;
+        final Predicate<Object> isInterlinear = o -> ((TableCell) o).getRowIndex() % 2 == 1;
         return LayoutTextStyle
             .create(
                 TextStyle.create()
@@ -190,7 +190,7 @@ public class FormatterContext {
         final BorderStyle borderNormal = BorderStyle
             .create(Color.GREY_50_PERCENT, BorderWeight.THIN);
         final Predicate<Object> isTableCell = o -> o instanceof TableCell;
-        final Predicate<Object> isInterlinear = o -> ((TableCell) o).getCustomIndex() % 2 == 0;
+        final Predicate<Object> isInterlinear = o -> ((TableCell) o).getRowIndex() % 2 == 0;
         return LayoutTextStyle.create(
                 TextStyle
                     .create()

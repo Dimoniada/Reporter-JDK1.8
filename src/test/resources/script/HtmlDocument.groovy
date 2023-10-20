@@ -1,3 +1,5 @@
+package script
+
 import com.model.domain.Document
 import com.model.domain.Heading
 import com.model.domain.Paragraph

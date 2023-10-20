@@ -293,7 +293,6 @@ public abstract class ExcelFormatterVisitor extends Formatter implements BaseDet
                 .add("fontCharset", fontCharset)
                 .add("decimalFormat", decimalFormat)
                 .add("styleService", styleService)
-                .add("parent", super.toString())
                 .toString();
     }
 

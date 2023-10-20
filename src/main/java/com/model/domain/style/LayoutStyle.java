@@ -156,7 +156,6 @@ public class LayoutStyle extends Style {
                 .add("fillPattern", getFillPattern())
                 .add("horAlignment", getHorAlignment())
                 .add("vertAlignment", getVertAlignment())
-                .add("parent", super.toString())
                 .toString();
     }
 

@@ -49,7 +49,6 @@ public class Document extends CompositionPart<Document, DocumentItem> {
                 .add("author", author)
                 .add("description", description)
                 .add("creationDateTime", creationDateTime)
-                .add("parent", super.toString())
                 .toString();
     }
 

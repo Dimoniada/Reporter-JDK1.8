@@ -26,7 +26,6 @@ public class Footer extends TextItem<Footer> {
     public String toString() {
         return
             MoreObjects.toStringHelper(this)
-                .add("parent", super.toString())
                 .toString();
     }
 }

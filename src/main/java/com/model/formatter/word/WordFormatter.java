@@ -38,7 +38,6 @@ public abstract class WordFormatter extends WordFormatterVisitor {
             MoreObjects.toStringHelper(this)
                 .add("resource", resource)
                 .add("fileName", fileName)
-                .add("parent", super.toString())
                 .toString();
     }
 }

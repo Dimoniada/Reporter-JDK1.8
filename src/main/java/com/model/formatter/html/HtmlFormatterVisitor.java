@@ -22,6 +22,7 @@ import com.model.domain.style.constant.BorderWeight;
 import com.model.domain.style.constant.Color;
 import com.model.formatter.BaseDetails;
 import com.model.formatter.Formatter;
+import com.model.formatter.html.style.HtmlLayoutTextStyle;
 import com.model.formatter.html.style.HtmlStyleService;
 import com.model.formatter.html.tag.Html;
 import com.model.formatter.html.tag.HtmlBody;
@@ -46,7 +47,10 @@ import org.springframework.web.util.HtmlUtils;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * The class generates a representation of the html document {@link Document}
@@ -127,25 +131,11 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
         final HtmlTable htmlTable = new HtmlTable();
         Style style = styleService.extractStyleFor(tableObj).orElse(tableObj.getStyle());
         final HtmlStyleService htmlStyleService = (HtmlStyleService) styleService;
-        final boolean isUseColgroupTag = htmlStyleService.getHtmlColStyle().getStyle() != null;
-        final boolean isBorderCollapse = htmlStyleService.getHtmlColStyle().isBorderCollapse();
         final boolean isUseHtml4Tags = htmlStyleService.isUseHtml4Tags();
-        if (isUseHtml4Tags) {
-            if (style == null) {
-                style = LayoutStyle.create().setBorderBottom(BorderStyle.create(Color.BLACK, BorderWeight.THIN));
-            }
-            if (isUseColgroupTag) {
-                handleColgroupTag(tableObj, style);
-            } else {
-                handleTag(htmlTable, tableObj.getLabel(), style, false);
-            }
-        } else {
-            if (isUseColgroupTag || isBorderCollapse) {
-                handleColgroupTag(tableObj, style);
-            } else {
-                outputStreamWriter.write(htmlTable.open());
-            }
+        if (isUseHtml4Tags && style == null) {
+            style = LayoutStyle.create().setBorderBottom(BorderStyle.create(Color.BLACK, BorderWeight.THIN));
         }
+        handleTag(htmlTable, tableObj.getLabel(), style, false);
 
         if (tableObj.getTableHeaderRow().isPresent()) {
             visitTableHeaderRow(tableObj.getTableHeaderRow().get());
@@ -157,6 +147,31 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
 
     @Override
     public void visitTableHeaderRow(TableHeaderRow tableHeaderRowObj) throws Throwable {
+        final List<HtmlLayoutTextStyle> htmlStyles = new ArrayList<>();
+        tableHeaderRowObj
+            .getParts()
+            .forEach(thc -> {
+                final Style style = styleService.extractStyleFor(thc).orElse(thc.getStyle());
+                if (style instanceof HtmlLayoutTextStyle) {
+                    final HtmlLayoutTextStyle htmlStyle = (HtmlLayoutTextStyle) style;
+                    htmlStyles.add(
+                        htmlStyle.isColGroupStyle()
+                            ? htmlStyle
+                            : null
+                    );
+                } else {
+                    htmlStyles.add(null);
+                }
+            });
+        final boolean isNeedColGroupTag = htmlStyles.stream().anyMatch(Objects::nonNull);
+        if (isNeedColGroupTag) {
+            final HtmlColgroup htmlColgroup = new HtmlColgroup();
+            outputStreamWriter.write(htmlColgroup.open());
+            for (final HtmlLayoutTextStyle htmlStyle : htmlStyles) {
+                handleTag(new HtmlCol(), TableCell.create().getText(), htmlStyle, true);
+            }
+            outputStreamWriter.write(htmlColgroup.close());
+        }
         visitRow(tableHeaderRowObj);
     }
 
@@ -164,7 +179,11 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
     public void visitTableHeaderCell(TableHeaderCell tableHeaderCellObj) throws Throwable {
         final HtmlTableHeaderCell htmlTableHeaderCell = new HtmlTableHeaderCell();
         final Style style = ((HtmlStyleService) styleService).getCustomTableCellStyle(tableHeaderCellObj);
-        handleTag(htmlTableHeaderCell, tableHeaderCellObj.getText(), style, true);
+        if (style instanceof HtmlLayoutTextStyle) {
+            handleTag(htmlTableHeaderCell, tableHeaderCellObj.getText(), null, true);
+        } else {
+            handleTag(htmlTableHeaderCell, tableHeaderCellObj.getText(), style, true);
+        }
     }
 
     @Override
@@ -205,6 +224,9 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
 
     protected void handleTag(HtmlTag tag, String text, Style style, Boolean needCloseTag) throws Exception {
         final HtmlStyleService htmlStyleService = (HtmlStyleService) styleService;
+        final boolean isBordersCollapse =
+            style instanceof HtmlLayoutTextStyle
+                && ((HtmlLayoutTextStyle) style).isBordersCollapse();
         getTagCreator()
             .writeTag(
                 tag,
@@ -212,7 +234,7 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
                 style,
                 htmlStyleService.isUseHtml4Tags(),
                 htmlStyleService.contains(style) && !htmlStyleService.isWriteStyleInplace(),
-                htmlStyleService.getHtmlColStyle(),
+                isBordersCollapse,
                 needCloseTag
             );
     }
@@ -224,23 +246,6 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
         outputStreamWriter.write(htmlTableRow.close());
     }
 
-    private void handleColgroupTag(Table tableObj, Style style) throws Exception {
-        final HtmlTable htmlTable = new HtmlTable();
-        if (tableObj.getTableHeaderRow().isPresent()) {
-            handleTag(htmlTable, tableObj.getLabel(), style, false);
-            if (styleService.extractStyleFor(TableCell.create()).isPresent()) {
-                final Style cellStyle = styleService.extractStyleFor(TableCell.create()).get();
-                final TableHeaderRow thr = tableObj.getTableHeaderRow().get();
-                final HtmlColgroup htmlColgroup = new HtmlColgroup();
-                outputStreamWriter.write(htmlColgroup.open());
-                for (final TableHeaderCell ignored : thr.getParts()) {
-                    handleTag(new HtmlCol(), TableCell.create().getText(), cellStyle, true);
-                }
-                outputStreamWriter.write(htmlColgroup.close());
-            }
-        }
-    }
-
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
@@ -249,7 +254,6 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
             .add("locale", locale)
             .add("decimalFormat", decimalFormat)
             .add("styleService", styleService)
-            .add("parent", super.toString())
             .toString();
     }
 

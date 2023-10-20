@@ -52,7 +52,6 @@ public class TestTrafficMon {
             .add("relDiffPercent", relDiffPercent)
             .add("login", login)
             .add("userId", userId)
-            .add("parent", super.toString())
             .toString();
     }
 

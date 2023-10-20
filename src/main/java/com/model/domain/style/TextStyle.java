@@ -121,7 +121,6 @@ public class TextStyle extends Style {
             .add("underline", underline)
             .add("useTtfFontAttributes", useTtfFontAttributes)
             .add("color", color)
-            .add("parent", super.toString())
             .toString();
     }
 

@@ -25,7 +25,6 @@ import com.model.domain.style.geometry.GeometryDetails;
 import com.model.formatter.DocumentHolder;
 import com.model.formatter.html.HtmlFormatter;
 import com.model.formatter.html.HtmlFormatterVisitor;
-import com.model.formatter.html.style.HtmlColStyle;
 import com.model.formatter.html.style.HtmlStyleService;
 import com.model.formatter.html.tag.HtmlDiv;
 import com.model.formatter.html.tag.HtmlFooter;
@@ -47,7 +46,6 @@ import java.io.ByteArrayOutputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.text.MessageFormat;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -189,8 +187,7 @@ public class HtmlFormatterTest extends BaseDocument {
         final HtmlFormatter htmlFormatter = HtmlFormatter.create();
         try (DocumentHolder documentHolder = htmlFormatter.handle(doc)) {
             final String text = FileUtils.readFileToString(documentHolder.getResource().getFile(), StandardCharsets.UTF_8);
-            final String styleCode = "_" + Integer.toHexString(Objects.hashCode(textStyleCell));
-            Assertions.assertEquals(MessageFormat.format(expected, styleCode), text);
+            Assertions.assertEquals(expected, text);
         }
     }
 
@@ -323,7 +320,6 @@ public class HtmlFormatterTest extends BaseDocument {
             HtmlStyleService
                 .create()
                 .setWriteStyleInplace(false)
-                .setHtmlColStyle(HtmlColStyle.create(cellStyle, true))
                 .addStyles(
                     cellStyle,
                     headerCellstyle
@@ -348,8 +344,7 @@ public class HtmlFormatterTest extends BaseDocument {
         final HtmlFormatter htmlFormatter = HtmlFormatter.create().setResource(resource);
         try (DocumentHolder documentHolder = htmlFormatter.handle(doc)) {
             final String text = FileUtils.readFileToString(documentHolder.getResource().getFile(), StandardCharsets.UTF_8);
-            final String styleCode = "_" + Integer.toHexString(Objects.hashCode(textStyleCell));
-            Assertions.assertEquals(MessageFormat.format(expected, styleCode), text);
+            Assertions.assertEquals(expected, text);
         }
     }
 
@@ -365,9 +360,7 @@ public class HtmlFormatterTest extends BaseDocument {
         final HtmlFormatter htmlFormatter = (HtmlFormatter) HtmlFormatter.create().setEncoding("UTF-8");
         try (DocumentHolder documentHolder = htmlFormatter.handle(doc)) {
             final String text = FileUtils.readFileToString(documentHolder.getResource().getFile(), StandardCharsets.UTF_8);
-
-            final String styleCode = "_" + Integer.toHexString(Objects.hashCode(textStyleCell));
-            Assertions.assertEquals(MessageFormat.format(expected, styleCode), text);
+            Assertions.assertEquals(expected, text);
         }
     }
 
@@ -383,8 +376,7 @@ public class HtmlFormatterTest extends BaseDocument {
         final HtmlFormatter htmlFormatter = HtmlFormatter.create().setOutputStream(os);
         try (DocumentHolder ignored = htmlFormatter.handle(doc)) {
             final String text = os.toString(StandardCharsets.UTF_8.name());
-            final String styleCode = "_" + Integer.toHexString(Objects.hashCode(textStyleCell));
-            Assertions.assertEquals(MessageFormat.format(expected, styleCode), text);
+            Assertions.assertEquals(expected, text);
         }
     }
 

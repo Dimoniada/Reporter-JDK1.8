@@ -592,7 +592,6 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
             .add("encoding", encoding)
             .add("textStyles", textStyles)
             .add("fontService", fontService)
-            .add("parent", super.toString())
             .toString();
     }
 

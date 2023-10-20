@@ -8,9 +8,14 @@ import com.model.formatter.FormatterVisitor;
  * consists of {@link TableCell cells}
  */
 public class TableRow extends CompositionPart<TableRow, TableCell> {
-
-    protected int rowIndex;
-    private int cellCount;
+    /**
+     * Row index in parent table
+     */
+    protected long rowIndex;
+    /**
+     * Count of cells
+     */
+    private long cellCount;
 
     public static TableRow create(TableCell... tableCells) {
         return new TableRow().addParts(tableCells);
@@ -28,40 +33,46 @@ public class TableRow extends CompositionPart<TableRow, TableCell> {
 
     @Override
     public TableRow addPart(TableCell docItem) {
+        docItem.setColumnIndex(this.cellCount);
         this.cellCount++;
-        docItem.setCustomIndex(rowIndex);
+        docItem.setRowIndex(rowIndex);
         return super.addPart(docItem);
     }
 
     @Override
     public TableRow addParts(TableCell... docItems) {
-        this.cellCount += docItems.length;
+        long columnIndex = this.cellCount;
         for (final TableCell item : docItems) {
-            item.setCustomIndex(rowIndex);
+            item.setRowIndex(rowIndex);
+            item.setColumnIndex(columnIndex);
+            columnIndex++;
         }
+        this.cellCount += docItems.length;
         return super.addParts(docItems);
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-            .add("parent", super.toString())
+            .add("parentObject", parentObject)
+            .add("rowIndex", rowIndex)
+            .add("cellCount", cellCount)
             .toString();
     }
 
-    public int getCellCount() {
+    public long getCellCount() {
         return cellCount;
     }
 
-    public int getRowIndex() {
+    public long getRowIndex() {
         return rowIndex;
     }
 
-    public TableRow setRowIndex(int rowIndex) {
+    public TableRow setRowIndex(long rowIndex) {
         this.rowIndex = rowIndex;
         if (parts != null) {
             for (final TableCell item : parts) {
-                item.setCustomIndex(rowIndex);
+                item.setRowIndex(rowIndex);
             }
         }
         return this;

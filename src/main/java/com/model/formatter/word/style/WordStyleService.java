@@ -660,7 +660,6 @@ public class WordStyleService extends StyleService implements DocDetails {
     public String toString() {
         return MoreObjects.toStringHelper(this)
             .add("fontCharset", fontCharset)
-            .add("parent", super.toString())
             .toString();
     }
 

@@ -8,8 +8,10 @@ import com.model.formatter.FormatterVisitor;
  * consists of {@link TableHeaderCell cells}
  */
 public class TableHeaderRow extends CompositionPart<TableHeaderRow, TableHeaderCell> {
-
-    private int cellCount;
+    /**
+     * Count of cells
+     */
+    private long cellCount;
 
     public static TableHeaderRow create(TableHeaderCell... docItems) {
         return new TableHeaderRow().addParts(docItems);
@@ -27,12 +29,18 @@ public class TableHeaderRow extends CompositionPart<TableHeaderRow, TableHeaderC
 
     @Override
     public TableHeaderRow addPart(TableHeaderCell docItem) {
-        this.cellCount += 1;
+        docItem.setColumnIndex(this.cellCount);
+        this.cellCount ++;
         return super.addPart(docItem);
     }
 
     @Override
     public TableHeaderRow addParts(TableHeaderCell... docItems) {
+        long columnIndex = this.cellCount;
+        for (final TableHeaderCell docItem : docItems) {
+            docItem.setColumnIndex(columnIndex);
+            columnIndex ++;
+        }
         this.cellCount += docItems.length;
         return super.addParts(docItems);
     }
@@ -42,11 +50,10 @@ public class TableHeaderRow extends CompositionPart<TableHeaderRow, TableHeaderC
         return
             MoreObjects.toStringHelper(this)
                 .add("cellCount", cellCount)
-                .add("parent", super.toString())
                 .toString();
     }
 
-    public int getCellCount() {
+    public long getCellCount() {
         return cellCount;
     }
 }

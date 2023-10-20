@@ -14,10 +14,19 @@ import org.springframework.util.StringUtils;
 
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.List;
 
 public class GroovyScriptTest {
+
+    String htmlStyle1 = ".{0}'{'border-collapse:collapse'}'";
+    String htmlStyle2 = ".{0}'{'border-bottom:3px solid #FF0000;border-collapse:collapse;border-left:" +
+        "3px solid #FF0000;border-right:3px solid #FF0000;border-top:3px solid #FF0000'}'";
+    String htmlStyle3 = ".{0}'{'border-bottom:double #000000;border-collapse:collapse;" +
+        "border-left:double #000000;border-right:double #000000;border-top:double #000000;" +
+        "font-family:arial,monospace;font-size:14pt;font-weight:bold;height:15px;transform:rotate(10deg);" +
+        "width:20px'}'";
 
     @Test
     public void testGroovyScriptCallWithStyleConditions() throws Throwable {
@@ -47,7 +56,7 @@ public class GroovyScriptTest {
     }
 
     @Test
-    public void testBigDocument() throws Throwable {
+    public void testGroovyScriptCallWithStyleService() throws Throwable {
         final Binding binding = new Binding();
 
         final ClassLoader classLoader = getClass().getClassLoader();
@@ -57,11 +66,16 @@ public class GroovyScriptTest {
         final GroovyScriptEngine engine = new GroovyScriptEngine(urlList.toArray(new URL[0]));
         final Object[] res = (Object[]) engine.run("HtmlDocumentBase.groovy", binding);
 
-        final HtmlFormatter htmlFormatter = HtmlFormatter.create().setStyleService((StyleService) res[2]);
+        final HtmlFormatter htmlFormatter = HtmlFormatter.create().setStyleService((StyleService) res[1]);
 
         try (DocumentHolder documentHolder = htmlFormatter.handle((Document) res[0])) {
             final String text = FileUtils.readFileToString(documentHolder.getResource().getFile(), StandardCharsets.UTF_8);
-            final String styleCode = "_" + Integer.toHexString(Objects.hashCode(res[1]));
+            final String styleCode1 = "_" + Integer.toHexString(Objects.hashCode(res[2]));
+            final String styleCode2 = "_" + Integer.toHexString(Objects.hashCode(res[3]));
+            final String styleCode3 = "_" + Integer.toHexString(Objects.hashCode(res[4]));
+            Assertions.assertTrue(text.contains(MessageFormat.format(htmlStyle1, styleCode1)));
+            Assertions.assertTrue(text.contains(MessageFormat.format(htmlStyle2, styleCode2)));
+            Assertions.assertTrue(text.contains(MessageFormat.format(htmlStyle3, styleCode3)));
         }
     }
 }

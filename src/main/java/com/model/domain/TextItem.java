@@ -8,6 +8,7 @@ import com.model.domain.style.TextStyle;
  * contains text and {@link TextStyle style}
  */
 public abstract class TextItem<T> extends DocumentItem {
+
     protected String text;
 
     @Override
@@ -15,7 +16,6 @@ public abstract class TextItem<T> extends DocumentItem {
         return
             MoreObjects.toStringHelper(this)
                 .add("text", text)
-                .add("parent", super.toString())
                 .toString();
     }
 

@@ -50,9 +50,11 @@ public final class StyleUtils {
     }
 
     /**
-     * Copies styleFrom properties to styleTo properties, replacing those properties.
-     * Applies only those properties that differ from
-     * default properties for a new instance of styleFrom class (see {@link StyleUtils#compare(Style, Style)})
+     * Copies styleFrom properties to styleTo properties, replacing its properties.
+     * Applies only properties that differ from default properties
+     * for a new instance of styleFrom class (see {@link StyleUtils#compare(Style, Style)})
+     *
+     * styleFrom and styleTo must have the same class
      *
      * @param styleFrom style whose fields are transferred to styleTo,
      *                  if they are different from the fields of a new instance of styleFrom class

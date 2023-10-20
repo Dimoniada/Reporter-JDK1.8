@@ -373,7 +373,6 @@ public class FontService {
         return MoreObjects.toStringHelper(this)
             .add("fonts", fonts)
             .add("localeSet", localeSet)
-            .add("parent", super.toString())
             .toString();
     }
 

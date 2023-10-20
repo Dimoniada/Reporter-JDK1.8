@@ -30,7 +30,6 @@ public class Paragraph extends TextItem<Paragraph> {
     public String toString() {
         return
             MoreObjects.toStringHelper(this)
-                .add("parent", super.toString())
                 .toString();
     }
 }

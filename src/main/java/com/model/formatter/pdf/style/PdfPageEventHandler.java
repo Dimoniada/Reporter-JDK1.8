@@ -100,7 +100,6 @@ public class PdfPageEventHandler implements IEventHandler {
             MoreObjects.toStringHelper(this)
                 .add("elParagraph", elParagraph)
                 .add("document", document)
-                .add("parent", super.toString())
                 .toString();
     }
 

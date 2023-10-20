@@ -26,7 +26,6 @@ public class TestUsers {
             .add("id", id)
             .add("username", username)
             .add("password", password)
-            .add("parent", super.toString())
             .toString();
     }
 

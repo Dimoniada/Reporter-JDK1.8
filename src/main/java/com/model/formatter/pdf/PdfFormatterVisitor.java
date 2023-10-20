@@ -131,7 +131,7 @@ public abstract class PdfFormatterVisitor extends Formatter implements BaseDetai
             );
         }
         final TableHeaderRow tableHeaderRow = tableObj.getTableHeaderRow().get();
-        final int colCount = tableHeaderRow.getCellCount();
+        final int colCount = (int) tableHeaderRow.getCellCount();
         if (colCount > 0) {
             final float[] columns = new float[colCount];
             Arrays.fill(columns, 1);
@@ -206,7 +206,6 @@ public abstract class PdfFormatterVisitor extends Formatter implements BaseDetai
             .add("encoding", encoding)
             .add("decimalFormat", decimalFormat)
             .add("styleService", styleService)
-            .add("parent", super.toString())
             .toString();
     }
 

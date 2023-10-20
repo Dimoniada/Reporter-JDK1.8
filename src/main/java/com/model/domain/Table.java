@@ -33,15 +33,18 @@ public class Table extends CompositionPart<Table, TableRow> {
     /**
      * Current number of columns in the table
      */
-    protected int colCount;
+    protected long columnCount;
 
     /**
      * Current number of rows in the table
      */
-    protected int rowCount;
+    protected long rowCount;
 
     public static Table create(TableHeaderRow tableHeaderRow) {
-        return new Table().setTableHeaderRow(tableHeaderRow);
+        final Table table = new Table();
+        tableHeaderRow.setParentObject(table);
+        table.setTableHeaderRow(tableHeaderRow);
+        return table;
     }
 
     public static Table create() {
@@ -59,8 +62,8 @@ public class Table extends CompositionPart<Table, TableRow> {
     public Table addPart(TableRow docItem) {
         docItem.setRowIndex(rowCount);
         this.rowCount += 1;
-        this.colCount = Integer.max(this.colCount, docItem.getCellCount());
-        log.debug("addPart: result columns - {} and rows - {}", rowCount, colCount);
+        this.columnCount = Long.max(this.columnCount, docItem.getCellCount());
+        log.debug("addPart: result columns - {} and rows - {}", rowCount, columnCount);
         return super.addPart(docItem);
     }
 
@@ -72,10 +75,10 @@ public class Table extends CompositionPart<Table, TableRow> {
         this.rowCount += docItems.length;
         Stream.of(docItems)
             .map(TableRow::getCellCount)
-            .mapToInt(v -> v)
+            .mapToLong(v -> v)
             .max()
-            .ifPresent(max -> this.colCount = Integer.max(this.colCount, max));
-        log.debug("addParts: result columns - {} and rows - {}", rowCount, colCount);
+            .ifPresent(max -> this.columnCount = Long.max(this.columnCount, max));
+        log.debug("addParts: result columns - {} and rows - {}", rowCount, columnCount);
         return super.addParts(docItems);
     }
 
@@ -85,7 +88,6 @@ public class Table extends CompositionPart<Table, TableRow> {
             MoreObjects.toStringHelper(this)
                 .add("tableHeaderRow", tableHeaderRow)
                 .add("label", label)
-                .add("parent", super.toString())
                 .toString();
     }
 
@@ -95,6 +97,7 @@ public class Table extends CompositionPart<Table, TableRow> {
 
     public Table setTableHeaderRow(TableHeaderRow tableHeaderRow) {
         this.tableHeaderRow = tableHeaderRow;
+        tableHeaderRow.setParentObject(this);
         log.debug("setTableHeaderRow: result tableHeaderRow - {}", tableHeaderRow);
         return this;
     }

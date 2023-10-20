@@ -156,7 +156,6 @@ public class QueryTable extends Table {
                 .add("mapSqlParameterSource", mapSqlParameterSource)
                 .add("isTableHeaderRowFromData", isTableHeaderRowFromData)
                 .add("query", query)
-                .add("parent", super.toString())
                 .toString();
     }
 

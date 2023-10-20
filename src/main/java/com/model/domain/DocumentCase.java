@@ -45,7 +45,6 @@ public class DocumentCase extends CompositionPart<DocumentCase, DocumentItem> {
         return
             MoreObjects.toStringHelper(this)
                 .add("name", name)
-                .add("parent", super.toString())
                 .toString();
     }
 }

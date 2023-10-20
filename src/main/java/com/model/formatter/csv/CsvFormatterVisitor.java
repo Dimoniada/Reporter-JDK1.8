@@ -133,7 +133,6 @@ public abstract class CsvFormatterVisitor extends Formatter implements BaseDetai
                 .add("encoding", encoding)
                 .add("decimalFormat", decimalFormat)
                 .add("csvPreference", csvPreference)
-                .add("parent", super.toString())
                 .toString();
     }
 

@@ -27,7 +27,6 @@ public class Title extends TextItem<Title> {
     public String toString() {
         return
             MoreObjects.toStringHelper(this)
-                .add("parent", super.toString())
                 .toString();
     }
 }

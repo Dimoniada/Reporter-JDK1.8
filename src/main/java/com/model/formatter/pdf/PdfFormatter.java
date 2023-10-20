@@ -65,7 +65,6 @@ public class PdfFormatter extends PdfFormatterVisitor implements PdfDetails {
             MoreObjects.toStringHelper(this)
                 .add("attachments", attachments)
                 .add("resource", resource)
-                .add("parent", super.toString())
                 .toString();
     }
 
