@@ -14,7 +14,7 @@ import java.util.Objects;
 /**
  * Allows you to combine styles of objects of inherited classes
  */
-public final class StyleUtils {
+public abstract class StyleUtils {
     private static final Logger log = LoggerFactory.getLogger(StyleUtils.class);
 
     /**
