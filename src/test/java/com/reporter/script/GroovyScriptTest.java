@@ -17,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class GroovyScriptTest {
 
@@ -29,6 +30,7 @@ public class GroovyScriptTest {
         "width:20px'}'";
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testGroovyScriptCallWithStyleConditions() throws Throwable {
         final Binding binding = new Binding();
 
@@ -37,10 +39,10 @@ public class GroovyScriptTest {
         final List<URL> urlList = Collections.singletonList(url);
 
         final GroovyScriptEngine engine = new GroovyScriptEngine(urlList.toArray(new URL[0]));
-        final Object[] res = (Object[]) engine.run("HtmlDocument.groovy", binding);
+        final Map<String, Object> res = (Map<String, Object>) engine.run("HtmlDocument.groovy", binding);
 
-        final HtmlFormatter htmlFormatter = HtmlFormatter.create().setStyleService((StyleService) res[1]);
-        try (DocumentHolder documentHolder = htmlFormatter.handle((Document) res[0])) {
+        final HtmlFormatter htmlFormatter = HtmlFormatter.create().setStyleService((StyleService) res.get("styleService"));
+        try (DocumentHolder documentHolder = htmlFormatter.handle((Document) res.get("document"))) {
             final String text = FileUtils.readFileToString(documentHolder.getResource().getFile(), StandardCharsets.UTF_8);
             Assertions.assertEquals(1, StringUtils.countOccurrencesOf(text,
                 "{color:#00FF00;" +
@@ -56,6 +58,7 @@ public class GroovyScriptTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testGroovyScriptCallWithStyleService() throws Throwable {
         final Binding binding = new Binding();
 
@@ -64,15 +67,15 @@ public class GroovyScriptTest {
         final List<URL> urlList = Collections.singletonList(url);
 
         final GroovyScriptEngine engine = new GroovyScriptEngine(urlList.toArray(new URL[0]));
-        final Object[] res = (Object[]) engine.run("HtmlDocumentBase.groovy", binding);
+        final Map<String, Object> res = (Map<String, Object>) engine.run("HtmlDocumentBase.groovy", binding);
 
-        final HtmlFormatter htmlFormatter = HtmlFormatter.create().setStyleService((StyleService) res[1]);
+        final HtmlFormatter htmlFormatter = HtmlFormatter.create().setStyleService((StyleService) res.get("styleService"));
 
-        try (DocumentHolder documentHolder = htmlFormatter.handle((Document) res[0])) {
+        try (DocumentHolder documentHolder = htmlFormatter.handle((Document) res.get("document"))) {
             final String text = FileUtils.readFileToString(documentHolder.getResource().getFile(), StandardCharsets.UTF_8);
-            final String styleCode1 = "_" + Integer.toHexString(Objects.hashCode(res[2]));
-            final String styleCode2 = "_" + Integer.toHexString(Objects.hashCode(res[3]));
-            final String styleCode3 = "_" + Integer.toHexString(Objects.hashCode(res[4]));
+            final String styleCode1 = "_" + Integer.toHexString(Objects.hashCode(res.get("htmlTableStyle")));
+            final String styleCode2 = "_" + Integer.toHexString(Objects.hashCode(res.get("htmlColGroupStyle")));
+            final String styleCode3 = "_" + Integer.toHexString(Objects.hashCode(res.get("layoutTextStyle")));
             Assertions.assertTrue(text.contains(MessageFormat.format(htmlStyle1, styleCode1)));
             Assertions.assertTrue(text.contains(MessageFormat.format(htmlStyle2, styleCode2)));
             Assertions.assertTrue(text.contains(MessageFormat.format(htmlStyle3, styleCode3)));

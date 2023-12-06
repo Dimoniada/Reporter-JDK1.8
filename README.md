@@ -53,7 +53,7 @@ public class ReporterApplication {
                 );
         //Creating appropriate formatter
         final XlsxFormatter xlsxFormatter = XlsxFormatter.create();
-        //DocumentHolder as AutoCloseable will be holding our file "Document name.xlsx"
+        //DocumentHolder as AutoCloseable will hold our file "Document name.xlsx"
         try (DocumentHolder documentHolder = xlsxFormatter.handle(doc)) {
             final File file = documentHolder.getResource().getFile();
             //Any stuff with file here
@@ -64,7 +64,7 @@ public class ReporterApplication {
 }
 ```
 
-results in
+result is
 
 <img src="pic/xlsx1.jpeg" width="196" alt=""/>
 
@@ -385,8 +385,7 @@ For more examples see [tests](src/test/java/com/reporter/TutorialTest.java).
 
 What reporter can't do yet:
 
-1) Render pictures
-2) Render any nested elements in any elements (for example table in table cell not available now)
+1) Render any nested elements in any elements (for example table in table cell not available now)
 
 #### Inner structure
 

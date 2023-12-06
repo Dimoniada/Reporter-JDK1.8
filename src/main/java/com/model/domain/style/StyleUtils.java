@@ -19,12 +19,12 @@ public final class StyleUtils {
 
     /**
      * Returns the style difference.
-     * Accepts 2 styles: The first style usually is a default instance,
-     * the second is an instance with changed fields.
+     * Accepts 2 styles: The first style is a default instance,
+     * the second one is an instance with changed fields.
      * Returns a map(name, value) of the changed fields of the second style.
      *
      * @param style1 style 1 (base)
-     * @param style2 compared style 2 (modified)
+     * @param style2 compared style 2 (differ from style 1)
      * @return map(name, value) distinct properties of style 2 relative to properties of style 1
      */
     public static Map<String, Object> compare(Style style1, Style style2) {
@@ -75,8 +75,8 @@ public final class StyleUtils {
                 ((LayoutTextStyle) styleTo).getTextStyle()
             );
         }
-        final Style model = styleFrom.getClass().getDeclaredConstructor().newInstance();
         if (styleTo.getClass() == styleFrom.getClass()) {
+            final Style model = styleFrom.getClass().getDeclaredConstructor().newInstance();
             final Map<String, Object> diff = compare(model, styleFrom);
             final Field[] fields = styleTo.getClass().getDeclaredFields();
             final ConfigurablePropertyAccessor propAcc = PropertyAccessorFactory.forDirectFieldAccess(styleTo);
@@ -87,10 +87,5 @@ public final class StyleUtils {
             });
         }
         log.debug("Style {} was merged into result style {} ", styleFrom, styleTo);
-    }
-
-    @Override
-    public StyleUtils clone() throws CloneNotSupportedException {
-        return (StyleUtils) super.clone();
     }
 }

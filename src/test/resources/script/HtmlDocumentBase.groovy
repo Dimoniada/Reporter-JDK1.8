@@ -152,4 +152,11 @@ final HtmlStyleService styleService = HtmlStyleService.create()
     .setWriteStyleInplace(false)
     .addStyles(htmlTableStyle, htmlColGroupStyle, layoutTextStyle);
 
-return new Object[]{doc, styleService, htmlTableStyle, htmlColGroupStyle, layoutTextStyle};
+final Map<String, Object> result = new HashMap<String, Object>();
+    result.put("document", doc);
+    result.put("styleService", styleService);
+    result.put("htmlTableStyle", htmlTableStyle);
+    result.put("htmlColGroupStyle", htmlColGroupStyle);
+    result.put("layoutTextStyle", layoutTextStyle);
+
+return result;

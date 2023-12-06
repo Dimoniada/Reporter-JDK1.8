@@ -42,4 +42,8 @@ final Document doc = Document.create().setLabel("doc1")
     Paragraph.create().setText("testParagraph4")
     );
 
-return new Object[]{doc, styleService};
+final Map<String, Object> result = new HashMap<String, Object>();
+    result.put("document", doc);
+    result.put("styleService", styleService);
+
+return result;
