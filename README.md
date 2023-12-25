@@ -19,7 +19,7 @@ Use as service: ... (in development)
 |     net.sf.supercsv      |               csv               |
 |        org.slf4j         |             logging             |
 |     com.google.guava     |           toString()            |
-|     org.codehaus.groovy  | groovy scripts <br/>remote call |
+|   org.codehaus.groovy    | groovy scripts <br/>remote call |
 
 Documentation in progress.
 
@@ -64,7 +64,7 @@ public class ReporterApplication {
 }
 ```
 
-result is
+produces
 
 <img src="pic/xlsx1.jpeg" width="196" alt=""/>
 
@@ -129,14 +129,14 @@ We can put Document to HtmlFormatter:
 import com.model.formatter.DocumentHolder;
 
 public class ReporterApplication {
-   public void Test() {
-      final HtmlFormatter htmlFormatter = HtmlFormatter.create();
-      try (DocumentHolder documentHolder = htmlFormatter.handle(doc)) {
-         final File file = documentHolder.getResource().getFile();
-      } catch (Throwable ignored) {
-      }
+    public void Test() {
+        final HtmlFormatter htmlFormatter = HtmlFormatter.create();
+        try (DocumentHolder documentHolder = htmlFormatter.handle(doc)) {
+            final File file = documentHolder.getResource().getFile();
+        } catch (Throwable ignored) {
+        }
 
-   }
+    }
 }
 ```
 
@@ -254,6 +254,7 @@ public class ReporterApplication {
     }
 }
 ```
+
 </details>
 <br/>
 
@@ -267,64 +268,64 @@ If you need a single "collapsed" frame around all columns
 public class ReporterApplication {
     public void testTable() throws CloneNotSupportedException {
         final LayoutStyle titleStyle =
-              LayoutStyle.create()
+            LayoutStyle.create()
                 .setAutoWidth(true)
                 .setCondition(StyleCondition.create(Title.class));
 
         final LayoutTextStyle headerCellsStyle =
-              LayoutTextStyle.create(
-                   TextStyle.create("Times New Roman")
-                     .setBold(true)
-                     .setItalic(true)
-                     .setUnderline((byte) 1)
-                     .setFontSize((short) 15)
-                     .setColor(Color.BLUE),
-                   LayoutStyle.create()
-                     .setBorderTop(BorderStyle.create(Color.RED, BorderWeight.DOUBLE))
-                     .setBorderLeft(BorderStyle.create(Color.RED, BorderWeight.DOUBLE))
-                     .setBorderRight(BorderStyle.create(Color.RED, BorderWeight.DOUBLE))
-                     .setBorderBottom(BorderStyle.create(Color.RED, BorderWeight.DOUBLE))
-                     .setFillBackgroundColor(Color.ORANGE)
-              );
+            LayoutTextStyle.create(
+                TextStyle.create("Times New Roman")
+                    .setBold(true)
+                    .setItalic(true)
+                    .setUnderline((byte) 1)
+                    .setFontSize((short) 15)
+                    .setColor(Color.BLUE),
+                LayoutStyle.create()
+                    .setBorderTop(BorderStyle.create(Color.RED, BorderWeight.DOUBLE))
+                    .setBorderLeft(BorderStyle.create(Color.RED, BorderWeight.DOUBLE))
+                    .setBorderRight(BorderStyle.create(Color.RED, BorderWeight.DOUBLE))
+                    .setBorderBottom(BorderStyle.create(Color.RED, BorderWeight.DOUBLE))
+                    .setFillBackgroundColor(Color.ORANGE)
+            );
 
         final LayoutTextStyle commonCellsStyle =
-              LayoutTextStyle.create(
-                  TextStyle.create(),
-                  LayoutStyle.create()
+            LayoutTextStyle.create(
+                TextStyle.create(),
+                LayoutStyle.create()
                     .setBorderTop(BorderStyle.create(Color.BLACK, BorderWeight.THIN))
                     .setBorderLeft(BorderStyle.create(Color.BLACK, BorderWeight.THIN))
                     .setBorderRight(BorderStyle.create(Color.BLACK, BorderWeight.THIN))
                     .setBorderBottom(BorderStyle.create(Color.BLACK, BorderWeight.THIN))
                     .setFillBackgroundColor(Color.YELLOW)
-             ).setCondition(StyleCondition.create(TableCell.class));
+            ).setCondition(StyleCondition.create(TableCell.class));
 
         final HtmlStyleService styleService = HtmlStyleService.create()
-              .setHtmlColgroupTag(HtmlColgroupTag.create().setEnabled(true))
-              .addStyles(titleStyle, commonCellsStyle);
+            .setHtmlColgroupTag(HtmlColgroupTag.create().setEnabled(true))
+            .addStyles(titleStyle, commonCellsStyle);
 
         doc =
-              Document.create()
-                   .setLabel("Document name")
-                   .addParts(
-                        Title.create("Title on first page"),
-                        Table.create(
+            Document.create()
+                .setLabel("Document name")
+                .addParts(
+                    Title.create("Title on first page"),
+                    Table.create(
                             TableHeaderRow.create(
-                                TableHeaderCell.create("Column1"),
-                                TableHeaderCell.create("Column2")
-                            )
-                            .spreadStyleToParts(headerCellsStyle)
+                                    TableHeaderCell.create("Column1"),
+                                    TableHeaderCell.create("Column2")
+                                )
+                                .spreadStyleToParts(headerCellsStyle)
                         )
                         .addParts(
                             TableRow.create(
-                                 TableCell.create("cell 1 1"),
-                                 TableCell.create("cell 1 2")
-                            ), 
+                                TableCell.create("cell 1 1"),
+                                TableCell.create("cell 1 2")
+                            ),
                             TableRow.create(
-                                 TableCell.create("cell 2 1"),
-                                 TableCell.create("cell 2 2")
+                                TableCell.create("cell 2 1"),
+                                TableCell.create("cell 2 2")
                             )
                         )
-                   );
+                );
 
         final HtmlFormatter htmlFormatter = HtmlFormatter.create().setStyleService(styleService);
 
@@ -458,7 +459,7 @@ embracing in "_", like file names in [free_fonts](src/main/resources/free_fonts)
 
 ```java
 pl=aąbcćdeęfghijklłmnńoópqrsśtuvwxyzźż
-zh=
+    zh=
 ```
 
 <b id="f2"><font size=2><sup style="color:Tomato;">2</sup></font></b>[↩](#a2)
