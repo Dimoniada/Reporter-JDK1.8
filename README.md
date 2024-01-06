@@ -459,7 +459,7 @@ embracing in "_", like file names in [free_fonts](src/main/resources/free_fonts)
 
 ```java
 pl=aąbcćdeęfghijklłmnńoópqrsśtuvwxyzźż
-    zh=
+zh=
 ```
 
 <b id="f2"><font size=2><sup style="color:Tomato;">2</sup></font></b>[↩](#a2)

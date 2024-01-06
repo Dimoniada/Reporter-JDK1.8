@@ -33,7 +33,7 @@ public abstract class Formatter extends FormatterVisitor implements BaseFormatte
      */
     public DocumentHolder handle(Document document) throws Throwable {
         if (document == null) {
-            throw new IllegalArgumentException("Document not set");
+            throw new IllegalArgumentException("Document is not defined");
         }
         if (!StringUtils.hasText(fileName)) {
             fileName = document.getLabel();

@@ -54,8 +54,8 @@ class ExcelFormatterTest extends BaseDocument {
     @Test
     public void testSaveTextToXlsxFile() throws Throwable {
 
-        final XlsxFormatter xlsxFormatter = XlsxFormatter.create();
-        try (DocumentHolder documentHolder = xlsxFormatter.handle(doc)) {
+        final XlsFormatter xlsFormatter = XlsFormatter.create();
+        try (DocumentHolder documentHolder = xlsFormatter.handle(doc)) {
             final List<String> checked = new ArrayList<>();
             final Workbook wb = WorkbookFactory.create(documentHolder.getResource().getFile());
             final Sheet sheet = wb.getSheetAt(0);
@@ -76,7 +76,7 @@ class ExcelFormatterTest extends BaseDocument {
 
     /**
      * Test {@link XlsxFormatter#handle handle} call
-     * and proper saving table in "doc1.xls",
+     * and proper saving table in "doc1.xlsx",
      * check cell value in saved table on some position
      *
      * @throws Throwable Exception/IOException

@@ -66,16 +66,20 @@ public class DocFormatter extends WordFormatter implements DocDetails {
 
             if (converterAdapter != null) {
                 converterAdapter
-                    .convert(inputStream).as(DocumentType.DOCX)
-                    .to(writableResource.getOutputStream()).as(DocumentType.DOC)
+                    .convert(inputStream)
+                    .as(DocumentType.DOCX)
+                    .to(writableResource.getOutputStream())
+                    .as(DocumentType.DOC)
                     .execute();
             } else {
                 LocalConverter
                     .builder()
                     .baseFolder(documentHolder.getResource().getFile().getParentFile())
                     .build()
-                    .convert(inputStream).as(DocumentType.DOCX)
-                    .to(writableResource.getOutputStream()).as(DocumentType.DOC)
+                    .convert(inputStream)
+                    .as(DocumentType.DOCX)
+                    .to(writableResource.getOutputStream())
+                    .as(DocumentType.DOC)
                     .execute();
             }
             return new DocumentHolder(writableResource);
