@@ -280,6 +280,7 @@ public abstract class ExcelFormatterVisitor extends Formatter implements BaseDet
         final int bias = row.getPhysicalNumberOfCells();
         for (int i = 0; i < cellCount; i++) {
             cell = row.createCell(bias + i, type);
+            cell.setCellValue("");
         }
         return cell;
     }

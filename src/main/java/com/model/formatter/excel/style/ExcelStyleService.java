@@ -261,7 +261,7 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
                             .getCTPicture()
                             .getSpPr()
                             .getXfrm()
-                            .setRot((int) ConverterUtils.convert(angle) * EXCEL_ANGLE_CONST);
+                            .setRot((short) ConverterUtils.convert(angle) * EXCEL_ANGLE_CONST);
                     } else {
                         cellStyle.setRotation(ConverterUtils.convert(angle));
                     }

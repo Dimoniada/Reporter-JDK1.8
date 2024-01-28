@@ -120,6 +120,6 @@ class CsvFormatterTest extends BaseDocument {
     public void testDocumentNotSet() {
         final CsvFormatter csvFormatter = new CsvFormatter();
         final Exception e = Assertions.assertThrows(Exception.class, () -> csvFormatter.handle(null).close());
-        Assertions.assertTrue("Document not set".contains(e.getMessage()));
+        Assertions.assertTrue("Document is not defined".contains(e.getMessage()));
     }
 }
