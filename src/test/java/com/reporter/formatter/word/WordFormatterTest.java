@@ -144,7 +144,7 @@ public class WordFormatterTest extends BaseDocument {
                             TableCell.create("test2")
                         )
                     )
-                    .<DocumentItem>spreadStyleToParts(bordersStyle)
+                    .spreadStyleToParts(bordersStyle)
             );
 
 
