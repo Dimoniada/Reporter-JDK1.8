@@ -53,7 +53,8 @@ public abstract class CsvFormatterVisitor extends Formatter implements BaseDetai
             throw new IllegalArgumentException(
                 String.format(
                     "Unsupported character set %s in the current Java virtual machine",
-                    encoding)
+                    encoding
+                )
             );
         }
         writer = new OutputStreamWriter(outputStream, encoding);
@@ -119,7 +120,7 @@ public abstract class CsvFormatterVisitor extends Formatter implements BaseDetai
     }
 
     @Override
-    public  void visitPicture(Picture picture) throws Throwable {
+    public void visitPicture(Picture picture) throws Throwable {
         csvWriter.write("pic");
     }
 

@@ -17,7 +17,7 @@ public class Paragraph extends TextItem<Paragraph> {
     }
 
     public static Paragraph create() {
-        return create(null, null);
+        return create(null);
     }
 
     @Override

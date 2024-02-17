@@ -207,7 +207,7 @@ public class WordFormatterTest extends BaseDocument {
                 Title.create().setText("Picture 1"),
                 Picture.create()
                     .setPictureFormat(PictureFormat.JPG)
-                    .setData(IOUtils.toByteArray(resource.getInputStream()))
+                    .setPictureData(IOUtils.toByteArray(resource.getInputStream()))
                     .setStyle(
                         LayoutStyle.create()
                             .setGeometryDetails(

@@ -51,7 +51,11 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblWidth;
 import org.springframework.util.StringUtils;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -173,9 +177,9 @@ public class WordStyleService extends StyleService implements DocDetails {
             final Dimension dimension = GeometryUtils.getPictureDimension(picture, style, EXTENSION);
             final int picFormat = toWordPictureFormat(picture.getPictureFormat());
             final XWPFPicture xwpfPicture = run.addPicture(
-                new ByteArrayInputStream(picture.getData()),
+                new ByteArrayInputStream(picture.getPictureData()),
                 picFormat,
-                picture.getText(),
+                picture.getPictureText(),
                 Units.toEMU(dimension.getWidth()),
                 Units.toEMU(dimension.getHeight())
             );
@@ -595,7 +599,7 @@ public class WordStyleService extends StyleService implements DocDetails {
 
         try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             ImageIO.write(image, pictureFormat.name(), os);
-            final Picture pictureFromText = Picture.create(os.toByteArray(), pictureFormat).setText(text);
+            final Picture pictureFromText = Picture.create(os.toByteArray(), pictureFormat).setPictureText(text);
             addItemToRun(
                 pictureFromText,
                 paragraph.createRun(),

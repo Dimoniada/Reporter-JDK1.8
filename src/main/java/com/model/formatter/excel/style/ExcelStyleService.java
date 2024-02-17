@@ -423,7 +423,7 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
             }
         } else if (item instanceof Picture) {
             final Picture picture = (Picture) item;
-            final InputStream pictureStream = new ByteArrayInputStream(picture.getData());
+            final InputStream pictureStream = new ByteArrayInputStream(picture.getPictureData());
             final int picInd =
                 workbook.addPicture(
                     IOUtils.toByteArray(pictureStream),

@@ -17,19 +17,19 @@ public class Picture extends DocumentItem {
 
     protected PictureFormat pictureFormat;
 
-    protected byte[] data;
+    protected byte[] pictureData;
 
-    protected String text;
+    protected String pictureText;
 
     public static Picture create(byte[] data, PictureFormat pictureFormat) {
         return new Picture()
-            .setData(data)
+            .setPictureData(data)
             .setPictureFormat(pictureFormat);
     }
 
     public static Picture create(String text, PictureFormat pictureFormat) {
         return new Picture()
-            .setText(text)
+            .setPictureText(text)
             .setPictureFormat(pictureFormat);
     }
 
@@ -42,10 +42,10 @@ public class Picture extends DocumentItem {
      * @throws IOException if an error occurs during picture data reading
      */
     public int getPictureHeight() throws IOException {
-        if (data == null) {
+        if (pictureData == null) {
             return 0;
         }
-        final BufferedImage buf = ImageIO.read(new ByteArrayInputStream(data));
+        final BufferedImage buf = ImageIO.read(new ByteArrayInputStream(pictureData));
         return buf.getHeight();
     }
 
@@ -54,10 +54,10 @@ public class Picture extends DocumentItem {
      * @throws IOException if an error occurs during picture data reading
      */
     public int getPictureWidth() throws IOException {
-        if (data == null) {
+        if (pictureData == null) {
             return 0;
         }
-        final BufferedImage buf = ImageIO.read(new ByteArrayInputStream(data));
+        final BufferedImage buf = ImageIO.read(new ByteArrayInputStream(pictureData));
         return buf.getWidth();
     }
 
@@ -70,21 +70,21 @@ public class Picture extends DocumentItem {
         return this;
     }
 
-    public byte[] getData() {
-        return data;
+    public byte[] getPictureData() {
+        return pictureData;
     }
 
-    public Picture setData(byte[] data) {
-        this.data = data;
+    public Picture setPictureData(byte[] pictureData) {
+        this.pictureData = pictureData;
         return this;
     }
 
-    public String getText() {
-        return text;
+    public String getPictureText() {
+        return pictureText;
     }
 
-    public Picture setText(String text) {
-        this.text = text;
+    public Picture setPictureText(String pictureText) {
+        this.pictureText = pictureText;
         return this;
     }
 
@@ -98,8 +98,8 @@ public class Picture extends DocumentItem {
     public String toString() {
         return MoreObjects.toStringHelper(this)
             .add("pictureFormat", pictureFormat)
-            .add("data", data)
-            .add("text", text)
+            .add("pictureData", pictureData)
+            .add("pictureText", pictureText)
             .toString();
     }
 }
