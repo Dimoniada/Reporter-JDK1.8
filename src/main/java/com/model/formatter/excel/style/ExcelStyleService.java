@@ -423,11 +423,11 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
             }
         } else if (item instanceof Picture) {
             final Picture picture = (Picture) item;
-            final InputStream pictureStream = new ByteArrayInputStream(picture.getPictureData());
+            final InputStream pictureStream = new ByteArrayInputStream(picture.getData());
             final int picInd =
                 workbook.addPicture(
                     IOUtils.toByteArray(pictureStream),
-                    toExcelPictureFormat(picture.getPictureFormat())
+                    toExcelPictureFormat(picture.getFormat())
                 );
             final Sheet lastSheet = workbook.getSheetAt(workbook.getNumberOfSheets() - 1);
             final XSSFDrawing drawing = (XSSFDrawing) lastSheet.createDrawingPatriarch();

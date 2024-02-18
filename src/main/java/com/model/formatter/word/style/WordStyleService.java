@@ -175,11 +175,11 @@ public class WordStyleService extends StyleService implements DocDetails {
         if (item instanceof Picture) {
             final Picture picture = (Picture) item;
             final Dimension dimension = GeometryUtils.getPictureDimension(picture, style, EXTENSION);
-            final int picFormat = toWordPictureFormat(picture.getPictureFormat());
+            final int picFormat = toWordPictureFormat(picture.getFormat());
             final XWPFPicture xwpfPicture = run.addPicture(
-                new ByteArrayInputStream(picture.getPictureData()),
+                new ByteArrayInputStream(picture.getData()),
                 picFormat,
-                picture.getPictureText(),
+                picture.getText(),
                 Units.toEMU(dimension.getWidth()),
                 Units.toEMU(dimension.getHeight())
             );
@@ -599,7 +599,7 @@ public class WordStyleService extends StyleService implements DocDetails {
 
         try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             ImageIO.write(image, pictureFormat.name(), os);
-            final Picture pictureFromText = Picture.create(os.toByteArray(), pictureFormat).setPictureText(text);
+            final Picture pictureFromText = Picture.create(os.toByteArray(), pictureFormat).setText(text);
             addItemToRun(
                 pictureFromText,
                 paragraph.createRun(),

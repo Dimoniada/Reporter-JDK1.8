@@ -10,7 +10,6 @@ import com.model.domain.Paragraph;
 import com.model.domain.Picture;
 import com.model.domain.Separator;
 import com.model.domain.Table;
-import com.model.domain.TableCell;
 import com.model.domain.TableHeaderCell;
 import com.model.domain.TableHeaderRow;
 import com.model.domain.TableRow;
@@ -89,7 +88,7 @@ public class FormatterVisitor implements Visitor {
     }
 
     @Override
-    public void visitTableCell(TableCell tableCellObj) throws Throwable {
+    public void visitTableCell(DocumentItem tableCellObj) throws Throwable {
         log.debug("No overriding for visitTableCell: {}", tableCellObj);
         throw new Throwable("No overriding for visitTableCell " + superClassName);
     }

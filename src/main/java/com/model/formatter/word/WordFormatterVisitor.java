@@ -3,13 +3,13 @@ package com.model.formatter.word;
 import com.google.common.base.MoreObjects;
 import com.model.domain.Document;
 import com.model.domain.DocumentCase;
+import com.model.domain.DocumentItem;
 import com.model.domain.Footer;
 import com.model.domain.Heading;
 import com.model.domain.Paragraph;
 import com.model.domain.Picture;
 import com.model.domain.Separator;
 import com.model.domain.Table;
-import com.model.domain.TableCell;
 import com.model.domain.TableHeaderCell;
 import com.model.domain.TableHeaderRow;
 import com.model.domain.TableRow;
@@ -210,10 +210,10 @@ public abstract class WordFormatterVisitor extends Formatter implements BaseDeta
     }
 
     @Override
-    public void visitTableCell(TableCell tableCellObj) throws Exception {
+    public void visitTableCell(DocumentItem tableCellObj) throws Exception {
         final XWPFTableRow row = docxTable.getRow(docxTable.getNumberOfRows() - 1);
         final XWPFTableCell cell = row.createCell();
-        handleCustomItem(tableCellObj, cell);
+        ((WordStyleService) styleService).handleCustomItem(tableCellObj, cell);
     }
 
     @Override

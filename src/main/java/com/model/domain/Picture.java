@@ -15,22 +15,22 @@ import java.io.IOException;
  */
 public class Picture extends DocumentItem {
 
-    protected PictureFormat pictureFormat;
+    protected PictureFormat format;
 
-    protected byte[] pictureData;
+    protected byte[] data;
 
-    protected String pictureText;
+    protected String text;
 
     public static Picture create(byte[] data, PictureFormat pictureFormat) {
         return new Picture()
-            .setPictureData(data)
-            .setPictureFormat(pictureFormat);
+            .setData(data)
+            .setFormat(pictureFormat);
     }
 
     public static Picture create(String text, PictureFormat pictureFormat) {
         return new Picture()
-            .setPictureText(text)
-            .setPictureFormat(pictureFormat);
+            .setText(text)
+            .setFormat(pictureFormat);
     }
 
     public static Picture create() {
@@ -41,11 +41,11 @@ public class Picture extends DocumentItem {
      * @return picture height in pixels
      * @throws IOException if an error occurs during picture data reading
      */
-    public int getPictureHeight() throws IOException {
-        if (pictureData == null) {
+    public int getHeight() throws IOException {
+        if (data == null) {
             return 0;
         }
-        final BufferedImage buf = ImageIO.read(new ByteArrayInputStream(pictureData));
+        final BufferedImage buf = ImageIO.read(new ByteArrayInputStream(data));
         return buf.getHeight();
     }
 
@@ -53,38 +53,38 @@ public class Picture extends DocumentItem {
      * @return picture width in pixels
      * @throws IOException if an error occurs during picture data reading
      */
-    public int getPictureWidth() throws IOException {
-        if (pictureData == null) {
+    public int getWidth() throws IOException {
+        if (data == null) {
             return 0;
         }
-        final BufferedImage buf = ImageIO.read(new ByteArrayInputStream(pictureData));
+        final BufferedImage buf = ImageIO.read(new ByteArrayInputStream(data));
         return buf.getWidth();
     }
 
-    public PictureFormat getPictureFormat() {
-        return pictureFormat;
+    public PictureFormat getFormat() {
+        return format;
     }
 
-    public Picture setPictureFormat(PictureFormat pictureFormat) {
-        this.pictureFormat = pictureFormat;
+    public Picture setFormat(PictureFormat format) {
+        this.format = format;
         return this;
     }
 
-    public byte[] getPictureData() {
-        return pictureData;
+    public byte[] getData() {
+        return data;
     }
 
-    public Picture setPictureData(byte[] pictureData) {
-        this.pictureData = pictureData;
+    public Picture setData(byte[] data) {
+        this.data = data;
         return this;
     }
 
-    public String getPictureText() {
-        return pictureText;
+    public String getText() {
+        return text;
     }
 
-    public Picture setPictureText(String pictureText) {
-        this.pictureText = pictureText;
+    public Picture setText(String text) {
+        this.text = text;
         return this;
     }
 
@@ -97,9 +97,9 @@ public class Picture extends DocumentItem {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-            .add("pictureFormat", pictureFormat)
-            .add("pictureData", pictureData)
-            .add("pictureText", pictureText)
+            .add("format", format)
+            .add("data", data)
+            .add("text", text)
             .toString();
     }
 }

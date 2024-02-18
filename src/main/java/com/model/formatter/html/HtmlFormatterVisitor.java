@@ -4,15 +4,18 @@ import com.google.common.base.MoreObjects;
 import com.model.domain.CompositionPart;
 import com.model.domain.Document;
 import com.model.domain.DocumentCase;
+import com.model.domain.DocumentItem;
 import com.model.domain.Footer;
 import com.model.domain.Heading;
 import com.model.domain.Paragraph;
+import com.model.domain.Picture;
 import com.model.domain.Separator;
 import com.model.domain.Table;
 import com.model.domain.TableCell;
 import com.model.domain.TableHeaderCell;
 import com.model.domain.TableHeaderRow;
 import com.model.domain.TableRow;
+import com.model.domain.TextItem;
 import com.model.domain.Title;
 import com.model.domain.style.BorderStyle;
 import com.model.domain.style.LayoutStyle;
@@ -193,18 +196,30 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
     }
 
     @Override
-    public void visitTableCell(TableCell tableCellObj) throws Exception {
+    public void visitTableCell(DocumentItem tableCellObj) throws Exception {
         final HtmlTableCell htmlTableCell = new HtmlTableCell();
         final HtmlDiv htmlDiv = new HtmlDiv();
         final HtmlStyleService htmlStyleService = (HtmlStyleService) styleService;
         final Style cellStyle = htmlStyleService.getCustomTableCellStyle(tableCellObj);
-        final Style cellDivStyle = htmlStyleService.getCustomTableCellDivStyle(htmlDiv);
-        if (cellDivStyle != null) {
+        if (tableCellObj instanceof TextItem) {
+            final TextItem<?> textItem = (TextItem<?>) tableCellObj;
+            final Style cellDivStyle = htmlStyleService.getCustomTableCellDivStyle(htmlDiv);
+            if (cellDivStyle != null) {
+                handleTag(htmlTableCell, null, cellStyle, false);
+                handleTag(htmlDiv, textItem.getText(), cellDivStyle, true);
+                outputStreamWriter.write(htmlTableCell.close());
+            } else {
+                handleTag(htmlTableCell, textItem.getText(), cellStyle, true);
+            }
+        }
+        if (tableCellObj instanceof Picture) {
             handleTag(htmlTableCell, null, cellStyle, false);
-            handleTag(htmlDiv, tableCellObj.getText(), cellDivStyle, true);
+            // TODO:
+            //  final Picture picture = (Picture) tableCellObj;
+            //  final Style style = htmlStyleService.prepareStyleFrom(picture);
+            //  final HtmlPicture htmlPicture = new HtmlPicture();
+            //  handleTag(htmlPicture, picture.getData(), style, true);
             outputStreamWriter.write(htmlTableCell.close());
-        } else {
-            handleTag(htmlTableCell, tableCellObj.getText(), cellStyle, true);
         }
     }
 

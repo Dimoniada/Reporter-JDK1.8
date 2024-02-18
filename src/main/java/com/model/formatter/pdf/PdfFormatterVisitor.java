@@ -14,12 +14,12 @@ import com.itextpdf.layout.properties.AreaBreakType;
 import com.itextpdf.layout.properties.UnitValue;
 import com.model.domain.Document;
 import com.model.domain.DocumentCase;
+import com.model.domain.DocumentItem;
 import com.model.domain.Footer;
 import com.model.domain.Heading;
 import com.model.domain.Paragraph;
 import com.model.domain.Separator;
 import com.model.domain.Table;
-import com.model.domain.TableCell;
 import com.model.domain.TableHeaderCell;
 import com.model.domain.TableHeaderRow;
 import com.model.domain.TableRow;
@@ -164,7 +164,7 @@ public abstract class PdfFormatterVisitor extends Formatter implements BaseDetai
     }
 
     @Override
-    public void visitTableCell(TableCell tableCellObj) throws Exception {
+    public void visitTableCell(DocumentItem tableCellObj) throws Exception {
         final Cell cell = ((PdfStyleService) styleService).handleTableCustomCell(tableCellObj);
         table.addCell(cell);
     }

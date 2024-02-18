@@ -3,6 +3,8 @@ package com.model.formatter.pdf.style;
 import com.google.common.base.MoreObjects;
 import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.io.font.constants.StandardFonts;
+import com.itextpdf.io.image.ImageData;
+import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
@@ -17,13 +19,16 @@ import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.AbstractElement;
 import com.itextpdf.layout.element.BlockElement;
 import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.properties.Property;
 import com.itextpdf.layout.properties.Transform;
 import com.itextpdf.layout.properties.UnitValue;
+import com.model.domain.DocumentItem;
 import com.model.domain.FontService;
 import com.model.domain.Heading;
+import com.model.domain.Picture;
 import com.model.domain.TextItem;
 import com.model.domain.style.BorderStyle;
 import com.model.domain.style.LayoutStyle;
@@ -44,7 +49,7 @@ import com.model.utils.LocalizedNumberUtils;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.springframework.util.StringUtils;
 
-import java.awt.*;
+import java.awt.Font;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
@@ -426,19 +431,31 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
      * @return native pdf cell
      * @throws Exception when converting style
      */
-    public Cell handleTableCustomCell(TextItem<?> tableCustomCell) throws Exception {
-        final Text text =
-            new Text(
-                LocalizedNumberUtils.applyDecimalFormat(
-                    tableCustomCell.getText(),
-                    tableCustomCell.getStyle(),
-                    decimalFormat
-                )
-            );
-        final com.itextpdf.layout.element.Paragraph paragraph = new com.itextpdf.layout.element.Paragraph(text);
+    public Cell handleTableCustomCell(DocumentItem tableCustomCell) throws Exception {
+        AbstractElement<?> element = null;
+        final com.itextpdf.layout.element.Paragraph paragraph = new com.itextpdf.layout.element.Paragraph();
+        if (tableCustomCell instanceof TextItem<?>) {
+            final TextItem<?> textItem = (TextItem<?>) tableCustomCell;
+            element =
+                new Text(
+                    LocalizedNumberUtils.applyDecimalFormat(
+                        textItem.getText(),
+                        textItem.getStyle(),
+                        decimalFormat
+                    )
+                );
+            paragraph.add((Text) element);
+        }
+        if (tableCustomCell instanceof Picture) {
+            final Picture picture = (Picture) tableCustomCell;
+            final ImageData imageData = ImageDataFactory.create(picture.getData());
+            element = new Image(imageData);
+            //TODO: apply style to picture here or in {@link convertStyleToElement}
+            paragraph.add((Image) element);
+        }
         final Cell cell = new Cell().add(paragraph);
         final Style style = prepareStyleFrom(tableCustomCell);
-        convertStyleToElement(style, text, cell);
+        convertStyleToElement(style, element, cell);
         return cell;
     }
 
@@ -472,7 +489,7 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
      * @throws Exception when creating PdfFontService
      */
     public void convertTextStyleToElement(AbstractElement<?> element, TextStyle textStyle) throws Exception {
-        if (textStyle == null) {
+        if (element == null || textStyle == null) {
             return;
         }
         final PdfFont font;
@@ -529,7 +546,8 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
                                     textStyle.getFontNameResource(),
                                     encoding
                                 ),
-                            e);
+                            e
+                        );
                     }
                 } else {
                     font = PdfFontFactory.createFont(

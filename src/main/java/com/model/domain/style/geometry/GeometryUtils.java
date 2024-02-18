@@ -42,8 +42,8 @@ public abstract class GeometryUtils {
      * @throws IOException if an error occurs during picture data reading
      */
     public static Dimension getPictureDimension(Picture picture, Style style, String extension) throws IOException {
-        final AtomicInteger width = new AtomicInteger(picture.getPictureWidth());
-        final AtomicInteger height = new AtomicInteger(picture.getPictureHeight());
+        final AtomicInteger width = new AtomicInteger(picture.getWidth());
+        final AtomicInteger height = new AtomicInteger(picture.getHeight());
         final LayoutStyle layoutStyle = LayoutStyle.extractLayoutStyle(style);
         if (layoutStyle == null) {
             return new Dimension(width.get(), height.get());
