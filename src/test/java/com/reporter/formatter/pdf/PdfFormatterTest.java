@@ -4,14 +4,15 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfOutputStream;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.canvas.parser.PdfCanvasProcessor;
 import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
 import com.itextpdf.kernel.pdf.canvas.parser.listener.ITextExtractionStrategy;
 import com.itextpdf.kernel.pdf.canvas.parser.listener.SimpleTextExtractionStrategy;
 import com.model.domain.Document;
-import com.model.domain.DocumentItem;
 import com.model.domain.Footer;
 import com.model.domain.Heading;
 import com.model.domain.Paragraph;
+import com.model.domain.Picture;
 import com.model.domain.Separator;
 import com.model.domain.Table;
 import com.model.domain.TableCell;
@@ -19,6 +20,7 @@ import com.model.domain.TableHeaderCell;
 import com.model.domain.TableHeaderRow;
 import com.model.domain.TableRow;
 import com.model.domain.Title;
+import com.model.domain.core.DocumentItem;
 import com.model.domain.style.BorderStyle;
 import com.model.domain.style.FontFamilyStyle;
 import com.model.domain.style.LayoutStyle;
@@ -29,6 +31,7 @@ import com.model.domain.style.constant.BorderWeight;
 import com.model.domain.style.constant.Color;
 import com.model.domain.style.constant.FillPattern;
 import com.model.domain.style.constant.HorAlignment;
+import com.model.domain.style.constant.PictureFormat;
 import com.model.domain.style.constant.VertAlignment;
 import com.model.domain.style.geometry.Geometry;
 import com.model.domain.style.geometry.GeometryDetails;
@@ -37,14 +40,19 @@ import com.model.formatter.pdf.PdfFormatter;
 import com.model.formatter.pdf.style.PdfStyleService;
 import com.model.utils.LocalizedNumberUtils;
 import com.reporter.formatter.BaseDocument;
+import com.reporter.formatter.pdf.utils.ImageEventListener;
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.FileUrlResource;
+import org.springframework.core.io.PathResource;
+import org.springframework.core.io.WritableResource;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.util.AbstractMap;
@@ -473,5 +481,41 @@ class PdfFormatterTest extends BaseDocument {
                 Assertions.assertTrue(currentText.endsWith("simple footer"));
             }
         }
+    }
+
+    @Test
+    public void testSavePicture() throws Throwable {
+        final String imageName = "pic.jpg";
+
+        final URL url = getClass().getClassLoader().getResource(imageName);
+        Assertions.assertNotNull(url);
+        final WritableResource resource = new PathResource(url.toURI());
+        final Picture pic = Picture.create(IOUtils.toByteArray(resource.getInputStream()), PictureFormat.JPEG);
+
+        final Document document = Document.create(Paragraph.create("Test picture in PDF:"), pic);
+
+        try (DocumentHolder documentHolder = PdfFormatter.create().handle(document)) {
+            if (Files.exists(documentHolder.getResource().getFile().toPath())) {
+                final PdfReader pdfReader = new PdfReader(documentHolder.getResource().getFile());
+                final PdfDocument doc1 = new PdfDocument(pdfReader);
+
+                for (int ind = 1; ind <= doc1.getNumberOfPages(); ind++) {
+                    try (ImageEventListener listener = new ImageEventListener(imageName)) {
+                        final PdfCanvasProcessor canvasProcessor = new PdfCanvasProcessor(listener);
+                        canvasProcessor.processPageContent(doc1.getPage(ind));
+                        if (Files.exists(listener.getImagePath())) {
+                            final byte[] expected = IOUtils.toByteArray(resource.getInputStream());
+                            final byte[] actual = Files.readAllBytes(listener.getImagePath());
+                            Assertions.assertArrayEquals(expected, actual);
+                        }
+                        canvasProcessor.reset();
+                    }
+                }
+
+                doc1.close();
+                pdfReader.close();
+            }
+        }
+
     }
 }

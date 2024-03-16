@@ -10,7 +10,7 @@ import com.model.domain.style.geometry.GeometryDetails;
 
 /**
  * The style is used to set:
- * the location of the content in the element,
+ * the location of the content (picture, text) in the element,
  * element width, border, color and its fill type and nearby environment
  */
 public class LayoutStyle extends Style {

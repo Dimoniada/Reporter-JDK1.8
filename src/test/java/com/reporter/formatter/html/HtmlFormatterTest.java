@@ -2,7 +2,6 @@ package com.reporter.formatter.html;
 
 import com.google.common.base.Objects;
 import com.model.domain.Document;
-import com.model.domain.DocumentItem;
 import com.model.domain.Footer;
 import com.model.domain.Heading;
 import com.model.domain.Paragraph;
@@ -12,6 +11,7 @@ import com.model.domain.TableHeaderCell;
 import com.model.domain.TableHeaderRow;
 import com.model.domain.TableRow;
 import com.model.domain.Title;
+import com.model.domain.core.DocumentItem;
 import com.model.domain.style.LayoutStyle;
 import com.model.domain.style.Style;
 import com.model.domain.style.StyleCondition;
@@ -149,7 +149,8 @@ public class HtmlFormatterTest extends BaseDocument {
         styleService.setWriteStyleInplace(false);
 
         final Document doc1 = Document.create().setLabel("doc1")
-            .addParts(Heading.create(1).setText("testHeading"),
+            .addParts(
+                Heading.create(1).setText("testHeading"),
                 Heading.create(2).setText("testHeading"),
                 Title.create().setText("mainTitle"),
                 Heading.create(3).setText("testHeading"),
@@ -163,16 +164,20 @@ public class HtmlFormatterTest extends BaseDocument {
         final HtmlFormatter htmlFormatter = HtmlFormatter.create().setStyleService(styleService);
         try (DocumentHolder documentHolder = htmlFormatter.handle(doc1)) {
             final String text = FileUtils.readFileToString(documentHolder.getResource().getFile(), StandardCharsets.UTF_8);
-            Assertions.assertEquals(1, StringUtils.countOccurrencesOf(text,
+            Assertions.assertEquals(1, StringUtils.countOccurrencesOf(
+                text,
                 "{color:#00FF00;" +
                     "font-family:Brush Script MT,monospace;" +
                     "font-size:35pt;" +
                     "font-style:italic;" +
-                    "font-weight:bold}"));
-            Assertions.assertEquals(1, StringUtils.countOccurrencesOf(text,
+                    "font-weight:bold}"
+            ));
+            Assertions.assertEquals(1, StringUtils.countOccurrencesOf(
+                text,
                 "{color:#FF0000;" +
                     "font-family:Gill Sans,monospace;" +
-                    "font-size:15pt}"));
+                    "font-size:15pt}"
+            ));
         }
     }
 
@@ -563,10 +568,12 @@ public class HtmlFormatterTest extends BaseDocument {
                 StyleCondition.create(HtmlDiv.class, o -> true)
             );
         try (DocumentHolder ignored = htmlFormatter.handle(doc)) {
-            Assertions.assertTrue(StringUtils.endsWithIgnoreCase(os.toString(),
+            Assertions.assertTrue(StringUtils.endsWithIgnoreCase(
+                os.toString(),
                 "<tr><td class=\"_" + Integer.toHexString(Objects.hashCode(layoutStyle1.setGeometryDetails(null))) + "\">" +
                     "<div class=\"_" + Integer.toHexString(Objects.hashCode(divStyle)) + "\">test_text</div></td></tr>" +
-                    "</body></html>"));
+                    "</body></html>"
+            ));
         }
     }
 
@@ -614,9 +621,11 @@ public class HtmlFormatterTest extends BaseDocument {
         final HtmlFormatter htmlFormatter = HtmlFormatter.create().setStyleService(styleService);
         htmlFormatter.setOutputStream(os);
         try (DocumentHolder documentHolder = htmlFormatter.handle(doc)) {
-            Assertions.assertTrue(StringUtils.endsWithIgnoreCase(os.toString(),
+            Assertions.assertTrue(StringUtils.endsWithIgnoreCase(
+                os.toString(),
                 "<tr><th class=\"_" + Integer.toHexString(Objects.hashCode(layoutStyle1)) + "\">test_text</th></tr>" +
-                    "</body></html>"));
+                    "</body></html>"
+            ));
         }
     }
 
@@ -751,17 +760,21 @@ public class HtmlFormatterTest extends BaseDocument {
             );
         try (DocumentHolder ignored = htmlFormatter.handle(doc)) {
             if (baseTag.getClass().equals(HtmlTableCell.class)) {
-                Assertions.assertTrue(StringUtils.endsWithIgnoreCase(osRes.toString(),
+                Assertions.assertTrue(StringUtils.endsWithIgnoreCase(
+                    osRes.toString(),
                     "<" + baseTag + " class=\"_" +
                         Integer.toHexString(Objects.hashCode(layoutStyle1.setGeometryDetails(null))) +
                         "\"><div class=\"_" + Integer.toHexString(Objects.hashCode(divStyle)) + "\">test_text</div></" + baseTag + ">" +
-                        "</body></html>"));
+                        "</body></html>"
+                ));
             } else {
-                Assertions.assertTrue(StringUtils.endsWithIgnoreCase(osRes.toString(),
+                Assertions.assertTrue(StringUtils.endsWithIgnoreCase(
+                    osRes.toString(),
                     "<" + baseTag + " class=\"_" +
                         Integer.toHexString(Objects.hashCode(layoutStyle1)) +
                         "\">test_text</" + baseTag + ">" +
-                        "</body></html>"));
+                        "</body></html>"
+                ));
             }
         }
     }

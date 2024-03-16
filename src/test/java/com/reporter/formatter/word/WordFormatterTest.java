@@ -1,7 +1,6 @@
 package com.reporter.formatter.word;
 
 import com.model.domain.Document;
-import com.model.domain.DocumentItem;
 import com.model.domain.Footer;
 import com.model.domain.Picture;
 import com.model.domain.Table;
@@ -10,6 +9,7 @@ import com.model.domain.TableHeaderCell;
 import com.model.domain.TableHeaderRow;
 import com.model.domain.TableRow;
 import com.model.domain.Title;
+import com.model.domain.core.DocumentItem;
 import com.model.domain.style.BorderStyle;
 import com.model.domain.style.LayoutStyle;
 import com.model.domain.style.LayoutTextStyle;

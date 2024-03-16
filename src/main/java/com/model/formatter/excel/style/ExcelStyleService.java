@@ -1,9 +1,9 @@
 package com.model.formatter.excel.style;
 
 import com.google.common.base.MoreObjects;
-import com.model.domain.DocumentItem;
 import com.model.domain.Picture;
-import com.model.domain.TextItem;
+import com.model.domain.core.DocumentItem;
+import com.model.domain.core.TextItem;
 import com.model.domain.style.BorderStyle;
 import com.model.domain.style.LayoutStyle;
 import com.model.domain.style.LayoutTextStyle;

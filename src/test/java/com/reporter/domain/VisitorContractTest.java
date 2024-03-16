@@ -1,7 +1,19 @@
 package com.reporter.domain;
 
 import com.ReporterApplication;
-import com.model.domain.*;
+import com.model.domain.Document;
+import com.model.domain.Footer;
+import com.model.domain.Heading;
+import com.model.domain.Paragraph;
+import com.model.domain.ReportTable;
+import com.model.domain.Separator;
+import com.model.domain.Table;
+import com.model.domain.TableCell;
+import com.model.domain.TableHeaderCell;
+import com.model.domain.TableHeaderRow;
+import com.model.domain.TableRow;
+import com.model.domain.Title;
+import com.model.domain.core.DocumentCase;
 import com.model.domain.db.QueryTable;
 import com.model.formatter.FormatterVisitor;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,10 +43,12 @@ public class VisitorContractTest {
 
     @BeforeEach
     public void initFormatter() {
-        mock = Mockito.mock(FormatterVisitor.class,
+        mock = Mockito.mock(
+            FormatterVisitor.class,
             invocationOnMock -> {
                 throw new RuntimeException("This method " + invocationOnMock.getMethod() + " must not be called.");
-            });
+            }
+        );
     }
 
     @Test

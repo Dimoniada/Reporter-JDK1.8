@@ -1,11 +1,11 @@
 package com.model.formatter.word.style;
 
 import com.google.common.base.MoreObjects;
-import com.model.domain.DocumentItem;
 import com.model.domain.FontService;
 import com.model.domain.Heading;
 import com.model.domain.Picture;
-import com.model.domain.TextItem;
+import com.model.domain.core.DocumentItem;
+import com.model.domain.core.TextItem;
 import com.model.domain.style.BorderStyle;
 import com.model.domain.style.LayoutStyle;
 import com.model.domain.style.LayoutTextStyle;
@@ -179,7 +179,7 @@ public class WordStyleService extends StyleService implements DocDetails {
             final XWPFPicture xwpfPicture = run.addPicture(
                 new ByteArrayInputStream(picture.getData()),
                 picFormat,
-                picture.getText(),
+                "reporterPic",
                 Units.toEMU(dimension.getWidth()),
                 Units.toEMU(dimension.getHeight())
             );
@@ -599,7 +599,7 @@ public class WordStyleService extends StyleService implements DocDetails {
 
         try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             ImageIO.write(image, pictureFormat.name(), os);
-            final Picture pictureFromText = Picture.create(os.toByteArray(), pictureFormat).setText(text);
+            final Picture pictureFromText = Picture.create(os.toByteArray(), pictureFormat);
             addItemToRun(
                 pictureFromText,
                 paragraph.createRun(),

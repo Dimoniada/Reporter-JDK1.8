@@ -79,6 +79,7 @@ public class ReportTable extends Table {
                         for (final String name : tableHeaderAliasNames) {
                             if (namesMethods.containsKey(name) || isTableHeaderRowFromData) {
                                 final Object value = namesMethods.get(name).invoke(docItem);
+                                //TODO: case when Object is a picture
                                 tr.addPart(TableCell.create(value != null ? value.toString() : ""));
                             } else {
                                 tr.addPart(TableCell.create(""));

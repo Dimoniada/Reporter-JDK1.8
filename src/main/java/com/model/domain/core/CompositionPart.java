@@ -1,4 +1,4 @@
-package com.model.domain;
+package com.model.domain.core;
 
 import com.google.common.base.MoreObjects;
 import com.model.domain.style.Style;

@@ -2,7 +2,6 @@ package com.reporter.db;
 
 import com.ReporterApplication;
 import com.model.domain.Document;
-import com.model.domain.DocumentCase;
 import com.model.domain.Heading;
 import com.model.domain.Paragraph;
 import com.model.domain.ReportTable;
@@ -12,6 +11,7 @@ import com.model.domain.TableHeaderCell;
 import com.model.domain.TableHeaderRow;
 import com.model.domain.TableRow;
 import com.model.domain.Title;
+import com.model.domain.core.DocumentCase;
 import com.model.domain.db.QueryTable;
 import com.model.domain.style.BorderStyle;
 import com.model.domain.style.LayoutStyle;

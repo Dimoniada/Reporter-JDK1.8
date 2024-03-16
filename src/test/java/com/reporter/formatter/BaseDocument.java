@@ -1,7 +1,6 @@
 package com.reporter.formatter;
 
 import com.model.domain.Document;
-import com.model.domain.DocumentCase;
 import com.model.domain.FontService;
 import com.model.domain.Heading;
 import com.model.domain.Paragraph;
@@ -12,6 +11,7 @@ import com.model.domain.TableHeaderCell;
 import com.model.domain.TableHeaderRow;
 import com.model.domain.TableRow;
 import com.model.domain.Title;
+import com.model.domain.core.DocumentCase;
 import com.model.domain.style.BorderStyle;
 import com.model.domain.style.FontFamilyStyle;
 import com.model.domain.style.LayoutStyle;
@@ -240,15 +240,18 @@ public class BaseDocument {
                         TableRow
                             .create().addParts(
                                 TableCell.create().setText("1"),
-                                TableCell.create().setText("2")),
+                                TableCell.create().setText("2")
+                            ),
                         TableRow
                             .create().addParts(
                                 TableCell.create().setText("3"),
-                                TableCell.create().setText("4 and some escape characters (символы) %;;;;;\\/")),
+                                TableCell.create().setText("4 and some escape characters (символы) %;;;;;\\/")
+                            ),
                         TableRow
                             .create().addParts(
                                 TableCell.create().setText("5"),
-                                TableCell.create().setText("6"))
+                                TableCell.create().setText("6")
+                            )
                     )
                     .spreadStyleToParts(textStyleCell)
             );

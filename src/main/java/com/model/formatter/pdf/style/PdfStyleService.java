@@ -25,11 +25,11 @@ import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.properties.Property;
 import com.itextpdf.layout.properties.Transform;
 import com.itextpdf.layout.properties.UnitValue;
-import com.model.domain.DocumentItem;
 import com.model.domain.FontService;
 import com.model.domain.Heading;
 import com.model.domain.Picture;
-import com.model.domain.TextItem;
+import com.model.domain.core.DocumentItem;
+import com.model.domain.core.TextItem;
 import com.model.domain.style.BorderStyle;
 import com.model.domain.style.LayoutStyle;
 import com.model.domain.style.LayoutTextStyle;
@@ -457,6 +457,17 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
         final Style style = prepareStyleFrom(tableCustomCell);
         convertStyleToElement(style, element, cell);
         return cell;
+    }
+
+    public void handlePicture(Picture picture, com.itextpdf.layout.Document o) throws Exception {
+        final com.itextpdf.layout.element.Paragraph elParagraph = new com.itextpdf.layout.element.Paragraph();
+        final ImageData imageData = ImageDataFactory.create(picture.getData());
+        Image element = new Image(imageData);
+        //TODO: apply style to picture here or in {@link convertStyleToElement}
+        elParagraph.add(element);
+        final Style style = prepareStyleFrom(picture);
+        convertStyleToElement(style, null, element);
+        o.add(elParagraph);
     }
 
     /**

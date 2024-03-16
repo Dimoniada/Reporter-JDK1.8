@@ -4,7 +4,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 /**
- * Text display style, its location,
+ * Text and content (picture) display style, its location,
  * width, border, color and fill type of the environment
  */
 public class LayoutTextStyle extends Style {

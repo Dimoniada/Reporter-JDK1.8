@@ -1,10 +1,7 @@
 package com.model.formatter.html;
 
 import com.google.common.base.MoreObjects;
-import com.model.domain.CompositionPart;
 import com.model.domain.Document;
-import com.model.domain.DocumentCase;
-import com.model.domain.DocumentItem;
 import com.model.domain.Footer;
 import com.model.domain.Heading;
 import com.model.domain.Paragraph;
@@ -15,8 +12,11 @@ import com.model.domain.TableCell;
 import com.model.domain.TableHeaderCell;
 import com.model.domain.TableHeaderRow;
 import com.model.domain.TableRow;
-import com.model.domain.TextItem;
 import com.model.domain.Title;
+import com.model.domain.core.CompositionPart;
+import com.model.domain.core.DocumentCase;
+import com.model.domain.core.DocumentItem;
+import com.model.domain.core.TextItem;
 import com.model.domain.style.BorderStyle;
 import com.model.domain.style.LayoutStyle;
 import com.model.domain.style.Style;

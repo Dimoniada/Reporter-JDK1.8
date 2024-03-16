@@ -1,8 +1,8 @@
 package com.reporter.formatter.excel;
 
 import com.model.domain.Document;
-import com.model.domain.DocumentCase;
 import com.model.domain.Picture;
+import com.model.domain.core.DocumentCase;
 import com.model.domain.style.LayoutStyle;
 import com.model.domain.style.constant.PictureFormat;
 import com.model.domain.style.geometry.Geometry;

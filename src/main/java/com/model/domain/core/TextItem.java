@@ -1,11 +1,9 @@
-package com.model.domain;
+package com.model.domain.core;
 
 import com.google.common.base.MoreObjects;
-import com.model.domain.style.TextStyle;
 
 /**
- * Base text class,
- * contains text and {@link TextStyle style}
+ * Base text class, contains text
  */
 public abstract class TextItem<T> extends DocumentItem {
 
@@ -28,5 +26,4 @@ public abstract class TextItem<T> extends DocumentItem {
         this.text = text;
         return (T) this;
     }
-
 }

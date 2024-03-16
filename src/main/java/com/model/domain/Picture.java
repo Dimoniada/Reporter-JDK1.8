@@ -1,6 +1,7 @@
 package com.model.domain;
 
 import com.google.common.base.MoreObjects;
+import com.model.domain.core.DataItem;
 import com.model.domain.style.constant.PictureFormat;
 import com.model.formatter.FormatterVisitor;
 
@@ -13,13 +14,9 @@ import java.io.IOException;
  * Picture class,
  * contains InputStream data, picture format {@link PictureFormat} and picture text if data == null
  */
-public class Picture extends DocumentItem {
+public class Picture extends DataItem<Picture> {
 
     protected PictureFormat format;
-
-    protected byte[] data;
-
-    protected String text;
 
     public static Picture create(byte[] data, PictureFormat pictureFormat) {
         return new Picture()
@@ -27,9 +24,8 @@ public class Picture extends DocumentItem {
             .setFormat(pictureFormat);
     }
 
-    public static Picture create(String text, PictureFormat pictureFormat) {
+    public static Picture create(PictureFormat pictureFormat) {
         return new Picture()
-            .setText(text)
             .setFormat(pictureFormat);
     }
 
@@ -70,24 +66,6 @@ public class Picture extends DocumentItem {
         return this;
     }
 
-    public byte[] getData() {
-        return data;
-    }
-
-    public Picture setData(byte[] data) {
-        this.data = data;
-        return this;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public Picture setText(String text) {
-        this.text = text;
-        return this;
-    }
-
     @Override
     public Picture accept(FormatterVisitor visitor) throws Throwable {
         visitor.visitPicture(this);
@@ -98,8 +76,6 @@ public class Picture extends DocumentItem {
     public String toString() {
         return MoreObjects.toStringHelper(this)
             .add("format", format)
-            .add("data", data)
-            .add("text", text)
             .toString();
     }
 }

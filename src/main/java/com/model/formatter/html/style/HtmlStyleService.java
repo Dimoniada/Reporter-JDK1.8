@@ -1,9 +1,9 @@
 package com.model.formatter.html.style;
 
 import com.google.common.base.MoreObjects;
-import com.model.domain.DocumentItem;
 import com.model.domain.TableCell;
 import com.model.domain.TableRow;
+import com.model.domain.core.DocumentItem;
 import com.model.domain.style.BorderStyle;
 import com.model.domain.style.FontFamilyStyle;
 import com.model.domain.style.LayoutStyle;
@@ -193,7 +193,8 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
                         throw new IllegalArgumentException("Undefined VertAlignment type for transform-origin");
                     }
                     res.set(
-                        String.join(" ",
+                        String.join(
+                            " ",
                             horizontalAlignmentMap.get(horAlignment),
                             verticalAlignmentMap.get(value.getValue())
                         )

@@ -1,6 +1,8 @@
 package com.model.domain;
 
 import com.google.common.base.MoreObjects;
+import com.model.domain.core.CompositionPart;
+import com.model.domain.core.DocumentItem;
 import com.model.formatter.FormatterVisitor;
 
 import java.time.Instant;

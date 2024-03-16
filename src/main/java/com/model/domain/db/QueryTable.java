@@ -126,6 +126,7 @@ public class QueryTable extends Table {
             i++;
             final TableCell tableCell = TableCell.create();
             if (hc.getAliasName().isEmpty()) {
+                //TODO case when rs.getObject() is a picture
                 tableCell.setText(rs.getObject(i, String.class));
             } else {
                 final String columnName =

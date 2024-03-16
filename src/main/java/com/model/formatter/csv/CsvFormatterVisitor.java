@@ -1,9 +1,7 @@
 package com.model.formatter.csv;
 
 import com.google.common.base.MoreObjects;
-
 import com.model.domain.Document;
-import com.model.domain.DocumentCase;
 import com.model.domain.Footer;
 import com.model.domain.Heading;
 import com.model.domain.Paragraph;
@@ -15,6 +13,7 @@ import com.model.domain.TableHeaderCell;
 import com.model.domain.TableHeaderRow;
 import com.model.domain.TableRow;
 import com.model.domain.Title;
+import com.model.domain.core.DocumentCase;
 import com.model.formatter.BaseDetails;
 import com.model.formatter.Formatter;
 import com.model.utils.LocalizedNumberUtils;

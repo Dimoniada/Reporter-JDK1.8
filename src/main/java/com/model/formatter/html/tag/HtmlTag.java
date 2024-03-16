@@ -1,7 +1,7 @@
 package com.model.formatter.html.tag;
 
 import com.google.common.base.Objects;
-import com.model.domain.DocumentItem;
+import com.model.domain.core.DocumentItem;
 import com.model.domain.style.Style;
 
 import java.util.Locale;

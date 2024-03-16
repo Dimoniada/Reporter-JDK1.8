@@ -1,6 +1,7 @@
 package com.model.domain;
 
 import com.google.common.base.MoreObjects;
+import com.model.domain.core.CompositionPart;
 import com.model.formatter.FormatterVisitor;
 
 /**
@@ -30,7 +31,7 @@ public class TableHeaderRow extends CompositionPart<TableHeaderRow, TableHeaderC
     @Override
     public TableHeaderRow addPart(TableHeaderCell docItem) {
         docItem.setColumnIndex(this.cellCount);
-        this.cellCount ++;
+        this.cellCount++;
         return super.addPart(docItem);
     }
 
@@ -39,7 +40,7 @@ public class TableHeaderRow extends CompositionPart<TableHeaderRow, TableHeaderC
         long columnIndex = this.cellCount;
         for (final TableHeaderCell docItem : docItems) {
             docItem.setColumnIndex(columnIndex);
-            columnIndex ++;
+            columnIndex++;
         }
         this.cellCount += docItems.length;
         return super.addParts(docItems);

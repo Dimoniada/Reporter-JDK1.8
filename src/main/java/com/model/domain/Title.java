@@ -1,6 +1,7 @@
 package com.model.domain;
 
 import com.google.common.base.MoreObjects;
+import com.model.domain.core.TextItem;
 import com.model.formatter.FormatterVisitor;
 
 /**

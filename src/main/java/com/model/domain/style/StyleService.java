@@ -2,8 +2,8 @@ package com.model.domain.style;
 
 import com.google.common.base.MoreObjects;
 import com.model.domain.Document;
-import com.model.domain.DocumentItem;
 import com.model.domain.FontService;
+import com.model.domain.core.DocumentItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

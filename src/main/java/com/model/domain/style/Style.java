@@ -1,7 +1,7 @@
 package com.model.domain.style;
 
 import com.google.common.base.MoreObjects;
-import com.model.domain.DocumentItem;
+import com.model.domain.core.DocumentItem;
 
 /**
  * Style class of {@link DocumentItem},

@@ -13,17 +13,18 @@ import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.properties.AreaBreakType;
 import com.itextpdf.layout.properties.UnitValue;
 import com.model.domain.Document;
-import com.model.domain.DocumentCase;
-import com.model.domain.DocumentItem;
 import com.model.domain.Footer;
 import com.model.domain.Heading;
 import com.model.domain.Paragraph;
+import com.model.domain.Picture;
 import com.model.domain.Separator;
 import com.model.domain.Table;
 import com.model.domain.TableHeaderCell;
 import com.model.domain.TableHeaderRow;
 import com.model.domain.TableRow;
 import com.model.domain.Title;
+import com.model.domain.core.DocumentCase;
+import com.model.domain.core.DocumentItem;
 import com.model.domain.style.BorderStyle;
 import com.model.domain.style.Style;
 import com.model.domain.style.StyleService;
@@ -167,6 +168,11 @@ public abstract class PdfFormatterVisitor extends Formatter implements BaseDetai
     public void visitTableCell(DocumentItem tableCellObj) throws Exception {
         final Cell cell = ((PdfStyleService) styleService).handleTableCustomCell(tableCellObj);
         table.addCell(cell);
+    }
+
+    @Override
+    public void visitPicture(Picture pictureObj) throws Exception {
+        ((PdfStyleService) styleService).handlePicture(pictureObj, document);
     }
 
     @Override
