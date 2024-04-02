@@ -13,11 +13,11 @@ import java.util.Set;
 
 public class ImageEventListener implements IEventListener, AutoCloseable {
 
+    private final Path imagePath;
+
     public ImageEventListener(String imageName) {
         this.imagePath = new File("./" + imageName).toPath();
     }
-
-    private final Path imagePath;
 
     public void eventOccurred(IEventData eventData, EventType type) {
         if (eventData instanceof ImageRenderInfo) {

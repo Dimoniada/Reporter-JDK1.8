@@ -462,7 +462,7 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
     public void handlePicture(Picture picture, com.itextpdf.layout.Document o) throws Exception {
         final com.itextpdf.layout.element.Paragraph elParagraph = new com.itextpdf.layout.element.Paragraph();
         final ImageData imageData = ImageDataFactory.create(picture.getData());
-        Image element = new Image(imageData);
+        final Image element = new Image(imageData);
         //TODO: apply style to picture here or in {@link convertStyleToElement}
         elParagraph.add(element);
         final Style style = prepareStyleFrom(picture);

@@ -516,6 +516,5 @@ class PdfFormatterTest extends BaseDocument {
                 pdfReader.close();
             }
         }
-
     }
 }
