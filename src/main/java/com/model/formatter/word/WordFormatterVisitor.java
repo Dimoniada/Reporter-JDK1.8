@@ -12,9 +12,9 @@ import com.model.domain.TableHeaderCell;
 import com.model.domain.TableHeaderRow;
 import com.model.domain.TableRow;
 import com.model.domain.Title;
-import com.model.domain.core.DocumentCase;
+import com.model.domain.DocumentCase;
 import com.model.domain.core.DocumentItem;
-import com.model.domain.core.TextItem;
+import com.model.domain.core.DataItem;
 import com.model.domain.style.Style;
 import com.model.domain.style.StyleService;
 import com.model.formatter.BaseDetails;
@@ -240,7 +240,7 @@ public abstract class WordFormatterVisitor extends Formatter implements BaseDeta
         ((WordStyleService) styleService).handleCustomItem(pictureObj, wordDocument.createParagraph());
     }
 
-    public void handleCustomItem(TextItem<?> item, Object element) throws Exception {
+    public void handleCustomItem(DataItem item, Object element) throws Exception {
         ((WordStyleService) styleService).handleCustomItem(item, element);
     }
 

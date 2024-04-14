@@ -5,7 +5,7 @@ import com.model.domain.FontService;
 import com.model.domain.Heading;
 import com.model.domain.Picture;
 import com.model.domain.core.DocumentItem;
-import com.model.domain.core.TextItem;
+import com.model.domain.core.DataItem;
 import com.model.domain.style.BorderStyle;
 import com.model.domain.style.LayoutStyle;
 import com.model.domain.style.LayoutTextStyle;
@@ -20,7 +20,7 @@ import com.model.domain.style.constant.VertAlignment;
 import com.model.domain.style.geometry.GeometryDetails;
 import com.model.domain.style.geometry.GeometryUtils;
 import com.model.formatter.word.DocDetails;
-import com.model.utils.ConverterUtils;
+import com.model.utils.CastUtils;
 import com.model.utils.LocalizedNumberUtils;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -139,12 +139,12 @@ public class WordStyleService extends StyleService implements DocDetails {
     private static final Map<PictureFormat, Integer> pictureFormatMap =
         new HashMap<PictureFormat, Integer>() {{
             put(null, -1);
-            put(PictureFormat.JPEG, XWPFDocument.PICTURE_TYPE_JPEG);
             put(PictureFormat.JPG, XWPFDocument.PICTURE_TYPE_JPEG);
             put(PictureFormat.PNG, XWPFDocument.PICTURE_TYPE_PNG);
             put(PictureFormat.WMF, XWPFDocument.PICTURE_TYPE_WMF);
             put(PictureFormat.EMF, XWPFDocument.PICTURE_TYPE_EMF);
             put(PictureFormat.DIB, XWPFDocument.PICTURE_TYPE_DIB);
+            put(PictureFormat.BMP, XWPFDocument.PICTURE_TYPE_DIB);
             put(PictureFormat.PICT, XWPFDocument.PICTURE_TYPE_PICT);
         }};
 
@@ -167,11 +167,6 @@ public class WordStyleService extends StyleService implements DocDetails {
      */
     protected void addItemToRun(DocumentItem item, XWPFRun run, Style style)
         throws ParseException, IOException, InvalidFormatException {
-        if (item instanceof TextItem<?>) {
-            final TextItem<?> textItem = (TextItem<?>) item;
-            final String text = LocalizedNumberUtils.applyDecimalFormat(textItem.getText(), style, decimalFormat);
-            run.setText(text);
-        }
         if (item instanceof Picture) {
             final Picture picture = (Picture) item;
             final Dimension dimension = GeometryUtils.getPictureDimension(picture, style, EXTENSION);
@@ -184,6 +179,10 @@ public class WordStyleService extends StyleService implements DocDetails {
                 Units.toEMU(dimension.getHeight())
             );
             convertPictureGeometryDetails(xwpfPicture, style);
+        } else if (item instanceof DataItem) {
+            final DataItem<?> DataItem = (DataItem<?>) item;
+            final String text = LocalizedNumberUtils.applyDecimalFormat(DataItem.getText(), style, decimalFormat);
+            run.setText(text);
         }
     }
 
@@ -206,7 +205,7 @@ public class WordStyleService extends StyleService implements DocDetails {
                 geometryDetails
                     .getWidth()
                     .getValueFor(EXTENSION)
-                    .ifPresent(value -> docxTable.setWidth(ConverterUtils.<Integer>convert(value) * DOCX_INCH_CONST));
+                    .ifPresent(value -> docxTable.setWidth(CastUtils.<Integer>convert(value) * DOCX_INCH_CONST));
             } else if (isTableAutoWidth != null && isTableAutoWidth) {
                 docxTable.setWidth("auto");
             }
@@ -333,7 +332,7 @@ public class WordStyleService extends StyleService implements DocDetails {
                 .getValueFor(EXTENSION)
                 .ifPresent(value -> {
                     cell.setWidthType(TableWidthType.DXA);
-                    cell.setWidth(String.valueOf(ConverterUtils.<Integer>convert(value)));
+                    cell.setWidth(String.valueOf(CastUtils.<Integer>convert(value)));
                 });
         }
         if (geometryDetails.getHeight() != null) {
@@ -341,7 +340,7 @@ public class WordStyleService extends StyleService implements DocDetails {
                 .getHeight()
                 .getValueFor(EXTENSION)
                 .ifPresent(value ->
-                    cell.getTableRow().setHeight(ConverterUtils.<Integer>convert(value))
+                    cell.getTableRow().setHeight(CastUtils.<Integer>convert(value))
                 );
         }
 
@@ -521,7 +520,7 @@ public class WordStyleService extends StyleService implements DocDetails {
                 .getValueFor(EXTENSION)
                 .ifPresent(value -> {
                     final CTTransform2D transform2D = xwpfPicture.getCTPicture().getSpPr().getXfrm();
-                    transform2D.setRot(ConverterUtils.<Integer>convert(value) * DOCX_ANGLE_CONST);
+                    transform2D.setRot(CastUtils.<Integer>convert(value) * DOCX_ANGLE_CONST);
                 });
         }
     }

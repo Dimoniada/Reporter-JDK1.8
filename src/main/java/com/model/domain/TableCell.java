@@ -1,7 +1,7 @@
 package com.model.domain;
 
 import com.google.common.base.MoreObjects;
-import com.model.domain.core.TextItem;
+import com.model.domain.core.DataItem;
 import com.model.formatter.FormatterVisitor;
 
 /**
@@ -9,7 +9,7 @@ import com.model.formatter.FormatterVisitor;
  * contains data in text form,
  * rowIndex and columnIndex
  */
-public class TableCell extends TextItem<TableCell> {
+public class TableCell extends DataItem<TableCell> {
     /**
      * Row index
      */
@@ -35,7 +35,11 @@ public class TableCell extends TextItem<TableCell> {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
+        final MoreObjects.ToStringHelper toStringHelper = MoreObjects.toStringHelper(this);
+        if (!this.getClass().isAssignableFrom(Picture.class)) {
+            toStringHelper.add("text", this.getText());
+        }
+        return toStringHelper
             .add("rowIndex", rowIndex)
             .add("columnIndex", columnIndex)
             .toString();

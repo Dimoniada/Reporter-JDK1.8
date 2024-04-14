@@ -5,7 +5,7 @@ import com.model.domain.Picture;
 import com.model.domain.style.LayoutStyle;
 import com.model.domain.style.Style;
 import com.model.domain.style.TextStyle;
-import com.model.utils.ConverterUtils;
+import com.model.utils.CastUtils;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -54,13 +54,13 @@ public abstract class GeometryUtils {
                 geometryDetails
                     .getHeight()
                     .getValueFor(extension)
-                    .ifPresent(value -> height.set(ConverterUtils.<Integer>convert(value)));
+                    .ifPresent(value -> height.set(CastUtils.<Integer>convert(value)));
             }
             if (geometryDetails.getWidth() != null) {
                 geometryDetails
                     .getWidth()
                     .getValueFor(extension)
-                    .ifPresent(value -> width.set(ConverterUtils.<Integer>convert(value)));
+                    .ifPresent(value -> width.set(CastUtils.<Integer>convert(value)));
             }
         }
         return new Dimension(width.get(), height.get());

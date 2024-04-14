@@ -2,7 +2,7 @@ package com.reporter.formatter.excel;
 
 import com.model.domain.Document;
 import com.model.domain.Picture;
-import com.model.domain.core.DocumentCase;
+import com.model.domain.DocumentCase;
 import com.model.domain.style.LayoutStyle;
 import com.model.domain.style.constant.PictureFormat;
 import com.model.domain.style.geometry.Geometry;
@@ -126,12 +126,12 @@ class ExcelFormatterTest extends BaseDocument {
 
     @Test
     public void testSavePictureToXlsxFile() throws Throwable {
-        final URL url = getClass().getClassLoader().getResource("pic.jpg");
+        final URL url = getClass().getClassLoader().getResource("pic/pic.jpg");
         Assertions.assertNotNull(url);
         final WritableResource resource = new PathResource(url.toURI());
         final DocumentCase documentCase = DocumentCase.create().setName("Test sheet1")
             .addParts(
-                Picture.create(IOUtils.toByteArray(resource.getInputStream()), PictureFormat.JPEG)
+                Picture.create(IOUtils.toByteArray(resource.getInputStream()), PictureFormat.JPG)
                     .setStyle(
                         LayoutStyle.create()
                             .setGeometryDetails(

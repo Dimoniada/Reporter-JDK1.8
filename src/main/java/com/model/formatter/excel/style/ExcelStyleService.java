@@ -2,8 +2,8 @@ package com.model.formatter.excel.style;
 
 import com.google.common.base.MoreObjects;
 import com.model.domain.Picture;
+import com.model.domain.core.DataItem;
 import com.model.domain.core.DocumentItem;
-import com.model.domain.core.TextItem;
 import com.model.domain.style.BorderStyle;
 import com.model.domain.style.LayoutStyle;
 import com.model.domain.style.LayoutTextStyle;
@@ -18,7 +18,7 @@ import com.model.domain.style.constant.PictureFormat;
 import com.model.domain.style.constant.VertAlignment;
 import com.model.domain.style.geometry.GeometryDetails;
 import com.model.formatter.excel.XlsDetails;
-import com.model.utils.ConverterUtils;
+import com.model.utils.CastUtils;
 import com.model.utils.LocalizedNumberUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
@@ -98,12 +98,12 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
     private static final Map<PictureFormat, Integer> pictureFormatMap =
         new HashMap<PictureFormat, Integer>() {{
             put(null, -1);
-            put(PictureFormat.JPEG, Workbook.PICTURE_TYPE_JPEG);
             put(PictureFormat.JPG, Workbook.PICTURE_TYPE_JPEG);
             put(PictureFormat.PNG, Workbook.PICTURE_TYPE_PNG);
             put(PictureFormat.WMF, Workbook.PICTURE_TYPE_WMF);
             put(PictureFormat.EMF, Workbook.PICTURE_TYPE_EMF);
             put(PictureFormat.DIB, Workbook.PICTURE_TYPE_DIB);
+            put(PictureFormat.BMP, Workbook.PICTURE_TYPE_DIB);
             put(PictureFormat.PICT, Workbook.PICTURE_TYPE_PICT);
         }};
 
@@ -236,7 +236,7 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
                 .getHeight()
                 .getValueFor(EXTENSION)
                 .ifPresent(value ->
-                    cell.getRow().setHeight(ConverterUtils.convert(value))
+                    cell.getRow().setHeight(CastUtils.convert(value))
                 );
         }
 
@@ -246,7 +246,7 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
                 .getWidth()
                 .getValueFor(EXTENSION)
                 .ifPresent(value ->
-                    cell.getSheet().setColumnWidth(cell.getColumnIndex(), ConverterUtils.convert(value))
+                    cell.getSheet().setColumnWidth(cell.getColumnIndex(), CastUtils.convert(value))
                 );
         }
 
@@ -261,9 +261,9 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
                             .getCTPicture()
                             .getSpPr()
                             .getXfrm()
-                            .setRot((short) ConverterUtils.convert(angle) * EXCEL_ANGLE_CONST);
+                            .setRot((short) CastUtils.convert(angle) * EXCEL_ANGLE_CONST);
                     } else {
-                        cellStyle.setRotation(ConverterUtils.convert(angle));
+                        cellStyle.setRotation(CastUtils.convert(angle));
                     }
                 });
         }
@@ -278,11 +278,11 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
             geometryDetails
                 .getScaleX()
                 .getValueFor(EXTENSION)
-                .ifPresent(value -> scaleX.set(ConverterUtils.convert(value)));
+                .ifPresent(value -> scaleX.set(CastUtils.convert(value)));
             geometryDetails
                 .getScaleY()
                 .getValueFor(EXTENSION)
-                .ifPresent(value -> scaleY.set(ConverterUtils.convert(value)));
+                .ifPresent(value -> scaleY.set(CastUtils.convert(value)));
             xssfPicture.resize(scaleX.get(), scaleY.get());
         }
     }
@@ -411,17 +411,7 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
         throws Exception {
         XSSFPicture xssfPicture = null;
         final Style style = prepareStyleFrom(item);
-        if (item instanceof TextItem<?>) {
-            final TextItem<?> textItem = (TextItem<?>) item;
-            workbook.getFontAt(cellObj.getCellStyle().getFontIndex()).setCharSet(fontCharset.getNativeId());
-            if (StringUtils.hasText(textItem.getText())) {
-                cellObj.setCellValue(
-                    LocalizedNumberUtils.applyDecimalFormat(textItem.getText(), textItem.getStyle(), decimalFormat)
-                );
-            } else {
-                cellObj.setCellValue("");
-            }
-        } else if (item instanceof Picture) {
+        if (item instanceof Picture) {
             final Picture picture = (Picture) item;
             final InputStream pictureStream = new ByteArrayInputStream(picture.getData());
             final int picInd =
@@ -441,6 +431,16 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
             pictureAnchor.setRow1(row1);
             pictureAnchor.setRow2(row2);
             xssfPicture = drawing.createPicture(pictureAnchor, picInd);
+        } else if (item instanceof DataItem) {
+            final DataItem<?> DataItem = (DataItem<?>) item;
+            workbook.getFontAt(cellObj.getCellStyle().getFontIndex()).setCharSet(fontCharset.getNativeId());
+            if (StringUtils.hasText(DataItem.getText())) {
+                cellObj.setCellValue(
+                    LocalizedNumberUtils.applyDecimalFormat(DataItem.getText(), DataItem.getStyle(), decimalFormat)
+                );
+            } else {
+                cellObj.setCellValue("");
+            }
         }
         if (style instanceof TextStyle) {
             convertTextStyleToCell(cellObj, (TextStyle) style);

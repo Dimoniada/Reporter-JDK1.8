@@ -1,7 +1,6 @@
 package script
 
 import com.model.domain.*
-import com.model.domain.core.DocumentCase
 import com.model.domain.style.*
 import com.model.domain.style.constant.BorderWeight
 import com.model.domain.style.constant.Color

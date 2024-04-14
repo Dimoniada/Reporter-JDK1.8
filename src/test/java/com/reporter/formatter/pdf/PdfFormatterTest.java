@@ -485,12 +485,12 @@ class PdfFormatterTest extends BaseDocument {
 
     @Test
     public void testSavePicture() throws Throwable {
-        final String imageName = "pic.jpg";
+        final String imageName = "pic/pic.jpg";
 
         final URL url = getClass().getClassLoader().getResource(imageName);
         Assertions.assertNotNull(url);
         final WritableResource resource = new PathResource(url.toURI());
-        final Picture pic = Picture.create(IOUtils.toByteArray(resource.getInputStream()), PictureFormat.JPEG);
+        final Picture pic = Picture.create(IOUtils.toByteArray(resource.getInputStream()), PictureFormat.JPG);
 
         final Document document = Document.create(Paragraph.create("Test picture in PDF:"), pic);
 

@@ -14,9 +14,9 @@ import com.model.domain.TableHeaderRow;
 import com.model.domain.TableRow;
 import com.model.domain.Title;
 import com.model.domain.core.CompositionPart;
-import com.model.domain.core.DocumentCase;
+import com.model.domain.DocumentCase;
 import com.model.domain.core.DocumentItem;
-import com.model.domain.core.TextItem;
+import com.model.domain.core.DataItem;
 import com.model.domain.style.BorderStyle;
 import com.model.domain.style.LayoutStyle;
 import com.model.domain.style.Style;
@@ -201,15 +201,15 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
         final HtmlDiv htmlDiv = new HtmlDiv();
         final HtmlStyleService htmlStyleService = (HtmlStyleService) styleService;
         final Style cellStyle = htmlStyleService.getCustomTableCellStyle(tableCellObj);
-        if (tableCellObj instanceof TextItem) {
-            final TextItem<?> textItem = (TextItem<?>) tableCellObj;
+        if (tableCellObj instanceof DataItem) {
+            final DataItem DataItem = (DataItem) tableCellObj;
             final Style cellDivStyle = htmlStyleService.getCustomTableCellDivStyle(htmlDiv);
             if (cellDivStyle != null) {
                 handleTag(htmlTableCell, null, cellStyle, false);
-                handleTag(htmlDiv, textItem.getText(), cellDivStyle, true);
+                handleTag(htmlDiv, DataItem.getText(), cellDivStyle, true);
                 outputStreamWriter.write(htmlTableCell.close());
             } else {
-                handleTag(htmlTableCell, textItem.getText(), cellStyle, true);
+                handleTag(htmlTableCell, DataItem.getText(), cellStyle, true);
             }
         }
         if (tableCellObj instanceof Picture) {

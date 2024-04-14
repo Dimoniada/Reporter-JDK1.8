@@ -9,12 +9,10 @@ public abstract class DataItem<T> extends DocumentItem {
 
     protected byte[] data;
 
-    @Override
-    public String toString() {
-        return
-            MoreObjects.toStringHelper(this)
-                .add("data", data)
-                .toString();
+    @SuppressWarnings("unchecked")
+    public T setData(byte[] data) {
+        this.data = data;
+        return (T) this;
     }
 
     public byte[] getData() {
@@ -22,8 +20,19 @@ public abstract class DataItem<T> extends DocumentItem {
     }
 
     @SuppressWarnings("unchecked")
-    public T setData(byte[] data) {
-        this.data = data;
+    public T setText(String text) {
+        this.data = text != null ? text.getBytes() : null;
         return (T) this;
+    }
+
+    public String getText() {
+        return new String(data != null ? data : new byte[0]);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+            .add("text", getText())
+            .toString();
     }
 }

@@ -198,7 +198,7 @@ public class WordFormatterTest extends BaseDocument {
     public void testSavePictureToDocxFile() throws Throwable {
         final int DOCX_ANGLE_CONST = -60000;
         final WordFormatter docxFormatter = DocxFormatter.create();
-        final URL url = getClass().getClassLoader().getResource("pic.jpg");
+        final URL url = getClass().getClassLoader().getResource("pic/pic.jpg");
         Assertions.assertNotNull(url);
         final WritableResource resource = new PathResource(url.toURI());
         doc = Document.create()
@@ -244,7 +244,7 @@ public class WordFormatterTest extends BaseDocument {
     @Test
     public void testSavePictureInCellToDocxFile() throws Throwable {
         final WordFormatter docxFormatter = DocxFormatter.create();
-        final URL url = getClass().getClassLoader().getResource("pic.jpg");
+        final URL url = getClass().getClassLoader().getResource("pic/pic.jpg");
         Assertions.assertNotNull(url);
         doc = Document.create()
             .addParts(

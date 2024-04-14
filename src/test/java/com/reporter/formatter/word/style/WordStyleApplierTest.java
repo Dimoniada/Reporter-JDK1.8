@@ -14,7 +14,6 @@ public class WordStyleApplierTest {
         Assertions.assertEquals(XWPFDocument.PICTURE_TYPE_EMF, toWordPictureFormat(PictureFormat.EMF));
         Assertions.assertEquals(XWPFDocument.PICTURE_TYPE_WMF, toWordPictureFormat(PictureFormat.WMF));
         Assertions.assertEquals(XWPFDocument.PICTURE_TYPE_PICT, toWordPictureFormat(PictureFormat.PICT));
-        Assertions.assertEquals(XWPFDocument.PICTURE_TYPE_JPEG, toWordPictureFormat(PictureFormat.JPEG));
         Assertions.assertEquals(XWPFDocument.PICTURE_TYPE_JPEG, toWordPictureFormat(PictureFormat.JPG));
         Assertions.assertEquals(XWPFDocument.PICTURE_TYPE_PNG, toWordPictureFormat(PictureFormat.PNG));
         Assertions.assertEquals(XWPFDocument.PICTURE_TYPE_DIB, toWordPictureFormat(PictureFormat.DIB));

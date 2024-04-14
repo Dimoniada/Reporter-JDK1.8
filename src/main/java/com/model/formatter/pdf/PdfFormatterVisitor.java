@@ -13,6 +13,7 @@ import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.properties.AreaBreakType;
 import com.itextpdf.layout.properties.UnitValue;
 import com.model.domain.Document;
+import com.model.domain.DocumentCase;
 import com.model.domain.Footer;
 import com.model.domain.Heading;
 import com.model.domain.Paragraph;
@@ -23,7 +24,6 @@ import com.model.domain.TableHeaderCell;
 import com.model.domain.TableHeaderRow;
 import com.model.domain.TableRow;
 import com.model.domain.Title;
-import com.model.domain.core.DocumentCase;
 import com.model.domain.core.DocumentItem;
 import com.model.domain.style.BorderStyle;
 import com.model.domain.style.Style;
@@ -187,6 +187,7 @@ public abstract class PdfFormatterVisitor extends Formatter implements BaseDetai
 
     @Override
     public void visitFooter(Footer footerObj) throws Exception {
+        //TODO render picture
         final Text text = new Text(footerObj.getText());
         final com.itextpdf.layout.element.Paragraph elParagraph = new com.itextpdf.layout.element.Paragraph(text);
         final Style style =

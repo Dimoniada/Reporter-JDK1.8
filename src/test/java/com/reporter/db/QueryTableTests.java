@@ -11,7 +11,7 @@ import com.model.domain.TableHeaderCell;
 import com.model.domain.TableHeaderRow;
 import com.model.domain.TableRow;
 import com.model.domain.Title;
-import com.model.domain.core.DocumentCase;
+import com.model.domain.DocumentCase;
 import com.model.domain.db.QueryTable;
 import com.model.domain.style.BorderStyle;
 import com.model.domain.style.LayoutStyle;

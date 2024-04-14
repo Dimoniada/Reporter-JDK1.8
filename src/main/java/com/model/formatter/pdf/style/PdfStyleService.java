@@ -28,8 +28,8 @@ import com.itextpdf.layout.properties.UnitValue;
 import com.model.domain.FontService;
 import com.model.domain.Heading;
 import com.model.domain.Picture;
+import com.model.domain.core.DataItem;
 import com.model.domain.core.DocumentItem;
-import com.model.domain.core.TextItem;
 import com.model.domain.style.BorderStyle;
 import com.model.domain.style.LayoutStyle;
 import com.model.domain.style.LayoutTextStyle;
@@ -44,7 +44,7 @@ import com.model.domain.style.geometry.GeometryDetails;
 import com.model.formatter.pdf.PdfDetails;
 import com.model.formatter.pdf.renders.CustomCellPdfRenderer;
 import com.model.formatter.pdf.renders.CustomParagraphPdfRenderer;
-import com.model.utils.ConverterUtils;
+import com.model.utils.CastUtils;
 import com.model.utils.LocalizedNumberUtils;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.springframework.util.StringUtils;
@@ -337,7 +337,7 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
                 .getWidth()
                 .getValueFor(EXTENSION)
                 .ifPresent(value ->
-                    ((BlockElement<?>) outerElement).setWidth(ConverterUtils.<Float>convert(value))
+                    ((BlockElement<?>) outerElement).setWidth(CastUtils.<Float>convert(value))
                 );
         }
         // Height
@@ -346,7 +346,7 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
                 .getHeight()
                 .getValueFor(EXTENSION)
                 .ifPresent(value ->
-                    ((BlockElement<?>) outerElement).setHeight(ConverterUtils.<Float>convert(value))
+                    ((BlockElement<?>) outerElement).setHeight(CastUtils.<Float>convert(value))
                 );
         }
         // Rotation angle
@@ -355,7 +355,7 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
                 .getAngle()
                 .getValueFor(EXTENSION)
                 .ifPresent(value -> ((BlockElement<?>) outerElement)
-                    .setRotationAngle((float) ConverterUtils.convert(value) * Math.PI / 180f)
+                    .setRotationAngle((float) CastUtils.convert(value) * Math.PI / 180f)
                 );
         }
 
@@ -365,14 +365,14 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
             geometryDetails
                 .getScaleX()
                 .getValueFor(EXTENSION)
-                .ifPresent(value -> scaleX.set(ConverterUtils.convert(value)));
+                .ifPresent(value -> scaleX.set(CastUtils.convert(value)));
         }
         final AtomicReference<Float> scaleY = new AtomicReference<>(1f);
         if (geometryDetails.getScaleY() != null) {
             geometryDetails
                 .getScaleY()
                 .getValueFor(EXTENSION)
-                .ifPresent(value -> scaleY.set(ConverterUtils.convert(value)));
+                .ifPresent(value -> scaleY.set(CastUtils.convert(value)));
         }
         final UnitValue uv = new UnitValue(UnitValue.POINT, 0);
         final Transform transform = new Transform(1);
@@ -412,7 +412,7 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
      * @param o    pdf document
      * @throws Exception on bad decimalFormat or font creation error
      */
-    public void handleSimpleElement(TextItem<?> item, com.itextpdf.layout.Document o) throws Exception {
+    public void handleSimpleElement(DataItem<?> item, com.itextpdf.layout.Document o) throws Exception {
         final Text text =
             new Text(LocalizedNumberUtils.applyDecimalFormat(item.getText(), item.getStyle(), decimalFormat));
         final com.itextpdf.layout.element.Paragraph elParagraph = new com.itextpdf.layout.element.Paragraph(text);
@@ -434,13 +434,13 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
     public Cell handleTableCustomCell(DocumentItem tableCustomCell) throws Exception {
         AbstractElement<?> element = null;
         final com.itextpdf.layout.element.Paragraph paragraph = new com.itextpdf.layout.element.Paragraph();
-        if (tableCustomCell instanceof TextItem<?>) {
-            final TextItem<?> textItem = (TextItem<?>) tableCustomCell;
+        if (tableCustomCell instanceof DataItem<?>) {
+            final DataItem<?> DataItem = (DataItem<?>) tableCustomCell;
             element =
                 new Text(
                     LocalizedNumberUtils.applyDecimalFormat(
-                        textItem.getText(),
-                        textItem.getStyle(),
+                        DataItem.getText(),
+                        DataItem.getStyle(),
                         decimalFormat
                     )
                 );

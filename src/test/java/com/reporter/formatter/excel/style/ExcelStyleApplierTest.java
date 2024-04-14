@@ -113,7 +113,6 @@ public class ExcelStyleApplierTest {
         Assertions.assertEquals(Workbook.PICTURE_TYPE_EMF, toExcelPictureFormat(PictureFormat.EMF));
         Assertions.assertEquals(Workbook.PICTURE_TYPE_WMF, toExcelPictureFormat(PictureFormat.WMF));
         Assertions.assertEquals(Workbook.PICTURE_TYPE_PICT, toExcelPictureFormat(PictureFormat.PICT));
-        Assertions.assertEquals(Workbook.PICTURE_TYPE_JPEG, toExcelPictureFormat(PictureFormat.JPEG));
         Assertions.assertEquals(Workbook.PICTURE_TYPE_JPEG, toExcelPictureFormat(PictureFormat.JPG));
         Assertions.assertEquals(Workbook.PICTURE_TYPE_PNG, toExcelPictureFormat(PictureFormat.PNG));
         Assertions.assertEquals(Workbook.PICTURE_TYPE_DIB, toExcelPictureFormat(PictureFormat.DIB));

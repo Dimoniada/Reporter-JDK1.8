@@ -1,13 +1,12 @@
 package com.model.domain;
 
-import com.google.common.base.MoreObjects;
-import com.model.domain.core.TextItem;
+import com.model.domain.core.DataItem;
 import com.model.formatter.FormatterVisitor;
 
 /**
  * Text footer
  */
-public class Footer extends TextItem<Footer> {
+public class Footer extends DataItem<Footer> {
 
     public static Footer create() {
         return new Footer();
@@ -21,12 +20,5 @@ public class Footer extends TextItem<Footer> {
     public Footer accept(FormatterVisitor visitor) throws Throwable {
         visitor.visitFooter(this);
         return this;
-    }
-
-    @Override
-    public String toString() {
-        return
-            MoreObjects.toStringHelper(this)
-                .toString();
     }
 }

@@ -24,7 +24,7 @@ import com.model.formatter.html.tag.Html4Font;
 import com.model.formatter.html.tag.Html4StyledTag;
 import com.model.formatter.html.tag.HtmlDiv;
 import com.model.formatter.html.tag.HtmlTag;
-import com.model.utils.ConverterUtils;
+import com.model.utils.CastUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.HtmlUtils;
 
@@ -126,7 +126,7 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
         if (geometry != null) {
             geometry
                 .getValueFor(EXTENSION)
-                .ifPresent(value -> res.set(prefix + ConverterUtils.convert(value) + suffix));
+                .ifPresent(value -> res.set(prefix + CastUtils.convert(value) + suffix));
         }
         return res.get();
     }

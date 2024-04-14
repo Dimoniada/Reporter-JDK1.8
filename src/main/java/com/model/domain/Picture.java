@@ -6,7 +6,6 @@ import com.model.domain.style.constant.PictureFormat;
 import com.model.formatter.FormatterVisitor;
 
 import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
@@ -38,11 +37,9 @@ public class Picture extends DataItem<Picture> {
      * @throws IOException if an error occurs during picture data reading
      */
     public int getHeight() throws IOException {
-        if (data == null) {
-            return 0;
-        }
-        final BufferedImage buf = ImageIO.read(new ByteArrayInputStream(data));
-        return buf.getHeight();
+        return data == null
+            ? 0
+            : ImageIO.read(new ByteArrayInputStream(data)).getHeight();
     }
 
     /**
@@ -50,11 +47,9 @@ public class Picture extends DataItem<Picture> {
      * @throws IOException if an error occurs during picture data reading
      */
     public int getWidth() throws IOException {
-        if (data == null) {
-            return 0;
-        }
-        final BufferedImage buf = ImageIO.read(new ByteArrayInputStream(data));
-        return buf.getWidth();
+        return data == null
+            ? 0
+            : ImageIO.read(new ByteArrayInputStream(data)).getWidth();
     }
 
     public PictureFormat getFormat() {

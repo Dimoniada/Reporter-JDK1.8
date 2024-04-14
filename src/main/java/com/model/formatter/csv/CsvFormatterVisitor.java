@@ -13,7 +13,7 @@ import com.model.domain.TableHeaderCell;
 import com.model.domain.TableHeaderRow;
 import com.model.domain.TableRow;
 import com.model.domain.Title;
-import com.model.domain.core.DocumentCase;
+import com.model.domain.DocumentCase;
 import com.model.formatter.BaseDetails;
 import com.model.formatter.Formatter;
 import com.model.utils.LocalizedNumberUtils;

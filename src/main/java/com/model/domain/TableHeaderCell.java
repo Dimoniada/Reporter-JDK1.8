@@ -1,14 +1,14 @@
 package com.model.domain;
 
 import com.google.common.base.MoreObjects;
-import com.model.domain.core.TextItem;
+import com.model.domain.core.DataItem;
 import com.model.formatter.FormatterVisitor;
 
 /**
  * Table header cell,
  * contains data in text form
  */
-public class TableHeaderCell extends TextItem<TableHeaderCell> {
+public class TableHeaderCell extends DataItem<TableHeaderCell> {
     /**
      * For instance, is a parent column's index
      */
@@ -35,7 +35,11 @@ public class TableHeaderCell extends TextItem<TableHeaderCell> {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
+        final MoreObjects.ToStringHelper toStringHelper = MoreObjects.toStringHelper(this);
+        if (!this.getClass().isAssignableFrom(Picture.class)) {
+            toStringHelper.add("text", this.getText());
+        }
+        return toStringHelper
             .add("columnIndex", columnIndex)
             .add("aliasName", aliasName)
             .toString();

@@ -1,14 +1,14 @@
 package com.model.domain;
 
 import com.google.common.base.MoreObjects;
-import com.model.domain.core.TextItem;
+import com.model.domain.core.DataItem;
 import com.model.formatter.FormatterVisitor;
 
 /**
  * Document header class
  * {@link Heading#depth} - heading level
  */
-public class Heading extends TextItem<Heading> {
+public class Heading extends DataItem<Heading> {
     /**
      * header level,
      * is always greater than or equal to 0.
@@ -36,10 +36,13 @@ public class Heading extends TextItem<Heading> {
 
     @Override
     public String toString() {
-        return
-            MoreObjects.toStringHelper(this)
-                .add("depth", depth)
-                .toString();
+        final MoreObjects.ToStringHelper toStringHelper = MoreObjects.toStringHelper(this);
+        if (!this.getClass().isAssignableFrom(Picture.class)) {
+            toStringHelper.add("text", this.getText());
+        }
+        return toStringHelper
+            .add("depth", depth)
+            .toString();
     }
 
     public int getDepth() {

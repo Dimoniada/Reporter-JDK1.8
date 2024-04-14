@@ -13,7 +13,7 @@ import com.model.domain.TableHeaderRow;
 import com.model.domain.TableRow;
 import com.model.domain.Title;
 import com.model.domain.core.CompositionPart;
-import com.model.domain.core.DocumentCase;
+import com.model.domain.DocumentCase;
 import com.model.domain.core.DocumentItem;
 
 /**
