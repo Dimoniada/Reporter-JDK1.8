@@ -29,7 +29,7 @@ import com.model.domain.FontService;
 import com.model.domain.Heading;
 import com.model.domain.Picture;
 import com.model.domain.core.DataItem;
-import com.model.domain.core.DocumentItem;
+import com.model.domain.core.TextItem;
 import com.model.domain.style.BorderStyle;
 import com.model.domain.style.LayoutStyle;
 import com.model.domain.style.LayoutTextStyle;
@@ -412,7 +412,7 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
      * @param o    pdf document
      * @throws Exception on bad decimalFormat or font creation error
      */
-    public void handleSimpleElement(DataItem<?> item, com.itextpdf.layout.Document o) throws Exception {
+    public void handleSimpleElement(TextItem<?> item, com.itextpdf.layout.Document o) throws Exception {
         final Text text =
             new Text(LocalizedNumberUtils.applyDecimalFormat(item.getText(), item.getStyle(), decimalFormat));
         final com.itextpdf.layout.element.Paragraph elParagraph = new com.itextpdf.layout.element.Paragraph(text);
@@ -431,22 +431,21 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
      * @return native pdf cell
      * @throws Exception when converting style
      */
-    public Cell handleTableCustomCell(DocumentItem tableCustomCell) throws Exception {
+    public Cell handleTableCustomCell(DataItem<?> tableCustomCell) throws Exception {
         AbstractElement<?> element = null;
         final com.itextpdf.layout.element.Paragraph paragraph = new com.itextpdf.layout.element.Paragraph();
-        if (tableCustomCell instanceof DataItem<?>) {
-            final DataItem<?> DataItem = (DataItem<?>) tableCustomCell;
+        if (tableCustomCell.isInheritedFrom(TextItem.class)) {
             element =
                 new Text(
                     LocalizedNumberUtils.applyDecimalFormat(
-                        DataItem.getText(),
-                        DataItem.getStyle(),
+                        tableCustomCell.getText(),
+                        tableCustomCell.getStyle(),
                         decimalFormat
                     )
                 );
             paragraph.add((Text) element);
         }
-        if (tableCustomCell instanceof Picture) {
+        if (tableCustomCell.isInheritedFrom(Picture.class)) {
             final Picture picture = (Picture) tableCustomCell;
             final ImageData imageData = ImageDataFactory.create(picture.getData());
             element = new Image(imageData);

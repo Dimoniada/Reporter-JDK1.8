@@ -2,18 +2,18 @@ package com.model.formatter.word;
 
 import com.google.common.base.MoreObjects;
 import com.model.domain.Document;
+import com.model.domain.DocumentCase;
 import com.model.domain.Footer;
 import com.model.domain.Heading;
 import com.model.domain.Paragraph;
 import com.model.domain.Picture;
 import com.model.domain.Separator;
 import com.model.domain.Table;
+import com.model.domain.TableCell;
 import com.model.domain.TableHeaderCell;
 import com.model.domain.TableHeaderRow;
 import com.model.domain.TableRow;
 import com.model.domain.Title;
-import com.model.domain.DocumentCase;
-import com.model.domain.core.DocumentItem;
 import com.model.domain.core.DataItem;
 import com.model.domain.style.Style;
 import com.model.domain.style.StyleService;
@@ -210,7 +210,7 @@ public abstract class WordFormatterVisitor extends Formatter implements BaseDeta
     }
 
     @Override
-    public void visitTableCell(DocumentItem tableCellObj) throws Exception {
+    public void visitTableCell(TableCell tableCellObj) throws Exception {
         final XWPFTableRow row = docxTable.getRow(docxTable.getNumberOfRows() - 1);
         final XWPFTableCell cell = row.createCell();
         ((WordStyleService) styleService).handleCustomItem(tableCellObj, cell);
@@ -240,7 +240,7 @@ public abstract class WordFormatterVisitor extends Formatter implements BaseDeta
         ((WordStyleService) styleService).handleCustomItem(pictureObj, wordDocument.createParagraph());
     }
 
-    public void handleCustomItem(DataItem item, Object element) throws Exception {
+    public void handleCustomItem(DataItem<?> item, Object element) throws Exception {
         ((WordStyleService) styleService).handleCustomItem(item, element);
     }
 

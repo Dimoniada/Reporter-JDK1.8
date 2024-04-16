@@ -97,21 +97,21 @@ public class QueryTableTests extends BaseQueryDocument {
             .setNamedParameterJdbcTemplate(jdbcTemplateH2)
             .setTableHeaderRow(
                 TableHeaderRow.create().addParts(
-                        TableHeaderCell.create().setText("Login")
+                        TableHeaderCell.create("Login")
                             .setAliasName("_login_"),
-                        TableHeaderCell.create().setText("Conventional name of the client")
+                        TableHeaderCell.create("Conventional name of the client")
                             .setAliasName("_client_name_"),
-                        TableHeaderCell.create().setText("14.03.2021")
+                        TableHeaderCell.create("14.03.2021")
                             .setAliasName("_date1_amount_"),
-                        TableHeaderCell.create().setText("15.03.2021")
+                        TableHeaderCell.create("15.03.2021")
                             .setAliasName("_date2_amount_"),
-                        TableHeaderCell.create().setText("Абсолютное изменение")
+                        TableHeaderCell.create("Абсолютное изменение")
                             .setAliasName("_abs_diff_"),
-                        TableHeaderCell.create().setText("Relative change")
+                        TableHeaderCell.create("Relative change")
                             .setAliasName("_rel_diff_percent_"),
-                        TableHeaderCell.create().setText("User name")
+                        TableHeaderCell.create("User name")
                             .setAliasName("_username_"),
-                        TableHeaderCell.create().setText("User password")
+                        TableHeaderCell.create("User password")
                             .setAliasName("_password_")
                     )
                     .spreadStyleToParts(headerCellStyle)

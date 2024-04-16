@@ -2,18 +2,18 @@ package com.model.formatter.csv;
 
 import com.google.common.base.MoreObjects;
 import com.model.domain.Document;
+import com.model.domain.DocumentCase;
 import com.model.domain.Footer;
 import com.model.domain.Heading;
 import com.model.domain.Paragraph;
 import com.model.domain.Picture;
 import com.model.domain.Separator;
 import com.model.domain.Table;
-import com.model.domain.TableCell;
-import com.model.domain.TableHeaderCell;
 import com.model.domain.TableHeaderRow;
 import com.model.domain.TableRow;
 import com.model.domain.Title;
-import com.model.domain.DocumentCase;
+import com.model.domain.core.DataItem;
+import com.model.domain.core.TextItem;
 import com.model.formatter.BaseDetails;
 import com.model.formatter.Formatter;
 import com.model.utils.LocalizedNumberUtils;
@@ -27,6 +27,8 @@ import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * The class generates a csv representation of the document {@link Document}
@@ -92,18 +94,32 @@ public abstract class CsvFormatterVisitor extends Formatter implements BaseDetai
 
     @Override
     public void visitTableHeaderRow(TableHeaderRow tableHeaderRowObj) throws Throwable {
-        final List<String> tableRow = new ArrayList<>();
-        for (final TableHeaderCell o : tableHeaderRowObj.getParts()) {
-            tableRow.add(LocalizedNumberUtils.applyDecimalFormat(o.getText(), o.getStyle(), decimalFormat));
-        }
-        csvWriter.write(tableRow);
+        writeRow(
+            StreamSupport
+                .stream(
+                    tableHeaderRowObj.getParts().spliterator(),
+                    false
+                )
+                .collect(Collectors.toList())
+        );
     }
 
     @Override
     public void visitTableRow(TableRow tableRowObj) throws Throwable {
+        writeRow(
+            StreamSupport
+                .stream(
+                    tableRowObj.getParts().spliterator(),
+                    false
+                )
+                .collect(Collectors.toList()));
+    }
+
+    protected void writeRow(Iterable<DataItem<?>> tableCells) throws Throwable {
         final List<String> tableRow = new ArrayList<>();
-        for (final TableCell o : tableRowObj.getParts()) {
-            tableRow.add(LocalizedNumberUtils.applyDecimalFormat(o.getText(), o.getStyle(), decimalFormat));
+        for (final DataItem<?> o : tableCells) {
+            final String text = o.isInheritedFrom(TextItem.class) ? o.getText() : "{picture}";
+            tableRow.add(LocalizedNumberUtils.applyDecimalFormat(text, o.getStyle(), decimalFormat));
         }
         csvWriter.write(tableRow);
     }

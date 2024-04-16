@@ -2,6 +2,8 @@ package com.model.domain;
 
 import com.google.common.base.MoreObjects;
 import com.model.domain.core.DataItem;
+import com.model.domain.core.PictureItem;
+import com.model.domain.core.TextItem;
 import com.model.formatter.FormatterVisitor;
 
 /**
@@ -10,6 +12,10 @@ import com.model.formatter.FormatterVisitor;
  * rowIndex and columnIndex
  */
 public class TableCell extends DataItem<TableCell> {
+    /**
+     * Delegated item for storing either text or picture
+     */
+    protected DataItem<TableCell> dataItem;
     /**
      * Row index
      */
@@ -20,11 +26,42 @@ public class TableCell extends DataItem<TableCell> {
     protected long columnIndex;
 
     public static TableCell create(String text) {
-        return new TableCell().setText(text);
+        final TableCell tableCell = new TableCell();
+        tableCell.dataItem = new TextItem<DataItem<TableCell>>().setText(text);
+        return tableCell;
     }
 
-    public static TableCell create() {
-        return new TableCell();
+    public static TableCell create(byte[] data) {
+        final TableCell tableCell = new TableCell();
+        tableCell.dataItem = new PictureItem<DataItem<TableCell>>().setData(data);
+        return tableCell;
+    }
+
+    @Override
+    public boolean isInheritedFrom(Class<?> type) {
+        return type.isAssignableFrom(dataItem.getClass());
+    }
+
+    @Override
+    public String getText() {
+        return dataItem.getText();
+    }
+
+    @Override
+    public byte[] getData() {
+        return dataItem.getData();
+    }
+
+    @Override
+    public TableCell setText(String text) throws Throwable {
+        dataItem.setText(text);
+        return this;
+    }
+
+    @Override
+    public TableCell setData(byte[] data) throws Throwable {
+        dataItem.setData(data);
+        return this;
     }
 
     @Override
@@ -36,12 +73,10 @@ public class TableCell extends DataItem<TableCell> {
     @Override
     public String toString() {
         final MoreObjects.ToStringHelper toStringHelper = MoreObjects.toStringHelper(this);
-        if (!this.getClass().isAssignableFrom(Picture.class)) {
-            toStringHelper.add("text", this.getText());
-        }
         return toStringHelper
             .add("rowIndex", rowIndex)
             .add("columnIndex", columnIndex)
+            .add("super", super.toString())
             .toString();
     }
 

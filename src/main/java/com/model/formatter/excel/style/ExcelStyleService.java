@@ -3,7 +3,7 @@ package com.model.formatter.excel.style;
 import com.google.common.base.MoreObjects;
 import com.model.domain.Picture;
 import com.model.domain.core.DataItem;
-import com.model.domain.core.DocumentItem;
+import com.model.domain.core.TextItem;
 import com.model.domain.style.BorderStyle;
 import com.model.domain.style.LayoutStyle;
 import com.model.domain.style.LayoutTextStyle;
@@ -401,18 +401,28 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
     /**
      * Writes DocumentItem to excel cell
      *
-     * @param item    DocumentItem
-     * @param cellObj native excel cell
+     * @param dataItem DocumentItem
+     * @param cellObj  native excel cell
      * @throws ParseException when can't apply FontCharset and DecimalFormat to cell
      * @throws IOException    when can't find/read picture or convert it to byte array
      * @throws Exception      on joining styles
      */
-    public void writeItemToCell(DocumentItem item, org.apache.poi.ss.usermodel.Cell cellObj)
+    public void writeItemToCell(DataItem<?> dataItem, org.apache.poi.ss.usermodel.Cell cellObj)
         throws Exception {
         XSSFPicture xssfPicture = null;
-        final Style style = prepareStyleFrom(item);
-        if (item instanceof Picture) {
-            final Picture picture = (Picture) item;
+        final Style style = prepareStyleFrom(dataItem);
+        if (dataItem.isInheritedFrom(TextItem.class)) {
+            workbook.getFontAt(cellObj.getCellStyle().getFontIndex()).setCharSet(fontCharset.getNativeId());
+            if (StringUtils.hasText(dataItem.getText())) {
+                cellObj.setCellValue(
+                    LocalizedNumberUtils.applyDecimalFormat(dataItem.getText(), dataItem.getStyle(), decimalFormat)
+                );
+            } else {
+                cellObj.setCellValue("");
+            }
+        }
+        if (dataItem.isInheritedFrom(Picture.class)) {
+            final Picture picture = (Picture) dataItem;
             final InputStream pictureStream = new ByteArrayInputStream(picture.getData());
             final int picInd =
                 workbook.addPicture(
@@ -431,16 +441,6 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
             pictureAnchor.setRow1(row1);
             pictureAnchor.setRow2(row2);
             xssfPicture = drawing.createPicture(pictureAnchor, picInd);
-        } else if (item instanceof DataItem) {
-            final DataItem<?> DataItem = (DataItem<?>) item;
-            workbook.getFontAt(cellObj.getCellStyle().getFontIndex()).setCharSet(fontCharset.getNativeId());
-            if (StringUtils.hasText(DataItem.getText())) {
-                cellObj.setCellValue(
-                    LocalizedNumberUtils.applyDecimalFormat(DataItem.getText(), DataItem.getStyle(), decimalFormat)
-                );
-            } else {
-                cellObj.setCellValue("");
-            }
         }
         if (style instanceof TextStyle) {
             convertTextStyleToCell(cellObj, (TextStyle) style);

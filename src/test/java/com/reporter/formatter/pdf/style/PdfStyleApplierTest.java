@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class PdfStyleApplierTest {
-    private final Text DataItem = new Text("");
+    private final Text text = new Text("");
     private final SolidBorder border = new SolidBorder(1);
 
     private final LayoutStyle layoutStyle = LayoutStyle.create()
@@ -28,18 +28,18 @@ public class PdfStyleApplierTest {
 
     @Test
     public void testConvertGroundColor() {
-        PdfStyleService.convertGroundColor(DataItem, layoutStyle);
+        PdfStyleService.convertGroundColor(text, layoutStyle);
 
         Assertions.assertEquals(PdfStyleService.toPdfColor(Color.TEAL),
-            ((Background) DataItem.getProperty(Property.BACKGROUND)).getColor());
+            ((Background) text.getProperty(Property.BACKGROUND)).getColor());
     }
 
     @Test
     public void testConvertHorizontalAlignment() {
-        PdfStyleService.convertHorizontalAlignment(DataItem, layoutStyle);
+        PdfStyleService.convertHorizontalAlignment(text, layoutStyle);
 
         Assertions.assertEquals(PdfStyleService.toPdfHorAlignment(HorAlignment.RIGHT),
-            DataItem.getProperty(Property.TEXT_ALIGNMENT));
+            text.getProperty(Property.TEXT_ALIGNMENT));
     }
 
     @Test
@@ -51,10 +51,10 @@ public class PdfStyleApplierTest {
 
     @Test
     public void testConvertBorder() {
-        PdfStyleService.convertBorder(layoutStyle.getBorderLeft(), DataItem::setBorderLeft, false);
+        PdfStyleService.convertBorder(layoutStyle.getBorderLeft(), text::setBorderLeft, false);
 
         Assertions.assertEquals(PdfStyleService.toPdfBorder(BorderWeight.MEDIUM),
-            DataItem.getProperty(Property.BORDER_LEFT));
+            text.getProperty(Property.BORDER_LEFT));
     }
 
 }

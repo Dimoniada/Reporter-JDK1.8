@@ -1,18 +1,19 @@
 package com.model.formatter;
 
 import com.model.domain.Document;
+import com.model.domain.DocumentCase;
 import com.model.domain.Footer;
 import com.model.domain.Heading;
 import com.model.domain.Paragraph;
 import com.model.domain.Picture;
 import com.model.domain.Separator;
 import com.model.domain.Table;
+import com.model.domain.TableCell;
 import com.model.domain.TableHeaderCell;
 import com.model.domain.TableHeaderRow;
 import com.model.domain.TableRow;
 import com.model.domain.Title;
 import com.model.domain.core.CompositionPart;
-import com.model.domain.DocumentCase;
 import com.model.domain.core.DocumentItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,7 +89,7 @@ public class FormatterVisitor implements Visitor {
     }
 
     @Override
-    public void visitTableCell(DocumentItem tableCellObj) throws Throwable {
+    public void visitTableCell(TableCell tableCellObj) throws Throwable {
         log.debug("No overriding for visitTableCell: {}", tableCellObj);
         throw new Throwable("No overriding for visitTableCell " + superClassName);
     }

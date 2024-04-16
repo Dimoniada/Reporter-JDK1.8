@@ -1,7 +1,7 @@
 package com.model.domain;
 
 import com.google.common.base.MoreObjects;
-import com.model.domain.core.DataItem;
+import com.model.domain.core.PictureItem;
 import com.model.domain.style.constant.PictureFormat;
 import com.model.formatter.FormatterVisitor;
 
@@ -13,7 +13,7 @@ import java.io.IOException;
  * Picture class,
  * contains InputStream data, picture format {@link PictureFormat} and picture text if data == null
  */
-public class Picture extends DataItem<Picture> {
+public class Picture extends PictureItem<Picture> {
 
     protected PictureFormat format;
 
@@ -71,6 +71,7 @@ public class Picture extends DataItem<Picture> {
     public String toString() {
         return MoreObjects.toStringHelper(this)
             .add("format", format)
+            .add("super", super.toString())
             .toString();
     }
 }

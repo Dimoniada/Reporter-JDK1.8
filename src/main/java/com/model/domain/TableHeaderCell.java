@@ -2,6 +2,8 @@ package com.model.domain;
 
 import com.google.common.base.MoreObjects;
 import com.model.domain.core.DataItem;
+import com.model.domain.core.PictureItem;
+import com.model.domain.core.TextItem;
 import com.model.formatter.FormatterVisitor;
 
 /**
@@ -9,6 +11,10 @@ import com.model.formatter.FormatterVisitor;
  * contains data in text form
  */
 public class TableHeaderCell extends DataItem<TableHeaderCell> {
+    /**
+     * Delegated item for storing either text or picture
+     */
+    protected DataItem<TableHeaderCell> dataItem;
     /**
      * For instance, is a parent column's index
      */
@@ -20,11 +26,42 @@ public class TableHeaderCell extends DataItem<TableHeaderCell> {
     protected String aliasName = "";
 
     public static TableHeaderCell create(String text) {
-        return new TableHeaderCell().setText(text);
+        final TableHeaderCell tableHeaderCell = new TableHeaderCell();
+        tableHeaderCell.dataItem = new TextItem<DataItem<TableHeaderCell>>().setText(text);
+        return tableHeaderCell;
     }
 
-    public static TableHeaderCell create() {
-        return new TableHeaderCell();
+    public static TableHeaderCell create(byte[] data) {
+        final TableHeaderCell tableHeaderCell = new TableHeaderCell();
+        tableHeaderCell.dataItem = new PictureItem<DataItem<TableHeaderCell>>().setData(data);
+        return tableHeaderCell;
+    }
+
+    @Override
+    public boolean isInheritedFrom(Class<?> type) {
+        return type.isAssignableFrom(dataItem.getClass());
+    }
+
+    @Override
+    public String getText() {
+        return dataItem.getText();
+    }
+
+    @Override
+    public byte[] getData() {
+        return dataItem.getData();
+    }
+
+    @Override
+    public TableHeaderCell setText(String text) throws Throwable {
+        dataItem.setText(text);
+        return this;
+    }
+
+    @Override
+    public TableHeaderCell setData(byte[] data) throws Throwable {
+        dataItem.setData(data);
+        return this;
     }
 
     @Override
@@ -36,12 +73,10 @@ public class TableHeaderCell extends DataItem<TableHeaderCell> {
     @Override
     public String toString() {
         final MoreObjects.ToStringHelper toStringHelper = MoreObjects.toStringHelper(this);
-        if (!this.getClass().isAssignableFrom(Picture.class)) {
-            toStringHelper.add("text", this.getText());
-        }
         return toStringHelper
             .add("columnIndex", columnIndex)
             .add("aliasName", aliasName)
+            .add("super", super.toString())
             .toString();
     }
 

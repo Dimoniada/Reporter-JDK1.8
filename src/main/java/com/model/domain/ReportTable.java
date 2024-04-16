@@ -116,9 +116,8 @@ public class ReportTable extends Table {
             final Consumer<String> addHeaderCell =
                 name -> thr.addPart(
                     TableHeaderCell
-                        .create()
+                        .create(name)
                         .setAliasName(name)
-                        .setText(name)
                 );
             final Class<?> actualClass = optItem.get().getClass();
             if (Proxy.isProxyClass(actualClass) && actualClass.getInterfaces().length > 0) {

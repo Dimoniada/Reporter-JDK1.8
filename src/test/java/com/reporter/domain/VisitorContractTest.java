@@ -53,7 +53,8 @@ public class VisitorContractTest {
 
     @Test
     public void testHeadingVisit() throws Throwable {
-        final Heading heading = new Heading(DEFAULT_DEPTH);
+        final Heading heading = new Heading(DEFAULT_DEPTH).setText("test heading");
+        heading.toString();
 
         doNothing().when(mock).visitHeading(any());
         heading.accept(mock);

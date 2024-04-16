@@ -137,8 +137,7 @@ public class TutorialTest {
             columns.forEach(c ->                        //then we might customize visual names in report
                 tableHeaderRow
                     .addPart(TableHeaderCell
-                        .create()
-                        .setText(c)                     //Choice of arbitrary table column names in report
+                        .create(c)                      //Choice of arbitrary table column names in report
                         .setAliasName(c)                //to be match real column names from db
                     )
             );

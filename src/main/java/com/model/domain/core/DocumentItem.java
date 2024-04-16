@@ -27,7 +27,7 @@ public abstract class DocumentItem {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
+        return MoreObjects.toStringHelper(DocumentItem.class)
             .add("style", style)
             .add("parentObject", parentObject)
             .toString();

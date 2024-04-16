@@ -2,14 +2,14 @@ package com.model.domain.style;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.model.domain.core.DataItem;
+import com.model.domain.core.TextItem;
 import com.model.domain.style.constant.Color;
 
 import java.text.DecimalFormat;
 import java.util.Locale;
 
 /**
- * Represents text style for class {@link DataItem}
+ * Represents text style for class {@link TextItem <?>}
  */
 public class TextStyle extends Style {
     /**

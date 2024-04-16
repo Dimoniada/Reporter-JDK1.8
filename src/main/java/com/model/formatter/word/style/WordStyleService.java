@@ -4,8 +4,8 @@ import com.google.common.base.MoreObjects;
 import com.model.domain.FontService;
 import com.model.domain.Heading;
 import com.model.domain.Picture;
-import com.model.domain.core.DocumentItem;
 import com.model.domain.core.DataItem;
+import com.model.domain.core.TextItem;
 import com.model.domain.style.BorderStyle;
 import com.model.domain.style.LayoutStyle;
 import com.model.domain.style.LayoutTextStyle;
@@ -158,17 +158,17 @@ public class WordStyleService extends StyleService implements DocDetails {
     /**
      * Adds text/picture/data to XWPFRun
      *
-     * @param item  document item
+     * @param dataItem  document dataItem
      * @param run   XWPFRun run
-     * @param style item's style
+     * @param style dataItem's style
      * @throws ParseException         number in string could not be resolved
      * @throws IOException            if reading the picture-data from the stream fails
      * @throws InvalidFormatException if the format of the picture is not known
      */
-    protected void addItemToRun(DocumentItem item, XWPFRun run, Style style)
+    protected void addItemToRun(DataItem<?> dataItem, XWPFRun run, Style style)
         throws ParseException, IOException, InvalidFormatException {
-        if (item instanceof Picture) {
-            final Picture picture = (Picture) item;
+        if (dataItem.isInheritedFrom(Picture.class)) {
+            final Picture picture = (Picture) dataItem;
             final Dimension dimension = GeometryUtils.getPictureDimension(picture, style, EXTENSION);
             final int picFormat = toWordPictureFormat(picture.getFormat());
             final XWPFPicture xwpfPicture = run.addPicture(
@@ -179,9 +179,8 @@ public class WordStyleService extends StyleService implements DocDetails {
                 Units.toEMU(dimension.getHeight())
             );
             convertPictureGeometryDetails(xwpfPicture, style);
-        } else if (item instanceof DataItem) {
-            final DataItem<?> DataItem = (DataItem<?>) item;
-            final String text = LocalizedNumberUtils.applyDecimalFormat(DataItem.getText(), style, decimalFormat);
+        } else if (dataItem.isInheritedFrom(TextItem.class)) {
+            final String text = LocalizedNumberUtils.applyDecimalFormat(dataItem.getText(), style, decimalFormat);
             run.setText(text);
         }
     }
@@ -223,7 +222,7 @@ public class WordStyleService extends StyleService implements DocDetails {
      * @throws Exception   on bad decimalFormat or font can't be found error
      * @throws IOException if picture details reading failure
      */
-    public void handleCustomItem(DocumentItem item, Object element) throws Exception {
+    public void handleCustomItem(DataItem<?> item, Object element) throws Exception {
         final Style style = extractStyleFor(item).orElse(item.getStyle());
         if (element instanceof XWPFParagraph) {
             final XWPFParagraph paragraph = (XWPFParagraph) element;

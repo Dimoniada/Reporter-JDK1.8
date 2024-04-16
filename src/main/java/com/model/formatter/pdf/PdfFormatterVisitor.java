@@ -20,11 +20,11 @@ import com.model.domain.Paragraph;
 import com.model.domain.Picture;
 import com.model.domain.Separator;
 import com.model.domain.Table;
+import com.model.domain.TableCell;
 import com.model.domain.TableHeaderCell;
 import com.model.domain.TableHeaderRow;
 import com.model.domain.TableRow;
 import com.model.domain.Title;
-import com.model.domain.core.DocumentItem;
 import com.model.domain.style.BorderStyle;
 import com.model.domain.style.Style;
 import com.model.domain.style.StyleService;
@@ -165,7 +165,7 @@ public abstract class PdfFormatterVisitor extends Formatter implements BaseDetai
     }
 
     @Override
-    public void visitTableCell(DocumentItem tableCellObj) throws Exception {
+    public void visitTableCell(TableCell tableCellObj) throws Exception {
         final Cell cell = ((PdfStyleService) styleService).handleTableCustomCell(tableCellObj);
         table.addCell(cell);
     }

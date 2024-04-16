@@ -1,13 +1,13 @@
 package com.model.domain;
 
-import com.model.domain.core.DataItem;
+import com.model.domain.core.TextItem;
 import com.model.formatter.FormatterVisitor;
 
 /**
  * Document title,
  * contains only text
  */
-public class Title extends DataItem<Title> {
+public class Title extends TextItem<Title> {
 
     public static Title create() {
         return new Title();

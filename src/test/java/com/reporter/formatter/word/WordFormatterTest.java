@@ -251,15 +251,15 @@ public class WordFormatterTest extends BaseDocument {
                 Table.create(
                         TableHeaderRow.create()
                             .addParts(
-                                TableHeaderCell.create().setText("Header cell 1"),
-                                TableHeaderCell.create().setText("Header cell 2")
+                                TableHeaderCell.create("Header cell 1"),
+                                TableHeaderCell.create("Header cell 2")
                             )
                     )
                     .addParts(
                         TableRow.create()
                             .addParts(
-                                TableCell.create().setText("Cell 1"),
-                                TableCell.create().setText("Cell 2")
+                                TableCell.create("Cell 1"),
+                                TableCell.create("Cell 2")
                                     .setStyle(
                                         LayoutStyle.create()
                                             .setGeometryDetails(

@@ -43,7 +43,6 @@ public class Table extends CompositionPart<Table, TableRow> {
 
     public static Table create(TableHeaderRow tableHeaderRow) {
         final Table table = new Table();
-        tableHeaderRow.setParentObject(table);
         table.setTableHeaderRow(tableHeaderRow);
         return table;
     }

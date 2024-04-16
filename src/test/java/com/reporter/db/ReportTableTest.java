@@ -113,17 +113,17 @@ public class ReportTableTest extends BaseQueryDocument {
             .setNamedParameterJdbcTemplate(jdbcTemplateH2)
             .setTableHeaderRow(
                 TableHeaderRow.create().addParts(
-                    TableHeaderCell.create().setText("Login")
+                    TableHeaderCell.create("Login")
                         .setAliasName("login"),
-                    TableHeaderCell.create().setText("Name of client")
+                    TableHeaderCell.create("Name of client")
                         .setAliasName("legal_person_name"),
-                    TableHeaderCell.create().setText("2021-05-25")
+                    TableHeaderCell.create("2021-05-25")
                         .setAliasName("date1_amount"),
-                    TableHeaderCell.create().setText("2021-05-26")
+                    TableHeaderCell.create("2021-05-26")
                         .setAliasName("date2_amount"),
-                    TableHeaderCell.create().setText("Absolute change")
+                    TableHeaderCell.create("Absolute change")
                         .setAliasName("abs_diff"),
-                    TableHeaderCell.create().setText("Relative change")
+                    TableHeaderCell.create("Relative change")
                         .setAliasName("rel_diff_percent")
                 )
             )
@@ -219,10 +219,7 @@ public class ReportTableTest extends BaseQueryDocument {
         columns.forEach(c ->
             tableHeaderRow
                 .addPart(TableHeaderCell
-                    .create()
-                    .setText(
-                        messageSource.getMessage("entity.partner." + c, null, Locale.forLanguageTag(locale))
-                    )
+                    .create(messageSource.getMessage("entity.partner." + c, null, Locale.forLanguageTag(locale)))
                     .setAliasName(c)
                 )
         );
@@ -394,8 +391,7 @@ public class ReportTableTest extends BaseQueryDocument {
                             .stream()
                             .map(e ->
                                     TableHeaderCell
-                                        .create()
-                                        .setText(e.getKey())
+                                        .create(e.getKey())
                                         .setAliasName(e.getValue())
                                 )
                             .toArray(TableHeaderCell[]::new)

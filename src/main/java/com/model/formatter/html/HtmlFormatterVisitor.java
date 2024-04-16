@@ -2,6 +2,7 @@ package com.model.formatter.html;
 
 import com.google.common.base.MoreObjects;
 import com.model.domain.Document;
+import com.model.domain.DocumentCase;
 import com.model.domain.Footer;
 import com.model.domain.Heading;
 import com.model.domain.Paragraph;
@@ -14,9 +15,7 @@ import com.model.domain.TableHeaderRow;
 import com.model.domain.TableRow;
 import com.model.domain.Title;
 import com.model.domain.core.CompositionPart;
-import com.model.domain.DocumentCase;
-import com.model.domain.core.DocumentItem;
-import com.model.domain.core.DataItem;
+import com.model.domain.core.TextItem;
 import com.model.domain.style.BorderStyle;
 import com.model.domain.style.LayoutStyle;
 import com.model.domain.style.Style;
@@ -171,7 +170,7 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
             final HtmlColgroup htmlColgroup = new HtmlColgroup();
             outputStreamWriter.write(htmlColgroup.open());
             for (final HtmlLayoutTextStyle htmlStyle : htmlStyles) {
-                handleTag(new HtmlCol(), TableCell.create().getText(), htmlStyle, true);
+                handleTag(new HtmlCol(), "", htmlStyle, true);
             }
             outputStreamWriter.write(htmlColgroup.close());
         }
@@ -182,10 +181,13 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
     public void visitTableHeaderCell(TableHeaderCell tableHeaderCellObj) throws Throwable {
         final HtmlTableHeaderCell htmlTableHeaderCell = new HtmlTableHeaderCell();
         final Style style = ((HtmlStyleService) styleService).getCustomTableCellStyle(tableHeaderCellObj);
-        if (style instanceof HtmlLayoutTextStyle) {
-            handleTag(htmlTableHeaderCell, tableHeaderCellObj.getText(), null, true);
-        } else {
-            handleTag(htmlTableHeaderCell, tableHeaderCellObj.getText(), style, true);
+        if (tableHeaderCellObj.isInheritedFrom(TextItem.class)) {
+            handleTag(
+                htmlTableHeaderCell,
+                tableHeaderCellObj.getText(),
+                style instanceof HtmlLayoutTextStyle ? null : style,
+                true
+            );
         }
     }
 
@@ -196,23 +198,22 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
     }
 
     @Override
-    public void visitTableCell(DocumentItem tableCellObj) throws Exception {
+    public void visitTableCell(TableCell tableCellObj) throws Exception {
         final HtmlTableCell htmlTableCell = new HtmlTableCell();
         final HtmlDiv htmlDiv = new HtmlDiv();
         final HtmlStyleService htmlStyleService = (HtmlStyleService) styleService;
         final Style cellStyle = htmlStyleService.getCustomTableCellStyle(tableCellObj);
-        if (tableCellObj instanceof DataItem) {
-            final DataItem DataItem = (DataItem) tableCellObj;
+        if (tableCellObj.isInheritedFrom(TextItem.class)) {
             final Style cellDivStyle = htmlStyleService.getCustomTableCellDivStyle(htmlDiv);
             if (cellDivStyle != null) {
                 handleTag(htmlTableCell, null, cellStyle, false);
-                handleTag(htmlDiv, DataItem.getText(), cellDivStyle, true);
+                handleTag(htmlDiv, tableCellObj.getText(), cellDivStyle, true);
                 outputStreamWriter.write(htmlTableCell.close());
             } else {
-                handleTag(htmlTableCell, DataItem.getText(), cellStyle, true);
+                handleTag(htmlTableCell, tableCellObj.getText(), cellStyle, true);
             }
         }
-        if (tableCellObj instanceof Picture) {
+        if (tableCellObj.isInheritedFrom(Picture.class)) {
             handleTag(htmlTableCell, null, cellStyle, false);
             // TODO:
             //  final Picture picture = (Picture) tableCellObj;

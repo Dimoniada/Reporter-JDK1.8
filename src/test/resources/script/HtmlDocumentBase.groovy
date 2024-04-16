@@ -104,25 +104,25 @@ final DocumentCase documentCase = DocumentCase.create().setName("Test sheet1")
             .setTableHeaderRow(
                 TableHeaderRow
                     .create().addParts(
-                    TableHeaderCell.create().setText("column1"),
-                    TableHeaderCell.create().setText("column2 (столбец2)")
+                    TableHeaderCell.create("column1"),
+                    TableHeaderCell.create("column2 (столбец2)")
                 )
             )
             .addParts(
                 TableRow
                     .create().addParts(
-                    TableCell.create().setText("1"),
-                    TableCell.create().setText("2")
+                    TableCell.create("1"),
+                    TableCell.create("2")
                 ),
                 TableRow
                     .create().addParts(
-                    TableCell.create().setText("3"),
-                    TableCell.create().setText("4")
+                    TableCell.create("3"),
+                    TableCell.create("4")
                 ),
                 TableRow
                     .create().addParts(
-                    TableCell.create().setText("5"),
-                    TableCell.create().setText("6")
+                    TableCell.create("5"),
+                    TableCell.create("6")
                 )
             )
     );

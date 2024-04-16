@@ -109,9 +109,8 @@ public class QueryTable extends Table {
         columnMetaDataMap
             .forEach((k, v) -> thr.addPart(
                 TableHeaderCell
-                    .create()
+                    .create(v)
                     .setAliasName(k)
-                    .setText(v)
             ));
         return thr;
     }
@@ -124,16 +123,17 @@ public class QueryTable extends Table {
         int i = 0;
         for (final TableHeaderCell hc : thr.getParts()) {
             i++;
-            final TableCell tableCell = TableCell.create();
+            final TableCell tableCell;
             if (hc.getAliasName().isEmpty()) {
                 //TODO case when rs.getObject() is a picture
-                tableCell.setText(rs.getObject(i, String.class));
+                tableCell = TableCell.create(rs.getObject(i, String.class));
             } else {
                 final String columnName =
                     isTableHeaderRowFromData
                         ? hc.getText()
                         : hc.getAliasName();
-                tableCell.setText(rs.getObject(columnName, String.class));
+                //TODO case when rs.getObject() is a picture
+                tableCell = TableCell.create(rs.getObject(columnName, String.class));
             }
             tableRow.addPart(tableCell);
         }

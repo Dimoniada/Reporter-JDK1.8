@@ -215,25 +215,25 @@ class PdfFormatterTest extends BaseDocument {
                     .setTableHeaderRow(
                         TableHeaderRow
                             .create().addParts(
-                                TableHeaderCell.create().setText("verdana,13.").setStyle(tableHeaderCellStyle4),
-                                TableHeaderCell.create().setText("verdana,14.").setStyle(tableHeaderCellStyle5)
+                                TableHeaderCell.create("verdana,13.").setStyle(tableHeaderCellStyle4),
+                                TableHeaderCell.create("verdana,14.").setStyle(tableHeaderCellStyle5)
                             )
                     )
                     .addParts(
                         TableRow.create()
                             .addParts(
-                                TableCell.create().setText("1"),
-                                TableCell.create().setText("2123123")
+                                TableCell.create("1"),
+                                TableCell.create("2123123")
                             ),
                         TableRow.create()
                             .addParts(
-                                TableCell.create().setText("3.14"),
-                                TableCell.create().setText("4")
+                                TableCell.create("3.14"),
+                                TableCell.create("4")
                             ),
                         TableRow.create()
                             .addParts(
-                                TableCell.create().setText("all cells with times,8 font").setStyle(cellStyle6),
-                                TableCell.create().setText("6")
+                                TableCell.create("all cells with times,8 font").setStyle(cellStyle6),
+                                TableCell.create("6")
                             )
                     )
                     .spreadStyleToParts(tableCellsStyle3)
@@ -315,22 +315,22 @@ class PdfFormatterTest extends BaseDocument {
                     TableHeaderRow
                         .create()
                         .addParts(
-                            TableHeaderCell.create().setText("Column 1"),
-                            TableHeaderCell.create().setText("Column 2")
+                            TableHeaderCell.create("Column 1"),
+                            TableHeaderCell.create("Column 2")
                         )
                 )
                 .addParts(
                     TableRow
                         .create()
                         .addParts(
-                            TableCell.create().setText("Cell 1.1"),
-                            TableCell.create().setText("Cell 1.2")
+                            TableCell.create("Cell 1.1"),
+                            TableCell.create("Cell 1.2")
                         ),
                     TableRow
                         .create()
                         .addParts(
-                            TableCell.create().setText("Cell 2.1"),
-                            TableCell.create().setText("Cell 2.2")
+                            TableCell.create("Cell 2.1"),
+                            TableCell.create("Cell 2.2")
                                 .setStyle(
                                     LayoutStyle.create()
                                         .setGeometryDetails(
@@ -349,14 +349,14 @@ class PdfFormatterTest extends BaseDocument {
                     TableRow
                         .create()
                         .addParts(
-                            TableCell.create().setText("Cell 3.1"),
-                            TableCell.create().setText("Cell 3.2")
+                            TableCell.create("Cell 3.1"),
+                            TableCell.create("Cell 3.2")
                         ),
                     TableRow
                         .create()
                         .addParts(
-                            TableCell.create().setText("Cell 4.1"),
-                            TableCell.create().setText("Cell 4.2")
+                            TableCell.create("Cell 4.1"),
+                            TableCell.create("Cell 4.2")
                         )
                 )
         );

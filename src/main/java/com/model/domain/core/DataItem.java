@@ -1,38 +1,29 @@
 package com.model.domain.core;
 
-import com.google.common.base.MoreObjects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Base data class, contains bytes
+ * Base data interface, contains base data access methods
  */
 public abstract class DataItem<T> extends DocumentItem {
 
-    protected byte[] data;
+    private static final Logger log = LoggerFactory.getLogger(DataItem.class);
+    private final String superClassName = getClass().getGenericSuperclass().getTypeName();
 
-    @SuppressWarnings("unchecked")
-    public T setData(byte[] data) {
-        this.data = data;
-        return (T) this;
+    public abstract String getText();
+
+    public T setText(String text) throws Throwable {
+        log.debug("No implementation for setText() in {}", superClassName);
+        throw new Throwable("No implementation for setText() in " + superClassName);
     }
 
-    public byte[] getData() {
-        return data;
+    public abstract byte[] getData();
+
+    public T setData(byte[] data) throws Throwable {
+        log.debug("No implementation for setData() in {}", superClassName);
+        throw new Throwable("No implementation for setData() in " + superClassName);
     }
 
-    @SuppressWarnings("unchecked")
-    public T setText(String text) {
-        this.data = text != null ? text.getBytes() : null;
-        return (T) this;
-    }
-
-    public String getText() {
-        return new String(data != null ? data : new byte[0]);
-    }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-            .add("text", getText())
-            .toString();
-    }
+    public abstract boolean isInheritedFrom(Class<?> type);
 }

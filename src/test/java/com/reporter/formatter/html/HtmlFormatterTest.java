@@ -281,34 +281,34 @@ public class HtmlFormatterTest extends BaseDocument {
                         TableHeaderRow
                             .create()
                             .addParts(
-                                TableHeaderCell.create().setText("Column 1"),
-                                TableHeaderCell.create().setText("Column 2")
+                                TableHeaderCell.create("Column 1"),
+                                TableHeaderCell.create("Column 2")
                             )
                     )
                     .addParts(
                         TableRow
                             .create()
                             .addParts(
-                                TableCell.create().setText("Cell 1.1"),
-                                TableCell.create().setText("Cell 1.2")
+                                TableCell.create("Cell 1.1"),
+                                TableCell.create("Cell 1.2")
                             ),
                         TableRow
                             .create()
                             .addParts(
-                                TableCell.create().setText("Cell 2.1"),
-                                TableCell.create().setText("Cell 2.2")
+                                TableCell.create("Cell 2.1"),
+                                TableCell.create("Cell 2.2")
                             ),
                         TableRow
                             .create()
                             .addParts(
-                                TableCell.create().setText("Cell 3.1"),
-                                TableCell.create().setText("Cell 3.2")
+                                TableCell.create("Cell 3.1"),
+                                TableCell.create("Cell 3.2")
                             ),
                         TableRow
                             .create()
                             .addParts(
-                                TableCell.create().setText("Cell 4.1"),
-                                TableCell.create().setText("Cell 4.2")
+                                TableCell.create("Cell 4.1"),
+                                TableCell.create("Cell 4.2")
                             )
                     )
             );
@@ -393,7 +393,7 @@ public class HtmlFormatterTest extends BaseDocument {
     @Test
     public void checkTags() throws Throwable {
         final Document doc = Document.create()
-            .addPart(Heading.create(1).setDepth((short) 7).setText("test"));
+            .addPart(Heading.create("test", 7));
         final HtmlFormatter htmlFormatter = HtmlFormatter.create();
         final Exception e = Assertions.assertThrows(Exception.class, () -> htmlFormatter.handle(doc).close());
         Files.deleteIfExists(htmlFormatter.getResource().getFile().toPath());

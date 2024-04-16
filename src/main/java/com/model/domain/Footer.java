@@ -1,12 +1,12 @@
 package com.model.domain;
 
-import com.model.domain.core.DataItem;
+import com.model.domain.core.TextItem;
 import com.model.formatter.FormatterVisitor;
 
 /**
  * Text footer
  */
-public class Footer extends DataItem<Footer> {
+public class Footer extends TextItem<Footer> {
 
     public static Footer create() {
         return new Footer();

@@ -40,7 +40,7 @@ public class DomainClassesTest {
 
                 @Override
                 public TableCell next() {
-                    return TableCell.create().setText("textCell");
+                    return TableCell.create("textCell");
                 }
             };
         }
@@ -62,7 +62,7 @@ public class DomainClassesTest {
      */
     @Test
     public void testCustomCompositionPartsFailure() {
-        final TableCell item2 = TableCell.create().setText("cell2");
+        final TableCell item2 = TableCell.create("cell2");
         final CustomIterableTableCell cells = new CustomIterableTableCell();
         final Exception e = Assertions.assertThrows(IllegalStateException.class, () ->
             TableRow.create().addPart(item2).setParts(cells).addPart(item2)
@@ -84,12 +84,12 @@ public class DomainClassesTest {
                 TableHeaderRow
                     .create()
                     .addParts(
-                        TableHeaderCell.create().setText("Column1"),
-                        TableHeaderCell.create().setText("Column2")
+                        TableHeaderCell.create("Column1"),
+                        TableHeaderCell.create("Column2")
                     ))
-            .addPart(TableRow.create().addPart(TableCell.create()).addPart(TableCell.create()))
+            .addPart(TableRow.create().addPart(TableCell.create("")).addPart(TableCell.create("")))
             .addPart(TableRow.create().setParts(cells))
-            .addPart(TableRow.create().addPart(TableCell.create()).addPart(TableCell.create()));
+            .addPart(TableRow.create().addPart(TableCell.create("")).addPart(TableCell.create("")));
 
         final Document doc = Document
             .create()
