@@ -7,8 +7,10 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectOutputStream;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.function.Function;
@@ -40,6 +42,21 @@ public abstract class PictureUtils {
         }
 
         return null;
+    }
+
+    public static PictureFormat getFormat(Object obj) {
+        return getFormat(serializePicture(obj));
+    }
+
+    public static byte[] serializePicture(Object obj) {
+        final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        try (ObjectOutputStream out = new ObjectOutputStream(bos)) {
+            out.writeObject(obj);
+            out.flush();
+            return bos.toByteArray();
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     private static PictureFormat mapContentTypeToPictureFormat(String format) {

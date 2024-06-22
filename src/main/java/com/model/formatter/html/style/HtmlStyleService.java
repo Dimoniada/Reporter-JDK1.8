@@ -109,15 +109,15 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
     /**
      * If true then style will be written inside HTML5 tags,
      */
-    protected boolean writeStyleInplace;
+    protected boolean writeStyleOnSpot;
 
     public HtmlStyleService(
         boolean useHtml4Tags,
-        boolean writeStyleInplace,
+        boolean writeStyleOnSpot,
         DecimalFormat decimalFormat
     ) {
         this.useHtml4Tags = useHtml4Tags;
-        this.writeStyleInplace = writeStyleInplace;
+        this.writeStyleOnSpot = writeStyleOnSpot;
         this.decimalFormat = decimalFormat;
     }
 
@@ -417,7 +417,7 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
     @Override
     public void writeStyles(Object o) throws Exception {
         final OutputStreamWriter OsWriter = (OutputStreamWriter) o;
-        if (!useHtml4Tags && !writeStyleInplace) {
+        if (!useHtml4Tags && !writeStyleOnSpot) {
 
             final BiFunction<Class<?>, Style, Boolean> checkConditionClass = (clazz, style) -> {
                 if (style.getCondition() != null) {
@@ -494,12 +494,12 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
         return this;
     }
 
-    public boolean isWriteStyleInplace() {
-        return writeStyleInplace;
+    public boolean isWriteStyleOnSpot() {
+        return writeStyleOnSpot;
     }
 
-    public HtmlStyleService setWriteStyleInplace(boolean writeStyleInplace) {
-        this.writeStyleInplace = writeStyleInplace;
+    public HtmlStyleService setWriteStyleOnSpot(boolean writeStyleOnSpot) {
+        this.writeStyleOnSpot = writeStyleOnSpot;
         return this;
     }
 }

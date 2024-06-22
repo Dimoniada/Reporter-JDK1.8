@@ -37,7 +37,7 @@ public class TagCreator {
 
     public void writeTag(
         HtmlTag tag,
-        String text,
+        Object object,
         Style style,
         boolean isUseHtml4Tags,
         boolean isStyleInHeader,
@@ -50,10 +50,10 @@ public class TagCreator {
             final LayoutStyle layoutStyle = LayoutStyle.extractLayoutStyle(style);
             HtmlStyleService.fillHtml4StyleTagsFromStyle(tag, layoutStyle, isHtmlTable);
             write(String.format("<%s%s>", tag.getTagName(), tag.attributesToHtmlString(true)));
-            if (StringUtils.hasText(text)) {
+            if (object instanceof String && StringUtils.hasText((String) object)) {
                 final String formattedText =
                     HtmlStyleService.escapeHtml(
-                        LocalizedNumberUtils.applyDecimalFormat(text, style, decimalFormat)
+                        LocalizedNumberUtils.applyDecimalFormat((String) object, style, decimalFormat)
                     );
                 final TextStyle textStyle = HtmlStyleService.extractTextStyle(style);
                 if (textStyle != null) {
@@ -84,11 +84,11 @@ public class TagCreator {
                 tag.setStyle(cssStyle);
             }
             write(String.format("<%s%s>", tag.getTagName(), tag.attributesToHtmlString(false)));
-            if (StringUtils.hasText(text)) {
+            if (object instanceof String && StringUtils.hasText((String) object)) {
                 write(
                     HtmlStyleService
                         .escapeHtml(
-                            LocalizedNumberUtils.applyDecimalFormat(text, style, decimalFormat)
+                            LocalizedNumberUtils.applyDecimalFormat((String) object, style, decimalFormat)
                         )
                 );
             }

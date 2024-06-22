@@ -22,6 +22,7 @@ import com.model.domain.style.Style;
 import com.model.domain.style.StyleService;
 import com.model.domain.style.constant.BorderWeight;
 import com.model.domain.style.constant.Color;
+import com.model.domain.style.constant.PictureFormat;
 import com.model.formatter.BaseDetails;
 import com.model.formatter.Formatter;
 import com.model.formatter.html.style.HtmlLayoutTextStyle;
@@ -37,12 +38,14 @@ import com.model.formatter.html.tag.HtmlHead;
 import com.model.formatter.html.tag.HtmlHeading;
 import com.model.formatter.html.tag.HtmlLineSeparator;
 import com.model.formatter.html.tag.HtmlParagraph;
+import com.model.formatter.html.tag.HtmlPicture;
 import com.model.formatter.html.tag.HtmlTable;
 import com.model.formatter.html.tag.HtmlTableCell;
 import com.model.formatter.html.tag.HtmlTableHeaderCell;
 import com.model.formatter.html.tag.HtmlTableRow;
 import com.model.formatter.html.tag.HtmlTag;
 import com.model.formatter.html.tag.HtmlTitle;
+import com.model.utils.PictureUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.HtmlUtils;
 
@@ -203,7 +206,7 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
         final HtmlDiv htmlDiv = new HtmlDiv();
         final HtmlStyleService htmlStyleService = (HtmlStyleService) styleService;
         final Style cellStyle = htmlStyleService.getCustomTableCellStyle(tableCellObj);
-        if (tableCellObj.isInheritedFrom(TextItem.class)) {
+        if (tableCellObj.getText() != null) {
             final Style cellDivStyle = htmlStyleService.getCustomTableCellDivStyle(htmlDiv);
             if (cellDivStyle != null) {
                 handleTag(htmlTableCell, null, cellStyle, false);
@@ -213,13 +216,15 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
                 handleTag(htmlTableCell, tableCellObj.getText(), cellStyle, true);
             }
         }
-        if (tableCellObj.isInheritedFrom(Picture.class)) {
-            handleTag(htmlTableCell, null, cellStyle, false);
-            // TODO:
-            //  final Picture picture = (Picture) tableCellObj;
-            //  final Style style = htmlStyleService.prepareStyleFrom(picture);
-            //  final HtmlPicture htmlPicture = new HtmlPicture();
-            //  handleTag(htmlPicture, picture.getData(), style, true);
+        if (tableCellObj.getData() != null) {
+            final byte[] data = tableCellObj.getData();
+            final PictureFormat pictureFormat = PictureUtils.getFormat(data);
+            Picture.create(data, pictureFormat);
+            final Picture picture = Picture.create(data, pictureFormat);
+            final Style style = htmlStyleService.prepareStyleFrom(picture);
+            final HtmlPicture htmlPicture = new HtmlPicture();
+            htmlPicture.setSrc(picture.getData());
+            handleTag(htmlPicture, new byte[0], style, true);
             outputStreamWriter.write(htmlTableCell.close());
         }
     }
@@ -238,7 +243,7 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
         handleTag(htmlFooter, footerObj.getText(), style, true);
     }
 
-    protected void handleTag(HtmlTag tag, String text, Style style, Boolean needCloseTag) throws Exception {
+    protected void handleTag(HtmlTag tag, Object data, Style style, Boolean needCloseTag) throws Exception {
         final HtmlStyleService htmlStyleService = (HtmlStyleService) styleService;
         final boolean isBordersCollapse =
             style instanceof HtmlLayoutTextStyle
@@ -246,10 +251,10 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
         getTagCreator()
             .writeTag(
                 tag,
-                text,
+                data,
                 style,
                 htmlStyleService.isUseHtml4Tags(),
-                htmlStyleService.contains(style) && !htmlStyleService.isWriteStyleInplace(),
+                htmlStyleService.contains(style) && !htmlStyleService.isWriteStyleOnSpot(),
                 isBordersCollapse,
                 needCloseTag
             );

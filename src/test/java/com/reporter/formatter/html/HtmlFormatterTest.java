@@ -146,7 +146,7 @@ public class HtmlFormatterTest extends BaseDocument {
 
         final HtmlStyleService styleService = HtmlStyleService.create()
             .addStyles(titleStyle, paragraphStyle);
-        styleService.setWriteStyleInplace(false);
+        styleService.setWriteStyleOnSpot(false);
 
         final Document doc1 = Document.create().setLabel("doc1")
             .addParts(
@@ -324,7 +324,7 @@ public class HtmlFormatterTest extends BaseDocument {
         htmlFormatter.setStyleService(
             HtmlStyleService
                 .create()
-                .setWriteStyleInplace(false)
+                .setWriteStyleOnSpot(false)
                 .addStyles(
                     cellStyle,
                     headerCellstyle
@@ -554,7 +554,7 @@ public class HtmlFormatterTest extends BaseDocument {
 
         layoutStyle1.setCondition(StyleCondition.create(TableCell.class, o -> o instanceof TableCell));
         styleService.addStyles(layoutStyle1);
-        styleService.setWriteStyleInplace(false);
+        styleService.setWriteStyleOnSpot(false);
 
         doc.addPart(tr);
 
@@ -614,7 +614,7 @@ public class HtmlFormatterTest extends BaseDocument {
         thc.setStyle(null);          // remove inner style
         layoutStyle1.setCondition(StyleCondition.create(TableHeaderCell.class, o -> o instanceof TableHeaderCell));
         styleService.addStyles(layoutStyle1);
-        styleService.setWriteStyleInplace(false);
+        styleService.setWriteStyleOnSpot(false);
 
         doc.addPart(thr);
 
@@ -677,7 +677,7 @@ public class HtmlFormatterTest extends BaseDocument {
         thc.setStyle(null);         // remove inner style
         layoutStyle1.setCondition(StyleCondition.create(TableHeaderCell.class, o -> o instanceof TableHeaderCell));
         styleService.addStyles(layoutStyle1);
-        styleService.setWriteStyleInplace(false);
+        styleService.setWriteStyleOnSpot(false);
 
         doc.addPart(thr);
 
@@ -742,7 +742,7 @@ public class HtmlFormatterTest extends BaseDocument {
         item.setStyle(null);         // remove inner style
         layoutStyle1.setCondition(StyleCondition.create(itemClass, o -> o.getClass().equals(itemClass)));
         styleService.addStyles(layoutStyle1);
-        styleService.setWriteStyleInplace(false);
+        styleService.setWriteStyleOnSpot(false);
 
         doc.addPart(item);
 

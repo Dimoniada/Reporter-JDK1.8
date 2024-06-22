@@ -6,7 +6,9 @@ import com.model.domain.TableCell;
 import com.model.domain.TableHeaderCell;
 import com.model.domain.TableHeaderRow;
 import com.model.domain.TableRow;
+import com.model.domain.style.constant.PictureFormat;
 import com.model.formatter.FormatterVisitor;
+import com.model.utils.PictureUtils;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -124,16 +126,21 @@ public class QueryTable extends Table {
         for (final TableHeaderCell hc : thr.getParts()) {
             i++;
             final TableCell tableCell;
+            final Object value;
             if (hc.getAliasName().isEmpty()) {
-                //TODO case when rs.getObject() is a picture
-                tableCell = TableCell.create(rs.getObject(i, String.class));
+                value = rs.getObject(i);
             } else {
                 final String columnName =
                     isTableHeaderRowFromData
                         ? hc.getText()
                         : hc.getAliasName();
-                //TODO case when rs.getObject() is a picture
-                tableCell = TableCell.create(rs.getObject(columnName, String.class));
+                value = rs.getObject(columnName);
+            }
+            final PictureFormat pictureFormat = PictureUtils.getFormat(value);
+            if (pictureFormat != null) {
+                tableCell = TableCell.create(PictureUtils.serializePicture(value));
+            } else {
+                tableCell = TableCell.create(String.valueOf(value));
             }
             tableRow.addPart(tableCell);
         }

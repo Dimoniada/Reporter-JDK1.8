@@ -28,22 +28,23 @@ final Style paragraphStyle = TextStyle
 
 final HtmlStyleService styleService = HtmlStyleService.create()
     .addStyles(titleStyle, paragraphStyle);
-    styleService.setWriteStyleInplace(false);
+styleService.setWriteStyleOnSpot(false);
 
 final Document doc = Document.create().setLabel("doc1")
-    .addParts(Heading.create(1).setText("testHeading"),
-    Heading.create(2).setText("testHeading"),
-    Title.create().setText("mainTitle"),
-    Heading.create(3).setText("testHeading"),
-    Paragraph.create().setText("testParagraph1"),
-    Paragraph.create().setText("testParagraph2"),
-    Paragraph.create().setText("testParagraph3"),
-    Heading.create(2).setText("nextHeading"),
-    Paragraph.create().setText("testParagraph4")
+    .addParts(
+        Heading.create(1).setText("testHeading"),
+        Heading.create(2).setText("testHeading"),
+        Title.create().setText("mainTitle"),
+        Heading.create(3).setText("testHeading"),
+        Paragraph.create().setText("testParagraph1"),
+        Paragraph.create().setText("testParagraph2"),
+        Paragraph.create().setText("testParagraph3"),
+        Heading.create(2).setText("nextHeading"),
+        Paragraph.create().setText("testParagraph4")
     );
 
 final Map<String, Object> result = new HashMap<String, Object>();
-    result.put("document", doc);
-    result.put("styleService", styleService);
+result.put("document", doc);
+result.put("styleService", styleService);
 
 return result;

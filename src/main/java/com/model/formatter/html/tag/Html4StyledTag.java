@@ -5,6 +5,7 @@ import com.model.formatter.html.attribute.HtmlAttribute;
 import com.model.formatter.html.attribute.HtmlBgColorAttribute;
 import com.model.formatter.html.attribute.HtmlBorderAttribute;
 import com.model.formatter.html.attribute.HtmlCellSpacingAttribute;
+import com.model.formatter.html.attribute.HtmlSrcAttribute;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +22,7 @@ public abstract class Html4StyledTag implements HtmlTagAttributesWriter {
     final HtmlCellSpacingAttribute cellSpacing = new HtmlCellSpacingAttribute();
     final HtmlBgColorAttribute bgColor = new HtmlBgColorAttribute();
     final HtmlAlignAttribute align = new HtmlAlignAttribute();
+    final HtmlSrcAttribute src = new HtmlSrcAttribute();
 
     public Html4StyledTag() {
         availableAttributes.putAll(
@@ -51,6 +53,11 @@ public abstract class Html4StyledTag implements HtmlTagAttributesWriter {
 
     public Html4StyledTag setAlign(String align) {
         this.align.setAlign(align);
+        return this;
+    }
+
+    public Html4StyledTag setSrc(byte[] data) {
+        this.src.setSrc(data);
         return this;
     }
 

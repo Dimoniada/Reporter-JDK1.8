@@ -1,7 +1,9 @@
 package com.model.domain;
 
 import com.google.common.base.MoreObjects;
+import com.model.domain.style.constant.PictureFormat;
 import com.model.formatter.FormatterVisitor;
+import com.model.utils.PictureUtils;
 import org.springframework.beans.ConfigurablePropertyAccessor;
 import org.springframework.beans.PropertyAccessorFactory;
 
@@ -79,8 +81,12 @@ public class ReportTable extends Table {
                         for (final String name : tableHeaderAliasNames) {
                             if (namesMethods.containsKey(name) || isTableHeaderRowFromData) {
                                 final Object value = namesMethods.get(name).invoke(docItem);
-                                //TODO: case when Object is a picture
-                                tr.addPart(TableCell.create(value != null ? value.toString() : ""));
+                                final PictureFormat pictureFormat = PictureUtils.getFormat(value);
+                                if (pictureFormat != null) {
+                                    tr.addPart(TableCell.create(PictureUtils.serializePicture(value)));
+                                } else {
+                                    tr.addPart(TableCell.create(value != null ? value.toString() : ""));
+                                }
                             } else {
                                 tr.addPart(TableCell.create(""));
                             }
@@ -95,7 +101,12 @@ public class ReportTable extends Table {
                         for (final String name : tableHeaderAliasNames) {
                             if (fieldNames.contains(name) || isTableHeaderRowFromData) {
                                 final Object value = propAcc.getPropertyValue(name);
-                                tr.addPart(TableCell.create(value != null ? value.toString() : ""));
+                                final PictureFormat pictureFormat = PictureUtils.getFormat(value);
+                                if (pictureFormat != null) {
+                                    tr.addPart(TableCell.create(PictureUtils.serializePicture(value)));
+                                } else {
+                                    tr.addPart(TableCell.create(value != null ? value.toString() : ""));
+                                }
                             } else {
                                 tr.addPart(TableCell.create(""));
                             }

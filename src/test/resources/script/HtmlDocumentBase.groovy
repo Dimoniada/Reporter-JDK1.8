@@ -135,7 +135,7 @@ doc = Document
     .addPart(documentCase);
 
 final HtmlStyleService styleService = HtmlStyleService.create()
-    .setWriteStyleInplace(false)
+    .setWriteStyleOnSpot(false)
     .addStyles(htmlTableStyle, htmlColGroupStyle, layoutTextStyle);
 
 final Map<String, Object> result = new HashMap<String, Object>();
