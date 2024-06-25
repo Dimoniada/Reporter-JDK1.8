@@ -132,6 +132,14 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
     }
 
     @Override
+    public void visitPicture(Picture pictureObj) throws Exception {
+        final HtmlPicture htmlPicture = new HtmlPicture();
+        htmlPicture.setSrc(pictureObj.getData());
+        final Style style = styleService.extractStyleFor(pictureObj).orElse(pictureObj.getStyle());
+        handleTag(htmlPicture, new byte[0], style, true);
+    }
+
+    @Override
     public void visitTable(Table tableObj) throws Throwable {
         final HtmlTable htmlTable = new HtmlTable();
         Style style = styleService.extractStyleFor(tableObj).orElse(tableObj.getStyle());

@@ -30,7 +30,8 @@ public abstract class Html4StyledTag implements HtmlTagAttributesWriter {
                     bgColor.getAttributeMapper(),
                     cellSpacing.getAttributeMapper(),
                     border.getAttributeMapper(),
-                    align.getAttributeMapper()
+                    align.getAttributeMapper(),
+                    src.getAttributeMapper()
                 )
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
         );

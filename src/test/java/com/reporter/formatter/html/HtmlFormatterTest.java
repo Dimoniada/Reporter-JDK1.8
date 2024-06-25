@@ -5,6 +5,7 @@ import com.model.domain.Document;
 import com.model.domain.Footer;
 import com.model.domain.Heading;
 import com.model.domain.Paragraph;
+import com.model.domain.Picture;
 import com.model.domain.Table;
 import com.model.domain.TableCell;
 import com.model.domain.TableHeaderCell;
@@ -19,6 +20,7 @@ import com.model.domain.style.TextStyle;
 import com.model.domain.style.constant.Color;
 import com.model.domain.style.constant.FillPattern;
 import com.model.domain.style.constant.HorAlignment;
+import com.model.domain.style.constant.PictureFormat;
 import com.model.domain.style.constant.VertAlignment;
 import com.model.domain.style.geometry.Geometry;
 import com.model.domain.style.geometry.GeometryDetails;
@@ -31,27 +33,59 @@ import com.model.formatter.html.tag.HtmlFooter;
 import com.model.formatter.html.tag.HtmlH1;
 import com.model.formatter.html.tag.HtmlHeading;
 import com.model.formatter.html.tag.HtmlParagraph;
+import com.model.formatter.html.tag.HtmlPicture;
 import com.model.formatter.html.tag.HtmlTableCell;
 import com.model.formatter.html.tag.HtmlTableHeaderCell;
 import com.model.formatter.html.tag.HtmlTag;
 import com.reporter.formatter.BaseDocument;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.FileUrlResource;
+import org.springframework.core.io.PathResource;
+import org.springframework.core.io.WritableResource;
 import org.springframework.util.StringUtils;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class HtmlFormatterTest extends BaseDocument {
+
+    public static final String testString = "test_text";
+    public static final String testPicture;
+    public static final byte[] testPictureData;
+
+    static {
+        final String imageName = "pic/pic.jpg";
+
+        final URL url = HtmlFormatterTest.class.getClassLoader().getResource(imageName);
+        Assertions.assertNotNull(url);
+        final WritableResource resource;
+        try {
+            resource = new PathResource(url.toURI());
+            testPictureData = IOUtils.toByteArray(resource.getInputStream());
+            testPicture =  String.format(
+                "data:image/%s;base64,%s",
+                PictureFormat.JPG.toString().toLowerCase(Locale.ENGLISH),
+                Base64.getEncoder().encodeToString(testPictureData)
+            );
+        } catch (URISyntaxException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static final String expected = "<!doctype html><html><head><meta charset=\"UTF-8\"><title>Test document" +
         "</title></head><body><h1>Title 1</h1><p style=\"font-family:" +
@@ -475,49 +509,56 @@ public class HtmlFormatterTest extends BaseDocument {
 
     @Test
     public void testHtmlParagraph() throws Throwable {
-        final Paragraph p = Paragraph.create("test_text");
+        final Paragraph p = Paragraph.create(testString);
         final HtmlParagraph htmlParagraph = new HtmlParagraph();
-        testHtmlTag(p, htmlParagraph, Paragraph.class);
+        testHtmlTag(htmlParagraph, p, testString, Paragraph.class);
     }
 
     @Test
     public void testHtmlTitle() throws Throwable {
-        final Title t = Title.create("test_text");
+        final Title t = Title.create(testString);
         final HtmlH1 htmlTitle = new HtmlH1();
-        testHtmlTag(t, htmlTitle, Title.class);
+        testHtmlTag(htmlTitle, t, testString, Title.class);
+    }
+
+    @Test
+    public void testHtmlPicture() throws Throwable {
+        final Picture p = Picture.create(testPictureData, PictureFormat.JPG);
+        final HtmlPicture htmlPicture = new HtmlPicture();
+        testHtmlTag(htmlPicture, p, testPicture, Picture.class);
     }
 
     @Test
     public void testHtmlFooter() throws Throwable {
-        final Footer f = Footer.create("test_text");
+        final Footer f = Footer.create(testString);
         final HtmlFooter htmlFooter = new HtmlFooter();
-        testHtmlTag(f, htmlFooter, Footer.class);
+        testHtmlTag(htmlFooter, f, testString, Footer.class);
     }
 
     @Test
     public void testHtmlHeading() throws Throwable {
-        final Heading h = Heading.create("test_text", 1);
+        final Heading h = Heading.create(testString, 1);
         final HtmlHeading htmlHeading = new HtmlHeading(1);
-        testHtmlTag(h, htmlHeading, Heading.class);
+        testHtmlTag(htmlHeading, h, testString, Heading.class);
     }
 
     @Test
     public void testHtmlTableCell() throws Throwable {
-        final TableCell tc = TableCell.create("test_text");
+        final TableCell tc = TableCell.create(testString);
         final HtmlTableCell htmlTableCell = new HtmlTableCell();
-        testHtmlTag(tc, htmlTableCell, TableCell.class);
+        testHtmlTag(htmlTableCell, tc, testString, TableCell.class);
     }
 
     @Test
     public void testHtmlTableHeaderCell() throws Throwable {
-        final TableHeaderCell thc = TableHeaderCell.create("test_text");
+        final TableHeaderCell thc = TableHeaderCell.create(testString);
         final HtmlTableHeaderCell htmlTableHeaderCell = new HtmlTableHeaderCell();
-        testHtmlTag(thc, htmlTableHeaderCell, TableHeaderCell.class);
+        testHtmlTag(htmlTableHeaderCell, thc, testString, TableHeaderCell.class);
     }
 
     @Test
     public void testHtmlTableRow() throws Throwable {
-        final TableCell tc = TableCell.create("test_text");
+        final TableCell tc = TableCell.create(testString);
         final TableRow tr = TableRow.create(tc);
 // Case when tag is without parameters
         final HtmlFormatterVisitor htmlFormatterVisitor = new HtmlFormatter();
@@ -528,7 +569,7 @@ public class HtmlFormatterTest extends BaseDocument {
         htmlFormatterVisitor.visitTableRow(tr);
 
         writer.flush();
-        Assertions.assertEquals("<tr><td>test_text</td></tr>", os.toString());
+        Assertions.assertEquals("<tr><td>" + testString + "</td></tr>", os.toString());
         os.reset();
 
 // Case of layout style
@@ -546,7 +587,7 @@ public class HtmlFormatterTest extends BaseDocument {
                 "height:15px;" +
                 "transform:rotate(10deg);" +
                 "width:20px" +
-                "\">test_text</td></tr>", os.toString());
+                "\">" + testString + "</td></tr>", os.toString());
         os.reset();
 
 // Case of the named style class
@@ -571,7 +612,7 @@ public class HtmlFormatterTest extends BaseDocument {
             Assertions.assertTrue(StringUtils.endsWithIgnoreCase(
                 os.toString(),
                 "<tr><td class=\"_" + Integer.toHexString(Objects.hashCode(layoutStyle1.setGeometryDetails(null))) + "\">" +
-                    "<div class=\"_" + Integer.toHexString(Objects.hashCode(divStyle)) + "\">test_text</div></td></tr>" +
+                    "<div class=\"_" + Integer.toHexString(Objects.hashCode(divStyle)) + "\">" + testString + "</div></td></tr>" +
                     "</body></html>"
             ));
         }
@@ -579,7 +620,7 @@ public class HtmlFormatterTest extends BaseDocument {
 
     @Test
     public void testHtmlTableHeaderRow() throws Throwable {
-        final TableHeaderCell thc = TableHeaderCell.create("test_text");
+        final TableHeaderCell thc = TableHeaderCell.create(testString);
         final TableHeaderRow thr = TableHeaderRow.create(thc);
 // Case when tag is without parameters
         final HtmlFormatterVisitor htmlFormatterVisitor = new HtmlFormatter();
@@ -591,7 +632,7 @@ public class HtmlFormatterTest extends BaseDocument {
 
         writer.flush();
 
-        Assertions.assertEquals("<tr><th>test_text</th></tr>", os.toString());
+        Assertions.assertEquals("<tr><th>" + testString + "</th></tr>", os.toString());
         os.reset();
 // Case of the layout style
         thc.setStyle(layoutStyle1);
@@ -607,7 +648,7 @@ public class HtmlFormatterTest extends BaseDocument {
             "height:15px;" +
             "transform:rotate(10deg);" +
             "width:20px" +
-            "\">test_text</th></tr>", os.toString());
+            "\">" + testString + "</th></tr>", os.toString());
         os.reset();
 
 // Case of the named class style
@@ -623,7 +664,7 @@ public class HtmlFormatterTest extends BaseDocument {
         try (DocumentHolder documentHolder = htmlFormatter.handle(doc)) {
             Assertions.assertTrue(StringUtils.endsWithIgnoreCase(
                 os.toString(),
-                "<tr><th class=\"_" + Integer.toHexString(Objects.hashCode(layoutStyle1)) + "\">test_text</th></tr>" +
+                "<tr><th class=\"_" + Integer.toHexString(Objects.hashCode(layoutStyle1)) + "\">" + testString + "</th></tr>" +
                     "</body></html>"
             ));
         }
@@ -696,8 +737,9 @@ public class HtmlFormatterTest extends BaseDocument {
     }
 
     public void testHtmlTag(
-        DocumentItem item,
         HtmlTag baseTag,
+        DocumentItem item,
+        String testData,
         Class<? extends DocumentItem> itemClass
     ) throws Throwable {
 // Case when tag is without parameters
@@ -708,35 +750,58 @@ public class HtmlFormatterTest extends BaseDocument {
         handleItem(item, htmlFormatterVisitor);
         writer.flush();
 
-        Assertions.assertEquals("<" + baseTag + ">test_text</" + baseTag + ">", os.toString());
+        Assertions.assertTrue(os.toString().contains(baseTag.toString()));
+        Assertions.assertTrue(os.toString().contains(testData));
         os.reset();
 // Case of the layout style
         item.setStyle(layoutStyle1);
         handleItem(item, htmlFormatterVisitor);
         writer.flush();
 
-        Assertions.assertEquals(
-            "<" + baseTag + " style=\"" +
-                "border-bottom:double #000000;" +
-                "border-collapse:collapse;" +
-                "border-left:double #000000;" +
-                "border-right:double #000000;" +
-                "border-top:double #000000;" +
-                "height:15px;" +
-                "transform:rotate(10deg);" +
-                "width:20px" +
-                "\">test_text</" + baseTag + ">", os.toString());
+        if (!(item instanceof Picture)) {
+            Assertions.assertEquals(
+                "<" + baseTag + " style=\"" +
+                    "border-bottom:double #000000;" +
+                    "border-collapse:collapse;" +
+                    "border-left:double #000000;" +
+                    "border-right:double #000000;" +
+                    "border-top:double #000000;" +
+                    "height:15px;" +
+                    "transform:rotate(10deg);" +
+                    "width:20px" +
+                    "\">" + testString + "</" + baseTag + ">", os.toString());
+        } else {
+            Assertions.assertEquals(
+                "<" + baseTag + " src=\"" + testPicture + "\" style=\"" +
+                    "border-bottom:double #000000;" +
+                    "border-collapse:collapse;" +
+                    "border-left:double #000000;" +
+                    "border-right:double #000000;" +
+                    "border-top:double #000000;" +
+                    "height:15px;" +
+                    "transform:rotate(10deg);" +
+                    "width:20px" +
+                    "\"></" + baseTag + ">", os.toString());
+        }
         os.reset();
 // Case of the text style
         item.setStyle(textStyle1);
         handleItem(item, htmlFormatterVisitor);
         writer.flush();
 
-        Assertions.assertEquals(
-            "<" + baseTag + " style=\"" +
-                "font-family:" + textStyle1.getFontNameResource() + ",monospace;" +
-                "font-size:14pt;" +
-                "font-weight:bold\">test_text</" + baseTag + ">", os.toString());
+        if (item instanceof Picture) {
+            Assertions.assertEquals(
+                "<" + baseTag + " src=\"" + testPicture + "\" style=\"" +
+                    "font-family:" + textStyle1.getFontNameResource() + ",monospace;" +
+                    "font-size:14pt;" +
+                    "font-weight:bold\"></" + baseTag + ">", os.toString());
+        } else {
+            Assertions.assertEquals(
+                "<" + baseTag + " style=\"" +
+                    "font-family:" + textStyle1.getFontNameResource() + ",monospace;" +
+                    "font-size:14pt;" +
+                    "font-weight:bold\">" + testString + "</" + baseTag + ">", os.toString());
+        }
         os.reset();
 // Case of the named style class
         item.setStyle(null);         // remove inner style
@@ -764,17 +829,28 @@ public class HtmlFormatterTest extends BaseDocument {
                     osRes.toString(),
                     "<" + baseTag + " class=\"_" +
                         Integer.toHexString(Objects.hashCode(layoutStyle1.setGeometryDetails(null))) +
-                        "\"><div class=\"_" + Integer.toHexString(Objects.hashCode(divStyle)) + "\">test_text</div></" + baseTag + ">" +
+                        "\"><div class=\"_" + Integer.toHexString(Objects.hashCode(divStyle)) + "\">"
+                        + testString + "</div></" + baseTag + ">" +
                         "</body></html>"
                 ));
             } else {
-                Assertions.assertTrue(StringUtils.endsWithIgnoreCase(
-                    osRes.toString(),
-                    "<" + baseTag + " class=\"_" +
-                        Integer.toHexString(Objects.hashCode(layoutStyle1)) +
-                        "\">test_text</" + baseTag + ">" +
-                        "</body></html>"
-                ));
+                if (item instanceof Picture) {
+                    Assertions.assertTrue(StringUtils.endsWithIgnoreCase(
+                        osRes.toString(),
+                        "<" + baseTag + " class=\"_" +
+                            Integer.toHexString(Objects.hashCode(layoutStyle1)) +
+                            "\"" +  " src=\"" + testPicture + "\"></" + baseTag + ">" +
+                            "</body></html>"
+                    ));
+                } else {
+                    Assertions.assertTrue(StringUtils.endsWithIgnoreCase(
+                        osRes.toString(),
+                        "<" + baseTag + " class=\"_" +
+                            Integer.toHexString(Objects.hashCode(layoutStyle1)) +
+                            "\">" + testString + "</" + baseTag + ">" +
+                            "</body></html>"
+                    ));
+                }
             }
         }
     }
@@ -798,6 +874,8 @@ public class HtmlFormatterTest extends BaseDocument {
             htmlFormatterVisitor.visitTableRow((TableRow) item);
         } else if (item instanceof Footer) {
             htmlFormatterVisitor.visitFooter((Footer) item);
+        } else if (item instanceof Picture) {
+            htmlFormatterVisitor.visitPicture((Picture) item);
         }
     }
 }

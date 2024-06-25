@@ -28,4 +28,9 @@ public class HtmlSrcAttribute extends HtmlAttribute {
         }
         return this;
     }
+
+    @Override
+    public String getAssignmentPattern(Boolean isHtml4) {
+        return ASSIGNMENT_PATTERN_HTML4;
+    }
 }
