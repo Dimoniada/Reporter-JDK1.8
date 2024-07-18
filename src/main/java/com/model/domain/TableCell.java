@@ -38,7 +38,7 @@ public class TableCell extends DataItem<TableCell> {
     }
 
     @Override
-    public boolean isInheritedFrom(Class<?> type) {
+    public boolean isDataInheritedFrom(Class<?> type) {
         return type.isAssignableFrom(dataItem.getClass());
     }
 

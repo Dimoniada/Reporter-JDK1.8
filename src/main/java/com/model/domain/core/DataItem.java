@@ -25,5 +25,5 @@ public abstract class DataItem<T> extends DocumentItem {
         throw new Throwable("No implementation for setData() in " + superClassName);
     }
 
-    public abstract boolean isInheritedFrom(Class<?> type);
+    public abstract boolean isDataInheritedFrom(Class<?> type);
 }

@@ -198,12 +198,12 @@ public abstract class PdfFormatterVisitor extends Formatter implements BaseDetai
                 .extractStyleFor(footerObj)
                 .orElse(footerObj.getStyle());
         final com.itextpdf.layout.element.Paragraph elParagraph = new com.itextpdf.layout.element.Paragraph();
-        if (footerObj.isInheritedFrom(TextItem.class)) {
+        if (footerObj.isDataInheritedFrom(TextItem.class)) {
             final Text text = new Text(footerObj.getText());
             elParagraph.add(text);
             ((PdfStyleService) styleService).convertStyleToElement(style, text, elParagraph);
         }
-        if (footerObj.isInheritedFrom(PictureItem.class)) {
+        if (footerObj.isDataInheritedFrom(PictureItem.class)) {
             final byte[] data = footerObj.getData();
             final ImageData imageData = ImageDataFactory.create(data);
             final Image image = new Image(imageData);

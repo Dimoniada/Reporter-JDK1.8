@@ -118,7 +118,7 @@ public abstract class CsvFormatterVisitor extends Formatter implements BaseDetai
     protected void writeRow(Iterable<DataItem<?>> tableCells) throws Throwable {
         final List<String> tableRow = new ArrayList<>();
         for (final DataItem<?> o : tableCells) {
-            final String text = o.isInheritedFrom(TextItem.class) ? o.getText() : "{picture}";
+            final String text = o.isDataInheritedFrom(TextItem.class) ? o.getText() : "{picture}";
             tableRow.add(LocalizedNumberUtils.applyDecimalFormat(text, o.getStyle(), decimalFormat));
         }
         csvWriter.write(tableRow);

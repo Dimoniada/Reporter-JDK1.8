@@ -194,7 +194,7 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
     public void visitTableHeaderCell(TableHeaderCell tableHeaderCellObj) throws Throwable {
         final HtmlTableHeaderCell htmlTableHeaderCell = new HtmlTableHeaderCell();
         final Style style = ((HtmlStyleService) styleService).getCustomTableCellStyle(tableHeaderCellObj);
-        if (tableHeaderCellObj.isInheritedFrom(TextItem.class)) {
+        if (tableHeaderCellObj.isDataInheritedFrom(TextItem.class)) {
             handleTag(
                 htmlTableHeaderCell,
                 tableHeaderCellObj.getText(),
@@ -216,7 +216,7 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
         final HtmlDiv htmlDiv = new HtmlDiv();
         final HtmlStyleService htmlStyleService = (HtmlStyleService) styleService;
         final Style cellStyle = htmlStyleService.getCustomTableCellStyle(tableCellObj);
-        if (tableCellObj.isInheritedFrom(TextItem.class)) {
+        if (tableCellObj.isDataInheritedFrom(TextItem.class)) {
             final Style cellDivStyle = htmlStyleService.getCustomTableCellDivStyle(htmlDiv);
             if (cellDivStyle != null) {
                 handleTag(htmlTableCell, null, cellStyle, false);
@@ -226,7 +226,7 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
                 handleTag(htmlTableCell, tableCellObj.getText(), cellStyle, true);
             }
         }
-        if (tableCellObj.isInheritedFrom(PictureItem.class)) {
+        if (tableCellObj.isDataInheritedFrom(PictureItem.class)) {
             handlePictureInTag(tableCellObj, htmlTableCell, cellStyle);
         }
     }
@@ -242,11 +242,11 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
     public void visitFooter(Footer footerObj) throws Exception {
         final HtmlFooter htmlFooter = new HtmlFooter();
         final Style style = styleService.extractStyleFor(footerObj).orElse(footerObj.getStyle());
-        if (footerObj.isInheritedFrom(TextItem.class)) {
+        if (footerObj.isDataInheritedFrom(TextItem.class)) {
             handleTag(htmlFooter, footerObj.getText(), style, true);
         }
         //TODO: fix render Footer with picture
-        if (footerObj.isInheritedFrom(PictureItem.class)) {
+        if (footerObj.isDataInheritedFrom(PictureItem.class)) {
             handlePictureInTag(footerObj, htmlFooter, style);
         }
     }

@@ -411,7 +411,7 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
         throws Exception {
         XSSFPicture xssfPicture = null;
         final Style style = prepareStyleFrom(dataItem);
-        if (dataItem.isInheritedFrom(TextItem.class)) {
+        if (dataItem.isDataInheritedFrom(TextItem.class)) {
             workbook.getFontAt(cellObj.getCellStyle().getFontIndex()).setCharSet(fontCharset.getNativeId());
             if (StringUtils.hasText(dataItem.getText())) {
                 cellObj.setCellValue(
@@ -421,7 +421,7 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
                 cellObj.setCellValue("");
             }
         }
-        if (dataItem.isInheritedFrom(Picture.class)) {
+        if (dataItem.isDataInheritedFrom(Picture.class)) {
             final Picture picture = (Picture) dataItem;
             final InputStream pictureStream = new ByteArrayInputStream(picture.getData());
             final int picInd =

@@ -466,7 +466,7 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
         final Cell cell = new Cell();
         final Paragraph paragraph = new Paragraph();
         final Style style = prepareStyleFrom(tableCustomCell);
-        if (tableCustomCell.isInheritedFrom(TextItem.class)) {
+        if (tableCustomCell.isDataInheritedFrom(TextItem.class)) {
             element =
                 new Text(
                     LocalizedNumberUtils.applyDecimalFormat(
@@ -479,7 +479,7 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
             cell.add(paragraph);
             convertStyleToElement(style, element, cell);
         }
-        if (tableCustomCell.isInheritedFrom(PictureItem.class)) {
+        if (tableCustomCell.isDataInheritedFrom(PictureItem.class)) {
             final byte[] data = tableCustomCell.getData();
             final ImageData imageData = ImageDataFactory.create(data);
             element = new Image(imageData);

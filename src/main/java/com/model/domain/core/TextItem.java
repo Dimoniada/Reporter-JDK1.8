@@ -24,7 +24,7 @@ public class TextItem<T> extends DataItem<T> {
     }
 
     @Override
-    public boolean isInheritedFrom(Class<?> type) {
+    public boolean isDataInheritedFrom(Class<?> type) {
         return type.isAssignableFrom(getClass());
     }
 

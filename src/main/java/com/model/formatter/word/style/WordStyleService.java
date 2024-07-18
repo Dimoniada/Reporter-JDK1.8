@@ -167,7 +167,7 @@ public class WordStyleService extends StyleService implements DocDetails {
      */
     protected void addItemToRun(DataItem<?> dataItem, XWPFRun run, Style style)
         throws ParseException, IOException, InvalidFormatException {
-        if (dataItem.isInheritedFrom(Picture.class)) {
+        if (dataItem.isDataInheritedFrom(Picture.class)) {
             final Picture picture = (Picture) dataItem;
             final Dimension dimension = GeometryUtils.getPictureDimension(picture, style, EXTENSION);
             final int picFormat = toWordPictureFormat(picture.getFormat());
@@ -180,7 +180,7 @@ public class WordStyleService extends StyleService implements DocDetails {
             );
             convertPictureGeometryDetails(xwpfPicture, style);
         }
-        if (dataItem.isInheritedFrom(TextItem.class)) {
+        if (dataItem.isDataInheritedFrom(TextItem.class)) {
             final String text = LocalizedNumberUtils.applyDecimalFormat(dataItem.getText(), style, decimalFormat);
             run.setText(text);
         }
