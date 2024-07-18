@@ -158,9 +158,9 @@ public class WordStyleService extends StyleService implements DocDetails {
     /**
      * Adds text/picture/data to XWPFRun
      *
-     * @param dataItem  document dataItem
-     * @param run   XWPFRun run
-     * @param style dataItem's style
+     * @param dataItem document dataItem
+     * @param run      XWPFRun run
+     * @param style    dataItem's style
      * @throws ParseException         number in string could not be resolved
      * @throws IOException            if reading the picture-data from the stream fails
      * @throws InvalidFormatException if the format of the picture is not known
@@ -179,7 +179,8 @@ public class WordStyleService extends StyleService implements DocDetails {
                 Units.toEMU(dimension.getHeight())
             );
             convertPictureGeometryDetails(xwpfPicture, style);
-        } else if (dataItem.isInheritedFrom(TextItem.class)) {
+        }
+        if (dataItem.isInheritedFrom(TextItem.class)) {
             final String text = LocalizedNumberUtils.applyDecimalFormat(dataItem.getText(), style, decimalFormat);
             run.setText(text);
         }

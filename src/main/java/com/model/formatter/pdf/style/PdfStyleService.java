@@ -10,7 +10,9 @@ import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.canvas.draw.DashedLine;
 import com.itextpdf.kernel.pdf.canvas.draw.DottedLine;
+import com.itextpdf.kernel.pdf.canvas.draw.ILineDrawer;
 import com.itextpdf.kernel.pdf.canvas.draw.SolidLine;
+import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.borders.DashedBorder;
 import com.itextpdf.layout.borders.DottedBorder;
@@ -23,12 +25,15 @@ import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.properties.Property;
+import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.Transform;
 import com.itextpdf.layout.properties.UnitValue;
+import com.itextpdf.layout.properties.VerticalAlignment;
 import com.model.domain.FontService;
 import com.model.domain.Heading;
 import com.model.domain.Picture;
 import com.model.domain.core.DataItem;
+import com.model.domain.core.PictureItem;
 import com.model.domain.core.TextItem;
 import com.model.domain.style.BorderStyle;
 import com.model.domain.style.LayoutStyle;
@@ -44,6 +49,7 @@ import com.model.domain.style.geometry.GeometryDetails;
 import com.model.formatter.pdf.PdfDetails;
 import com.model.formatter.pdf.renders.CustomCellPdfRenderer;
 import com.model.formatter.pdf.renders.CustomParagraphPdfRenderer;
+import com.model.formatter.pdf.renders.CustomTransform;
 import com.model.utils.CastUtils;
 import com.model.utils.LocalizedNumberUtils;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
@@ -76,10 +82,10 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
      * Map of native itextpdf border types.
      * Key - type BorderWeight, value - Border
      */
-    private static final Map<BorderWeight, com.itextpdf.layout.borders.Border> borderWeightMap =
-        new HashMap<BorderWeight, com.itextpdf.layout.borders.Border>() {{
-            put(null, com.itextpdf.layout.borders.Border.NO_BORDER);
-            put(BorderWeight.NONE, com.itextpdf.layout.borders.Border.NO_BORDER);
+    private static final Map<BorderWeight, Border> borderWeightMap =
+        new HashMap<BorderWeight, Border>() {{
+            put(null, Border.NO_BORDER);
+            put(BorderWeight.NONE, Border.NO_BORDER);
             put(BorderWeight.THIN, new SolidBorder(1));
             put(BorderWeight.MEDIUM, new SolidBorder(2));
             put(BorderWeight.THICK, new SolidBorder(3));
@@ -92,8 +98,8 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
      * Map of native itextpdf canvas ILineDrawer drawing types
      * Key - type BorderWeight, value - ILineDrawer
      */
-    private static final Map<BorderWeight, com.itextpdf.kernel.pdf.canvas.draw.ILineDrawer> lineWeightMap =
-        new HashMap<BorderWeight, com.itextpdf.kernel.pdf.canvas.draw.ILineDrawer>() {{
+    private static final Map<BorderWeight, ILineDrawer> lineWeightMap =
+        new HashMap<BorderWeight, ILineDrawer>() {{
             put(null, null);
             put(BorderWeight.NONE, null);
             put(BorderWeight.THIN, new SolidLine(1));    //width - distance between borders
@@ -107,25 +113,25 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
      * Map of native itextpdf horizontal text layout types
      * Key - HorAlignment type, value - TextAlignment
      */
-    private static final Map<HorAlignment, com.itextpdf.layout.properties.TextAlignment> horizontalAlignmentMap =
-        new HashMap<HorAlignment, com.itextpdf.layout.properties.TextAlignment>() {{
+    private static final Map<HorAlignment, TextAlignment> horizontalAlignmentMap =
+        new HashMap<HorAlignment, TextAlignment>() {{
             put(null, null);
-            put(HorAlignment.GENERAL, com.itextpdf.layout.properties.TextAlignment.JUSTIFIED);
-            put(HorAlignment.LEFT, com.itextpdf.layout.properties.TextAlignment.LEFT);
-            put(HorAlignment.CENTER, com.itextpdf.layout.properties.TextAlignment.CENTER);
-            put(HorAlignment.RIGHT, com.itextpdf.layout.properties.TextAlignment.RIGHT);
+            put(HorAlignment.GENERAL, TextAlignment.JUSTIFIED);
+            put(HorAlignment.LEFT, TextAlignment.LEFT);
+            put(HorAlignment.CENTER, TextAlignment.CENTER);
+            put(HorAlignment.RIGHT, TextAlignment.RIGHT);
         }};
 
     /**
      * Map of native itextpdf vertical text layout types
      * Key - type VertAlignment, value - VerticalAlignment
      */
-    private static final Map<VertAlignment, com.itextpdf.layout.properties.VerticalAlignment> verticalAlignmentMap =
-        new HashMap<VertAlignment, com.itextpdf.layout.properties.VerticalAlignment>() {{
+    private static final Map<VertAlignment, VerticalAlignment> verticalAlignmentMap =
+        new HashMap<VertAlignment, VerticalAlignment>() {{
             put(null, null);
-            put(VertAlignment.TOP, com.itextpdf.layout.properties.VerticalAlignment.TOP);
-            put(VertAlignment.CENTER, com.itextpdf.layout.properties.VerticalAlignment.MIDDLE);
-            put(VertAlignment.BOTTOM, com.itextpdf.layout.properties.VerticalAlignment.BOTTOM);
+            put(VertAlignment.TOP, VerticalAlignment.TOP);
+            put(VertAlignment.CENTER, VerticalAlignment.MIDDLE);
+            put(VertAlignment.BOTTOM, VerticalAlignment.BOTTOM);
         }};
 
     /**
@@ -168,7 +174,7 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
      * @param border input border type
      * @return itextpdf element border
      */
-    public static com.itextpdf.layout.borders.Border
+    public static Border
     toPdfBorder(BorderWeight border) {
         if (borderWeightMap.containsKey(border)) {
             return borderWeightMap.get(border);
@@ -183,7 +189,7 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
      * @param horAlignment horizontal alignment input type
      * @return itextpdf horizontal alignment type
      */
-    public static com.itextpdf.layout.properties.TextAlignment
+    public static TextAlignment
     toPdfHorAlignment(HorAlignment horAlignment) {
         if (horizontalAlignmentMap.containsKey(horAlignment)) {
             return horizontalAlignmentMap.get(horAlignment);
@@ -198,7 +204,7 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
      * @param vertAlignment vertical alignment input type
      * @return itextpdf vertical alignment type
      */
-    public static com.itextpdf.layout.properties.VerticalAlignment
+    public static VerticalAlignment
     toPdfVertAlignment(VertAlignment vertAlignment) {
         if (verticalAlignmentMap.containsKey(vertAlignment)) {
             return verticalAlignmentMap.get(vertAlignment);
@@ -213,7 +219,7 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
      * @param border input border type
      * @return itextpdf draw type
      */
-    public static com.itextpdf.kernel.pdf.canvas.draw.ILineDrawer
+    public static ILineDrawer
     toPdfILineDrawer(BorderWeight border) {
         if (lineWeightMap.containsKey(border)) {
             return lineWeightMap.get(border);
@@ -265,7 +271,7 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
             return;
         }
         if (borderStyle != null) {
-            final com.itextpdf.layout.borders.Border border = toPdfBorder(borderStyle.getWeight());
+            final Border border = toPdfBorder(borderStyle.getWeight());
             convertBorderColor(border, borderStyle.getColor());
             setBorder.apply(border);
         }
@@ -277,7 +283,7 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
      * @param border itextpdf border
      * @param color  input color
      */
-    public static void convertBorderColor(com.itextpdf.layout.borders.Border border, Color color) {
+    public static void convertBorderColor(Border border, Color color) {
         if (border != null) {
             border.setColor(toPdfColor(color));
         }
@@ -328,7 +334,7 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
      */
     public static void convertGeometryDetails(AbstractElement<?> outerElement, LayoutStyle layoutStyle) {
         final GeometryDetails geometryDetails = layoutStyle.getGeometryDetails();
-        if (geometryDetails == null || !(outerElement instanceof BlockElement<?>)) {
+        if (geometryDetails == null) {
             return;
         }
         // Width
@@ -336,8 +342,14 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
             geometryDetails
                 .getWidth()
                 .getValueFor(EXTENSION)
-                .ifPresent(value ->
-                    ((BlockElement<?>) outerElement).setWidth(CastUtils.<Float>convert(value))
+                .ifPresent(value -> {
+                        if (outerElement instanceof BlockElement) {
+                            ((BlockElement<?>) outerElement).setWidth(CastUtils.<Float>convert(value));
+                        }
+                        if (outerElement instanceof Image) {
+                            ((Image) outerElement).setWidth(CastUtils.<Float>convert(value));
+                        }
+                    }
                 );
         }
         // Height
@@ -345,8 +357,14 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
             geometryDetails
                 .getHeight()
                 .getValueFor(EXTENSION)
-                .ifPresent(value ->
-                    ((BlockElement<?>) outerElement).setHeight(CastUtils.<Float>convert(value))
+                .ifPresent(value -> {
+                        if (outerElement instanceof BlockElement) {
+                            ((BlockElement<?>) outerElement).setHeight(CastUtils.<Float>convert(value));
+                        }
+                        if (outerElement instanceof Image) {
+                            ((Image) outerElement).setHeight(CastUtils.<Float>convert(value));
+                        }
+                    }
                 );
         }
         // Rotation angle
@@ -354,8 +372,15 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
             geometryDetails
                 .getAngle()
                 .getValueFor(EXTENSION)
-                .ifPresent(value -> ((BlockElement<?>) outerElement)
-                    .setRotationAngle((float) CastUtils.convert(value) * Math.PI / 180f)
+                .ifPresent(value -> {
+                        final float angle = (float) CastUtils.convert(value) * (float) Math.PI / 180f;
+                        if (outerElement instanceof BlockElement) {
+                            ((BlockElement<?>) outerElement).setRotationAngle(angle);
+                        }
+                        if (outerElement instanceof Image) {
+                            ((Image) outerElement).setRotationAngle(angle);
+                        }
+                    }
                 );
         }
 
@@ -375,20 +400,25 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
                 .ifPresent(value -> scaleY.set(CastUtils.convert(value)));
         }
         final UnitValue uv = new UnitValue(UnitValue.POINT, 0);
-        final Transform transform = new Transform(1);
+        final CustomTransform transform = new CustomTransform(1);
         transform
             .addSingleTransform(
                 new Transform.SingleTransform(scaleX.get(), 0, 0, scaleY.get(), uv, uv)
             );
-        outerElement
-            .setProperty(
-                Property.TRANSFORM,
-                transform
-            );
+        if (!(outerElement instanceof Image)) {
+            outerElement
+                .setProperty(
+                    Property.TRANSFORM,
+                    transform
+                );
+        } else {
+            ((Image) outerElement).scale(scaleX.get(), scaleY.get());
+        }
         // To apply Rotation center and scales
         if (outerElement instanceof Paragraph) {
             outerElement.setNextRenderer(new CustomParagraphPdfRenderer((Paragraph) outerElement, geometryDetails));
-        } else if (outerElement instanceof Cell) {
+        }
+        if (outerElement instanceof Cell) {
             outerElement.setNextRenderer(new CustomCellPdfRenderer((Cell) outerElement, geometryDetails));
         }
     }
@@ -406,16 +436,16 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
     /**
      * Creates a stylized bunch of pdf elements: text inside a paragraph.
      * A bundle is necessary for the correct processing of styles;
-     * text style applied to {@link com.itextpdf.layout.element.Text}
+     * text style applied to {@link Text}
      *
      * @param item text element
      * @param o    pdf document
      * @throws Exception on bad decimalFormat or font creation error
      */
-    public void handleSimpleElement(TextItem<?> item, com.itextpdf.layout.Document o) throws Exception {
+    public void handleSimpleElement(TextItem<?> item, Document o) throws Exception {
         final Text text =
             new Text(LocalizedNumberUtils.applyDecimalFormat(item.getText(), item.getStyle(), decimalFormat));
-        final com.itextpdf.layout.element.Paragraph elParagraph = new com.itextpdf.layout.element.Paragraph(text);
+        final Paragraph elParagraph = new Paragraph(text);
         final Style style = extractStyleFor(item).orElse(item.getStyle());
         convertStyleToElement(style, text, elParagraph);
         if (item instanceof Heading) {
@@ -432,8 +462,10 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
      * @throws Exception when converting style
      */
     public Cell handleTableCustomCell(DataItem<?> tableCustomCell) throws Exception {
-        AbstractElement<?> element = null;
-        final com.itextpdf.layout.element.Paragraph paragraph = new com.itextpdf.layout.element.Paragraph();
+        AbstractElement<?> element;
+        final Cell cell = new Cell();
+        final Paragraph paragraph = new Paragraph();
+        final Style style = prepareStyleFrom(tableCustomCell);
         if (tableCustomCell.isInheritedFrom(TextItem.class)) {
             element =
                 new Text(
@@ -444,29 +476,31 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
                     )
                 );
             paragraph.add((Text) element);
+            cell.add(paragraph);
+            convertStyleToElement(style, element, cell);
         }
-        if (tableCustomCell.isInheritedFrom(Picture.class)) {
-            final Picture picture = (Picture) tableCustomCell;
-            final ImageData imageData = ImageDataFactory.create(picture.getData());
+        if (tableCustomCell.isInheritedFrom(PictureItem.class)) {
+            final byte[] data = tableCustomCell.getData();
+            final ImageData imageData = ImageDataFactory.create(data);
             element = new Image(imageData);
-            //TODO: apply style to picture here or in {@link convertStyleToElement}
             paragraph.add((Image) element);
+            cell.add(paragraph);
+            convertStyleToElement(style, null, element);
         }
-        final Cell cell = new Cell().add(paragraph);
-        final Style style = prepareStyleFrom(tableCustomCell);
-        convertStyleToElement(style, element, cell);
         return cell;
     }
 
-    public void handlePicture(Picture picture, com.itextpdf.layout.Document o) throws Exception {
-        final com.itextpdf.layout.element.Paragraph elParagraph = new com.itextpdf.layout.element.Paragraph();
+    public void handlePicture(Picture picture, Document o) throws Exception {
         final ImageData imageData = ImageDataFactory.create(picture.getData());
         final Image element = new Image(imageData);
-        //TODO: apply style to picture here or in {@link convertStyleToElement}
-        elParagraph.add(element);
         final Style style = prepareStyleFrom(picture);
-        convertStyleToElement(style, null, element);
-        o.add(elParagraph);
+        if (style instanceof LayoutStyle) {
+            convertLayoutStyleToElement(element, (LayoutStyle) style);
+        }
+        if (style instanceof LayoutTextStyle) {
+            convertLayoutStyleToElement(element, ((LayoutTextStyle) style).getLayoutStyle());
+        }
+        o.add(element);
     }
 
     /**
@@ -602,7 +636,7 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
         if (layoutStyle == null) {
             return;
         }
-        final boolean isTableCell = outerElement instanceof com.itextpdf.layout.element.Cell;
+        final boolean isTableCell = outerElement instanceof Cell;
         convertGroundColor(outerElement, layoutStyle);
         convertBorder(layoutStyle.getBorderTop(), outerElement::setBorderTop, isTableCell);
         convertBorder(layoutStyle.getBorderLeft(), outerElement::setBorderLeft, isTableCell);

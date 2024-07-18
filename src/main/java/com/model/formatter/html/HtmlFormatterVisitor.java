@@ -15,6 +15,8 @@ import com.model.domain.TableHeaderRow;
 import com.model.domain.TableRow;
 import com.model.domain.Title;
 import com.model.domain.core.CompositionPart;
+import com.model.domain.core.DataItem;
+import com.model.domain.core.PictureItem;
 import com.model.domain.core.TextItem;
 import com.model.domain.style.BorderStyle;
 import com.model.domain.style.LayoutStyle;
@@ -214,7 +216,7 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
         final HtmlDiv htmlDiv = new HtmlDiv();
         final HtmlStyleService htmlStyleService = (HtmlStyleService) styleService;
         final Style cellStyle = htmlStyleService.getCustomTableCellStyle(tableCellObj);
-        if (tableCellObj.getText() != null) {
+        if (tableCellObj.isInheritedFrom(TextItem.class)) {
             final Style cellDivStyle = htmlStyleService.getCustomTableCellDivStyle(htmlDiv);
             if (cellDivStyle != null) {
                 handleTag(htmlTableCell, null, cellStyle, false);
@@ -224,16 +226,8 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
                 handleTag(htmlTableCell, tableCellObj.getText(), cellStyle, true);
             }
         }
-        if (tableCellObj.getData() != null) {
-            final byte[] data = tableCellObj.getData();
-            final PictureFormat pictureFormat = PictureUtils.getFormat(data);
-            Picture.create(data, pictureFormat);
-            final Picture picture = Picture.create(data, pictureFormat);
-            final Style style = htmlStyleService.prepareStyleFrom(picture);
-            final HtmlPicture htmlPicture = new HtmlPicture();
-            htmlPicture.setSrc(picture.getData());
-            handleTag(htmlPicture, new byte[0], style, true);
-            outputStreamWriter.write(htmlTableCell.close());
+        if (tableCellObj.isInheritedFrom(PictureItem.class)) {
+            handlePictureInTag(tableCellObj, htmlTableCell, cellStyle);
         }
     }
 
@@ -248,7 +242,25 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
     public void visitFooter(Footer footerObj) throws Exception {
         final HtmlFooter htmlFooter = new HtmlFooter();
         final Style style = styleService.extractStyleFor(footerObj).orElse(footerObj.getStyle());
-        handleTag(htmlFooter, footerObj.getText(), style, true);
+        if (footerObj.isInheritedFrom(TextItem.class)) {
+            handleTag(htmlFooter, footerObj.getText(), style, true);
+        }
+        //TODO: fix render Footer with picture
+        if (footerObj.isInheritedFrom(PictureItem.class)) {
+            handlePictureInTag(footerObj, htmlFooter, style);
+        }
+    }
+
+    protected void handlePictureInTag(DataItem<?> item, HtmlTag htmlTag, Style tagStyle) throws Exception {
+        final byte[] data = item.getData();
+        final PictureFormat pictureFormat = PictureUtils.getFormat(data);
+        final Picture picture = Picture.create(data, pictureFormat);
+        final Style pictureStyle = styleService.prepareStyleFrom(picture);
+        final HtmlPicture htmlPicture = new HtmlPicture();
+        htmlPicture.setSrc(picture.getData());
+        handleTag(htmlTag, null, tagStyle, false);
+        handleTag(htmlPicture, new byte[0], pictureStyle, true);
+        outputStreamWriter.write(htmlTag.close());
     }
 
     protected void handleTag(HtmlTag tag, Object data, Style style, Boolean needCloseTag) throws Exception {

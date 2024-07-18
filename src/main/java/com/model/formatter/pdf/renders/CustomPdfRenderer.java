@@ -19,10 +19,15 @@ import java.util.function.Function;
 
 public interface CustomPdfRenderer {
     GeometryDetails getGeometryDetails();
+
     Rectangle getOccupiedAreaBBox();
+
     IPropertyContainer getModelElement();
+
     <T> T getProperty(int key);
+
     LayoutArea getOccupiedArea();
+
     Rectangle applyMargins(Rectangle rect, boolean reverse);
 
     default void customApplyRotationLayout() {

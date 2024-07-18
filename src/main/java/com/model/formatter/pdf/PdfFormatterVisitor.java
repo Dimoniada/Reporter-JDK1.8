@@ -1,6 +1,9 @@
 package com.model.formatter.pdf;
 
 import com.google.common.base.MoreObjects;
+import com.itextpdf.io.image.ImageData;
+import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.kernel.events.IEventHandler;
 import com.itextpdf.kernel.events.PdfDocumentEvent;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfDocumentInfo;
@@ -8,6 +11,7 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.kernel.pdf.canvas.draw.ILineDrawer;
 import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.LineSeparator;
 import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.properties.AreaBreakType;
@@ -25,6 +29,8 @@ import com.model.domain.TableHeaderCell;
 import com.model.domain.TableHeaderRow;
 import com.model.domain.TableRow;
 import com.model.domain.Title;
+import com.model.domain.core.PictureItem;
+import com.model.domain.core.TextItem;
 import com.model.domain.style.BorderStyle;
 import com.model.domain.style.Style;
 import com.model.domain.style.StyleService;
@@ -187,19 +193,26 @@ public abstract class PdfFormatterVisitor extends Formatter implements BaseDetai
 
     @Override
     public void visitFooter(Footer footerObj) throws Exception {
-        //TODO render picture
-        final Text text = new Text(footerObj.getText());
-        final com.itextpdf.layout.element.Paragraph elParagraph = new com.itextpdf.layout.element.Paragraph(text);
         final Style style =
             styleService
                 .extractStyleFor(footerObj)
                 .orElse(footerObj.getStyle());
-        ((PdfStyleService) styleService).convertStyleToElement(style, text, elParagraph);
+        final com.itextpdf.layout.element.Paragraph elParagraph = new com.itextpdf.layout.element.Paragraph();
+        if (footerObj.isInheritedFrom(TextItem.class)) {
+            final Text text = new Text(footerObj.getText());
+            elParagraph.add(text);
+            ((PdfStyleService) styleService).convertStyleToElement(style, text, elParagraph);
+        }
+        if (footerObj.isInheritedFrom(PictureItem.class)) {
+            final byte[] data = footerObj.getData();
+            final ImageData imageData = ImageDataFactory.create(data);
+            final Image image = new Image(imageData);
+            elParagraph.add(image);
+            ((PdfStyleService) styleService).convertStyleToElement(style, null, image);
+        }
 
-        pdf.addEventHandler(
-            PdfDocumentEvent.END_PAGE,
-            PdfPageEventHandler.create(elParagraph, document)
-        );
+        final IEventHandler handler = PdfPageEventHandler.create(elParagraph, document, style);
+        pdf.addEventHandler(PdfDocumentEvent.END_PAGE, handler);
     }
 
     @Override

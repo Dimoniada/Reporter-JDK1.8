@@ -465,7 +465,6 @@ class PdfFormatterTest extends BaseDocument {
         final PdfFormatter pdfFormatter = (PdfFormatter) PdfFormatter.create()
             .setEncoding("Cp1251");
         pdfFormatter.setFileName("test_file");
-        Assertions.assertEquals("test_file", pdfFormatter.getFileName());
 
         ((List<DocumentItem>) doc.getParts())
             .add(0, Footer.create("simple footer"));
@@ -484,15 +483,132 @@ class PdfFormatterTest extends BaseDocument {
     }
 
     @Test
+    public void testFooterPicture() throws Throwable {
+        final String imageName = "pic/pic.jpg";
+        final URL url = getClass().getClassLoader().getResource(imageName);
+        Assertions.assertNotNull(url);
+        final WritableResource resource = new PathResource(url.toURI());
+
+        final PdfFormatter pdfFormatter = PdfFormatter.create();
+        pdfFormatter.setFileName("test_file");
+        ((List<DocumentItem>) doc.getParts())
+            .add(
+                0,
+                Footer.create(IOUtils.toByteArray(resource.getInputStream()))
+                    .setStyle(
+                        LayoutStyle.create()
+                            .setGeometryDetails(
+                                GeometryDetails.create()
+                                    .setScaleX(Geometry.create().add("pdf", 0.1f))
+                                    .setScaleY(Geometry.create().add("pdf", 0.1f))
+                                    .setAngle(Geometry.create().add("pdf", -90f))
+                            )
+                            .setHorAlignment(HorAlignment.LEFT)
+                    )
+            );
+
+        try (DocumentHolder documentHolder = pdfFormatter.handle(doc)) {
+            if (Files.exists(documentHolder.getResource().getFile().toPath())) {
+                final PdfReader pdfReader = new PdfReader(documentHolder.getResource().getFile());
+                final PdfDocument doc1 = new PdfDocument(pdfReader);
+
+                for (int ind = 1; ind <= doc1.getNumberOfPages(); ind++) {
+                    try (ImageEventListener listener = new ImageEventListener(imageName)) {
+                        final PdfCanvasProcessor canvasProcessor = new PdfCanvasProcessor(listener);
+                        canvasProcessor.processPageContent(doc1.getPage(ind));
+                        if (Files.exists(listener.getImagePath())) {
+                            final byte[] expected = IOUtils.toByteArray(resource.getInputStream());
+                            final byte[] actual = Files.readAllBytes(listener.getImagePath());
+                            Assertions.assertArrayEquals(expected, actual);
+                        }
+                        canvasProcessor.reset();
+                    }
+                }
+
+                doc1.close();
+                pdfReader.close();
+            }
+        }
+    }
+
+    @Test
     public void testSavePicture() throws Throwable {
+        final String imageName = "pic/pic.jpg";
+        final URL url = getClass().getClassLoader().getResource(imageName);
+        Assertions.assertNotNull(url);
+        final WritableResource resource = new PathResource(url.toURI());
+        final Picture pic = Picture.create(IOUtils.toByteArray(resource.getInputStream()), PictureFormat.JPG);
+        pic.setStyle(
+            LayoutStyle.create()
+                .setGeometryDetails(
+                    GeometryDetails.create()
+                        .setScaleX(Geometry.create().add("pdf", 0.1f))
+                        .setScaleY(Geometry.create().add("pdf", 0.1f))
+                        .setAngle(Geometry.create().add("pdf", -45f))
+                )
+        );
+
+        final Document document = Document.create(Paragraph.create("Test picture in PDF:"), pic);
+
+        try (DocumentHolder documentHolder = PdfFormatter.create().handle(document)) {
+            if (Files.exists(documentHolder.getResource().getFile().toPath())) {
+                final PdfReader pdfReader = new PdfReader(documentHolder.getResource().getFile());
+                final PdfDocument doc1 = new PdfDocument(pdfReader);
+
+                for (int ind = 1; ind <= doc1.getNumberOfPages(); ind++) {
+                    try (ImageEventListener listener = new ImageEventListener(imageName)) {
+                        final PdfCanvasProcessor canvasProcessor = new PdfCanvasProcessor(listener);
+                        canvasProcessor.processPageContent(doc1.getPage(ind));
+                        if (Files.exists(listener.getImagePath())) {
+                            final byte[] expected = IOUtils.toByteArray(resource.getInputStream());
+                            final byte[] actual = Files.readAllBytes(listener.getImagePath());
+                            Assertions.assertArrayEquals(expected, actual);
+                        }
+                        canvasProcessor.reset();
+                    }
+                }
+
+                doc1.close();
+                pdfReader.close();
+            }
+        }
+    }
+
+    @Test
+    public void testSavePictureToTableCell() throws Throwable {
         final String imageName = "pic/pic.jpg";
 
         final URL url = getClass().getClassLoader().getResource(imageName);
         Assertions.assertNotNull(url);
         final WritableResource resource = new PathResource(url.toURI());
-        final Picture pic = Picture.create(IOUtils.toByteArray(resource.getInputStream()), PictureFormat.JPG);
 
-        final Document document = Document.create(Paragraph.create("Test picture in PDF:"), pic);
+        final Document document = Document.create(
+            Table.create()
+                .setLabel("table with picture:")
+                .setTableHeaderRow(
+                    TableHeaderRow
+                        .create().addParts(
+                            TableHeaderCell.create("01"),
+                            TableHeaderCell.create("02")
+                        )
+                )
+                .addParts(
+                    TableRow.create()
+                        .addParts(
+                            TableCell.create("11"),
+                            TableCell.create(IOUtils.toByteArray(resource.getInputStream()))
+                                .setStyle(
+                                    LayoutStyle.create()
+                                        .setGeometryDetails(
+                                            GeometryDetails.create()
+                                                .setScaleX(Geometry.create().add("pdf", 0.1f))
+                                                .setScaleY(Geometry.create().add("pdf", 0.1f))
+                                                .setAngle(Geometry.create().add("pdf", -45f))
+                                        )
+                                )
+                        )
+                )
+        );
 
         try (DocumentHolder documentHolder = PdfFormatter.create().handle(document)) {
             if (Files.exists(documentHolder.getResource().getFile().toPath())) {

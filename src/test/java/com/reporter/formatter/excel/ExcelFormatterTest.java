@@ -1,8 +1,8 @@
 package com.reporter.formatter.excel;
 
 import com.model.domain.Document;
-import com.model.domain.Picture;
 import com.model.domain.DocumentCase;
+import com.model.domain.Picture;
 import com.model.domain.style.LayoutStyle;
 import com.model.domain.style.constant.PictureFormat;
 import com.model.domain.style.geometry.Geometry;
@@ -136,8 +136,8 @@ class ExcelFormatterTest extends BaseDocument {
                         LayoutStyle.create()
                             .setGeometryDetails(
                                 GeometryDetails.create()
-//                                    .setScaleX(Geometry.create().add("xlsx", Double.MAX_VALUE))
-//                                    .setScaleY(Geometry.create().add("xlsx", Double.MAX_VALUE))
+//                                    .setScaleX(Geometry.create().add("xlsx", 0.5d))
+//                                    .setScaleY(Geometry.create().add("xlsx", 0.5d))
                                     .setWidth(Geometry.create().add("xlsx", 80 * 100))
                                     .setHeight(Geometry.create().add("xlsx", (short) (48 * 40)))
                                     .setAngle(Geometry.create().add("xlsx", (short) 30))
