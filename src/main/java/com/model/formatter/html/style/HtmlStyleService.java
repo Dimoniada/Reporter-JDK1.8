@@ -2,6 +2,7 @@ package com.model.formatter.html.style;
 
 import com.google.common.base.MoreObjects;
 import com.model.domain.TableCell;
+import com.model.domain.TableHeaderCell;
 import com.model.domain.TableRow;
 import com.model.domain.core.DocumentItem;
 import com.model.domain.style.BorderStyle;
@@ -109,15 +110,15 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
     /**
      * If true then style will be written inside HTML5 tags,
      */
-    protected boolean writeStyleOnSpot;
+    protected boolean writeStyleInTag;
 
     public HtmlStyleService(
         boolean useHtml4Tags,
-        boolean writeStyleOnSpot,
+        boolean writeStyleInTag,
         DecimalFormat decimalFormat
     ) {
         this.useHtml4Tags = useHtml4Tags;
-        this.writeStyleOnSpot = writeStyleOnSpot;
+        this.writeStyleInTag = writeStyleInTag;
         this.decimalFormat = decimalFormat;
     }
 
@@ -157,7 +158,7 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
     }
 
     public static String toHtmlTransform(GeometryDetails geometryDetails) {
-        return Stream
+        final String result = Stream
             .of(
                 geometryToString("scaleX(", geometryDetails.getScaleX(), ")"),
                 geometryToString("scaleY(", geometryDetails.getScaleY(), ")"),
@@ -165,6 +166,7 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
             )
             .filter(StringUtils::hasText)
             .collect(Collectors.joining(" "));
+        return result.isEmpty() ? null : result;
     }
 
     public static String toHtmlWidth(Geometry<Object> width) {
@@ -417,7 +419,7 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
     @Override
     public void writeStyles(Object o) throws Exception {
         final OutputStreamWriter OsWriter = (OutputStreamWriter) o;
-        if (!useHtml4Tags && !writeStyleOnSpot) {
+        if (!useHtml4Tags && !writeStyleInTag) {
 
             final BiFunction<Class<?>, Style, Boolean> checkConditionClass = (clazz, style) -> {
                 if (style.getCondition() != null) {
@@ -436,7 +438,9 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
             final List<Style> cellStyles =
                 styles
                     .stream()
-                    .filter(s -> checkConditionClass.apply(TableCell.class, s))
+                    .filter(s -> checkConditionClass.apply(TableCell.class, s)
+                        || checkConditionClass.apply(TableHeaderCell.class, s)
+                    )
                     .peek(s -> {
                         GeometryDetails gd = null;
                         if (s instanceof LayoutStyle) {
@@ -447,13 +451,14 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
                             ((LayoutTextStyle) s).getLayoutStyle().setGeometryDetails(null);
                         }
                         if (gd != null) {
-                            cellDivStyles.add(
-                                LayoutStyle.create()
-                                    .setGeometryDetails(gd)
-                                    .setCondition(
-                                        StyleCondition.create(HtmlDiv.class, ignored -> true)
-                                    )
-                            );
+                            final Style divStyle = LayoutStyle.create()
+                                .setGeometryDetails(gd)
+                                .setCondition(
+                                    StyleCondition.create(HtmlDiv.class, ignored -> true)
+                                );
+                            if (!cellDivStyles.contains(divStyle)) {
+                                cellDivStyles.add(divStyle);
+                            }
                         }
                     })
                     .collect(Collectors.toList());
@@ -494,12 +499,12 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
         return this;
     }
 
-    public boolean isWriteStyleOnSpot() {
-        return writeStyleOnSpot;
+    public boolean isWriteStyleInTag() {
+        return writeStyleInTag;
     }
 
-    public HtmlStyleService setWriteStyleOnSpot(boolean writeStyleOnSpot) {
-        this.writeStyleOnSpot = writeStyleOnSpot;
+    public HtmlStyleService setWriteStyleInTag(boolean writeStyleInTag) {
+        this.writeStyleInTag = writeStyleInTag;
         return this;
     }
 }

@@ -18,8 +18,15 @@ LayoutStyle layoutStyleForCells;
 HtmlLayoutTextStyle htmlTableStyle;
 HtmlLayoutTextStyle htmlColGroupStyle;
 
+GeometryDetails geometryDetails;
+
 final BorderStyle doubleBorder = BorderStyle.create(Color.BLACK, BorderWeight.DOUBLE);
 final BorderStyle singleBorder = BorderStyle.create(Color.RED, BorderWeight.THICK);
+
+geometryDetails = GeometryDetails.create()
+    .setWidth(Geometry.create().add("html", "20px"))
+    .setHeight(Geometry.create().add("html", "15px"))
+    .setAngle(Geometry.create().add("html", "10deg"));
 
 layoutStyle1 =
     LayoutStyle
@@ -29,12 +36,7 @@ layoutStyle1 =
         .setBorderRight(doubleBorder)
         .setBorderBottom(doubleBorder)
         .setAutoWidth(true)
-        .setGeometryDetails(
-            GeometryDetails.create()
-                .setWidth(Geometry.create().add("html", "20px"))
-                .setHeight(Geometry.create().add("html", "15px"))
-                .setAngle(Geometry.create().add("html", "10deg"))
-        );
+        .setGeometryDetails(geometryDetails);
 
 layoutStyleForCells =
     LayoutStyle
@@ -135,7 +137,7 @@ doc = Document
     .addPart(documentCase);
 
 final HtmlStyleService styleService = HtmlStyleService.create()
-    .setWriteStyleOnSpot(false)
+    .setWriteStyleInTag(false)
     .addStyles(htmlTableStyle, htmlColGroupStyle, layoutTextStyle);
 
 final Map<String, Object> result = new HashMap<String, Object>();
@@ -143,6 +145,15 @@ result.put("document", doc);
 result.put("styleService", styleService);
 result.put("htmlTableStyle", htmlTableStyle);
 result.put("htmlColGroupStyle", htmlColGroupStyle);
-result.put("layoutTextStyle", layoutTextStyle);
+result.put(
+    "layoutTextStyle",
+    LayoutTextStyle.create(
+        layoutTextStyle.getTextStyle(),
+        layoutTextStyle.getLayoutStyle()
+            .clone()
+            .setGeometryDetails(null)
+    )
+);
+result.put("htmlDivStyle", LayoutStyle.create().setGeometryDetails(geometryDetails));
 
 return result;

@@ -27,6 +27,7 @@ import com.model.domain.style.geometry.GeometryDetails;
 import com.model.formatter.DocumentHolder;
 import com.model.formatter.html.HtmlFormatter;
 import com.model.formatter.html.HtmlFormatterVisitor;
+import com.model.formatter.html.style.HtmlLayoutTextStyle;
 import com.model.formatter.html.style.HtmlStyleService;
 import com.model.formatter.html.tag.HtmlDiv;
 import com.model.formatter.html.tag.HtmlFooter;
@@ -77,7 +78,7 @@ public class HtmlFormatterTest extends BaseDocument {
         try {
             resource = new PathResource(url.toURI());
             testPictureData = IOUtils.toByteArray(resource.getInputStream());
-            testPicture =  String.format(
+            testPicture = String.format(
                 "data:image/%s;base64,%s",
                 PictureFormat.JPG.toString().toLowerCase(Locale.ENGLISH),
                 Base64.getEncoder().encodeToString(testPictureData)
@@ -180,7 +181,7 @@ public class HtmlFormatterTest extends BaseDocument {
 
         final HtmlStyleService styleService = HtmlStyleService.create()
             .addStyles(titleStyle, paragraphStyle);
-        styleService.setWriteStyleOnSpot(false);
+        styleService.setWriteStyleInTag(false);
 
         final Document doc1 = Document.create().setLabel("doc1")
             .addParts(
@@ -351,14 +352,13 @@ public class HtmlFormatterTest extends BaseDocument {
                 StyleCondition.create(TableCell.class, null)
             );
         final Style headerCellstyle = layoutTextStyle.clone().getLayoutStyle().setFillBackgroundColor(Color.TEAL)
-            .setGeometryDetails(null)
             .setCondition(
                 StyleCondition.create(TableHeaderCell.class, null)
             );
         htmlFormatter.setStyleService(
             HtmlStyleService
                 .create()
-                .setWriteStyleOnSpot(false)
+                .setWriteStyleInTag(false)
                 .addStyles(
                     cellStyle,
                     headerCellstyle
@@ -368,6 +368,104 @@ public class HtmlFormatterTest extends BaseDocument {
             final String text = FileUtils.readFileToString(documentHolder.getResource().getFile(), StandardCharsets.UTF_8);
             Assertions.assertTrue(text.contains(Integer.toHexString(Objects.hashCode(cellStyle))));
             Assertions.assertTrue(text.contains(Integer.toHexString(Objects.hashCode(headerCellstyle))));
+        }
+    }
+
+    @Test
+    public void testSaveTableWithPicture() throws Throwable {
+        final String imageName = "pic/pic.jpg";
+        final URL url = getClass().getClassLoader().getResource(imageName);
+        Assertions.assertNotNull(url);
+        final WritableResource resource = new PathResource(url.toURI());
+
+        final HtmlFormatter htmlFormatter = HtmlFormatter.create();
+        final Document doc1 = Document
+            .create()
+            .setLabel("Test document")
+            .setAuthor("A1 Systems")
+            .setDescription("meta information")
+            .addParts(
+                Table
+                    .create()
+                    .setTableHeaderRow(
+                        TableHeaderRow
+                            .create()
+                            .addParts(
+                                TableHeaderCell.create("Column 1"),
+                                TableHeaderCell.create("Column 2")
+                                    .setStyle(
+                                        LayoutStyle.create()
+                                            .setGeometryDetails(
+                                                GeometryDetails.create()
+                                                    .setWidth(Geometry.create().add("html", "120px"))
+                                                    .setHeight(Geometry.create().add("html", "60px"))
+                                            )
+                                            .setVertAlignment(VertAlignment.TOP)
+                                            .setHorAlignment(HorAlignment.CENTER)
+                                    )
+                            )
+                    )
+                    .addParts(
+                        TableRow
+                            .create()
+                            .addParts(
+                                TableCell.create(IOUtils.toByteArray(resource.getInputStream()))
+                                    .setStyle(
+                                        LayoutStyle.create()
+                                            .setGeometryDetails(
+                                                GeometryDetails.create()
+                                                    .setScaleX(Geometry.create().add("html", 0.7f))
+                                                    .setScaleY(Geometry.create().add("html", 0.7f))
+                                                    .setWidth(Geometry.create().add("html", "80px"))
+                                                    .setHeight(Geometry.create().add("html", "48px"))
+                                                    .setAngle(Geometry.create().add("html", "45deg"))
+                                            )
+                                    ),
+                                TableCell.create("Cell 1.2")
+                            ),
+                        TableRow
+                            .create()
+                            .addParts(
+                                TableCell.create("Cell 2.1"),
+                                TableCell.create("Cell 2.2")
+                            ),
+                        TableRow
+                            .create()
+                            .addParts(
+                                TableCell.create("Cell 3.1"),
+                                TableCell.create("Cell 3.2")
+                            ),
+                        TableRow
+                            .create()
+                            .addParts(
+                                TableCell.create("Cell 4.1"),
+                                TableCell.create("Cell 4.2")
+                            )
+                    )
+                    .setStyle(HtmlLayoutTextStyle.create(true))
+            );
+
+        final Style cellStyle = layoutTextStyle.clone().getLayoutStyle().setFillBackgroundColor(Color.GREEN)
+            .setCondition(
+                StyleCondition.create(TableCell.class, null)
+            );
+        final Style headerCellstyle = layoutTextStyle.clone().getLayoutStyle().setFillBackgroundColor(Color.TEAL)
+            .setCondition(
+                StyleCondition.create(TableHeaderCell.class, null)
+            );
+        htmlFormatter.setStyleService(
+            HtmlStyleService
+                .create()
+                .setWriteStyleInTag(false)
+                .addStyles(
+                    headerCellstyle,
+                    cellStyle
+                )
+        );
+        try (DocumentHolder documentHolder = htmlFormatter.handle(doc1)) {
+            final String text =
+                FileUtils.readFileToString(documentHolder.getResource().getFile(), StandardCharsets.UTF_8);
+            Assertions.assertTrue(text.contains("Cell 1.2"));
         }
     }
 
@@ -382,7 +480,8 @@ public class HtmlFormatterTest extends BaseDocument {
         final FileUrlResource resource = new FileUrlResource("testFile.txt");
         final HtmlFormatter htmlFormatter = HtmlFormatter.create().setResource(resource);
         try (DocumentHolder documentHolder = htmlFormatter.handle(doc)) {
-            final String text = FileUtils.readFileToString(documentHolder.getResource().getFile(), StandardCharsets.UTF_8);
+            final String text =
+                FileUtils.readFileToString(documentHolder.getResource().getFile(), StandardCharsets.UTF_8);
             Assertions.assertEquals(expected, text);
         }
     }
@@ -595,7 +694,7 @@ public class HtmlFormatterTest extends BaseDocument {
 
         layoutStyle1.setCondition(StyleCondition.create(TableCell.class, o -> o instanceof TableCell));
         styleService.addStyles(layoutStyle1);
-        styleService.setWriteStyleOnSpot(false);
+        styleService.setWriteStyleInTag(false);
 
         doc.addPart(tr);
 
@@ -655,16 +754,21 @@ public class HtmlFormatterTest extends BaseDocument {
         thc.setStyle(null);          // remove inner style
         layoutStyle1.setCondition(StyleCondition.create(TableHeaderCell.class, o -> o instanceof TableHeaderCell));
         styleService.addStyles(layoutStyle1);
-        styleService.setWriteStyleOnSpot(false);
+        styleService.setWriteStyleInTag(false);
 
         doc.addPart(thr);
 
         final HtmlFormatter htmlFormatter = HtmlFormatter.create().setStyleService(styleService);
         htmlFormatter.setOutputStream(os);
-        try (DocumentHolder documentHolder = htmlFormatter.handle(doc)) {
+        try (DocumentHolder ignored = htmlFormatter.handle(doc)) {
+            final Style htmlDivStyle = styleService.getCustomTableCellDivStyle(new HtmlDiv());
             Assertions.assertTrue(StringUtils.endsWithIgnoreCase(
                 os.toString(),
-                "<tr><th class=\"_" + Integer.toHexString(Objects.hashCode(layoutStyle1)) + "\">" + testString + "</th></tr>" +
+                "<tr><th class=\"_" + Integer.toHexString(Objects.hashCode(layoutStyle1))
+                    + "\"><div class=\"_"
+                    + Integer.toHexString(Objects.hashCode(htmlDivStyle))
+                    + "\">"
+                    + testString + "</div></th></tr>" +
                     "</body></html>"
             ));
         }
@@ -718,19 +822,22 @@ public class HtmlFormatterTest extends BaseDocument {
         thc.setStyle(null);         // remove inner style
         layoutStyle1.setCondition(StyleCondition.create(TableHeaderCell.class, o -> o instanceof TableHeaderCell));
         styleService.addStyles(layoutStyle1);
-        styleService.setWriteStyleOnSpot(false);
+        styleService.setWriteStyleInTag(false);
 
         doc.addPart(thr);
 
         final HtmlFormatter htmlFormatter = HtmlFormatter.create().setStyleService(styleService);
         htmlFormatter.setOutputStream(os);
-        try (DocumentHolder documentHolder = htmlFormatter.handle(doc)) {
+        try (DocumentHolder ignored = htmlFormatter.handle(doc)) {
+            final Style htmlDivStyle = styleService.getCustomTableCellDivStyle(new HtmlDiv());
             Assertions.assertTrue(
                 StringUtils.endsWithIgnoreCase(
                     os.toString(),
-                    "<tr><th class=\"_" +
-                        Integer.toHexString(Objects.hashCode(layoutStyle1)) +
-                        "\">test_text1</th></tr></body></html>"
+                    "<tr><th class=\"_"
+                        + Integer.toHexString(Objects.hashCode(layoutStyle1))
+                        + "\"><div class=\"_"
+                        + Integer.toHexString(Objects.hashCode(htmlDivStyle))
+                        + "\">test_text1</div></th></tr></body></html>"
                 )
             );
         }
@@ -807,7 +914,7 @@ public class HtmlFormatterTest extends BaseDocument {
         item.setStyle(null);         // remove inner style
         layoutStyle1.setCondition(StyleCondition.create(itemClass, o -> o.getClass().equals(itemClass)));
         styleService.addStyles(layoutStyle1);
-        styleService.setWriteStyleOnSpot(false);
+        styleService.setWriteStyleInTag(false);
 
         doc.addPart(item);
 
@@ -839,18 +946,33 @@ public class HtmlFormatterTest extends BaseDocument {
                         osRes.toString(),
                         "<" + baseTag + " class=\"_" +
                             Integer.toHexString(Objects.hashCode(layoutStyle1)) +
-                            "\"" +  " src=\"" + testPicture + "\"></" + baseTag + ">" +
+                            "\"" + " src=\"" + testPicture + "\"></" + baseTag + ">" +
                             "</body></html>"
                     ));
-                } else {
+                    return;
+                }
+                if (item instanceof TableCell || item instanceof TableHeaderCell) {
+                    final Style htmlDivStyle = styleService.getCustomTableCellDivStyle(new HtmlDiv());
                     Assertions.assertTrue(StringUtils.endsWithIgnoreCase(
                         osRes.toString(),
-                        "<" + baseTag + " class=\"_" +
-                            Integer.toHexString(Objects.hashCode(layoutStyle1)) +
-                            "\">" + testString + "</" + baseTag + ">" +
+                        "<" + baseTag + " class=\"_"
+                            + Integer.toHexString(Objects.hashCode(layoutStyle1))
+                            + "\"><div class=\"_"
+                            + Integer.toHexString(Objects.hashCode(htmlDivStyle))
+                            + "\">"
+                            + testString + "</div></" + baseTag + ">" +
                             "</body></html>"
                     ));
+                    return;
                 }
+                Assertions.assertTrue(StringUtils.endsWithIgnoreCase(
+                    osRes.toString(),
+                    "<" + baseTag + " class=\"_"
+                        + Integer.toHexString(Objects.hashCode(layoutStyle1))
+                        + "\">"
+                        + testString + "</" + baseTag + ">" +
+                        "</body></html>"
+                ));
             }
         }
     }

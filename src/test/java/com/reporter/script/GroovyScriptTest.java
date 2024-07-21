@@ -26,8 +26,8 @@ public class GroovyScriptTest {
         "3px solid #FF0000;border-right:3px solid #FF0000;border-top:3px solid #FF0000'}'";
     String htmlStyle3 = ".{0}'{'border-bottom:double #000000;border-collapse:collapse;" +
         "border-left:double #000000;border-right:double #000000;border-top:double #000000;" +
-        "font-family:arial,monospace;font-size:14pt;font-weight:bold;height:15px;transform:rotate(10deg);" +
-        "width:20px'}'";
+        "font-family:arial,monospace;font-size:14pt;font-weight:bold'}'";
+    String htmlStyle4 = ".{0}'{'height:15px;transform:rotate(10deg);width:20px'}'";
 
     @Test
     @SuppressWarnings("unchecked")
@@ -44,16 +44,20 @@ public class GroovyScriptTest {
         final HtmlFormatter htmlFormatter = HtmlFormatter.create().setStyleService((StyleService) res.get("styleService"));
         try (DocumentHolder documentHolder = htmlFormatter.handle((Document) res.get("document"))) {
             final String text = FileUtils.readFileToString(documentHolder.getResource().getFile(), StandardCharsets.UTF_8);
-            Assertions.assertEquals(1, StringUtils.countOccurrencesOf(text,
+            Assertions.assertEquals(1, StringUtils.countOccurrencesOf(
+                text,
                 "{color:#00FF00;" +
                     "font-family:Brush Script MT,monospace;" +
                     "font-size:35pt;" +
                     "font-style:italic;" +
-                    "font-weight:bold}"));
-            Assertions.assertEquals(1, StringUtils.countOccurrencesOf(text,
+                    "font-weight:bold}"
+            ));
+            Assertions.assertEquals(1, StringUtils.countOccurrencesOf(
+                text,
                 "{color:#FF0000;" +
                     "font-family:Gill Sans,monospace;" +
-                    "font-size:15pt}"));
+                    "font-size:15pt}"
+            ));
         }
     }
 
@@ -76,9 +80,11 @@ public class GroovyScriptTest {
             final String styleCode1 = "_" + Integer.toHexString(Objects.hashCode(res.get("htmlTableStyle")));
             final String styleCode2 = "_" + Integer.toHexString(Objects.hashCode(res.get("htmlColGroupStyle")));
             final String styleCode3 = "_" + Integer.toHexString(Objects.hashCode(res.get("layoutTextStyle")));
+            final String styleCode4 = "_" + Integer.toHexString(Objects.hashCode(res.get("htmlDivStyle")));
             Assertions.assertTrue(text.contains(MessageFormat.format(htmlStyle1, styleCode1)));
             Assertions.assertTrue(text.contains(MessageFormat.format(htmlStyle2, styleCode2)));
             Assertions.assertTrue(text.contains(MessageFormat.format(htmlStyle3, styleCode3)));
+            Assertions.assertTrue(text.contains(MessageFormat.format(htmlStyle4, styleCode4)));
         }
     }
 }

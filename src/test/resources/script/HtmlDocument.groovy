@@ -28,7 +28,7 @@ final Style paragraphStyle = TextStyle
 
 final HtmlStyleService styleService = HtmlStyleService.create()
     .addStyles(titleStyle, paragraphStyle);
-styleService.setWriteStyleOnSpot(false);
+styleService.setWriteStyleInTag(false);
 
 final Document doc = Document.create().setLabel("doc1")
     .addParts(

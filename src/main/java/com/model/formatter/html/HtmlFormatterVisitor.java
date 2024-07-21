@@ -191,44 +191,21 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
     }
 
     @Override
-    public void visitTableHeaderCell(TableHeaderCell tableHeaderCellObj) throws Throwable {
-        final HtmlTableHeaderCell htmlTableHeaderCell = new HtmlTableHeaderCell();
-        final Style style = ((HtmlStyleService) styleService).getCustomTableCellStyle(tableHeaderCellObj);
-        if (tableHeaderCellObj.isDataInheritedFrom(TextItem.class)) {
-            handleTag(
-                htmlTableHeaderCell,
-                tableHeaderCellObj.getText(),
-                style instanceof HtmlLayoutTextStyle ? null : style,
-                true
-            );
-        }
-    }
-
-    @Override
     public void visitTableRow(TableRow tableRowObj) throws Throwable {
         styleService.extractStyleFor(tableRowObj);
         visitRow(tableRowObj);
     }
 
     @Override
+    public void visitTableHeaderCell(TableHeaderCell tableHeaderCellObj) throws Throwable {
+        final HtmlTableHeaderCell htmlTableHeaderCell = new HtmlTableHeaderCell();
+        handleCustomCell(tableHeaderCellObj, htmlTableHeaderCell);
+    }
+
+    @Override
     public void visitTableCell(TableCell tableCellObj) throws Exception {
         final HtmlTableCell htmlTableCell = new HtmlTableCell();
-        final HtmlDiv htmlDiv = new HtmlDiv();
-        final HtmlStyleService htmlStyleService = (HtmlStyleService) styleService;
-        final Style cellStyle = htmlStyleService.getCustomTableCellStyle(tableCellObj);
-        if (tableCellObj.isDataInheritedFrom(TextItem.class)) {
-            final Style cellDivStyle = htmlStyleService.getCustomTableCellDivStyle(htmlDiv);
-            if (cellDivStyle != null) {
-                handleTag(htmlTableCell, null, cellStyle, false);
-                handleTag(htmlDiv, tableCellObj.getText(), cellDivStyle, true);
-                outputStreamWriter.write(htmlTableCell.close());
-            } else {
-                handleTag(htmlTableCell, tableCellObj.getText(), cellStyle, true);
-            }
-        }
-        if (tableCellObj.isDataInheritedFrom(PictureItem.class)) {
-            handlePictureInTag(tableCellObj, htmlTableCell, cellStyle);
-        }
+        handleCustomCell(tableCellObj, htmlTableCell);
     }
 
     @Override
@@ -241,25 +218,49 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
     @Override
     public void visitFooter(Footer footerObj) throws Exception {
         final HtmlFooter htmlFooter = new HtmlFooter();
-        final Style style = styleService.extractStyleFor(footerObj).orElse(footerObj.getStyle());
         if (footerObj.isDataInheritedFrom(TextItem.class)) {
+            final Style style = styleService.extractStyleFor(footerObj).orElse(footerObj.getStyle());
             handleTag(htmlFooter, footerObj.getText(), style, true);
         }
-        //TODO: fix render Footer with picture
+        //TODO: fix render Footer with alignment Bottom
         if (footerObj.isDataInheritedFrom(PictureItem.class)) {
-            handlePictureInTag(footerObj, htmlFooter, style);
+            final Style pictureStyle = footerObj.getStyle();
+            final Style footerStyle = styleService.extractStyleFor(footerObj).orElse(null);
+            handlePictureInTag(footerObj, htmlFooter, footerStyle, pictureStyle);
         }
     }
 
-    protected void handlePictureInTag(DataItem<?> item, HtmlTag htmlTag, Style tagStyle) throws Exception {
+    protected void handleCustomCell(DataItem<?> cellObj, HtmlTag htmlCell) throws Exception {
+        final HtmlDiv htmlDiv = new HtmlDiv();
+        final HtmlStyleService htmlStyleService = (HtmlStyleService) styleService;
+        if (cellObj.isDataInheritedFrom(TextItem.class)) {
+            final Style cellStyle = htmlStyleService.getCustomTableCellStyle(cellObj);
+            final Style cellDivStyle = htmlStyleService.getCustomTableCellDivStyle(htmlDiv);
+            if (cellDivStyle != null) {
+                handleTag(htmlCell, null, cellStyle, false);
+                handleTag(htmlDiv, cellObj.getText(), cellDivStyle, true);
+                outputStreamWriter.write(htmlCell.close());
+            } else {
+                handleTag(htmlCell, cellObj.getText(), cellStyle, true);
+            }
+        }
+        if (cellObj.isDataInheritedFrom(PictureItem.class)) {
+            final Style pictureStyle = cellObj.getStyle();
+            final Style cellStyle = htmlStyleService.extractStyleFor(cellObj).orElse(null);
+            handlePictureInTag(cellObj, htmlCell, cellStyle, pictureStyle);
+        }
+    }
+
+    protected void handlePictureInTag(DataItem<?> item, HtmlTag htmlTag, Style tagStyle, Style pictureStyle)
+        throws Exception {
         final byte[] data = item.getData();
         final PictureFormat pictureFormat = PictureUtils.getFormat(data);
-        final Picture picture = Picture.create(data, pictureFormat);
-        final Style pictureStyle = styleService.prepareStyleFrom(picture);
+        final Picture picture = Picture.create(data, pictureFormat).setStyle(pictureStyle);
+        final Style preparedPictureStyle = styleService.prepareStyleFrom(picture);
         final HtmlPicture htmlPicture = new HtmlPicture();
         htmlPicture.setSrc(picture.getData());
         handleTag(htmlTag, null, tagStyle, false);
-        handleTag(htmlPicture, new byte[0], pictureStyle, true);
+        handleTag(htmlPicture, new byte[0], preparedPictureStyle, true);
         outputStreamWriter.write(htmlTag.close());
     }
 
@@ -274,7 +275,7 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
                 data,
                 style,
                 htmlStyleService.isUseHtml4Tags(),
-                htmlStyleService.contains(style) && !htmlStyleService.isWriteStyleOnSpot(),
+                htmlStyleService.contains(style) && !htmlStyleService.isWriteStyleInTag(),
                 isBordersCollapse,
                 needCloseTag
             );
