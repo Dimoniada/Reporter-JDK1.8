@@ -240,7 +240,7 @@ public abstract class WordFormatterVisitor extends Formatter implements BaseDeta
         ((WordStyleService) styleService).handleCustomItem(pictureObj, wordDocument.createParagraph());
     }
 
-    public void handleCustomItem(DataItem<?> item, Object element) throws Exception {
+    public void handleCustomItem(DataItem item, Object element) throws Exception {
         ((WordStyleService) styleService).handleCustomItem(item, element);
     }
 

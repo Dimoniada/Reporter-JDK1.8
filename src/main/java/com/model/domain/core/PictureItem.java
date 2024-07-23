@@ -2,7 +2,7 @@ package com.model.domain.core;
 
 import com.google.common.base.MoreObjects;
 
-public class PictureItem<T> extends DataItem<T> {
+public class PictureItem extends DataItem {
 
     protected byte[] data;
 
@@ -18,7 +18,7 @@ public class PictureItem<T> extends DataItem<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public T setData(byte[] data) {
+    public <T extends DataItem> T setData(byte[] data) {
         this.data = data;
         return (T) this;
     }

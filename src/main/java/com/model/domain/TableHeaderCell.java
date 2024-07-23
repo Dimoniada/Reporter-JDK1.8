@@ -10,11 +10,11 @@ import com.model.formatter.FormatterVisitor;
  * Table header cell,
  * contains data in text form
  */
-public class TableHeaderCell extends DataItem<TableHeaderCell> {
+public class TableHeaderCell extends DataItem {
     /**
      * Delegated item for storing either text or picture
      */
-    protected DataItem<TableHeaderCell> dataItem;
+    protected DataItem dataItem;
     /**
      * For instance, is a parent column's index
      */
@@ -27,13 +27,13 @@ public class TableHeaderCell extends DataItem<TableHeaderCell> {
 
     public static TableHeaderCell create(String text) {
         final TableHeaderCell tableHeaderCell = new TableHeaderCell();
-        tableHeaderCell.dataItem = new TextItem<DataItem<TableHeaderCell>>().setText(text);
+        tableHeaderCell.dataItem = new TextItem().setText(text);
         return tableHeaderCell;
     }
 
     public static TableHeaderCell create(byte[] data) {
         final TableHeaderCell tableHeaderCell = new TableHeaderCell();
-        tableHeaderCell.dataItem = new PictureItem<DataItem<TableHeaderCell>>().setData(data);
+        tableHeaderCell.dataItem = new PictureItem().setData(data);
         return tableHeaderCell;
     }
 

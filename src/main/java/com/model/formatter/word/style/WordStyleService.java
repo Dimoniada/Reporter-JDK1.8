@@ -165,7 +165,7 @@ public class WordStyleService extends StyleService implements DocDetails {
      * @throws IOException            if reading the picture-data from the stream fails
      * @throws InvalidFormatException if the format of the picture is not known
      */
-    protected void addItemToRun(DataItem<?> dataItem, XWPFRun run, Style style)
+    protected void addItemToRun(DataItem dataItem, XWPFRun run, Style style)
         throws ParseException, IOException, InvalidFormatException {
         if (dataItem.isDataInheritedFrom(Picture.class)) {
             final Picture picture = (Picture) dataItem;
@@ -223,7 +223,7 @@ public class WordStyleService extends StyleService implements DocDetails {
      * @throws Exception   on bad decimalFormat or font can't be found error
      * @throws IOException if picture details reading failure
      */
-    public void handleCustomItem(DataItem<?> item, Object element) throws Exception {
+    public void handleCustomItem(DataItem item, Object element) throws Exception {
         final Style style = extractStyleFor(item).orElse(item.getStyle());
         if (element instanceof XWPFParagraph) {
             final XWPFParagraph paragraph = (XWPFParagraph) element;

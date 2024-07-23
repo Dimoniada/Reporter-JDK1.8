@@ -2,7 +2,7 @@ package com.model.domain.core;
 
 import com.google.common.base.MoreObjects;
 
-public class TextItem<T> extends DataItem<T> {
+public class TextItem extends DataItem {
 
     private String text;
 
@@ -13,7 +13,7 @@ public class TextItem<T> extends DataItem<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public T setText(String text) {
+    public <T extends DataItem> T setText(String text) {
         this.text = text;
         return (T) this;
     }

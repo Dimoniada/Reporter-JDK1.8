@@ -8,7 +8,7 @@ import com.model.formatter.FormatterVisitor;
  * Document header class
  * {@link Heading#depth} - heading level
  */
-public class Heading extends TextItem<Heading> {
+public class Heading extends TextItem {
     /**
      * header level,
      * is always greater than or equal to 0.

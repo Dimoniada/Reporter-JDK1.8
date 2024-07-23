@@ -11,11 +11,15 @@ import com.model.formatter.FormatterVisitor;
  * contains data in text form,
  * rowIndex and columnIndex
  */
-public class TableCell extends DataItem<TableCell> {
+public class TableCell extends DataItem {
     /**
-     * Delegated item for storing either text or picture
+     * Text data
      */
-    protected DataItem<TableCell> dataItem;
+    protected String text;
+    /**
+     * Picture raw data
+     */
+    protected byte[] data;
     /**
      * Row index
      */
@@ -25,42 +29,52 @@ public class TableCell extends DataItem<TableCell> {
      */
     protected long columnIndex;
 
+    private Class<?> clazz;
+
+    public TableCell() {
+        /**/
+    }
+
+    public TableCell(Class<?> clazz) {
+        this.clazz = clazz;
+    }
+
     public static TableCell create(String text) {
-        final TableCell tableCell = new TableCell();
-        tableCell.dataItem = new TextItem<DataItem<TableCell>>().setText(text);
-        return tableCell;
+        return new TableCell(TextItem.class).setText(text);
     }
 
     public static TableCell create(byte[] data) {
-        final TableCell tableCell = new TableCell();
-        tableCell.dataItem = new PictureItem<DataItem<TableCell>>().setData(data);
-        return tableCell;
+        return new TableCell(PictureItem.class).setData(data);
     }
 
     @Override
     public boolean isDataInheritedFrom(Class<?> type) {
-        return type.isAssignableFrom(dataItem.getClass());
+        return type.isAssignableFrom(clazz);
     }
 
     @Override
     public String getText() {
-        return dataItem.getText();
+        return text;
     }
 
     @Override
     public byte[] getData() {
-        return dataItem.getData();
+        return data;
     }
 
     @Override
-    public TableCell setText(String text) throws Throwable {
-        dataItem.setText(text);
+    @SuppressWarnings("unchecked")
+    public TableCell setText(String text) {
+        this.text = text;
+        this.clazz = TextItem.class;
         return this;
     }
 
     @Override
-    public TableCell setData(byte[] data) throws Throwable {
-        dataItem.setData(data);
+    @SuppressWarnings("unchecked")
+    public TableCell setData(byte[] data) {
+        this.data = data;
+        this.clazz = PictureItem.class;
         return this;
     }
 

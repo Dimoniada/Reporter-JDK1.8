@@ -407,7 +407,7 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
      * @throws IOException    when can't find/read picture or convert it to byte array
      * @throws Exception      on joining styles
      */
-    public void writeItemToCell(DataItem<?> dataItem, org.apache.poi.ss.usermodel.Cell cellObj)
+    public void writeItemToCell(DataItem dataItem, org.apache.poi.ss.usermodel.Cell cellObj)
         throws Exception {
         XSSFPicture xssfPicture = null;
         final Style style = prepareStyleFrom(dataItem);

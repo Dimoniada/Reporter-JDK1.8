@@ -1,5 +1,6 @@
 package com.model.domain;
 
+import com.model.domain.core.DataItem;
 import com.model.domain.core.TextItem;
 import com.model.domain.style.TextStyle;
 import com.model.formatter.FormatterVisitor;
@@ -7,9 +8,9 @@ import com.model.formatter.FormatterVisitor;
 /**
  * Paragraph
  */
-public class Paragraph extends TextItem<Paragraph> {
+public class Paragraph extends TextItem {
     public static Paragraph create(String text, TextStyle textStyle) {
-        return new Paragraph().setText(text).setStyle(textStyle);
+        return ((DataItem) new Paragraph().setText(text)).setStyle(textStyle);
     }
 
     public static Paragraph create(String text) {

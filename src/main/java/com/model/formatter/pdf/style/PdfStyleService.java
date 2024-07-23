@@ -442,7 +442,7 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
      * @param o    pdf document
      * @throws Exception on bad decimalFormat or font creation error
      */
-    public void handleSimpleElement(TextItem<?> item, Document o) throws Exception {
+    public void handleSimpleElement(TextItem item, Document o) throws Exception {
         final Text text =
             new Text(LocalizedNumberUtils.applyDecimalFormat(item.getText(), item.getStyle(), decimalFormat));
         final Paragraph elParagraph = new Paragraph(text);
@@ -461,7 +461,7 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
      * @return native pdf cell
      * @throws Exception when converting style
      */
-    public Cell handleTableCustomCell(DataItem<?> tableCustomCell) throws Exception {
+    public Cell handleTableCustomCell(DataItem tableCustomCell) throws Exception {
         AbstractElement<?> element;
         final Cell cell = new Cell();
         final Paragraph paragraph = new Paragraph();

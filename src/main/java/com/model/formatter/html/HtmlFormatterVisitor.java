@@ -230,7 +230,7 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
         }
     }
 
-    protected void handleCustomCell(DataItem<?> cellObj, HtmlTag htmlCell) throws Exception {
+    protected void handleCustomCell(DataItem cellObj, HtmlTag htmlCell) throws Exception {
         final HtmlDiv htmlDiv = new HtmlDiv();
         final HtmlStyleService htmlStyleService = (HtmlStyleService) styleService;
         if (cellObj.isDataInheritedFrom(TextItem.class)) {
@@ -251,7 +251,7 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
         }
     }
 
-    protected void handlePictureInTag(DataItem<?> item, HtmlTag htmlTag, Style tagStyle, Style pictureStyle)
+    protected void handlePictureInTag(DataItem item, HtmlTag htmlTag, Style tagStyle, Style pictureStyle)
         throws Exception {
         final byte[] data = item.getData();
         final PictureFormat pictureFormat = PictureUtils.getFormat(data);

@@ -21,7 +21,7 @@ import java.text.DecimalFormat;
 @SpringBootTest(classes = QueryTable.class)
 class CsvFormatterTest extends BaseDocument {
     public static final String expected =
-            "\n" +
+        "\n" +
             "Test document v.1\n" +
             "\n" +
             "Chapter 1\n" +
@@ -67,7 +67,6 @@ class CsvFormatterTest extends BaseDocument {
 
     @Test
     public void testSaveTextToResource() throws Throwable {
-
         final CsvPreference csvPreference = new CsvPreference.Builder('\"', ';', "\n").build();
         final CsvFormatter csvFormatter = (CsvFormatter) new CsvFormatter(csvPreference).setEncoding("Cp1251");
         final FileUrlResource resource = new FileUrlResource("testFile.csv");

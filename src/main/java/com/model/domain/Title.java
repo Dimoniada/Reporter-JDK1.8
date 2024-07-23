@@ -7,7 +7,7 @@ import com.model.formatter.FormatterVisitor;
  * Document title,
  * contains only text
  */
-public class Title extends TextItem<Title> {
+public class Title extends TextItem {
 
     public static Title create() {
         return new Title();

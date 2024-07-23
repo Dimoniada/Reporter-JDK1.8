@@ -13,13 +13,13 @@ import java.io.IOException;
  * Picture class,
  * contains InputStream data, picture format {@link PictureFormat} and picture text if data == null
  */
-public class Picture extends PictureItem<Picture> {
+public class Picture extends PictureItem {
 
     protected PictureFormat format;
 
     public static Picture create(byte[] data, PictureFormat pictureFormat) {
-        return new Picture()
-            .setData(data)
+        return ((Picture) new Picture()
+            .setData(data))
             .setFormat(pictureFormat);
     }
 

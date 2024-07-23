@@ -8,27 +8,32 @@ import com.model.formatter.FormatterVisitor;
 /**
  * Text footer
  */
-public class Footer extends DataItem<Footer> {
+public class Footer extends DataItem {
 
-    /**
-     * Delegated item for storing either text or picture
-     */
-    protected DataItem<Footer> dataItem;
+    protected String text;
+
+    protected byte[] data;
+
+    private Class<?> clazz;
+
+    public Footer() {
+        /**/
+    }
+
+    public Footer(Class<?> clazz) {
+        this.clazz = clazz;
+    }
 
     public static Footer create() {
         return new Footer();
     }
 
     public static Footer create(String text) {
-        final Footer footer = new Footer();
-        footer.dataItem = new TextItem<DataItem<Footer>>().setText(text);
-        return footer;
+        return new Footer(TextItem.class).setText(text);
     }
 
     public static Footer create(byte[] data) {
-        final Footer footer = new Footer();
-        footer.dataItem = new PictureItem<DataItem<Footer>>().setData(data);
-        return footer;
+        return new Footer(PictureItem.class).setData(data);
     }
 
     @Override
@@ -39,16 +44,32 @@ public class Footer extends DataItem<Footer> {
 
     @Override
     public boolean isDataInheritedFrom(Class<?> type) {
-        return type.isAssignableFrom(dataItem.getClass());
+        return type.isAssignableFrom(clazz);
     }
 
     @Override
     public String getText() {
-        return dataItem.getText();
+        return text;
     }
 
     @Override
     public byte[] getData() {
-        return dataItem.getData();
+        return data;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Footer setText(String text) {
+        this.text = text;
+        this.clazz = TextItem.class;
+        return this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Footer setData(byte[] data) {
+        this.data = data;
+        this.clazz = PictureItem.class;
+        return this;
     }
 }
