@@ -13,6 +13,10 @@ import com.model.formatter.FormatterVisitor;
  */
 public class TableCell extends DataItem {
     /**
+     * Inner data type
+     */
+    protected Class<?> clazz;
+    /**
      * Text data
      */
     protected String text;
@@ -29,22 +33,16 @@ public class TableCell extends DataItem {
      */
     protected long columnIndex;
 
-    private Class<?> clazz;
-
-    public TableCell() {
-        /**/
-    }
-
-    public TableCell(Class<?> clazz) {
-        this.clazz = clazz;
-    }
-
     public static TableCell create(String text) {
-        return new TableCell(TextItem.class).setText(text);
+        return new TableCell()
+            .setClazz(TextItem.class)
+            .setText(text);
     }
 
     public static TableCell create(byte[] data) {
-        return new TableCell(PictureItem.class).setData(data);
+        return new TableCell()
+            .setClazz(PictureItem.class)
+            .setData(data);
     }
 
     @Override
@@ -78,6 +76,11 @@ public class TableCell extends DataItem {
         return this;
     }
 
+    public TableCell setClazz(Class<?> clazz) {
+        this.clazz = clazz;
+        return this;
+    }
+
     @Override
     public TableCell accept(FormatterVisitor visitor) throws Throwable {
         visitor.visitTableCell(this);
@@ -90,6 +93,8 @@ public class TableCell extends DataItem {
         return toStringHelper
             .add("rowIndex", rowIndex)
             .add("columnIndex", columnIndex)
+            .add("text", text)
+            .add("data", data)
             .add("super", super.toString())
             .toString();
     }

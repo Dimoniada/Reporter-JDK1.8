@@ -7,22 +7,21 @@ import java.util.Optional;
  * Represents measurable types (based on document type) and corresponded values.
  * Key is document extension, value is length/angle (measurable entity).
  * For width Geometry the length is:
- *    for .xlsx(int) it's units of 1/256th of a character width, see setColumnWidth() in {@link org.apache.poi.ss.usermodel.Sheet};
- *    for .docx(int) table/table-cell it's 20ths of a point, twips, see setWidth() in
- *          {@link org.apache.poi.xwpf.usermodel.XWPFTable} or {@link org.apache.poi.xwpf.usermodel.XWPFTableCell};
- *    for .docx(int) picture it's EMUs, see addPicture() in {@link org.apache.poi.xwpf.usermodel.XWPFRun};
- *    for .pdf(float) by default it's in points of (1/72)", see setWidth() in {@link com.itextpdf.layout.element.BlockElement};
- *    for .html(String) it's a width with dimension, see attribute width;
+ * for .xlsx(int) it's units of 1/256th of a character width, see setColumnWidth() in {@link org.apache.poi.ss.usermodel.Sheet};
+ * for .docx(int) table/table-cell it's 20ths of a point, twips, see setWidth() in
+ * {@link org.apache.poi.xwpf.usermodel.XWPFTable} or {@link org.apache.poi.xwpf.usermodel.XWPFTableCell};
+ * for .docx(int) picture it's EMUs, see addPicture() in {@link org.apache.poi.xwpf.usermodel.XWPFRun};
+ * for .pdf(float) by default it's in points of (1/72)", see setWidth() in {@link com.itextpdf.layout.element.BlockElement};
+ * for .html(String) it's a width with dimension, see attribute width;
  * For height Geometry the length is:
- *    for .xlsx(short or float) see setHeight() or setHeightInPoints() in {@link org.apache.poi.ss.usermodel.Row};
+ * for .xlsx(short or float) see setHeight() or setHeightInPoints() in {@link org.apache.poi.ss.usermodel.Row};
  * For scale Geometry the length is:
- *    for .xlsx(double, double) use Double.MAX_VALUE for embedding image into the cell, see resize() in
- *      {@link org.apache.poi.xssf.usermodel.XSSFPicture};
+ * for .xlsx(double, double) use Double.MAX_VALUE for embedding image into the cell, see resize() in
+ * {@link org.apache.poi.xssf.usermodel.XSSFPicture};
  * For rotation Geometry the length is:
- *    for text .xlsx(short) see setRotation() in {@link org.apache.poi.ss.usermodel.CellStyle};
- *    for Picture .xlsx(int) it's units of 1/60000th of a degree, see setRot() in
- *      {@link org.openxmlformats.schemas.drawingml.x2006.main.CTTransform2D}
- *
+ * for text .xlsx(short) see setRotation() in {@link org.apache.poi.ss.usermodel.CellStyle};
+ * for Picture .xlsx(int) it's units of 1/60000th of a degree, see setRot() in
+ * {@link org.openxmlformats.schemas.drawingml.x2006.main.CTTransform2D}
  */
 public class Geometry<T> extends HashMap<String, T> {
     /**
@@ -44,10 +43,14 @@ public class Geometry<T> extends HashMap<String, T> {
         return new Geometry<>();
     }
 
+    public static <T> Geometry<T> create(String key, T value) {
+        return new Geometry<T>().add(key, value);
+    }
+
     /**
      * Adds a geometry value for a characteristic for a specific document format
      *
-     * @param key formal name: html/xlsx/pdf/...
+     * @param key   formal name: html/xlsx/pdf/...
      * @param value the value of variable in appropriate units
      * @return this
      */

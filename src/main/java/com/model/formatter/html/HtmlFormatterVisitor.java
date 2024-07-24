@@ -57,7 +57,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 /**
  * The class generates a representation of the html document {@link Document}
@@ -100,7 +99,17 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
             tagCreator.write(htmlTitle.close());
         }
         tagCreator.write(htmlHead.close());
-        tagCreator.write(htmlBody.open());
+        final Style documentStyle = styleService.prepareStyleFrom(documentObj);
+        final HtmlStyleService htmlStyleService = (HtmlStyleService) styleService;
+        tagCreator.writeTag(
+            htmlBody,
+            null,
+            documentStyle,
+            htmlStyleService.isUseHtml4Tags(),
+            htmlStyleService.contains(documentStyle) && !htmlStyleService.isWriteStyleInTag(),
+            false,
+            false
+        );
         this.visitComposition(documentObj);
         tagCreator.write(htmlBody.close());
         tagCreator.write(html.close());
@@ -110,6 +119,20 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
     @Override
     public void visitDocumentCase(DocumentCase documentCase) throws Throwable {
         this.visitComposition(documentCase);
+        final Style style = styleService.prepareStyleFrom(documentCase);
+        if (style == null) {
+            return;
+        }
+        final HtmlStyleService htmlStyleService = (HtmlStyleService) styleService;
+        getTagCreator().writeTag(
+            new HtmlDiv(),
+            documentCase.getName(),
+            style,
+            htmlStyleService.isUseHtml4Tags(),
+            !htmlStyleService.isWriteStyleInTag(),
+            false,
+            true
+        );
     }
 
     @Override
@@ -138,7 +161,7 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
         final HtmlPicture htmlPicture = new HtmlPicture();
         htmlPicture.setSrc(pictureObj.getData());
         final Style style = styleService.extractStyleFor(pictureObj).orElse(pictureObj.getStyle());
-        handleTag(htmlPicture, new byte[0], style, true);
+        handleTag(htmlPicture, null, style, true);
     }
 
     @Override
@@ -169,16 +192,12 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
                 final Style style = styleService.extractStyleFor(thc).orElse(thc.getStyle());
                 if (style instanceof HtmlLayoutTextStyle) {
                     final HtmlLayoutTextStyle htmlStyle = (HtmlLayoutTextStyle) style;
-                    htmlStyles.add(
-                        htmlStyle.isColGroupStyle()
-                            ? htmlStyle
-                            : null
-                    );
-                } else {
-                    htmlStyles.add(null);
+                    if (htmlStyle.isColGroupStyle()) {
+                        htmlStyles.add(htmlStyle);
+                    }
                 }
             });
-        final boolean isNeedColGroupTag = htmlStyles.stream().anyMatch(Objects::nonNull);
+        final boolean isNeedColGroupTag = !htmlStyles.isEmpty();
         if (isNeedColGroupTag) {
             final HtmlColgroup htmlColgroup = new HtmlColgroup();
             outputStreamWriter.write(htmlColgroup.open());
@@ -260,11 +279,11 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
         final HtmlPicture htmlPicture = new HtmlPicture();
         htmlPicture.setSrc(picture.getData());
         handleTag(htmlTag, null, tagStyle, false);
-        handleTag(htmlPicture, new byte[0], preparedPictureStyle, true);
+        handleTag(htmlPicture, null, preparedPictureStyle, true);
         outputStreamWriter.write(htmlTag.close());
     }
 
-    protected void handleTag(HtmlTag tag, Object data, Style style, Boolean needCloseTag) throws Exception {
+    protected void handleTag(HtmlTag tag, String text, Style style, Boolean needCloseTag) throws Exception {
         final HtmlStyleService htmlStyleService = (HtmlStyleService) styleService;
         final boolean isBordersCollapse =
             style instanceof HtmlLayoutTextStyle
@@ -272,7 +291,7 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
         getTagCreator()
             .writeTag(
                 tag,
-                data,
+                text,
                 style,
                 htmlStyleService.isUseHtml4Tags(),
                 htmlStyleService.contains(style) && !htmlStyleService.isWriteStyleInTag(),

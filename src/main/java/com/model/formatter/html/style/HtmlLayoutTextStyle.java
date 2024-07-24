@@ -16,6 +16,11 @@ public class HtmlLayoutTextStyle extends LayoutTextStyle {
      */
     protected boolean isColGroupStyle;
 
+    /**
+     * Type of page-break
+     */
+    protected String typePageBreakAfter;
+
     public static HtmlLayoutTextStyle create() {
         return new HtmlLayoutTextStyle();
     }
@@ -36,6 +41,7 @@ public class HtmlLayoutTextStyle extends LayoutTextStyle {
         return MoreObjects.toStringHelper(this)
             .add("isBordersCollapse", isBordersCollapse)
             .add("isColGroupStyle", isColGroupStyle)
+            .add("typePageBreakAfter", typePageBreakAfter)
             .toString();
     }
 
@@ -54,6 +60,15 @@ public class HtmlLayoutTextStyle extends LayoutTextStyle {
 
     public HtmlLayoutTextStyle setColGroupStyle(boolean colGroupStyle) {
         isColGroupStyle = colGroupStyle;
+        return this;
+    }
+
+    public String getTypePageBreakAfter() {
+        return typePageBreakAfter;
+    }
+
+    public HtmlLayoutTextStyle setTypePageBreakAfter(String typePageBreakAfter) {
+        this.typePageBreakAfter = typePageBreakAfter;
         return this;
     }
 }

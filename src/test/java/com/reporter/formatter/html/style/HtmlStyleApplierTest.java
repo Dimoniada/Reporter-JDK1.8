@@ -158,6 +158,14 @@ class HtmlStyleApplierTest {
     }
 
     @Test
+    public void testConvertCssPropertyPageBreakAfter() {
+
+        cssStyle.setPageBreakAfter("right");
+
+        Assertions.assertEquals("page-break-after:right", cssStyle.toCssStyleString());
+    }
+
+    @Test
     public void testConvertCssPropertyBackgroundColor() {
 
         cssStyle.setBackgroundColor("#A36BCD");
@@ -230,7 +238,7 @@ class HtmlStyleApplierTest {
         cssStyle.setAlignHtml4("left");
 
         Assertions.assertEquals(
-                "background-color:#A36BCD;" +
+            "background-color:#A36BCD;" +
                 "border-bottom:double;" +
                 "border-collapse:separate;" +
                 "border-left:1px solid;" +
@@ -243,7 +251,7 @@ class HtmlStyleApplierTest {
                 "font-weight:bold;" +
                 "text-align:right;" +
                 "transform:scaleX(0.7) scaleY(2.0) rotate(370deg)",
-                cssStyle.toCssStyleString()
+            cssStyle.toCssStyleString()
         );
 
         Assertions.assertEquals("align=\"left\" " +

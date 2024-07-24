@@ -357,8 +357,15 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
                 cssStyle.setAlignHtml4(toHtml4HorAlignment(layoutStyle.getHorAlignment()));
             }
         } else if (style instanceof LayoutTextStyle) {
-            if (style instanceof HtmlLayoutTextStyle && ((HtmlLayoutTextStyle) style).isBordersCollapse()) {
-                cssStyle.setBorderCollapse("collapse");
+            if (style instanceof HtmlLayoutTextStyle) {
+                final HtmlLayoutTextStyle htmlLayoutTextStyle = (HtmlLayoutTextStyle) style;
+                final String typePageBreak = htmlLayoutTextStyle.getTypePageBreakAfter();
+                if (StringUtils.hasText(typePageBreak)) {
+                    cssStyle.setPageBreakAfter(typePageBreak);
+                }
+                if (htmlLayoutTextStyle.isBordersCollapse()) {
+                    cssStyle.setBorderCollapse("collapse");
+                }
             }
             final LayoutTextStyle layoutTextStyle = (LayoutTextStyle) style;
             fillCssStyleFromStyle(cssStyle, layoutTextStyle.getTextStyle(), isTable, useHtml4Tags);
@@ -445,6 +452,7 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
                         GeometryDetails gd = null;
                         if (s instanceof LayoutStyle) {
                             gd = ((LayoutStyle) s).getGeometryDetails();
+                            // Be carefully here: styles must not be a Set<Style>
                             ((LayoutStyle) s).setGeometryDetails(null);
                         } else if (s instanceof LayoutTextStyle && ((LayoutTextStyle) s).getLayoutStyle() != null) {
                             gd = ((LayoutTextStyle) s).getLayoutStyle().getGeometryDetails();

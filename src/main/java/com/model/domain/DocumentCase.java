@@ -4,7 +4,6 @@ import com.google.common.base.MoreObjects;
 import com.model.domain.core.CompositionPart;
 import com.model.domain.core.DocumentItem;
 import com.model.formatter.FormatterVisitor;
-import org.springframework.util.StringUtils;
 
 /**
  * This class is used to structure components within a document.
@@ -13,7 +12,7 @@ import org.springframework.util.StringUtils;
  */
 public class DocumentCase extends CompositionPart<DocumentCase, DocumentItem> {
 
-    protected String name = "Sheet";
+    protected String name;
 
     public static DocumentCase create(String name) {
         final DocumentCase sheet = new DocumentCase();
@@ -36,9 +35,7 @@ public class DocumentCase extends CompositionPart<DocumentCase, DocumentItem> {
     }
 
     public DocumentCase setName(String name) {
-        if (StringUtils.hasText(name)) {
-            this.name = name;
-        }
+        this.name = name;
         return this;
     }
 

@@ -3,7 +3,9 @@ package com.model.domain.core;
 import com.google.common.base.MoreObjects;
 
 public class PictureItem extends DataItem {
-
+    /**
+     * Picture raw data
+     */
     protected byte[] data;
 
     @Override

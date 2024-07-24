@@ -1,5 +1,6 @@
 package com.model.domain;
 
+import com.google.common.base.MoreObjects;
 import com.model.domain.core.DataItem;
 import com.model.domain.core.PictureItem;
 import com.model.domain.core.TextItem;
@@ -9,31 +10,33 @@ import com.model.formatter.FormatterVisitor;
  * Text footer
  */
 public class Footer extends DataItem {
-
+    /**
+     * Inner data type
+     */
+    protected Class<?> clazz;
+    /**
+     * Text data
+     */
     protected String text;
-
+    /**
+     * Picture raw data
+     */
     protected byte[] data;
-
-    private Class<?> clazz;
-
-    public Footer() {
-        /**/
-    }
-
-    public Footer(Class<?> clazz) {
-        this.clazz = clazz;
-    }
 
     public static Footer create() {
         return new Footer();
     }
 
     public static Footer create(String text) {
-        return new Footer(TextItem.class).setText(text);
+        return new Footer()
+            .setClazz(TextItem.class)
+            .setText(text);
     }
 
     public static Footer create(byte[] data) {
-        return new Footer(PictureItem.class).setData(data);
+        return new Footer()
+            .setClazz(PictureItem.class)
+            .setData(data);
     }
 
     @Override
@@ -71,5 +74,20 @@ public class Footer extends DataItem {
         this.data = data;
         this.clazz = PictureItem.class;
         return this;
+    }
+
+    public Footer setClazz(Class<?> clazz) {
+        this.clazz = clazz;
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+            .add("text", text)
+            .add("data", data)
+            .add("clazz", clazz)
+            .add("super", super.toString())
+            .toString();
     }
 }

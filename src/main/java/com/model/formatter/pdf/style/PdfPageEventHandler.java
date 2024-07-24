@@ -114,7 +114,7 @@ public class PdfPageEventHandler implements IEventHandler {
      * @return - y coordinate of the header or footer of the sheet
      */
     private float getYPositionOnPageByEvent(Rectangle pageSize, PdfDocumentEvent docEvent) {
-        //TODO: correct render Footer height
+        //TODO: correct render Footer height, see {@link PdfFormatterVisitor.VisitDocument}
         float posY = 0;
         final IRenderer paragraphRenderer = elParagraph.createRendererSubTree();
         final LayoutResult result = paragraphRenderer

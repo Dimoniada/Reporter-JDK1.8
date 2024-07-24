@@ -26,6 +26,8 @@ public class CssStyle {
     public static final String BORDER_RIGHT = "border-right";
     public static final String BORDER_BOTTOM = "border-bottom";
 
+    public static final String PAGE_BREAK_AFTER = "page-break-after";
+
     public static final String BACKGROUND_COLOR = "background-color";
 
     public static final String BORDER = "border";
@@ -65,6 +67,7 @@ public class CssStyle {
             put(BACKGROUND_COLOR, CssStyle::produceDefaultStringAttribute);
             put(BORDER_COLLAPSE, CssStyle::produceDefaultStringAttribute);
             put(BORDER, CssStyle::produceDefaultStringAttribute);
+            put(PAGE_BREAK_AFTER, CssStyle::produceDefaultStringAttribute);
         }};
 
         attributeHtml4Mapper = new HashMap<String, Function<Object, String>>() {{
@@ -157,6 +160,10 @@ public class CssStyle {
 
     public String getBackgroundColor() {
         return (String) attributes.getOrDefault(BACKGROUND_COLOR, "#FFFFFF");
+    }
+
+    public String getPageBreakAfter() {
+        return (String) attributes.getOrDefault(PAGE_BREAK_AFTER, "always");
     }
 
     public CssStyle setFontSize(int size) {
@@ -293,6 +300,11 @@ public class CssStyle {
         if (alignHtml4 != null) {
             attributes.put(ALIGN_HTML4, alignHtml4);
         }
+        return this;
+    }
+
+    public CssStyle setPageBreakAfter(String pageBreakAfter) {
+        attributes.put(PAGE_BREAK_AFTER, pageBreakAfter);
         return this;
     }
 

@@ -2,6 +2,7 @@ package com.reporter.formatter.html;
 
 import com.google.common.base.Objects;
 import com.model.domain.Document;
+import com.model.domain.DocumentCase;
 import com.model.domain.Footer;
 import com.model.domain.Heading;
 import com.model.domain.Paragraph;
@@ -355,13 +356,23 @@ public class HtmlFormatterTest extends BaseDocument {
             .setCondition(
                 StyleCondition.create(TableHeaderCell.class, null)
             );
+        final Style bodyStyle = LayoutStyle.create()
+            .setGeometryDetails(
+                GeometryDetails.create()
+                    .setWidth(Geometry.create("html", "21cm"))
+                    .setHeight(Geometry.create("html", "29.7cm"))
+            )
+            .setCondition(
+                StyleCondition.create(Document.class, null)
+            );
         htmlFormatter.setStyleService(
             HtmlStyleService
                 .create()
                 .setWriteStyleInTag(false)
                 .addStyles(
                     cellStyle,
-                    headerCellstyle
+                    headerCellstyle,
+                    bodyStyle
                 )
         );
         try (DocumentHolder documentHolder = htmlFormatter.handle(doc1)) {
@@ -607,6 +618,48 @@ public class HtmlFormatterTest extends BaseDocument {
     }
 
     @Test
+    public void testSaveDocumentCasesToFile() throws Throwable {
+        final HtmlFormatter htmlFormatter = HtmlFormatter.create();
+        final Document doc1 = Document.create()
+            .addParts(
+                DocumentCase.create()
+                    .addParts(
+                        Paragraph.create("Text on first page")
+                    ),
+                DocumentCase.create()
+                    .addParts(
+                        Paragraph.create("Text on second page")
+                    )
+            );
+        final Style documentCaseStyle = HtmlLayoutTextStyle.create()
+            .setTypePageBreakAfter("always")
+            .setCondition(
+                StyleCondition.create(DocumentCase.class, null)
+            );
+        htmlFormatter.setStyleService(
+            HtmlStyleService
+                .create()
+//                .setWriteStyleInTag(false)
+                .addStyles(
+                    documentCaseStyle
+                )
+        );
+        try (DocumentHolder documentHolder = htmlFormatter.handle(doc1)) {
+            final String text =
+                FileUtils.readFileToString(documentHolder.getResource().getFile(), StandardCharsets.UTF_8);
+            Assertions.assertTrue(text.contains("page-break-after:always"));
+        }
+    }
+
+    @Test
+    public void testHtmlDocumentCase() throws Throwable {
+        final DocumentCase documentCase = DocumentCase.create(testString);
+        documentCase.setStyle(HtmlLayoutTextStyle.create().setTypePageBreakAfter("always"));
+        final HtmlDiv htmlDiv = new HtmlDiv();
+        testHtmlTag(htmlDiv, documentCase, testString, DocumentCase.class);
+    }
+
+    @Test
     public void testHtmlParagraph() throws Throwable {
         final Paragraph p = Paragraph.create(testString);
         final HtmlParagraph htmlParagraph = new HtmlParagraph();
@@ -710,9 +763,13 @@ public class HtmlFormatterTest extends BaseDocument {
         try (DocumentHolder ignored = htmlFormatter.handle(doc)) {
             Assertions.assertTrue(StringUtils.endsWithIgnoreCase(
                 os.toString(),
-                "<tr><td class=\"_" + Integer.toHexString(Objects.hashCode(layoutStyle1.setGeometryDetails(null))) + "\">" +
-                    "<div class=\"_" + Integer.toHexString(Objects.hashCode(divStyle)) + "\">" + testString + "</div></td></tr>" +
-                    "</body></html>"
+                "<tr><td class=\"_"
+                    + Integer.toHexString(Objects.hashCode(layoutStyle1.setGeometryDetails(null)))
+                    + "\"><div class=\"_"
+                    + Integer.toHexString(Objects.hashCode(divStyle))
+                    + "\">"
+                    + testString
+                    + "</div></td></tr></body></html>"
             ));
         }
     }
@@ -721,7 +778,7 @@ public class HtmlFormatterTest extends BaseDocument {
     public void testHtmlTableHeaderRow() throws Throwable {
         final TableHeaderCell thc = TableHeaderCell.create(testString);
         final TableHeaderRow thr = TableHeaderRow.create(thc);
-// Case when tag is without parameters
+// Case when tag doesn't contain parameters
         final HtmlFormatterVisitor htmlFormatterVisitor = new HtmlFormatter();
         final HtmlStyleService styleService = HtmlStyleService.create();
         htmlFormatterVisitor.setStyleService(styleService);
@@ -755,7 +812,7 @@ public class HtmlFormatterTest extends BaseDocument {
         layoutStyle1.setCondition(StyleCondition.create(TableHeaderCell.class, o -> o instanceof TableHeaderCell));
         styleService.addStyles(layoutStyle1);
         styleService.setWriteStyleInTag(false);
-
+        doc = Document.create();
         doc.addPart(thr);
 
         final HtmlFormatter htmlFormatter = HtmlFormatter.create().setStyleService(styleService);
@@ -764,7 +821,8 @@ public class HtmlFormatterTest extends BaseDocument {
             final Style htmlDivStyle = styleService.getCustomTableCellDivStyle(new HtmlDiv());
             Assertions.assertTrue(StringUtils.endsWithIgnoreCase(
                 os.toString(),
-                "<tr><th class=\"_" + Integer.toHexString(Objects.hashCode(layoutStyle1))
+                "<tr><th class=\"_"
+                    + Integer.toHexString(Objects.hashCode(layoutStyle1))
                     + "\"><div class=\"_"
                     + Integer.toHexString(Objects.hashCode(htmlDivStyle))
                     + "\">"
@@ -902,7 +960,7 @@ public class HtmlFormatterTest extends BaseDocument {
                     "font-family:" + textStyle1.getFontNameResource() + ",monospace;" +
                     "font-size:14pt;" +
                     "font-weight:bold\"></" + baseTag + ">", os.toString());
-        } else {
+        } else if (!(item instanceof DocumentCase)) {
             Assertions.assertEquals(
                 "<" + baseTag + " style=\"" +
                     "font-family:" + textStyle1.getFontNameResource() + ",monospace;" +
@@ -917,7 +975,6 @@ public class HtmlFormatterTest extends BaseDocument {
         styleService.setWriteStyleInTag(false);
 
         doc.addPart(item);
-
 
         final ByteArrayOutputStream osRes = new ByteArrayOutputStream();
 
@@ -934,11 +991,11 @@ public class HtmlFormatterTest extends BaseDocument {
             if (baseTag.getClass().equals(HtmlTableCell.class)) {
                 Assertions.assertTrue(StringUtils.endsWithIgnoreCase(
                     osRes.toString(),
-                    "<" + baseTag + " class=\"_" +
-                        Integer.toHexString(Objects.hashCode(layoutStyle1.setGeometryDetails(null))) +
-                        "\"><div class=\"_" + Integer.toHexString(Objects.hashCode(divStyle)) + "\">"
-                        + testString + "</div></" + baseTag + ">" +
-                        "</body></html>"
+                    "<" + baseTag + " class=\"_"
+                        + Integer.toHexString(Objects.hashCode(layoutStyle1.setGeometryDetails(null)))
+                        + "\"><div class=\"_" + Integer.toHexString(Objects.hashCode(divStyle)) + "\">"
+                        + testString + "</div></" + baseTag + ">"
+                        + "</body></html>"
                 ));
             } else {
                 if (item instanceof Picture) {
@@ -978,7 +1035,9 @@ public class HtmlFormatterTest extends BaseDocument {
     }
 
     public void handleItem(DocumentItem item, HtmlFormatterVisitor htmlFormatterVisitor) throws Throwable {
-        if (item instanceof Paragraph) {
+        if (item instanceof DocumentCase) {
+            htmlFormatterVisitor.visitDocumentCase((DocumentCase) item);
+        } else if (item instanceof Paragraph) {
             htmlFormatterVisitor.visitParagraph((Paragraph) item);
         } else if (item instanceof Title) {
             htmlFormatterVisitor.visitTitle((Title) item);

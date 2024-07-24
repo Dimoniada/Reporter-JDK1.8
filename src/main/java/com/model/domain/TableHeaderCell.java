@@ -12,55 +12,71 @@ import com.model.formatter.FormatterVisitor;
  */
 public class TableHeaderCell extends DataItem {
     /**
-     * Delegated item for storing either text or picture
+     * Inner data type
      */
-    protected DataItem dataItem;
+    protected Class<?> clazz;
+    /**
+     * Text data
+     */
+    protected String text;
+    /**
+     * Picture raw data
+     */
+    protected byte[] data;
     /**
      * For instance, is a parent column's index
      */
     protected long columnIndex;
-
     /**
      * Real column name in SQL view
      */
     protected String aliasName = "";
 
     public static TableHeaderCell create(String text) {
-        final TableHeaderCell tableHeaderCell = new TableHeaderCell();
-        tableHeaderCell.dataItem = new TextItem().setText(text);
-        return tableHeaderCell;
+        return new TableHeaderCell()
+            .setClazz(TextItem.class)
+            .setText(text);
     }
 
     public static TableHeaderCell create(byte[] data) {
-        final TableHeaderCell tableHeaderCell = new TableHeaderCell();
-        tableHeaderCell.dataItem = new PictureItem().setData(data);
-        return tableHeaderCell;
+        return new TableHeaderCell()
+            .setClazz(PictureItem.class)
+            .setData(data);
     }
 
     @Override
     public boolean isDataInheritedFrom(Class<?> type) {
-        return type.isAssignableFrom(dataItem.getClass());
+        return type.isAssignableFrom(clazz);
     }
 
     @Override
     public String getText() {
-        return dataItem.getText();
+        return text;
     }
 
     @Override
     public byte[] getData() {
-        return dataItem.getData();
+        return data;
     }
 
     @Override
-    public TableHeaderCell setText(String text) throws Throwable {
-        dataItem.setText(text);
+    @SuppressWarnings("unchecked")
+    public TableHeaderCell setText(String text) {
+        this.text = text;
+        this.clazz = TextItem.class;
         return this;
     }
 
     @Override
-    public TableHeaderCell setData(byte[] data) throws Throwable {
-        dataItem.setData(data);
+    @SuppressWarnings("unchecked")
+    public TableHeaderCell setData(byte[] data) {
+        this.data = data;
+        this.clazz = PictureItem.class;
+        return this;
+    }
+
+    public TableHeaderCell setClazz(Class<?> clazz) {
+        this.clazz = clazz;
         return this;
     }
 
@@ -76,6 +92,8 @@ public class TableHeaderCell extends DataItem {
         return toStringHelper
             .add("columnIndex", columnIndex)
             .add("aliasName", aliasName)
+            .add("text", text)
+            .add("data", data)
             .add("super", super.toString())
             .toString();
     }

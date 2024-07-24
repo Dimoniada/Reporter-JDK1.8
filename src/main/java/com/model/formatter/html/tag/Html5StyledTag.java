@@ -26,6 +26,10 @@ public abstract class Html5StyledTag extends Html4StyledTag {
         );
     }
 
+    public HtmlStyleAttribute getStyle() {
+        return style;
+    }
+
     public Html5StyledTag setStyle(CssStyle cssStyle) {
         this.style.setStyle(cssStyle);
         return this;
