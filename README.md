@@ -66,7 +66,7 @@ public class ReporterApplication {
 
 produces
 
-<img src="pic/xlsx1.jpeg" width="196" alt=""/>
+<img src="assets/pic/xlsx1.jpeg" width="196" alt=""/>
 
 Let's adjust cell width for our Title:
 
@@ -85,7 +85,7 @@ public class ReporterApplication {
 }
 ```
 
-<img src="pic/xlsx2.jpeg" width="286" alt=""/>
+<img src="assets/pic/xlsx2.jpeg" width="286" alt=""/>
 
 Now let's add text style to table row cells:
 
@@ -121,7 +121,7 @@ public class ReporterApplication {
 }
 ```
 
-<img src="pic/xlsx3.jpeg" width="286" alt=""/>
+<img src="assets/pic/xlsx3.jpeg" width="286" alt=""/>
 
 We can put Document to HtmlFormatter:
 
@@ -140,7 +140,7 @@ public class ReporterApplication {
 }
 ```
 
-<img src="pic/html.jpeg" width="512" alt=""/>
+<img src="assets/pic/html.jpeg" width="512" alt=""/>
 
 Styles are written in each html-element because we assign them directly to elements through
 setStyle() or spreadStyleToParts(). It is convenient when using html4 specification.
@@ -181,7 +181,7 @@ public class ReporterApplication {
 }
 ```
 
-<img src="pic/html2.jpeg" width="200" alt=""/>
+<img src="assets/pic/html2.jpeg" width="200" alt=""/>
 
 Same result, but using StyleService:
 <details>
@@ -258,7 +258,7 @@ public class ReporterApplication {
 </details>
 <br/>
 
-<img src="pic/html3.jpeg" width="400" alt=""/>
+<img src="assets/pic/html3.jpeg" width="400" alt=""/>
 
 If you need a single "collapsed" frame around all columns
 <details>
@@ -340,7 +340,7 @@ public class ReporterApplication {
 
 </details>
 
-<img src="pic/html4.jpeg" width="800" alt=""/>
+<img src="assets/pic/html4.jpeg" width="800" alt=""/>
 
 
 Little example on how to get data from DB:
@@ -390,7 +390,7 @@ What reporter can't do yet:
 
 #### Inner structure
 
-[ ![](pic/classes.jpg) ](pic/classes.jpg)
+[ ![](assets/pic/classes.jpg) ](assets/pic/classes.jpg)
 
 ## Contributing
 
@@ -458,8 +458,9 @@ embracing in "_", like file names in [free_fonts](src/main/resources/free_fonts)
    [free_fonts/alphabets.properties](src/main/resources/free_fonts/alphabets.properties), for instance:
 
 ```java
-pl=aąbcćdeęfghijklłmnńoópqrsśtuvwxyzźż
-zh=
+pl=
+aąbcćdeęfghijklłmnńoópqrsśtuvwxyzźż
+    zh =
 ```
 
 <b id="f2"><font size=2><sup style="color:Tomato;">2</sup></font></b>[↩](#a2)

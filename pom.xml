@@ -74,7 +74,7 @@
                 </executions>
                 <configuration>
                     <rulesets>
-                        <ruleset>${basedir}/etc/pmd/ruleset.xml</ruleset>
+                        <ruleset>${basedir}/assets/etc/pmd/ruleset.xml</ruleset>
                     </rulesets>
                     <printFailingErrors>true</printFailingErrors>
                     <aggregate>true</aggregate>
@@ -96,7 +96,7 @@
                     </dependency>
                 </dependencies>
                 <configuration>
-                    <configLocation>${basedir}/etc/checkstyle/checkstyle.xml</configLocation>
+                    <configLocation>${basedir}/assets/etc/checkstyle/checkstyle.xml</configLocation>
                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
                     <consoleOutput>true</consoleOutput>
                 </configuration>
