@@ -33,7 +33,7 @@
         <apache.version>5.2.5</apache.version>
         <supercsv.version>2.4.0</supercsv.version>
         <jdbc.version>5.3.29</jdbc.version>
-        <old.spring.version>5.3.30</old.spring.version>
+        <old.spring.version>5.3.39</old.spring.version>
         <springjpa.version>2.7.14</springjpa.version>
         <javax.version>2.2</javax.version>
         <h2.test.version>2.2.220</h2.test.version>

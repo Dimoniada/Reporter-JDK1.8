@@ -12,9 +12,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
- * Custom class for saving {@link Document} document in CSV format.
+ * Custom class for saving {@link Document} in CSV format file.
  * {@link CsvFormatter#handle handle(doc)} stores the result in
- * resource {@link CsvFormatter#resource} that is created
+ * {@link CsvFormatter#resource} that is created
  * from the passed filename or generated automatically.
  * If output stream {@link CsvFormatter#outputStream} is set, then
  * writes to it.
