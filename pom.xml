@@ -21,22 +21,23 @@
     <name>Reporter-JDK1.8</name>
     <description>Reporter-JDK1.8</description>
     <properties>
-        <property name="hibernate.hbm2ddl.charset_name" value="UTF-8"/>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>1.8</java.version>
         <maven.compiler.plugin.source>1.8</maven.compiler.plugin.source>
         <maven.compiler.plugin.target>1.8</maven.compiler.plugin.target>
-        <java.version>1.8</java.version>
+        <property name="hibernate.hbm2ddl.charset_name" value="UTF-8"/>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- DEPENDENCY VERSIONS -->
         <guava.version>32.1.1-jre</guava.version>
         <itextpdf.version>8.0.2</itextpdf.version>
         <documents4j.version>1.1.10</documents4j.version>
-        <apache.version>5.2.5</apache.version>
+        <apache.version>5.3.0</apache.version>
         <supercsv.version>2.4.0</supercsv.version>
         <jdbc.version>5.3.29</jdbc.version>
         <old.spring.version>5.3.39</old.spring.version>
         <springjpa.version>2.7.14</springjpa.version>
         <javax.version>2.2</javax.version>
         <h2.test.version>2.2.220</h2.test.version>
+        <groovy.version>3.0.19</groovy.version>
         <!-- PMD, CHECKSTYLE PLUGINS-->
         <plugin.pmd.version>3.21.0</plugin.pmd.version>
         <plugin.checkstyle.version>3.1.2</plugin.checkstyle.version>
@@ -138,7 +139,7 @@
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
-            <version>3.0.19</version>
+            <version>${groovy.version}</version>
             <type>pom</type>
             <exclusions>
                 <exclusion>
@@ -217,6 +218,10 @@
                 <exclusion>
                     <groupId>net.minidev</groupId>
                     <artifactId>json-smart</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.jayway.jsonpath</groupId>
+                    <artifactId>json-path</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>
