@@ -12,7 +12,6 @@ import com.itextpdf.kernel.pdf.canvas.draw.ILineDrawer;
 import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Image;
-import com.itextpdf.layout.element.LineSeparator;
 import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.properties.AreaBreakType;
 import com.itextpdf.layout.properties.UnitValue;
@@ -20,9 +19,9 @@ import com.model.domain.Document;
 import com.model.domain.DocumentCase;
 import com.model.domain.Footer;
 import com.model.domain.Heading;
+import com.model.domain.LineSeparator;
 import com.model.domain.Paragraph;
 import com.model.domain.Picture;
-import com.model.domain.Separator;
 import com.model.domain.Table;
 import com.model.domain.TableCell;
 import com.model.domain.TableHeaderCell;
@@ -182,12 +181,12 @@ public abstract class PdfFormatterVisitor extends Formatter implements BaseDetai
     }
 
     @Override
-    public void visitSeparator(Separator separatorObj) {
-        final BorderStyle border = separatorObj.getBorderStyle();
+    public void visitLineSeparator(LineSeparator lineSeparatorObj) {
+        final BorderStyle border = lineSeparatorObj.getBorderStyle();
         if (border != null && border.getWeight() != BorderWeight.NONE) {
             final ILineDrawer lineDrawer = PdfStyleService.toPdfILineDrawer(border.getWeight());
             lineDrawer.setColor(PdfStyleService.toPdfColor(border.getColor()));
-            document.add(new LineSeparator(lineDrawer));
+            document.add(new com.itextpdf.layout.element.LineSeparator(lineDrawer));
         }
     }
 

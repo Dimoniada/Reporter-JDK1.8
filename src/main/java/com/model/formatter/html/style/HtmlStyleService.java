@@ -60,7 +60,7 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
             put(BorderWeight.DOTTED, "dotted");
         }};
 
-    private static final Map<BorderWeight, String> separatorWidthMap =
+    private static final Map<BorderWeight, String> lineSeparatorWidthMap =
         new HashMap<BorderWeight, String>() {{
             put(BorderWeight.THIN, "1px");
             put(BorderWeight.MEDIUM, "2px");
@@ -449,8 +449,8 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
      * (<a href="http://htmlbook.ru/faq/kak-s-pomoshchyu-stiley-zadat-tsvet-linii">...</a>)
      */
     protected static void fillCssStyleFromBorderStyle(CssStyle cssStyle, BorderStyle borderStyle) {
-        if (separatorWidthMap.containsKey(borderStyle.getWeight())) {
-            cssStyle.setHeight(separatorWidthMap.get(borderStyle.getWeight()));
+        if (lineSeparatorWidthMap.containsKey(borderStyle.getWeight())) {
+            cssStyle.setHeight(lineSeparatorWidthMap.get(borderStyle.getWeight()));
         }
         cssStyle.setBorder("none");
         cssStyle.setColor(toHtmlColor(borderStyle.getColor()));
@@ -555,10 +555,16 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
                 }
             }
 
+            if (gluedStyles.isEmpty()) {
+                return;
+            }
+
+            OsWriter.write("<style type=\"text/css\">\n");
             for (final Style style : gluedStyles) {
                 final String htmlClass = createHtmlClassInHeader(style);
                 OsWriter.write(htmlClass);
             }
+            OsWriter.write("\n</style>");
         }
     }
 

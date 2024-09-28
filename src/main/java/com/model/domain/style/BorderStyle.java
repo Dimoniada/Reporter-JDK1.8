@@ -6,7 +6,7 @@ import com.model.domain.style.constant.BorderWeight;
 import com.model.domain.style.constant.Color;
 
 /**
- * Describes the line style (border or separator)
+ * Describes the line style (border or line of separator)
  */
 public class BorderStyle implements Cloneable {
     /**

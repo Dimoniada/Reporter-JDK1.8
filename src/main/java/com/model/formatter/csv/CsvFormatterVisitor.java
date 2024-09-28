@@ -5,9 +5,9 @@ import com.model.domain.Document;
 import com.model.domain.DocumentCase;
 import com.model.domain.Footer;
 import com.model.domain.Heading;
+import com.model.domain.LineSeparator;
 import com.model.domain.Paragraph;
 import com.model.domain.Picture;
-import com.model.domain.Separator;
 import com.model.domain.Table;
 import com.model.domain.TableHeaderRow;
 import com.model.domain.TableRow;
@@ -125,7 +125,7 @@ public abstract class CsvFormatterVisitor extends Formatter implements BaseDetai
     }
 
     @Override
-    public void visitSeparator(Separator separatorObj) throws Exception {
+    public void visitLineSeparator(LineSeparator lineSeparatorObj) throws Exception {
         csvWriter.write("");
     }
 

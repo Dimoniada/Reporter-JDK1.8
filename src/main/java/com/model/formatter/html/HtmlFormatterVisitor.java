@@ -5,9 +5,9 @@ import com.model.domain.Document;
 import com.model.domain.DocumentCase;
 import com.model.domain.Footer;
 import com.model.domain.Heading;
+import com.model.domain.LineSeparator;
 import com.model.domain.Paragraph;
 import com.model.domain.Picture;
-import com.model.domain.Separator;
 import com.model.domain.Table;
 import com.model.domain.TableCell;
 import com.model.domain.TableHeaderCell;
@@ -228,9 +228,9 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
     }
 
     @Override
-    public void visitSeparator(Separator separatorObj) throws Exception {
+    public void visitLineSeparator(LineSeparator lineSeparatorObj) throws Exception {
         final HtmlLineSeparator htmlLineSeparator = new HtmlLineSeparator();
-        final Style style = LayoutStyle.create().setBorderBottom(separatorObj.getBorderStyle());
+        final Style style = LayoutStyle.create().setBorderBottom(lineSeparatorObj.getBorderStyle());
         handleTag(htmlLineSeparator, null, style, false);
     }
 

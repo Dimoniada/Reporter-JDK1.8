@@ -5,9 +5,9 @@ import com.model.domain.Document;
 import com.model.domain.DocumentCase;
 import com.model.domain.Footer;
 import com.model.domain.Heading;
+import com.model.domain.LineSeparator;
 import com.model.domain.Paragraph;
 import com.model.domain.Picture;
-import com.model.domain.Separator;
 import com.model.domain.Table;
 import com.model.domain.TableCell;
 import com.model.domain.TableHeaderCell;
@@ -217,7 +217,7 @@ public abstract class WordFormatterVisitor extends Formatter implements BaseDeta
     }
 
     @Override
-    public void visitSeparator(Separator separatorObj) {
+    public void visitLineSeparator(LineSeparator lineSeparatorObj) {
         wordDocument
             .createParagraph()
             .createRun()

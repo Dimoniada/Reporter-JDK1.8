@@ -6,9 +6,9 @@ import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
 import com.itextpdf.kernel.pdf.canvas.parser.listener.ITextExtractionStrategy;
 import com.itextpdf.kernel.pdf.canvas.parser.listener.SimpleTextExtractionStrategy;
 import com.model.domain.Document;
+import com.model.domain.LineSeparator;
 import com.model.domain.Paragraph;
 import com.model.domain.ReportTable;
-import com.model.domain.Separator;
 import com.model.domain.TableHeaderCell;
 import com.model.domain.TableHeaderRow;
 import com.model.domain.style.BorderStyle;
@@ -172,7 +172,7 @@ public class TutorialTest {
                 .addParts(
                     table,                              //Put our table here as a part of document
                     Paragraph.create(),
-                    Separator.create(
+                    LineSeparator.create(
                         BorderStyle
                             .create(Color.TEAL, BorderWeight.THIN)
                     ),
@@ -254,6 +254,10 @@ public class TutorialTest {
                         final String check = sheet.getRow(3).getCell(2).getStringCellValue();
                         wb.close();
                         Assertions.assertEquals("Name3", check);
+                        break;
+                    case "csv":
+                        final String checkCsv = os.toString(StandardCharsets.UTF_8.name());
+                        Assertions.assertTrue(checkCsv.contains("2;абракадабра с \\ЭЭ последовательностью;\"Имя2 с !;№% номерами\""));
                         break;
                     case "html":
                         final String text = os.toString(StandardCharsets.UTF_8.name());

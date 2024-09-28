@@ -4,9 +4,9 @@ import com.google.common.base.MoreObjects;
 import com.model.domain.Document;
 import com.model.domain.DocumentCase;
 import com.model.domain.Heading;
+import com.model.domain.LineSeparator;
 import com.model.domain.Paragraph;
 import com.model.domain.Picture;
-import com.model.domain.Separator;
 import com.model.domain.Table;
 import com.model.domain.TableCell;
 import com.model.domain.TableHeaderCell;
@@ -184,7 +184,7 @@ public abstract class ExcelFormatterVisitor extends Formatter implements BaseDet
     }
 
     @Override
-    public void visitSeparator(Separator separatorObj) {
+    public void visitLineSeparator(LineSeparator lineSeparatorObj) {
         final Sheet sheet = getLastSheet(workbook);
         final Row row = createRow(sheet, 1);
         createCell(row, 1, CellType.STRING).setCellValue(""); // A new cell needs for a value

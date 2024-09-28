@@ -9,7 +9,7 @@ import java.util.function.Predicate;
 
 /**
  * Style's applicability condition for the domain object,
- * used by StyleManager in logic: if condition predicate
+ * used by {@link StyleService} in logic: if condition predicate
  * is executed successfully on the object and the class of the object is {@link StyleCondition#clazz},
  * then the style is transferred/applied to the object.
  */
