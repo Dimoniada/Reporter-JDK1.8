@@ -171,14 +171,14 @@ public class HtmlFormatterTest extends BaseDocument {
             .setBold(true)
             .setFontSize((short) 35)
             .setColor(Color.GREEN)
-            .setCondition(StyleCondition.create(Title.class, o -> o instanceof Title));
+            .setStyleCondition(StyleCondition.create(Title.class, o -> o instanceof Title));
 
         final Style paragraphStyle = TextStyle
             .create()
             .setFontNameResource("Gill Sans")
             .setFontSize((short) 15)
             .setColor(Color.RED)
-            .setCondition(StyleCondition.create(Paragraph.class, o -> o instanceof Paragraph));
+            .setStyleCondition(StyleCondition.create(Paragraph.class, o -> o instanceof Paragraph));
 
         final HtmlStyleService styleService = HtmlStyleService.create()
             .addStyles(titleStyle, paragraphStyle);
@@ -349,11 +349,11 @@ public class HtmlFormatterTest extends BaseDocument {
                     )
             );
         final Style cellStyle = layoutTextStyle.clone().getLayoutStyle().setFillBackgroundColor(Color.GREEN)
-            .setCondition(
+            .setStyleCondition(
                 StyleCondition.create(TableCell.class, null)
             );
         final Style headerCellstyle = layoutTextStyle.clone().getLayoutStyle().setFillBackgroundColor(Color.TEAL)
-            .setCondition(
+            .setStyleCondition(
                 StyleCondition.create(TableHeaderCell.class, null)
             );
         final Style bodyStyle = LayoutStyle.create()
@@ -362,7 +362,7 @@ public class HtmlFormatterTest extends BaseDocument {
                     .setWidth(Geometry.create("html", "21cm"))
                     .setHeight(Geometry.create("html", "29.7cm"))
             )
-            .setCondition(
+            .setStyleCondition(
                 StyleCondition.create(Document.class, null)
             );
         htmlFormatter.setStyleService(
@@ -456,12 +456,21 @@ public class HtmlFormatterTest extends BaseDocument {
                     .setStyle(HtmlLayoutTextStyle.create(true))
             );
 
-        final Style cellStyle = layoutTextStyle.clone().getLayoutStyle().setFillBackgroundColor(Color.GREEN)
-            .setCondition(
+        final Style cellStyle = layoutTextStyle.clone()
+            .getLayoutStyle()
+            .setGeometryDetails(
+                GeometryDetails.create()
+                    .setHeight(
+                        Geometry.create()
+                            .add("html", "40px")
+                    )
+            )
+            .setFillBackgroundColor(Color.GREEN)
+            .setStyleCondition(
                 StyleCondition.create(TableCell.class, null)
             );
         final Style headerCellstyle = layoutTextStyle.clone().getLayoutStyle().setFillBackgroundColor(Color.TEAL)
-            .setCondition(
+            .setStyleCondition(
                 StyleCondition.create(TableHeaderCell.class, null)
             );
         htmlFormatter.setStyleService(
@@ -477,6 +486,29 @@ public class HtmlFormatterTest extends BaseDocument {
             final String text =
                 FileUtils.readFileToString(documentHolder.getResource().getFile(), StandardCharsets.UTF_8);
             Assertions.assertTrue(text.contains("Cell 1.2"));
+        }
+    }
+
+    @Test
+    public void testSaveFooter() throws Throwable {
+        final HtmlFormatter htmlFormatter = HtmlFormatter.create();
+        final Document doc1 = Document
+            .create()
+            .setLabel("Test document")
+            .setAuthor("A1 Systems")
+            .setDescription("meta information")
+            .addParts(
+                Footer.create("test_footer")
+                    .setStyle(
+                        LayoutStyle.create()
+                            .setVertAlignment(VertAlignment.BOTTOM)
+                            .setHorAlignment(HorAlignment.CENTER)
+                    )
+            );
+        try (DocumentHolder documentHolder = htmlFormatter.handle(doc1)) {
+            final String text =
+                FileUtils.readFileToString(documentHolder.getResource().getFile(), StandardCharsets.UTF_8);
+            Assertions.assertTrue(text.contains("test_footer"));
         }
     }
 
@@ -552,7 +584,7 @@ public class HtmlFormatterTest extends BaseDocument {
         final HtmlStyleService htmlStyleService = HtmlStyleService.create().setUseHtml4Tags(true);
         final LayoutStyle interlinearStyle = layoutStyle1.clone().setFillPattern(FillPattern.SOLID_FOREGROUND);
         interlinearStyle
-            .setCondition(
+            .setStyleCondition(
                 StyleCondition.create(TableRow.class, o -> {
                         if (o instanceof Table) {
                             return true;
@@ -566,7 +598,7 @@ public class HtmlFormatterTest extends BaseDocument {
                                 row.getRowIndex() % 2 == 0 ? Color.GREY_25_PERCENT : Color.WHITE);
                             final Style cellStyle;
                             try {
-                                cellStyle = interlinearStyle.clone().setCondition(null);
+                                cellStyle = interlinearStyle.clone().setStyleCondition(null);
                                 cells.forEach(cell -> cell.setStyle(cellStyle));
                             } catch (CloneNotSupportedException ignored) {
                             }
@@ -633,7 +665,7 @@ public class HtmlFormatterTest extends BaseDocument {
             );
         final Style documentCaseStyle = HtmlLayoutTextStyle.create()
             .setTypePageBreakAfter("always")
-            .setCondition(
+            .setStyleCondition(
                 StyleCondition.create(DocumentCase.class, null)
             );
         htmlFormatter.setStyleService(
@@ -745,7 +777,7 @@ public class HtmlFormatterTest extends BaseDocument {
 // Case of the named style class
         tc.setStyle(null);         // remove inner style
 
-        layoutStyle1.setCondition(StyleCondition.create(TableCell.class, o -> o instanceof TableCell));
+        layoutStyle1.setStyleCondition(StyleCondition.create(TableCell.class, o -> o instanceof TableCell));
         styleService.addStyles(layoutStyle1);
         styleService.setWriteStyleInTag(false);
 
@@ -757,7 +789,7 @@ public class HtmlFormatterTest extends BaseDocument {
             .setGeometryDetails(
                 layoutStyle1.getGeometryDetails()
             )
-            .setCondition(
+            .setStyleCondition(
                 StyleCondition.create(HtmlDiv.class, o -> true)
             );
         try (DocumentHolder ignored = htmlFormatter.handle(doc)) {
@@ -809,7 +841,7 @@ public class HtmlFormatterTest extends BaseDocument {
 
 // Case of the named class style
         thc.setStyle(null);          // remove inner style
-        layoutStyle1.setCondition(StyleCondition.create(TableHeaderCell.class, o -> o instanceof TableHeaderCell));
+        layoutStyle1.setStyleCondition(StyleCondition.create(TableHeaderCell.class, o -> o instanceof TableHeaderCell));
         styleService.addStyles(layoutStyle1);
         styleService.setWriteStyleInTag(false);
         doc = Document.create();
@@ -878,7 +910,7 @@ public class HtmlFormatterTest extends BaseDocument {
 
 // Case of the named class style
         thc.setStyle(null);         // remove inner style
-        layoutStyle1.setCondition(StyleCondition.create(TableHeaderCell.class, o -> o instanceof TableHeaderCell));
+        layoutStyle1.setStyleCondition(StyleCondition.create(TableHeaderCell.class, o -> o instanceof TableHeaderCell));
         styleService.addStyles(layoutStyle1);
         styleService.setWriteStyleInTag(false);
 
@@ -970,7 +1002,7 @@ public class HtmlFormatterTest extends BaseDocument {
         os.reset();
 // Case of the named style class
         item.setStyle(null);         // remove inner style
-        layoutStyle1.setCondition(StyleCondition.create(itemClass, o -> o.getClass().equals(itemClass)));
+        layoutStyle1.setStyleCondition(StyleCondition.create(itemClass, o -> o.getClass().equals(itemClass)));
         styleService.addStyles(layoutStyle1);
         styleService.setWriteStyleInTag(false);
 
@@ -984,7 +1016,7 @@ public class HtmlFormatterTest extends BaseDocument {
             .setGeometryDetails(
                 layoutStyle1.getGeometryDetails()
             )
-            .setCondition(
+            .setStyleCondition(
                 StyleCondition.create(HtmlDiv.class, o -> true)
             );
         try (DocumentHolder ignored = htmlFormatter.handle(doc)) {

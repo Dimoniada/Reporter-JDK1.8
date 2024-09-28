@@ -72,7 +72,7 @@ public abstract class CompositionPart<T, K extends DocumentItem> extends Documen
     public T spreadStyleToParts(Style style, int depth) throws CloneNotSupportedException {
         if (depth != 0 && style != null && parts != null) {
             for (final K part : parts) {
-                final StyleCondition styleCondition = style.getCondition();
+                final StyleCondition styleCondition = style.getStyleCondition();
                 if (part.getStyle() == null
                     && (styleCondition == null || part.getClass().isAssignableFrom(styleCondition.getClazz()))
                 ) {

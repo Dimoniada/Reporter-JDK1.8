@@ -11,13 +11,13 @@ public class Style implements Cloneable {
     /**
      * Style applicability condition
      */
-    protected StyleCondition condition;
+    protected StyleCondition styleCondition;
 
     @Override
     public String toString() {
         return
             MoreObjects.toStringHelper(this)
-                .add("condition", condition)
+                .add("styleCondition", styleCondition)
                 .toString();
     }
 
@@ -26,21 +26,21 @@ public class Style implements Cloneable {
      */
     @SuppressWarnings("unchecked")
     public <T extends Style> T removeCondition() {
-        this.condition = null;
+        this.styleCondition = null;
         return (T) this;
     }
 
-    public StyleCondition getCondition() {
-        return condition;
+    public StyleCondition getStyleCondition() {
+        return styleCondition;
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends Style> T setCondition(StyleCondition condition) {
-        this.condition = condition;
+    public <T extends Style> T setStyleCondition(StyleCondition styleCondition) {
+        this.styleCondition = styleCondition;
         return (T) this;
     }
 
     public Style clone() throws CloneNotSupportedException {
-        return ((Style) super.clone()).setCondition(condition);
+        return ((Style) super.clone()).setStyleCondition(styleCondition);
     }
 }

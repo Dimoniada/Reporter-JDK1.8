@@ -450,17 +450,19 @@ public class ReporterApplication {
 }
 ```
 
-The font file name should contain
+The font file name **must** contain
 [FontFamilyStyle](src/main/java/com/model/domain/style/FontFamilyStyle.java) name
 embracing in "_", like file names in [free_fonts](src/main/resources/free_fonts) folder
 
-2) Add language (necessary) and its alphabet (optionally) to
+2) Add language (**mandatory**) and its alphabet (optionally) to
    [free_fonts/alphabets.properties](src/main/resources/free_fonts/alphabets.properties), for instance:
 
 ```java
-pl=
-aąbcćdeęfghijklłmnńoópqrsśtuvwxyzźż
-    zh =
+pl=aąbcćdeęfghijklłmnńoópqrsśtuvwxyzźż
+```
+
+```java
+zh=
 ```
 
 <b id="f2"><font size=2><sup style="color:Tomato;">2</sup></font></b>[↩](#a2)

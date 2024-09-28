@@ -17,14 +17,14 @@ final Style titleStyle = TextStyle
     .setBold(true)
     .setFontSize((short) 35)
     .setColor(Color.GREEN)
-    .setCondition(StyleCondition.create(Title.class, o -> o instanceof Title));
+    .setStyleCondition(StyleCondition.create(Title.class, o -> o instanceof Title));
 
 final Style paragraphStyle = TextStyle
     .create()
     .setFontNameResource("Gill Sans")
     .setFontSize((short) 15)
     .setColor(Color.RED)
-    .setCondition(StyleCondition.create(Paragraph.class, o -> o instanceof Paragraph));
+    .setStyleCondition(StyleCondition.create(Paragraph.class, o -> o instanceof Paragraph));
 
 final HtmlStyleService styleService = HtmlStyleService.create()
     .addStyles(titleStyle, paragraphStyle);

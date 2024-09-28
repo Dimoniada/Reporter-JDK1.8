@@ -46,7 +46,7 @@ layoutStyleForCells =
         .setBorderRight(singleBorder)
         .setBorderBottom(singleBorder)
         .setAutoWidth(true)
-        .setCondition(StyleCondition.create(TableCell.class));
+        .setStyleCondition(StyleCondition.create(TableCell.class));
 
 textStyle1 =
     TextStyle
@@ -57,7 +57,7 @@ textStyle1 =
         .setFontNameResource("arial");
 
 layoutTextStyle = LayoutTextStyle.create(textStyle1, layoutStyle1)
-    .setCondition(
+    .setStyleCondition(
         StyleCondition.create(
             TableHeaderCell.class,
             o -> {
@@ -76,16 +76,16 @@ textStyleCell =
         .setBold(true)
         .setFontFamilyStyle(FontFamilyStyle.MONOSPACED)
         .setFontNameResource("courierNew")
-        .setCondition(StyleCondition.create(TableCell.class));
+        .setStyleCondition(StyleCondition.create(TableCell.class));
 
 htmlTableStyle = HtmlLayoutTextStyle.create(true)
-    .setCondition(
+    .setStyleCondition(
         StyleCondition.create(Table.class)
     );
 
 htmlColGroupStyle = HtmlLayoutTextStyle.create(null, layoutStyleForCells)
     .setColGroupStyle(true)
-    .setCondition(
+    .setStyleCondition(
         StyleCondition.create(
             TableHeaderCell.class,
             o -> {

@@ -137,7 +137,7 @@ public class FormatterContext {
                     .setAutoWidth(true)
                     .setFillPattern(FillPattern.SOLID_FOREGROUND)
             )
-            .setCondition(
+            .setStyleCondition(
                 StyleCondition
                     .create(
                         TableHeaderCell.class, o -> o instanceof TableHeaderCell
@@ -173,7 +173,7 @@ public class FormatterContext {
                     .setFillBackgroundColor(Color.GREEN_LIGHT)
                     .setFillForegroundColor(Color.GREEN_LIGHT)
             )
-            .setCondition(
+            .setStyleCondition(
                 StyleCondition
                     .create(
                         TableCell.class, isTableCell.and(isInterlinear)
@@ -206,7 +206,7 @@ public class FormatterContext {
                     .setFillPattern(FillPattern.SOLID_FOREGROUND)
                     .setHorAlignment(HorAlignment.LEFT)
             )
-            .setCondition(StyleCondition
+            .setStyleCondition(StyleCondition
                 .create(
                     TableCell.class, isTableCell.and(isInterlinear)
                 )

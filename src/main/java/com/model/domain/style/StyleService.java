@@ -46,11 +46,11 @@ public abstract class StyleService implements StyleApplier {
         return styles
             .stream()
             .filter(s -> {
-                if (s.getCondition() != null) {
+                if (s.getStyleCondition() != null) {
                     final Class<?> itemClass = o.getClass();
-                    final Class<?> conditionClass = s.getCondition().getClazz();
-                    return itemClass.isAssignableFrom(conditionClass)
-                        && s.getCondition().test(o);
+                    final Class<?> styleConditionClass = s.getStyleCondition().getClazz();
+                    return itemClass.isAssignableFrom(styleConditionClass)
+                        && s.getStyleCondition().test(o);
                 }
                 return true;
             })

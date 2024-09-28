@@ -241,7 +241,6 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
             final Style style = styleService.extractStyleFor(footerObj).orElse(footerObj.getStyle());
             handleTag(htmlFooter, footerObj.getText(), style, true);
         }
-        //TODO: fix render Footer with alignment Bottom
         if (footerObj.isDataInheritedFrom(PictureItem.class)) {
             final Style pictureStyle = footerObj.getStyle();
             final Style footerStyle = styleService.extractStyleFor(footerObj).orElse(null);
@@ -251,6 +250,12 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
 
     protected void handleCustomCell(DataItem cellObj, HtmlTag htmlCell) throws Exception {
         final HtmlDiv htmlDiv = new HtmlDiv();
+        if (htmlCell instanceof HtmlTableHeaderCell) {
+            htmlDiv.setRealDomainClazz(TableHeaderCell.class);
+        }
+        if (htmlCell instanceof HtmlTableCell) {
+            htmlDiv.setRealDomainClazz(TableCell.class);
+        }
         final HtmlStyleService htmlStyleService = (HtmlStyleService) styleService;
         if (cellObj.isDataInheritedFrom(TextItem.class)) {
             final Style cellStyle = htmlStyleService.getCustomTableCellStyle(cellObj);

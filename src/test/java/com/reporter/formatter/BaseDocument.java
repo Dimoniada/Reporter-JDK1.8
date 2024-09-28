@@ -84,22 +84,22 @@ public class BaseDocument {
                 .setBold(true)
                 .setFontFamilyStyle(FontFamilyStyle.MONOSPACED)
                 .setFontNameResource("courierNew")
-                .setCondition(StyleCondition.create(TableCell.class));
+                .setStyleCondition(StyleCondition.create(TableCell.class));
 
         styleForHeading =
             LayoutTextStyle
                 .create(textStyleCell, layoutStyle2)
-                .setCondition(StyleCondition.create(Heading.class));
+                .setStyleCondition(StyleCondition.create(Heading.class));
 
         styleForParagraph =
             LayoutTextStyle
                 .create(textStyleCell, layoutStyle2)
-                .setCondition(StyleCondition.create(Paragraph.class));
+                .setStyleCondition(StyleCondition.create(Paragraph.class));
 
         styleForSeparator =
             LayoutTextStyle
                 .create(textStyleCell, layoutStyle2)
-                .setCondition(StyleCondition.create(Separator.class));
+                .setStyleCondition(StyleCondition.create(Separator.class));
 
         fontService = FontService.
             create()
