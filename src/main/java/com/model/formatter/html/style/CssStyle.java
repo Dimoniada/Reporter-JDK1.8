@@ -1,5 +1,6 @@
 package com.model.formatter.html.style;
 
+import com.model.utils.MapBuilder;
 import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
@@ -52,40 +53,40 @@ public class CssStyle {
     protected final Map<String, Function<Object, String>> attributeHtml4Mapper;
 
     public CssStyle() {
-        attributeMapper = new HashMap<String, Function<Object, String>>() {{
-            put(FONT_SIZE, CssStyle::produceFontSizeAttribute);
-            put(FONT_WEIGHT, CssStyle::produceDefaultStringAttribute);
-            put(FONT_STYLE, CssStyle::produceDefaultStringAttribute);
-            put(FONT_COLOR, CssStyle::produceDefaultStringAttribute);
-            put(FONT_FAMILY, CssStyle::produceFontFamilyAttribute);
-            put(TEXT_HOR_ALIGN, CssStyle::produceDefaultStringAttribute);
-            put(TEXT_VERT_ALIGN, CssStyle::produceDefaultStringAttribute);
-            put(TOP, CssStyle::produceDefaultStringAttribute);
-            put(LEFT, CssStyle::produceDefaultStringAttribute);
-            put(RIGHT, CssStyle::produceDefaultStringAttribute);
-            put(BOTTOM, CssStyle::produceDefaultStringAttribute);
-            put(POSITION, CssStyle::produceDefaultStringAttribute);
-            put(DISPLAY, CssStyle::produceDefaultStringAttribute);
-            put(TRANSFORM, CssStyle::produceDefaultStringAttribute);
-            put(WIDTH, CssStyle::produceDefaultStringAttribute);
-            put(HEIGHT, CssStyle::produceDefaultStringAttribute);
-            put(TRANSFORM_ORIGIN, CssStyle::produceDefaultStringAttribute);
-            put(BORDER_TOP, CssStyle::produceDefaultStringAttribute);
-            put(BORDER_LEFT, CssStyle::produceDefaultStringAttribute);
-            put(BORDER_RIGHT, CssStyle::produceDefaultStringAttribute);
-            put(BORDER_BOTTOM, CssStyle::produceDefaultStringAttribute);
-            put(BACKGROUND_COLOR, CssStyle::produceDefaultStringAttribute);
-            put(BORDER_COLLAPSE, CssStyle::produceDefaultStringAttribute);
-            put(BORDER, CssStyle::produceDefaultStringAttribute);
-            put(PAGE_BREAK_AFTER, CssStyle::produceDefaultStringAttribute);
-        }};
+        attributeMapper = new MapBuilder<String, Function<Object, String>>()
+            .put(FONT_SIZE, CssStyle::produceFontSizeAttribute)
+            .put(FONT_WEIGHT, CssStyle::produceDefaultStringAttribute)
+            .put(FONT_STYLE, CssStyle::produceDefaultStringAttribute)
+            .put(FONT_COLOR, CssStyle::produceDefaultStringAttribute)
+            .put(FONT_FAMILY, CssStyle::produceFontFamilyAttribute)
+            .put(TEXT_HOR_ALIGN, CssStyle::produceDefaultStringAttribute)
+            .put(TEXT_VERT_ALIGN, CssStyle::produceDefaultStringAttribute)
+            .put(TOP, CssStyle::produceDefaultStringAttribute)
+            .put(LEFT, CssStyle::produceDefaultStringAttribute)
+            .put(RIGHT, CssStyle::produceDefaultStringAttribute)
+            .put(BOTTOM, CssStyle::produceDefaultStringAttribute)
+            .put(POSITION, CssStyle::produceDefaultStringAttribute)
+            .put(DISPLAY, CssStyle::produceDefaultStringAttribute)
+            .put(TRANSFORM, CssStyle::produceDefaultStringAttribute)
+            .put(WIDTH, CssStyle::produceDefaultStringAttribute)
+            .put(HEIGHT, CssStyle::produceDefaultStringAttribute)
+            .put(TRANSFORM_ORIGIN, CssStyle::produceDefaultStringAttribute)
+            .put(BORDER_TOP, CssStyle::produceDefaultStringAttribute)
+            .put(BORDER_LEFT, CssStyle::produceDefaultStringAttribute)
+            .put(BORDER_RIGHT, CssStyle::produceDefaultStringAttribute)
+            .put(BORDER_BOTTOM, CssStyle::produceDefaultStringAttribute)
+            .put(BACKGROUND_COLOR, CssStyle::produceDefaultStringAttribute)
+            .put(BORDER_COLLAPSE, CssStyle::produceDefaultStringAttribute)
+            .put(BORDER, CssStyle::produceDefaultStringAttribute)
+            .put(PAGE_BREAK_AFTER, CssStyle::produceDefaultStringAttribute)
+            .build();
 
-        attributeHtml4Mapper = new HashMap<String, Function<Object, String>>() {{
-            put(BORDER_HTML4, CssStyle::produceBorderHtml4Attribute);
-            put(CELLSPACING_HTML4, CssStyle::produceCellspacingHtml4Attribute);
-            put(BGCOLOR_HTML4, CssStyle::produceDefaultStringAttribute);
-            put(ALIGN_HTML4, CssStyle::produceDefaultStringAttribute);
-        }};
+        attributeHtml4Mapper = new MapBuilder<String, Function<Object, String>>()
+            .put(BORDER_HTML4, CssStyle::produceBorderHtml4Attribute)
+            .put(CELLSPACING_HTML4, CssStyle::produceCellspacingHtml4Attribute)
+            .put(BGCOLOR_HTML4, CssStyle::produceDefaultStringAttribute)
+            .put(ALIGN_HTML4, CssStyle::produceDefaultStringAttribute)
+            .build();
     }
 
     public int getFontSize() {

@@ -12,8 +12,8 @@ import com.model.domain.style.constant.HorAlignment;
 import com.model.domain.style.constant.VertAlignment;
 import com.model.domain.style.geometry.GeometryDetails;
 import com.model.formatter.pdf.PdfDetails;
+import com.model.utils.MapBuilder;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -39,19 +39,19 @@ public interface CustomPdfRenderer {
                     final Rectangle rectangle = getOccupiedAreaBBox();
 
                     final Map<HorAlignment, Function<Rectangle, Float>> xPointMap =
-                        new HashMap<HorAlignment, Function<Rectangle, Float>>() {{
-                            put(HorAlignment.GENERAL, r -> (r.getLeft() + r.getRight()) / 2);
-                            put(HorAlignment.LEFT, Rectangle::getLeft);
-                            put(HorAlignment.CENTER, r -> (r.getLeft() + r.getRight()) / 2);
-                            put(HorAlignment.RIGHT, Rectangle::getRight);
-                        }};
+                        new MapBuilder<HorAlignment, Function<Rectangle, Float>>()
+                            .put(HorAlignment.GENERAL, r -> (r.getLeft() + r.getRight()) / 2)
+                            .put(HorAlignment.LEFT, Rectangle::getLeft)
+                            .put(HorAlignment.CENTER, r -> (r.getLeft() + r.getRight()) / 2)
+                            .put(HorAlignment.RIGHT, Rectangle::getRight)
+                            .build();
 
                     final Map<VertAlignment, Function<Rectangle, Float>> yPointMap =
-                        new HashMap<VertAlignment, Function<Rectangle, Float>>() {{
-                            put(VertAlignment.TOP, Rectangle::getTop);
-                            put(VertAlignment.CENTER, r -> (r.getTop() + r.getBottom()) / 2);
-                            put(VertAlignment.BOTTOM, Rectangle::getBottom);
-                        }};
+                        new MapBuilder<VertAlignment, Function<Rectangle, Float>>()
+                            .put(VertAlignment.TOP, Rectangle::getTop)
+                            .put(VertAlignment.CENTER, r -> (r.getTop() + r.getBottom()) / 2)
+                            .put(VertAlignment.BOTTOM, Rectangle::getBottom)
+                            .build();
 
                     // Rotation (and aligned) center
                     getModelElement()

@@ -62,6 +62,7 @@ public abstract class Html4StyledTag implements HtmlTagAttributesWriter {
         return this;
     }
 
+    @Override
     public Map<String, HtmlAttribute> getAvailableAttributes() {
         return availableAttributes;
     }

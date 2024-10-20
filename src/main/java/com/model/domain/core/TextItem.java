@@ -20,7 +20,7 @@ public class TextItem extends DataItem {
 
     @Override
     public byte[] getData() {
-        return null;
+        return new byte[0];
     }
 
     @Override

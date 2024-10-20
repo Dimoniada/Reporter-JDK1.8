@@ -282,6 +282,7 @@ public abstract class PdfFormatterVisitor extends Formatter implements BaseDetai
         return this;
     }
 
+    @Override
     public StyleService getStyleService() {
         if (styleService == null) {
             styleService = PdfStyleService.create(encoding, null, decimalFormat);

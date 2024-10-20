@@ -111,7 +111,7 @@ public abstract class ExcelFormatterVisitor extends Formatter implements BaseDet
 //        final var watch = new StopWatch();
 //        watch.start();
         final Sheet sheet = getLastSheet(workbook);
-        final org.apache.poi.ss.usermodel.Cell cell;
+        final Cell cell;
         final Style style =
             styleService
                 .extractStyleFor(tableObj)
@@ -315,6 +315,7 @@ public abstract class ExcelFormatterVisitor extends Formatter implements BaseDet
         return this;
     }
 
+    @Override
     public StyleService getStyleService() {
         if (styleService == null) {
             styleService = ExcelStyleService.create(fontCharset, decimalFormat);

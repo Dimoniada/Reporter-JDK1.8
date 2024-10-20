@@ -11,10 +11,12 @@ public interface PdfDetails extends BaseDetails {
 
     MediaType MEDIA_TYPE = MediaType.parseMediaType("application/pdf");
 
+    @Override
     default String getExtension() {
         return EXTENSION;
     }
 
+    @Override
     default MediaType getContentMediaType() {
         return MEDIA_TYPE;
     }

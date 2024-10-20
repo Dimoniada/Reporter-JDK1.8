@@ -4,6 +4,7 @@ import com.google.common.base.MoreObjects;
 import com.itextpdf.kernel.font.PdfFont;
 import com.model.domain.style.FontFamilyStyle;
 import com.model.domain.style.TextStyle;
+import com.model.utils.MapBuilder;
 import com.model.utils.StringMetricUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -13,20 +14,12 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.util.StringUtils;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontFormatException;
+import java.awt.*;
 import java.awt.font.TextAttribute;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.AbstractMap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,28 +38,26 @@ public class FontService {
     private static final String FONTS_LOCATION = "free_fonts/";
     private static final String FONTS_EXT = ".ttf";
     private static final ClassLoader loader = FontService.class.getClassLoader();
-    private static final Map<FontFamilyStyle, String> fontFamilyPdfMap = new HashMap<FontFamilyStyle, String>() {{
-        put(FontFamilyStyle.SERIF, "Serif");
-        put(FontFamilyStyle.SANS_SERIF, "SansSerif");
-        put(FontFamilyStyle.MONOSPACED, "Monospaced");
-    }};
+    private static final Map<FontFamilyStyle, String> fontFamilyPdfMap = new MapBuilder<FontFamilyStyle, String>()
+        .put(FontFamilyStyle.SERIF, "Serif")
+        .put(FontFamilyStyle.SANS_SERIF, "SansSerif")
+        .put(FontFamilyStyle.MONOSPACED, "Monospaced")
+        .build();
 
     protected final Map<String, Map.Entry<Font, Map<TextAttribute, Object>>> fonts =
-        new HashMap<String, Map.Entry<Font, Map<TextAttribute, Object>>>() {{
-            put("arial_SansSerif_(en-ru Arimo).ttf", null);
-            put("courierNew_Monospaced_(en-ru AnonymousPro-Regular).ttf", null);
-            put("helvetica_SansSerif_(en-ru OpenSans).ttf", null);
-            put("tahoma_SansSerif_(en-ru PTSans).ttf", null);
-            put("times_Serif_(en-ru Tinos).ttf", null);
-            put("verdana_SansSerif_(en-ru Rubik).ttf", null);
-        }};
+        new MapBuilder<String, Map.Entry<Font, Map<TextAttribute, Object>>>()
+            .put("arial_SansSerif_(en-ru Arimo).ttf", null)
+            .put("courierNew_Monospaced_(en-ru AnonymousPro-Regular).ttf", null)
+            .put("helvetica_SansSerif_(en-ru OpenSans).ttf", null)
+            .put("tahoma_SansSerif_(en-ru PTSans).ttf", null)
+            .put("times_Serif_(en-ru Tinos).ttf", null)
+            .put("verdana_SansSerif_(en-ru Rubik).ttf", null)
+            .build();
 
     /**
      * Language locales supported by the font
      */
     protected Set<Locale> localeSet = new HashSet<>();
-
-    public FontService() { /**/ }
 
     public static FontService create() {
         return new FontService();
@@ -213,13 +204,13 @@ public class FontService {
                 if (useTtfFontAttributes != null && useTtfFontAttributes) {
                     return Font.createFont(Font.TRUETYPE_FONT, fontStream);
                 }
-                final Map<TextAttribute, Object> attr = new HashMap<TextAttribute, Object>() {{
-                    put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_REGULAR);
-                    put(TextAttribute.POSTURE, TextAttribute.POSTURE_REGULAR);
-                    put(TextAttribute.UNDERLINE, -1);
-                    put(TextAttribute.SIZE, 12);
-                    put(TextAttribute.FOREGROUND, Color.BLACK);
-                }};
+                final Map<TextAttribute, Object> attr = new MapBuilder<TextAttribute, Object>()
+                    .put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_REGULAR)
+                    .put(TextAttribute.POSTURE, TextAttribute.POSTURE_REGULAR)
+                    .put(TextAttribute.UNDERLINE, -1)
+                    .put(TextAttribute.SIZE, 12)
+                    .put(TextAttribute.FOREGROUND, Color.BLACK)
+                    .build();
                 if (Boolean.TRUE.equals(textStyle.isBold())) {
                     attr.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
                 }

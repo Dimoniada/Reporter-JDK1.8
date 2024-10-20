@@ -40,6 +40,7 @@ public class Style implements Cloneable {
         return (T) this;
     }
 
+    @Override
     public Style clone() throws CloneNotSupportedException {
         return ((Style) super.clone()).setStyleCondition(styleCondition);
     }

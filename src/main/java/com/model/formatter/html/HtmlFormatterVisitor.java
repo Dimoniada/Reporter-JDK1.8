@@ -341,6 +341,7 @@ public abstract class HtmlFormatterVisitor extends Formatter implements BaseDeta
         return this;
     }
 
+    @Override
     public StyleService getStyleService() {
         if (styleService == null) {
             styleService = HtmlStyleService.create(false, decimalFormat);

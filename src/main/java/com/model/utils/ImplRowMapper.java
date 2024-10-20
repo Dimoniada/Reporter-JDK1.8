@@ -32,15 +32,15 @@ public class ImplRowMapper<T> implements RowMapper<T> {
         final T mappedObject = BeanUtils.instantiateClass(this.clazz);
         final BeanWrapper beanWrapper = PropertyAccessorFactory.forBeanPropertyAccess(mappedObject);
         beanWrapper.setAutoGrowNestedPaths(true);
-        final ResultSetMetaData meta_data = rs.getMetaData();
-        final int columnCount = meta_data.getColumnCount();
+        final ResultSetMetaData metaData = rs.getMetaData();
+        final int columnCount = metaData.getColumnCount();
         for (int index = 1; index <= columnCount; index++) {
             try {
-                final String column = JdbcUtils.lookupColumnName(meta_data, index);
+                final String column = JdbcUtils.lookupColumnName(metaData, index);
                 final Object value = JdbcUtils.getResultSetValue(
                     rs,
                     index,
-                    Class.forName(meta_data.getColumnClassName(index))
+                    Class.forName(metaData.getColumnClassName(index))
                 );
                 beanWrapper.setPropertyValue(column, value);
             } catch (TypeMismatchException | NotWritablePropertyException | ClassNotFoundException e) {

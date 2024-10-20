@@ -28,13 +28,13 @@ import com.model.formatter.html.tag.HtmlFooter;
 import com.model.formatter.html.tag.HtmlTable;
 import com.model.formatter.html.tag.HtmlTag;
 import com.model.utils.CastUtils;
+import com.model.utils.MapBuilder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.HtmlUtils;
 
 import java.io.OutputStreamWriter;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
@@ -50,95 +50,95 @@ import java.util.stream.Stream;
 
 public class HtmlStyleService extends StyleService implements HtmlDetails {
     private static final Map<BorderWeight, String> borderWidthMap =
-        new HashMap<BorderWeight, String>() {{
-            put(BorderWeight.NONE, null);
-            put(BorderWeight.THIN, "1px solid");
-            put(BorderWeight.MEDIUM, "2px solid");
-            put(BorderWeight.THICK, "3px solid");
-            put(BorderWeight.DOUBLE, "double");
-            put(BorderWeight.DASHED, "dashed");
-            put(BorderWeight.DOTTED, "dotted");
-        }};
+        new MapBuilder<BorderWeight, String>()
+            .put(BorderWeight.NONE, null)
+            .put(BorderWeight.THIN, "1px solid")
+            .put(BorderWeight.MEDIUM, "2px solid")
+            .put(BorderWeight.THICK, "3px solid")
+            .put(BorderWeight.DOUBLE, "double")
+            .put(BorderWeight.DASHED, "dashed")
+            .put(BorderWeight.DOTTED, "dotted")
+            .build();
 
     private static final Map<BorderWeight, String> lineSeparatorWidthMap =
-        new HashMap<BorderWeight, String>() {{
-            put(BorderWeight.THIN, "1px");
-            put(BorderWeight.MEDIUM, "2px");
-            put(BorderWeight.THICK, "3px");
-        }};
+        new MapBuilder<BorderWeight, String>()
+            .put(BorderWeight.THIN, "1px")
+            .put(BorderWeight.MEDIUM, "2px")
+            .put(BorderWeight.THICK, "3px")
+            .build();
 
     private static final Map<HorAlignment, String> horizontalAlignmentHtml4Map =
-        new HashMap<HorAlignment, String>() {{
-            put(HorAlignment.LEFT, "left");
-            put(HorAlignment.CENTER, "center");
-            put(HorAlignment.RIGHT, "right");
-        }};
+        new MapBuilder<HorAlignment, String>()
+            .put(HorAlignment.LEFT, "left")
+            .put(HorAlignment.CENTER, "center")
+            .put(HorAlignment.RIGHT, "right")
+            .build();
 
     private static final Map<HorAlignment, String> horizontalTextAlignmentMap =
-        new HashMap<HorAlignment, String>() {{
-            put(null, null);
-            put(HorAlignment.GENERAL, "justify");
-            put(HorAlignment.LEFT, "left");
-            put(HorAlignment.CENTER, "center");
-            put(HorAlignment.RIGHT, "right");
-        }};
+        new MapBuilder<HorAlignment, String>()
+            .put(null, null)
+            .put(HorAlignment.GENERAL, "justify")
+            .put(HorAlignment.LEFT, "left")
+            .put(HorAlignment.CENTER, "center")
+            .put(HorAlignment.RIGHT, "right")
+            .build();
 
     private static final Map<VertAlignment, String> verticalTextAlignmentMap =
-        new HashMap<VertAlignment, String>() {{
-            put(null, null);
-            put(VertAlignment.TOP, "top");
-            put(VertAlignment.CENTER, "middle");
-            put(VertAlignment.BOTTOM, "bottom");
-        }};
+        new MapBuilder<VertAlignment, String>()
+            .put(null, null)
+            .put(VertAlignment.TOP, "top")
+            .put(VertAlignment.CENTER, "middle")
+            .put(VertAlignment.BOTTOM, "bottom")
+            .build();
 
     private static final Map<VertAlignment, String> verticalAlignmentMap =
-        new HashMap<VertAlignment, String>() {{
-            put(null, null);
-            put(VertAlignment.TOP, "top");
-            put(VertAlignment.CENTER, "center");
-            put(VertAlignment.BOTTOM, "bottom");
-        }};
+        new MapBuilder<VertAlignment, String>()
+            .put(null, null)
+            .put(VertAlignment.TOP, "top")
+            .put(VertAlignment.CENTER, "center")
+            .put(VertAlignment.BOTTOM, "bottom")
+            .build();
 
     private static final Map<VertAlignment, String> alignmentTopMap =
-        new HashMap<VertAlignment, String>() {{
-            put(null, null);
-            put(VertAlignment.TOP, "0%");
-            put(VertAlignment.CENTER, "50%");
-            put(VertAlignment.BOTTOM, null);
-        }};
+        new MapBuilder<VertAlignment, String>()
+            .put(null, null)
+            .put(VertAlignment.TOP, "0%")
+            .put(VertAlignment.CENTER, "50%")
+            .put(VertAlignment.BOTTOM, null)
+            .build();
 
     private static final Map<HorAlignment, String> alignmentLeftMap =
-        new HashMap<HorAlignment, String>() {{
-            put(null, null);
-            put(HorAlignment.GENERAL, "auto");
-            put(HorAlignment.LEFT, "0%");
-            put(HorAlignment.CENTER, "50%");
-            put(HorAlignment.RIGHT, null);
-        }};
+        new MapBuilder<HorAlignment, String>()
+            .put(null, null)
+            .put(HorAlignment.GENERAL, "auto")
+            .put(HorAlignment.LEFT, "0%")
+            .put(HorAlignment.CENTER, "50%")
+            .put(HorAlignment.RIGHT, null)
+            .build();
 
     private static final Map<HorAlignment, String> alignmentRightMap =
-        new HashMap<HorAlignment, String>() {{
-            put(null, null);
-            put(HorAlignment.GENERAL, "auto");
-            put(HorAlignment.LEFT, null);
-            put(HorAlignment.CENTER, "50%");
-            put(HorAlignment.RIGHT, "0%");
-        }};
+        new MapBuilder<HorAlignment, String>()
+            .put(null, null)
+            .put(HorAlignment.GENERAL, "auto")
+            .put(HorAlignment.LEFT, null)
+            .put(HorAlignment.CENTER, "50%")
+            .put(HorAlignment.RIGHT, "0%")
+            .build();
 
     private static final Map<VertAlignment, String> alignmentBottomMap =
-        new HashMap<VertAlignment, String>() {{
-            put(null, null);
-            put(VertAlignment.TOP, null);
-            put(VertAlignment.CENTER, "50%");
-            put(VertAlignment.BOTTOM, "0%");
-        }};
+        new MapBuilder<VertAlignment, String>()
+            .put(null, null)
+            .put(VertAlignment.TOP, null)
+            .put(VertAlignment.CENTER, "50%")
+            .put(VertAlignment.BOTTOM, "0%")
+            .build();
 
     private static final Map<FontFamilyStyle, String> fontFamilyHtml4Map =
-        new HashMap<FontFamilyStyle, String>() {{
-            put(FontFamilyStyle.SERIF, "serif");
-            put(FontFamilyStyle.SANS_SERIF, "sans-serif");
-            put(FontFamilyStyle.MONOSPACED, "monospace");
-        }};
+        new MapBuilder<FontFamilyStyle, String>()
+            .put(FontFamilyStyle.SERIF, "serif")
+            .put(FontFamilyStyle.SANS_SERIF, "sans-serif")
+            .put(FontFamilyStyle.MONOSPACED, "monospace")
+            .build();
     /**
      * If true then style will be written inside HTML4 tags
      */
@@ -491,7 +491,7 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
      */
     @Override
     public void writeStyles(Object o) throws Exception {
-        final OutputStreamWriter OsWriter = (OutputStreamWriter) o;
+        final OutputStreamWriter osWriter = (OutputStreamWriter) o;
         if (!useHtml4Tags && !writeStyleInTag) {
 
             final BiFunction<Class<?>, Style, Boolean> checkConditionClass = (clazz, style) -> {
@@ -559,12 +559,12 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
                 return;
             }
 
-            OsWriter.write("<style type=\"text/css\">\n");
+            osWriter.write("<style type=\"text/css\">\n");
             for (final Style style : gluedStyles) {
                 final String htmlClass = createHtmlClassInHeader(style);
-                OsWriter.write(htmlClass);
+                osWriter.write(htmlClass);
             }
-            OsWriter.write("\n</style>");
+            osWriter.write("\n</style>");
         }
     }
 

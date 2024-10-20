@@ -73,10 +73,9 @@ public class PdfPageEventHandler implements IEventHandler {
         final float posX = getXPositionOnPageByMiddlePoint(pageSize);
         final float posY = getYPositionOnPageByEvent(pageSize, docEvent);
 
-        final Canvas canvas = new Canvas(docEvent.getPage(), pageSize);
-        canvas
-            .showTextAligned(elParagraph, posX, posY, TextAlignment.LEFT)
-            .close();
+        try (Canvas canvas = new Canvas(docEvent.getPage(), pageSize)) {
+            canvas.showTextAligned(elParagraph, posX, posY, TextAlignment.LEFT);
+        }
     }
 
     /**

@@ -52,6 +52,7 @@ import com.model.formatter.pdf.renders.CustomParagraphPdfRenderer;
 import com.model.formatter.pdf.renders.CustomTransform;
 import com.model.utils.CastUtils;
 import com.model.utils.LocalizedNumberUtils;
+import com.model.utils.MapBuilder;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.springframework.util.StringUtils;
 
@@ -83,56 +84,56 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
      * Key - type BorderWeight, value - Border
      */
     private static final Map<BorderWeight, Border> borderWeightMap =
-        new HashMap<BorderWeight, Border>() {{
-            put(null, Border.NO_BORDER);
-            put(BorderWeight.NONE, Border.NO_BORDER);
-            put(BorderWeight.THIN, new SolidBorder(1));
-            put(BorderWeight.MEDIUM, new SolidBorder(2));
-            put(BorderWeight.THICK, new SolidBorder(3));
-            put(BorderWeight.DOUBLE, new DoubleBorder(2));   //width - distance between borders
-            put(BorderWeight.DOTTED, new DottedBorder(1));   //width – width of the border
-            put(BorderWeight.DASHED, new DashedBorder(1));   //width – width of the border
-        }};
+        new MapBuilder<BorderWeight, Border>()
+            .put(null, Border.NO_BORDER)
+            .put(BorderWeight.NONE, Border.NO_BORDER)
+            .put(BorderWeight.THIN, new SolidBorder(1))
+            .put(BorderWeight.MEDIUM, new SolidBorder(2))
+            .put(BorderWeight.THICK, new SolidBorder(3))
+            .put(BorderWeight.DOUBLE, new DoubleBorder(2))   //width - distance between border
+            .put(BorderWeight.DOTTED, new DottedBorder(1))   //width – width of the border
+            .put(BorderWeight.DASHED, new DashedBorder(1))   //width – width of the border
+            .build();
 
     /**
      * Map of native itextpdf canvas ILineDrawer drawing types
      * Key - type BorderWeight, value - ILineDrawer
      */
     private static final Map<BorderWeight, ILineDrawer> lineWeightMap =
-        new HashMap<BorderWeight, ILineDrawer>() {{
-            put(null, null);
-            put(BorderWeight.NONE, null);
-            put(BorderWeight.THIN, new SolidLine(1));    //width - distance between borders
-            put(BorderWeight.MEDIUM, new SolidLine(2));  //width - distance between borders
-            put(BorderWeight.THICK, new SolidLine(3));   //width - distance between borders
-            put(BorderWeight.DOTTED, new DottedLine(1)); //width – width of the border
-            put(BorderWeight.DASHED, new DashedLine(1)); //width – width of the border
-        }};
+        new MapBuilder<BorderWeight, ILineDrawer>()
+            .put(null, null)
+            .put(BorderWeight.NONE, null)
+            .put(BorderWeight.THIN, new SolidLine(1))    //width - distance between border
+            .put(BorderWeight.MEDIUM, new SolidLine(2))  //width - distance between border
+            .put(BorderWeight.THICK, new SolidLine(3))   //width - distance between border
+            .put(BorderWeight.DOTTED, new DottedLine(1)) //width – width of the border
+            .put(BorderWeight.DASHED, new DashedLine(1)) //width – width of the border
+            .build();
 
     /**
      * Map of native itextpdf horizontal text layout types
      * Key - HorAlignment type, value - TextAlignment
      */
     private static final Map<HorAlignment, TextAlignment> horizontalAlignmentMap =
-        new HashMap<HorAlignment, TextAlignment>() {{
-            put(null, null);
-            put(HorAlignment.GENERAL, TextAlignment.JUSTIFIED);
-            put(HorAlignment.LEFT, TextAlignment.LEFT);
-            put(HorAlignment.CENTER, TextAlignment.CENTER);
-            put(HorAlignment.RIGHT, TextAlignment.RIGHT);
-        }};
+        new MapBuilder<HorAlignment, TextAlignment>()
+            .put(null, null)
+            .put(HorAlignment.GENERAL, TextAlignment.JUSTIFIED)
+            .put(HorAlignment.LEFT, TextAlignment.LEFT)
+            .put(HorAlignment.CENTER, TextAlignment.CENTER)
+            .put(HorAlignment.RIGHT, TextAlignment.RIGHT)
+            .build();
 
     /**
      * Map of native itextpdf vertical text layout types
      * Key - type VertAlignment, value - VerticalAlignment
      */
     private static final Map<VertAlignment, VerticalAlignment> verticalAlignmentMap =
-        new HashMap<VertAlignment, VerticalAlignment>() {{
-            put(null, null);
-            put(VertAlignment.TOP, VerticalAlignment.TOP);
-            put(VertAlignment.CENTER, VerticalAlignment.MIDDLE);
-            put(VertAlignment.BOTTOM, VerticalAlignment.BOTTOM);
-        }};
+        new MapBuilder<VertAlignment, VerticalAlignment>()
+            .put(null, null)
+            .put(VertAlignment.TOP, VerticalAlignment.TOP)
+            .put(VertAlignment.CENTER, VerticalAlignment.MIDDLE)
+            .put(VertAlignment.BOTTOM, VerticalAlignment.BOTTOM)
+            .build();
 
     /**
      * Cached PdfFont font map by TextStyle text style

@@ -1,6 +1,7 @@
 package com.model.formatter.html.attribute;
 
 import com.model.formatter.html.style.CssStyle;
+import com.model.utils.MapBuilder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,11 +16,11 @@ public class Html4FontAttributes {
     protected final Map<String, Object> fontAttributes = new HashMap<>();
 
     private final Map<String, Function<Object, String>> fontAttrHtml4Mapper =
-        new HashMap<String, Function<Object, String>>() {{
-            put(FONTSIZE_HTML4, CssStyle::produceDefaultStringAttribute);
-            put(FONTCOLOR_HTML4, CssStyle::produceDefaultStringAttribute);
-            put(FONTFACE_HTML4, CssStyle::produceDefaultStringAttribute);
-        }};
+        new MapBuilder<String, Function<Object, String>>()
+            .put(FONTSIZE_HTML4, CssStyle::produceDefaultStringAttribute)
+            .put(FONTCOLOR_HTML4, CssStyle::produceDefaultStringAttribute)
+            .put(FONTFACE_HTML4, CssStyle::produceDefaultStringAttribute)
+            .build();
 
     public int getFontSizeHtml4() {
         if (fontAttributes.containsKey(FONTSIZE_HTML4)) {

@@ -11,10 +11,12 @@ public interface CsvDetails extends BaseDetails {
 
     MediaType MEDIA_TYPE = MediaType.parseMediaType("text/csv");
 
+    @Override
     default String getExtension() {
         return EXTENSION;
     }
 
+    @Override
     default MediaType getContentMediaType() {
         return MEDIA_TYPE;
     }
