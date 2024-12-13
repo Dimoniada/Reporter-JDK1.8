@@ -36,12 +36,10 @@ public class BaseQueryDocument {
     public LayoutTextStyle rowStyleInterlinear;
 
     public void initDoc() throws Exception {
-        fontService = FontService
-            .create()
+        fontService = FontService.create()
             .initializeFonts();
 
-        final TextStyle textStyle = TextStyle
-            .create()
+        final TextStyle textStyle = TextStyle.create()
             .setFontFamilyStyle(FontFamilyStyle.SERIF)
             .setFontSize((short) 10);
 
@@ -54,8 +52,7 @@ public class BaseQueryDocument {
 
         final BorderStyle border = BorderStyle.create(Color.GREY_50_PERCENT, BorderWeight.DOUBLE);
 
-        final LayoutStyle layoutStyleNormal = LayoutStyle
-            .create()
+        final LayoutStyle layoutStyleNormal = LayoutStyle.create()
             .setBorderTop(border)
             .setBorderLeft(border)
             .setBorderRight(border)
@@ -136,8 +133,7 @@ public class BaseQueryDocument {
                 return false;
             }));
 
-        queryDoc = Document
-            .create()
+        queryDoc = Document.create()
             .setLabel("doc2")
             .addPart(Title
                 .create("Мониторинг трафика 2021-05-26")

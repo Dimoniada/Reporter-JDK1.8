@@ -126,8 +126,7 @@ public class FormatterContext {
                     .setFontFamilyStyle(FontFamilyStyle.SANS_SERIF)
                     .setFontSize(STYLE_BIG_FONT_SIZE)
                     .setBold(true),
-                LayoutStyle
-                    .create()
+                LayoutStyle.create()
                     .setBorderTop(borderHeader)
                     .setBorderLeft(borderHeader)
                     .setBorderRight(borderHeader)
@@ -160,8 +159,7 @@ public class FormatterContext {
                 TextStyle.create()
                     .setFontFamilyStyle(FontFamilyStyle.SERIF)
                     .setFontSize(STYLE_NORMAL_FONT_SIZE),
-                LayoutStyle
-                    .create()
+                LayoutStyle.create()
                     .setBorderTop(borderHeader)
                     .setBorderLeft(borderHeader)
                     .setBorderRight(borderHeader)
@@ -192,12 +190,10 @@ public class FormatterContext {
         final Predicate<Object> isTableCell = o -> o instanceof TableCell;
         final Predicate<Object> isInterlinear = o -> ((TableCell) o).getRowIndex() % 2 == 0;
         return LayoutTextStyle.create(
-                TextStyle
-                    .create()
+                TextStyle.create()
                     .setFontFamilyStyle(FontFamilyStyle.SERIF)
                     .setFontSize(STYLE_NORMAL_FONT_SIZE),
-                LayoutStyle
-                    .create()
+                LayoutStyle.create()
                     .setBorderTop(borderNormal)
                     .setBorderLeft(borderNormal)
                     .setBorderRight(borderNormal)

@@ -48,8 +48,7 @@ public class BaseDocument {
         final BorderStyle border = BorderStyle.create(Color.BLACK, BorderWeight.DOUBLE);
 
         layoutStyle1 =
-            LayoutStyle
-                .create()
+            LayoutStyle.create()
                 .setBorderTop(border)
                 .setBorderLeft(border)
                 .setBorderRight(border)
@@ -63,8 +62,7 @@ public class BaseDocument {
                 );
 
         textStyle1 =
-            TextStyle
-                .create()
+            TextStyle.create()
                 .setFontSize((short) 14)
                 .setBold(true)
                 .setFontFamilyStyle(FontFamilyStyle.SANS_SERIF)

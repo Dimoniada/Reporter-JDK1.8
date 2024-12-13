@@ -244,8 +244,7 @@ public class FontService {
     public static Font getFontResourceByTextStyle(TextStyle textStyle) {
         final Locale fontLocale = textStyle.getFontLocale();
         try {
-            return FontService
-                .create()
+            return FontService.create()
                 .initializeFonts()
                 .getFontResource(textStyle, fontLocale);
         } catch (FontFormatException e) {

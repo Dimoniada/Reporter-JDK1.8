@@ -135,12 +135,10 @@ public class QueryTableTests extends BaseQueryDocument {
         final ExcelStyleService styleService = ExcelStyleService.create(FontCharset.DEFAULT, null);
         styleService.addStyles(cellStyle);
 
-        final Document doc = Document
-            .create()
+        final Document doc = Document.create()
             .setLabel("doc2")
             .addPart(
-                DocumentCase
-                    .create()
+                DocumentCase.create()
                     .setName("Sheet with table")
                     .addParts(queryTable, reportTable, simpleTable)
             );

@@ -164,8 +164,7 @@ public class HtmlFormatterTest extends BaseDocument {
     @Test
     public void testStyleWriting() throws Throwable {
 
-        final Style titleStyle = TextStyle
-            .create()
+        final Style titleStyle = TextStyle.create()
             .setFontNameResource("Brush Script MT")
             .setItalic(true)
             .setBold(true)
@@ -173,8 +172,7 @@ public class HtmlFormatterTest extends BaseDocument {
             .setColor(Color.GREEN)
             .setStyleCondition(StyleCondition.create(Title.class, o -> o instanceof Title));
 
-        final Style paragraphStyle = TextStyle
-            .create()
+        final Style paragraphStyle = TextStyle.create()
             .setFontNameResource("Gill Sans")
             .setFontSize((short) 15)
             .setColor(Color.RED)

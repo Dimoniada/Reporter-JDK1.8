@@ -191,23 +191,20 @@ public class ReportTableTest extends BaseQueryDocument {
         String encoding,
         Character csvDelimiter
     ) throws Throwable {
-        final FormatterContext formatterContext =
-            FormatterContext.create(
-                encoding,
-                Locale.forLanguageTag(locale),
-                null,
-                null,
-                csvDelimiter
-            );
+        final FormatterContext formatterContext = FormatterContext.create(
+            encoding,
+            Locale.forLanguageTag(locale),
+            null,
+            null,
+            csvDelimiter
+        );
 
         final List<TestPartner> list = testPartnerRepository.findAllPartners();
 
-        final List<String> fieldsNames = Arrays
-            .stream(TestPartner.class.getDeclaredFields())
+        final List<String> fieldsNames = Arrays.stream(TestPartner.class.getDeclaredFields())
             .map(Field::getName)
             .collect(Collectors.toList());
-        final Optional<String> wrongColumnName = columns
-            .stream()
+        final Optional<String> wrongColumnName = columns.stream()
             .filter(c -> !fieldsNames.contains(c))
             .findFirst();
         if (wrongColumnName.isPresent()) {
@@ -217,17 +214,17 @@ public class ReportTableTest extends BaseQueryDocument {
         final ReportTable table = ReportTable.create();
         final TableHeaderRow tableHeaderRow = TableHeaderRow.create();
         columns.forEach(c ->
-            tableHeaderRow
-                .addPart(TableHeaderCell
-                    .create(messageSource.getMessage("entity.partner." + c, null, Locale.forLanguageTag(locale)))
+            tableHeaderRow.addPart(
+                TableHeaderCell.create(
+                        messageSource.getMessage("entity.partner." + c, null, Locale.forLanguageTag(locale))
+                    )
                     .setAliasName(c)
-                )
+            )
         );
         table.setTableHeaderRow(tableHeaderRow);
         table.addDataList(list);
         final Document document =
-            Document
-                .create()
+            Document.create()
                 .setLabel(
                     messageSource.getMessage("entity.partner", null, Locale.forLanguageTag(locale))
                 )
@@ -298,8 +295,7 @@ public class ReportTableTest extends BaseQueryDocument {
     }
 
     private void redefineStyles() throws CloneNotSupportedException {
-        final TextStyle textStyle = TextStyle
-            .create()
+        final TextStyle textStyle = TextStyle.create()
             .setFontFamilyStyle(FontFamilyStyle.SERIF)
             .setFontSize((short) 12);
 
@@ -316,8 +312,7 @@ public class ReportTableTest extends BaseQueryDocument {
         final LayoutTextStyle layoutStyleHeader = LayoutTextStyle
             .create(
                 textTitleStyle,
-                LayoutStyle
-                    .create()
+                LayoutStyle.create()
                     .setBorderTop(borderHeaderCell)
                     .setBorderLeft(borderHeaderCell)
                     .setBorderRight(borderHeaderCell)
@@ -328,8 +323,7 @@ public class ReportTableTest extends BaseQueryDocument {
                     .setVertAlignment(VertAlignment.CENTER)
             );
 
-        final LayoutStyle layoutStyleNormal = LayoutStyle
-            .create()
+        final LayoutStyle layoutStyleNormal = LayoutStyle.create()
             .setBorderTop(borderCell)
             .setBorderLeft(borderCell)
             .setBorderRight(borderCell)
@@ -386,8 +380,7 @@ public class ReportTableTest extends BaseQueryDocument {
             new AbstractMap.SimpleEntry<>("Доставлено сообщений", "msgDeliveredCount")
         );
 
-        final ReportTable table = ReportTable
-            .create(
+        final ReportTable table = ReportTable.create(
                 TableHeaderRow
                     .create()
                     .addParts(

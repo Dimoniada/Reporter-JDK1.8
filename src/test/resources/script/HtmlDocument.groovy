@@ -10,8 +10,7 @@ import com.model.domain.style.TextStyle
 import com.model.domain.style.constant.Color
 import com.model.formatter.html.style.HtmlStyleService
 
-final Style titleStyle = TextStyle
-    .create()
+final Style titleStyle = TextStyle.create()
     .setFontNameResource("Brush Script MT")
     .setItalic(true)
     .setBold(true)
@@ -19,8 +18,7 @@ final Style titleStyle = TextStyle
     .setColor(Color.GREEN)
     .setStyleCondition(StyleCondition.create(Title.class, o -> o instanceof Title));
 
-final Style paragraphStyle = TextStyle
-    .create()
+final Style paragraphStyle = TextStyle.create()
     .setFontNameResource("Gill Sans")
     .setFontSize((short) 15)
     .setColor(Color.RED)
