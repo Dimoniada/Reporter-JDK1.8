@@ -9,6 +9,7 @@ import com.model.domain.TableRow;
 import com.model.domain.style.constant.PictureFormat;
 import com.model.formatter.FormatterVisitor;
 import com.model.utils.PictureUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -140,7 +141,7 @@ public class QueryTable extends Table {
             if (pictureFormat != null) {
                 tableCell = TableCell.create(PictureUtils.serializePicture(value));
             } else {
-                tableCell = TableCell.create(String.valueOf(value));
+                tableCell = TableCell.create(value != null ? String.valueOf(value) : "");
             }
             tableRow.addPart(tableCell);
         }

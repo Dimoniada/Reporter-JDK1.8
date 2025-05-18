@@ -12,7 +12,7 @@ import java.util.Map;
 @Component
 public class FormatterFactory {
     private static final Logger log = LoggerFactory.getLogger(FormatterFactory.class);
-    public final Map<String, Class<? extends Formatter>> formatterClassMap = new HashMap<>();
+    private final Map<String, Class<? extends Formatter>> formatterClassMap = new HashMap<>();
 
     /**
      * Collects all Formatter-s in a list via Spring IoC

@@ -70,7 +70,7 @@ public abstract class CompositionPart<T, K extends DocumentItem> extends Documen
 
     @SuppressWarnings("unchecked")
     public T spreadStyleToParts(Style style, int depth) throws CloneNotSupportedException {
-        if (depth != 0 && style != null && parts != null) {
+        if ((depth > 0 || depth == -1) && style != null && parts != null) {
             for (final K part : parts) {
                 final StyleCondition styleCondition = style.getCondition();
                 if (part.getStyle() == null
@@ -79,7 +79,8 @@ public abstract class CompositionPart<T, K extends DocumentItem> extends Documen
                     part.setStyle(style.clone());
                 }
                 if (part instanceof CompositionPart<?, ?>) {
-                    ((CompositionPart<?, ?>) part).spreadStyleToParts(style, depth - 1);
+                    int nextDepth = depth == -1 ? -1 : depth - 1;
+                    ((CompositionPart<?, ?>) part).spreadStyleToParts(style, nextDepth);
                 }
             }
         }
