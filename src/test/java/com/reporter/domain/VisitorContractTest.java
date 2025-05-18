@@ -5,9 +5,9 @@ import com.model.domain.Document;
 import com.model.domain.DocumentCase;
 import com.model.domain.Footer;
 import com.model.domain.Heading;
+import com.model.domain.LineSeparator;
 import com.model.domain.Paragraph;
 import com.model.domain.ReportTable;
-import com.model.domain.Separator;
 import com.model.domain.Table;
 import com.model.domain.TableCell;
 import com.model.domain.TableHeaderCell;
@@ -173,10 +173,10 @@ public class VisitorContractTest {
 
     @Test
     public void testSeparatorVisit() throws Throwable {
-        final Separator separator = new Separator();
+        final LineSeparator lineSeparator = new LineSeparator();
 
-        doNothing().when(mock).visitSeparator(separator);
-        separator.accept(mock);
-        Mockito.verify(mock, times(1)).visitSeparator(separator);
+        doNothing().when(mock).visitLineSeparator(lineSeparator);
+        lineSeparator.accept(mock);
+        Mockito.verify(mock, times(1)).visitLineSeparator(lineSeparator);
     }
 }

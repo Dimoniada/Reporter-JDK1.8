@@ -191,23 +191,20 @@ public class ReportTableTest extends BaseQueryDocument {
         String encoding,
         Character csvDelimiter
     ) throws Throwable {
-        final FormatterContext formatterContext =
-            FormatterContext.create(
-                encoding,
-                Locale.forLanguageTag(locale),
-                null,
-                null,
-                csvDelimiter
-            );
+        final FormatterContext formatterContext = FormatterContext.create(
+            encoding,
+            Locale.forLanguageTag(locale),
+            null,
+            null,
+            csvDelimiter
+        );
 
         final List<TestPartner> list = testPartnerRepository.findAllPartners();
 
-        final List<String> fieldsNames = Arrays
-            .stream(TestPartner.class.getDeclaredFields())
+        final List<String> fieldsNames = Arrays.stream(TestPartner.class.getDeclaredFields())
             .map(Field::getName)
             .collect(Collectors.toList());
-        final Optional<String> wrongColumnName = columns
-            .stream()
+        final Optional<String> wrongColumnName = columns.stream()
             .filter(c -> !fieldsNames.contains(c))
             .findFirst();
         if (wrongColumnName.isPresent()) {
@@ -217,17 +214,17 @@ public class ReportTableTest extends BaseQueryDocument {
         final ReportTable table = ReportTable.create();
         final TableHeaderRow tableHeaderRow = TableHeaderRow.create();
         columns.forEach(c ->
-            tableHeaderRow
-                .addPart(TableHeaderCell
-                    .create(messageSource.getMessage("entity.partner." + c, null, Locale.forLanguageTag(locale)))
+            tableHeaderRow.addPart(
+                TableHeaderCell.create(
+                        messageSource.getMessage("entity.partner." + c, null, Locale.forLanguageTag(locale))
+                    )
                     .setAliasName(c)
-                )
+            )
         );
         table.setTableHeaderRow(tableHeaderRow);
         table.addDataList(list);
         final Document document =
-            Document
-                .create()
+            Document.create()
                 .setLabel(
                     messageSource.getMessage("entity.partner", null, Locale.forLanguageTag(locale))
                 )
@@ -251,9 +248,11 @@ public class ReportTableTest extends BaseQueryDocument {
             ((CsvFormatter) formatter)
                 .setCsvPreference(
                     new CsvPreference
-                        .Builder('"',
+                        .Builder(
+                        '"',
                         csvDelimiter,
-                        "\n")
+                        "\n"
+                    )
                         .build()
                 );
         } else if (formatter instanceof HtmlFormatter) {
@@ -266,7 +265,8 @@ public class ReportTableTest extends BaseQueryDocument {
             styleService.addStyles(
                 headerCellStyle,
                 rowStyleInterlinear,
-                rowStyleNormal);
+                rowStyleNormal
+            );
             styleService.setFontService(fontService);
         }
         try (DocumentHolder ignored = formatter.handle(document)) { /**/ }
@@ -295,8 +295,7 @@ public class ReportTableTest extends BaseQueryDocument {
     }
 
     private void redefineStyles() throws CloneNotSupportedException {
-        final TextStyle textStyle = TextStyle
-            .create()
+        final TextStyle textStyle = TextStyle.create()
             .setFontFamilyStyle(FontFamilyStyle.SERIF)
             .setFontSize((short) 12);
 
@@ -305,7 +304,7 @@ public class ReportTableTest extends BaseQueryDocument {
             .setFontFamilyStyle(FontFamilyStyle.SANS_SERIF)
             .setFontSize((short) 14)
             .setBold(true)
-            .setCondition(StyleCondition.create(Title.class, o -> o instanceof Title));
+            .setStyleCondition(StyleCondition.create(Title.class, o -> o instanceof Title));
 
         final BorderStyle borderHeaderCell = BorderStyle.create(Color.GREY_50_PERCENT, BorderWeight.DOUBLE);
         final BorderStyle borderCell = BorderStyle.create(Color.GREY_50_PERCENT, BorderWeight.THIN);
@@ -313,8 +312,7 @@ public class ReportTableTest extends BaseQueryDocument {
         final LayoutTextStyle layoutStyleHeader = LayoutTextStyle
             .create(
                 textTitleStyle,
-                LayoutStyle
-                    .create()
+                LayoutStyle.create()
                     .setBorderTop(borderHeaderCell)
                     .setBorderLeft(borderHeaderCell)
                     .setBorderRight(borderHeaderCell)
@@ -325,8 +323,7 @@ public class ReportTableTest extends BaseQueryDocument {
                     .setVertAlignment(VertAlignment.CENTER)
             );
 
-        final LayoutStyle layoutStyleNormal = LayoutStyle
-            .create()
+        final LayoutStyle layoutStyleNormal = LayoutStyle.create()
             .setBorderTop(borderCell)
             .setBorderLeft(borderCell)
             .setBorderRight(borderCell)
@@ -336,7 +333,7 @@ public class ReportTableTest extends BaseQueryDocument {
             .setHorAlignment(HorAlignment.LEFT);
 
         headerCellStyle = layoutStyleHeader
-            .setCondition(StyleCondition.create(TableHeaderCell.class, o -> o instanceof TableHeaderCell));
+            .setStyleCondition(StyleCondition.create(TableHeaderCell.class, o -> o instanceof TableHeaderCell));
 
         final Predicate<Object> isTableRow = o -> o instanceof TableRow;
         final Predicate<Object> isInterlinear = o -> ((TableRow) o).getRowIndex() % 2 == 0;
@@ -347,7 +344,7 @@ public class ReportTableTest extends BaseQueryDocument {
 
         rowStyleNormal = LayoutTextStyle
             .create(textStyle, layoutStyleNormal)
-            .setCondition(styleCondition);
+            .setStyleCondition(styleCondition);
 
         final LayoutStyle layoutStyleInterlinear = layoutStyleNormal
             .clone()
@@ -356,7 +353,7 @@ public class ReportTableTest extends BaseQueryDocument {
 
         rowStyleInterlinear = LayoutTextStyle
             .create(textStyle, layoutStyleInterlinear)
-            .setCondition(
+            .setStyleCondition(
                 StyleCondition
                     .create(
                         TableRow.class, isTableRow.and(isInterlinear.negate())
@@ -369,7 +366,8 @@ public class ReportTableTest extends BaseQueryDocument {
 
         final List<TestCDRPeriodStatisticByPartner> list = testCDRRepository.getTrafficStatistics2ForPeriod(
             LocalDate.parse("2021-05-25"),
-            LocalDate.parse("2021-05-26"));
+            LocalDate.parse("2021-05-26")
+        );
 
         final List<Map.Entry<String, String>> mapNameAlias = Arrays.asList(
             new AbstractMap.SimpleEntry<>("ИД канала", "channelId"),
@@ -382,18 +380,17 @@ public class ReportTableTest extends BaseQueryDocument {
             new AbstractMap.SimpleEntry<>("Доставлено сообщений", "msgDeliveredCount")
         );
 
-        final ReportTable table = ReportTable
-            .create(
+        final ReportTable table = ReportTable.create(
                 TableHeaderRow
                     .create()
                     .addParts(
                         mapNameAlias
                             .stream()
                             .map(e ->
-                                    TableHeaderCell
-                                        .create(e.getKey())
-                                        .setAliasName(e.getValue())
-                                )
+                                TableHeaderCell
+                                    .create(e.getKey())
+                                    .setAliasName(e.getValue())
+                            )
                             .toArray(TableHeaderCell[]::new)
                     )
             )
@@ -407,7 +404,8 @@ public class ReportTableTest extends BaseQueryDocument {
             rowStyleAlert,
             rowStyleInterlinear,
             rowStyleNormal,
-            cellStyle);
+            cellStyle
+        );
 
         try (DocumentHolder documentHolder = formatter.handle(document)) {
             if (Files.exists(documentHolder.getResource().getFile().toPath())) {
@@ -454,7 +452,7 @@ public class ReportTableTest extends BaseQueryDocument {
             TextStyle
                 .create()
                 .setFontSize((short) 9)
-                .setCondition(
+                .setStyleCondition(
                     StyleCondition.create(TableHeaderCell.class)
                 )
         );
@@ -486,7 +484,8 @@ public class ReportTableTest extends BaseQueryDocument {
             rowStyleAlert,
             rowStyleInterlinear,
             rowStyleNormal,
-            cellStyle);
+            cellStyle
+        );
 
         try (DocumentHolder documentHolder = formatter.handle(queryDoc)) {
             final String check = FileUtils.readFileToString(documentHolder.getResource().getFile(), StandardCharsets.UTF_8);
@@ -533,7 +532,8 @@ public class ReportTableTest extends BaseQueryDocument {
             rowStyleAlert,
             rowStyleInterlinear,
             rowStyleNormal,
-            cellStyle);
+            cellStyle
+        );
 
         try (DocumentHolder documentHolder = formatter.handle(queryDoc)) {
             final Workbook wb = WorkbookFactory.create(documentHolder.getResource().getFile());

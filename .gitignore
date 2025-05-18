@@ -6,6 +6,9 @@ target/
 
 ### Maven ###
 log/
+mvnw
+mvnw.cmd
+machinet.conf
 
 ### STS ###
 .apt_generated

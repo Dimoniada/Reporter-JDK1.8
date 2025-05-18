@@ -12,23 +12,23 @@ import com.model.formatter.FormatterVisitor;
  * analogue of <hr> for html.
  */
 
-public class Separator extends DocumentItem {
+public class LineSeparator extends DocumentItem {
     /**
      * Separator line type
      */
     protected BorderStyle borderStyle;
 
-    public static Separator create() {
-        return new Separator();
+    public static LineSeparator create() {
+        return new LineSeparator();
     }
 
-    public static Separator create(BorderStyle borderStyle) {
-        return new Separator().setBorderStyle(borderStyle);
+    public static LineSeparator create(BorderStyle borderStyle) {
+        return new LineSeparator().setBorderStyle(borderStyle);
     }
 
     @Override
-    public Separator accept(FormatterVisitor visitor) throws Throwable {
-        visitor.visitSeparator(this);
+    public LineSeparator accept(FormatterVisitor visitor) throws Throwable {
+        visitor.visitLineSeparator(this);
         return this;
     }
 
@@ -36,7 +36,7 @@ public class Separator extends DocumentItem {
         return borderStyle;
     }
 
-    public Separator setBorderStyle(BorderStyle borderStyle) {
+    public LineSeparator setBorderStyle(BorderStyle borderStyle) {
         this.borderStyle = borderStyle;
         return this;
     }
@@ -51,10 +51,14 @@ public class Separator extends DocumentItem {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
-        final Separator that = (Separator) o;
+        final LineSeparator that = (LineSeparator) o;
 
         return
             Objects.equal(this.borderStyle, that.borderStyle)

@@ -11,10 +11,12 @@ public interface XlsxDetails extends BaseDetails {
 
     MediaType MEDIA_TYPE = MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 
+    @Override
     default String getExtension() {
         return EXTENSION;
     }
 
+    @Override
     default MediaType getContentMediaType() {
         return MEDIA_TYPE;
     }

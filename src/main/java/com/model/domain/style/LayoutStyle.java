@@ -13,7 +13,7 @@ import com.model.domain.style.geometry.GeometryDetails;
  * the location of the content (picture, text) in the element,
  * element width, border, color and its fill type and nearby environment
  */
-public class LayoutStyle extends Style {
+public class LayoutStyle extends Style implements Cloneable {
     /**
      * Measurable values of a content
      */

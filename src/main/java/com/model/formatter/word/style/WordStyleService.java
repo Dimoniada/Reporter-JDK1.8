@@ -22,6 +22,7 @@ import com.model.domain.style.geometry.GeometryUtils;
 import com.model.formatter.word.DocDetails;
 import com.model.utils.CastUtils;
 import com.model.utils.LocalizedNumberUtils;
+import com.model.utils.MapBuilder;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.Units;
@@ -51,18 +52,13 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblWidth;
 import org.springframework.util.StringUtils;
 
 import javax.imageio.ImageIO;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -84,69 +80,69 @@ public class WordStyleService extends StyleService implements DocDetails {
      * Key - type BorderWeight, value - Border
      */
     private static final Map<BorderWeight, Borders> borderMap =
-        new HashMap<BorderWeight, Borders>() {{
-            put(null, Borders.NONE);
-            put(BorderWeight.NONE, Borders.NONE);
-            put(BorderWeight.THIN, Borders.THIN_THICK_MEDIUM_GAP);
-            put(BorderWeight.MEDIUM, Borders.THICK_THIN_MEDIUM_GAP);
-            put(BorderWeight.THICK, Borders.THICK);
-            put(BorderWeight.DOUBLE, Borders.DOUBLE);
-            put(BorderWeight.DOTTED, Borders.DOTTED);
-            put(BorderWeight.DASHED, Borders.DASHED);
-        }};
+        new MapBuilder<BorderWeight, Borders>()
+            .put(null, Borders.NONE)
+            .put(BorderWeight.NONE, Borders.NONE)
+            .put(BorderWeight.THIN, Borders.THIN_THICK_MEDIUM_GAP)
+            .put(BorderWeight.MEDIUM, Borders.THICK_THIN_MEDIUM_GAP)
+            .put(BorderWeight.THICK, Borders.THICK)
+            .put(BorderWeight.DOUBLE, Borders.DOUBLE)
+            .put(BorderWeight.DOTTED, Borders.DOTTED)
+            .put(BorderWeight.DASHED, Borders.DASHED)
+            .build();
 
     /**
      * Map of native xwpf horizontal paragraph layout types
      * Key - HorAlignment type, value - ParagraphAlignment
      */
     private static final Map<HorAlignment, ParagraphAlignment> horizontalAlignmentMap =
-        new HashMap<HorAlignment, ParagraphAlignment>() {{
-            put(null, null);
-            put(HorAlignment.GENERAL, ParagraphAlignment.BOTH);
-            put(HorAlignment.LEFT, ParagraphAlignment.LEFT);
-            put(HorAlignment.CENTER, ParagraphAlignment.CENTER);
-            put(HorAlignment.RIGHT, ParagraphAlignment.RIGHT);
-        }};
+        new MapBuilder<HorAlignment, ParagraphAlignment>()
+            .put(null, null)
+            .put(HorAlignment.GENERAL, ParagraphAlignment.BOTH)
+            .put(HorAlignment.LEFT, ParagraphAlignment.LEFT)
+            .put(HorAlignment.CENTER, ParagraphAlignment.CENTER)
+            .put(HorAlignment.RIGHT, ParagraphAlignment.RIGHT)
+            .build();
 
     /**
      * Map of native xwpf vertical text layout types
      * Key - type VertAlignment, value - TextAlignment
      */
     private static final Map<VertAlignment, TextAlignment> verticalAlignmentMap =
-        new HashMap<VertAlignment, TextAlignment>() {{
-            put(null, null);
-            put(VertAlignment.TOP, TextAlignment.TOP);
-            put(VertAlignment.CENTER, TextAlignment.CENTER);
-            put(VertAlignment.BOTTOM, TextAlignment.BOTTOM);
-        }};
+        new MapBuilder<VertAlignment, TextAlignment>()
+            .put(null, null)
+            .put(VertAlignment.TOP, TextAlignment.TOP)
+            .put(VertAlignment.CENTER, TextAlignment.CENTER)
+            .put(VertAlignment.BOTTOM, TextAlignment.BOTTOM)
+            .build();
 
     /**
      * Map of native xwpf vertical text layout types
      * Key - type VertAlignment, value - XWPFTableCell.XWPFVertAlign
      */
     private static final Map<VertAlignment, XWPFTableCell.XWPFVertAlign> verticalAlignmentCellMap =
-        new HashMap<VertAlignment, XWPFTableCell.XWPFVertAlign>() {{
-            put(null, null);
-            put(VertAlignment.TOP, XWPFTableCell.XWPFVertAlign.TOP);
-            put(VertAlignment.CENTER, XWPFTableCell.XWPFVertAlign.CENTER);
-            put(VertAlignment.BOTTOM, XWPFTableCell.XWPFVertAlign.BOTTOM);
-        }};
+        new MapBuilder<VertAlignment, XWPFTableCell.XWPFVertAlign>()
+            .put(null, null)
+            .put(VertAlignment.TOP, XWPFTableCell.XWPFVertAlign.TOP)
+            .put(VertAlignment.CENTER, XWPFTableCell.XWPFVertAlign.CENTER)
+            .put(VertAlignment.BOTTOM, XWPFTableCell.XWPFVertAlign.BOTTOM)
+            .build();
 
     /**
      * Map of native xwpf picture types
      * Key - type PictureFormat, value - integer {@link org.apache.poi.xwpf.usermodel.Document}
      */
     private static final Map<PictureFormat, Integer> pictureFormatMap =
-        new HashMap<PictureFormat, Integer>() {{
-            put(null, -1);
-            put(PictureFormat.JPG, XWPFDocument.PICTURE_TYPE_JPEG);
-            put(PictureFormat.PNG, XWPFDocument.PICTURE_TYPE_PNG);
-            put(PictureFormat.WMF, XWPFDocument.PICTURE_TYPE_WMF);
-            put(PictureFormat.EMF, XWPFDocument.PICTURE_TYPE_EMF);
-            put(PictureFormat.DIB, XWPFDocument.PICTURE_TYPE_DIB);
-            put(PictureFormat.BMP, XWPFDocument.PICTURE_TYPE_DIB);
-            put(PictureFormat.PICT, XWPFDocument.PICTURE_TYPE_PICT);
-        }};
+        new MapBuilder<PictureFormat, Integer>()
+            .put(null, -1)
+            .put(PictureFormat.JPG, XWPFDocument.PICTURE_TYPE_JPEG)
+            .put(PictureFormat.PNG, XWPFDocument.PICTURE_TYPE_PNG)
+            .put(PictureFormat.WMF, XWPFDocument.PICTURE_TYPE_WMF)
+            .put(PictureFormat.EMF, XWPFDocument.PICTURE_TYPE_EMF)
+            .put(PictureFormat.DIB, XWPFDocument.PICTURE_TYPE_DIB)
+            .put(PictureFormat.BMP, XWPFDocument.PICTURE_TYPE_DIB)
+            .put(PictureFormat.PICT, XWPFDocument.PICTURE_TYPE_PICT)
+            .build();
 
     private final FontCharset fontCharset;
 

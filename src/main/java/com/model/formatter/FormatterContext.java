@@ -126,8 +126,7 @@ public class FormatterContext {
                     .setFontFamilyStyle(FontFamilyStyle.SANS_SERIF)
                     .setFontSize(STYLE_BIG_FONT_SIZE)
                     .setBold(true),
-                LayoutStyle
-                    .create()
+                LayoutStyle.create()
                     .setBorderTop(borderHeader)
                     .setBorderLeft(borderHeader)
                     .setBorderRight(borderHeader)
@@ -137,7 +136,7 @@ public class FormatterContext {
                     .setAutoWidth(true)
                     .setFillPattern(FillPattern.SOLID_FOREGROUND)
             )
-            .setCondition(
+            .setStyleCondition(
                 StyleCondition
                     .create(
                         TableHeaderCell.class, o -> o instanceof TableHeaderCell
@@ -160,8 +159,7 @@ public class FormatterContext {
                 TextStyle.create()
                     .setFontFamilyStyle(FontFamilyStyle.SERIF)
                     .setFontSize(STYLE_NORMAL_FONT_SIZE),
-                LayoutStyle
-                    .create()
+                LayoutStyle.create()
                     .setBorderTop(borderHeader)
                     .setBorderLeft(borderHeader)
                     .setBorderRight(borderHeader)
@@ -173,7 +171,7 @@ public class FormatterContext {
                     .setFillBackgroundColor(Color.GREEN_LIGHT)
                     .setFillForegroundColor(Color.GREEN_LIGHT)
             )
-            .setCondition(
+            .setStyleCondition(
                 StyleCondition
                     .create(
                         TableCell.class, isTableCell.and(isInterlinear)
@@ -192,12 +190,10 @@ public class FormatterContext {
         final Predicate<Object> isTableCell = o -> o instanceof TableCell;
         final Predicate<Object> isInterlinear = o -> ((TableCell) o).getRowIndex() % 2 == 0;
         return LayoutTextStyle.create(
-                TextStyle
-                    .create()
+                TextStyle.create()
                     .setFontFamilyStyle(FontFamilyStyle.SERIF)
                     .setFontSize(STYLE_NORMAL_FONT_SIZE),
-                LayoutStyle
-                    .create()
+                LayoutStyle.create()
                     .setBorderTop(borderNormal)
                     .setBorderLeft(borderNormal)
                     .setBorderRight(borderNormal)
@@ -206,7 +202,7 @@ public class FormatterContext {
                     .setFillPattern(FillPattern.SOLID_FOREGROUND)
                     .setHorAlignment(HorAlignment.LEFT)
             )
-            .setCondition(StyleCondition
+            .setStyleCondition(StyleCondition
                 .create(
                     TableCell.class, isTableCell.and(isInterlinear)
                 )

@@ -112,7 +112,7 @@ public class ReportTable extends Table {
                             }
                         }
                     }
-                    addPart(tr);
+                    super.addPart(tr);
                 }
             }
         }

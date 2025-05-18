@@ -32,6 +32,13 @@ public class HtmlLayoutTextStyle extends LayoutTextStyle {
         return htmlStyle;
     }
 
+    public static HtmlLayoutTextStyle create(LayoutTextStyle layoutTextStyle) {
+        final HtmlLayoutTextStyle htmlStyle = new HtmlLayoutTextStyle();
+        htmlStyle.setLayoutStyle(layoutTextStyle.getLayoutStyle());
+        htmlStyle.setTextStyle(layoutTextStyle.getTextStyle());
+        return htmlStyle;
+    }
+
     public static HtmlLayoutTextStyle create(Boolean isBorderCollapse) {
         return new HtmlLayoutTextStyle().setBordersCollapse(isBorderCollapse);
     }

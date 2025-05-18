@@ -7,7 +7,7 @@ import com.google.common.base.Objects;
  * Text and content (picture) display style, its location,
  * width, border, color and fill type of the environment
  */
-public class LayoutTextStyle extends Style {
+public class LayoutTextStyle extends Style implements Cloneable {
 
     protected LayoutStyle layoutStyle = new LayoutStyle();
     protected TextStyle textStyle = new TextStyle();

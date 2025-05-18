@@ -1,6 +1,7 @@
 package com.reporter.domain;
 
 import com.model.domain.Document;
+import com.model.domain.DocumentCase;
 import com.model.domain.Table;
 import com.model.domain.TableCell;
 import com.model.domain.TableHeaderCell;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.core.io.FileUrlResource;
 
+import javax.validation.constraints.NotNull;
 import java.nio.file.Files;
 import java.util.Iterator;
 import java.util.Spliterator;
@@ -24,10 +26,11 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 public class DomainClassesTest {
-    /**
-     * Custom forward-iterable sequence of TableCell-s
-     */
     static class CustomIterableTableCell implements Iterable<TableCell> {
+        /**
+         * Custom forward-iterable sequence of TableCell-s
+         */
+        @NotNull
         @Override
         public Iterator<TableCell> iterator() {
             return new Iterator<TableCell>() {
@@ -78,11 +81,9 @@ public class DomainClassesTest {
     public void testCustomCompositionPartsOk() throws Throwable {
         final CustomIterableTableCell cells = new CustomIterableTableCell();
 
-        final Table table = Table
-            .create()
+        final Table table = Table.create()
             .setTableHeaderRow(
-                TableHeaderRow
-                    .create()
+                TableHeaderRow.create()
                     .addParts(
                         TableHeaderCell.create("Column1"),
                         TableHeaderCell.create("Column2")
@@ -91,13 +92,17 @@ public class DomainClassesTest {
             .addPart(TableRow.create().setParts(cells))
             .addPart(TableRow.create().addPart(TableCell.create("")).addPart(TableCell.create("")));
 
-        final Document doc = Document
-            .create()
-            .setLabel("doc1")
-            .addPart(table);
+        final Document doc = Document.create()
+            .setLabel("doc1.xls")
+            .addPart(
+                DocumentCase.create()
+                    .setName("Sheet with table")
+                    .addPart(table)
+            );
 
         final XlsFormatter xlsFormatter = spy(XlsFormatter.class);
-        xlsFormatter.handle(doc).close();
+        final DocumentHolder documentHolder = xlsFormatter.handle(doc);
+        documentHolder.close();
         Mockito.verify(xlsFormatter, times(2 + 10 + 2)).visitTableCell(any());
     }
 
@@ -111,7 +116,7 @@ public class DomainClassesTest {
     public void testDocumentHolder() throws Throwable {
         final FileUrlResource file = new FileUrlResource("testFile");
         try (DocumentHolder documentHolder = new DocumentHolder(file)) {
-            Assertions.assertTrue(AutoCloseable.class.isAssignableFrom(DocumentHolder.class));
+            Assertions.assertTrue(AutoCloseable.class.isAssignableFrom(documentHolder.getClass()));
             Assertions.assertTrue(Files.notExists(documentHolder.getResource().getFile().toPath()));
         }
     }

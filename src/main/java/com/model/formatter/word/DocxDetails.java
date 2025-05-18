@@ -11,10 +11,12 @@ public interface DocxDetails extends BaseDetails {
 
     MediaType MEDIA_TYPE = MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
 
+    @Override
     default String getExtension() {
         return EXTENSION;
     }
 
+    @Override
     default MediaType getContentMediaType() {
         return MEDIA_TYPE;
     }

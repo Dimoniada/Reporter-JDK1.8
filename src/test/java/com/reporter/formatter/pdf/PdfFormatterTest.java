@@ -11,9 +11,9 @@ import com.itextpdf.kernel.pdf.canvas.parser.listener.SimpleTextExtractionStrate
 import com.model.domain.Document;
 import com.model.domain.Footer;
 import com.model.domain.Heading;
+import com.model.domain.LineSeparator;
 import com.model.domain.Paragraph;
 import com.model.domain.Picture;
-import com.model.domain.Separator;
 import com.model.domain.Table;
 import com.model.domain.TableCell;
 import com.model.domain.TableHeaderCell;
@@ -178,7 +178,7 @@ class PdfFormatterTest extends BaseDocument {
             .addParts(
                 Title.create()
                     .setText("Смысл сайта (шрифт arial,14)").setStyle(titleStyle1),
-                Separator.create(BorderStyle.create(Color.TEAL, BorderWeight.THIN)),
+                LineSeparator.create(BorderStyle.create(Color.TEAL, BorderWeight.THIN)),
                 Heading.create(0)
                     .setText("Шрифт courierNew,10:").setStyle(paragraphStyle1),
                 Paragraph.create()
@@ -192,7 +192,7 @@ class PdfFormatterTest extends BaseDocument {
                         "недоумение при попытках прочитать рыбу текст. В отличии от lorem ipsum, текст рыба на " +
                         "русском языке наполнит любой макет непонятным смыслом и придаст неповторимый колорит " +
                         "советских времен. ").setStyle(paragraphStyle1),
-                Separator.create(
+                LineSeparator.create(
                     BorderStyle.create(Color.GREEN_DARK, BorderWeight.THIN)
                 ),
                 Heading.create(1)

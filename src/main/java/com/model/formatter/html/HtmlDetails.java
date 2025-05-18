@@ -11,10 +11,12 @@ public interface HtmlDetails extends BaseDetails {
 
     MediaType MEDIA_TYPE = MediaType.parseMediaType("text/html");
 
+    @Override
     default String getExtension() {
         return EXTENSION;
     }
 
+    @Override
     default MediaType getContentMediaType() {
         return MEDIA_TYPE;
     }

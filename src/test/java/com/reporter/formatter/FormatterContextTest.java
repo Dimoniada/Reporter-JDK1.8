@@ -88,7 +88,7 @@ class FormatterContextTest extends BaseFormatterContext {
         final Style style = formatterContext.createHeaderCellStyle();
         Assertions.assertEquals(LayoutTextStyle.class, style.getClass());
 
-        final StyleCondition condition = style.getCondition();
+        final StyleCondition condition = style.getStyleCondition();
         Assertions.assertEquals(TableHeaderCell.class, condition.getClazz());
 
         final TextStyle textStyle = ((LayoutTextStyle) style).getTextStyle();
@@ -113,7 +113,7 @@ class FormatterContextTest extends BaseFormatterContext {
         final Style style = formatterContext.createRowStyleInterlinear();
         Assertions.assertEquals(LayoutTextStyle.class, style.getClass());
 
-        final StyleCondition condition = style.getCondition();
+        final StyleCondition condition = style.getStyleCondition();
         Assertions.assertEquals(TableCell.class, condition.getClazz());
 
         final TextStyle textStyle = ((LayoutTextStyle) style).getTextStyle();
@@ -139,7 +139,7 @@ class FormatterContextTest extends BaseFormatterContext {
         final Style style = formatterContext.createRowStyleNormal();
         Assertions.assertEquals(LayoutTextStyle.class, style.getClass());
 
-        final StyleCondition condition = style.getCondition();
+        final StyleCondition condition = style.getStyleCondition();
         Assertions.assertEquals(TableCell.class, condition.getClazz());
 
         final TextStyle textStyle = ((LayoutTextStyle) style).getTextStyle();

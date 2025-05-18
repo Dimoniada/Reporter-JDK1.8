@@ -40,10 +40,10 @@ public class FormatterFactory {
      */
     public Formatter createFormatter(String ext, FormatterContext formatterContext) {
         if (!formatterClassMap.containsKey(ext)) {
-            log.error("Improper export format: {}", ext);
+            log.error("Wrong export format: {}", ext);
 
             throw new IllegalArgumentException(
-                String.format("Improper report format %s in request", ext)
+                String.format("Wrong report format %s in request", ext)
             );
         }
         try {

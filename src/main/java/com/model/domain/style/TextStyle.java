@@ -11,7 +11,7 @@ import java.util.Locale;
 /**
  * Represents text style for class {@link TextItem <?>}
  */
-public class TextStyle extends Style {
+public class TextStyle extends Style implements Cloneable {
     /**
      * Font name of font/resource:
      * 1) the name of the font registered in the system (for 'excel', 'word')
@@ -77,8 +77,12 @@ public class TextStyle extends Style {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof TextStyle)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof TextStyle)) {
+            return false;
+        }
         final TextStyle textStyle = (TextStyle) o;
         return java.util.Objects.equals(fontSize, textStyle.fontSize)
             && java.util.Objects.equals(bold, textStyle.bold)

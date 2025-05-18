@@ -1,5 +1,6 @@
 package com.model.formatter.html.style;
 
+import com.model.utils.MapBuilder;
 import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
@@ -16,6 +17,11 @@ public class CssStyle {
 
     public static final String TEXT_HOR_ALIGN = "text-align";
     public static final String TEXT_VERT_ALIGN = "vertical-align";
+    public static final String TOP = "top";
+    public static final String LEFT = "left";
+    public static final String RIGHT = "right";
+    public static final String BOTTOM = "bottom";
+    public static final String POSITION = "position";
     public static final String DISPLAY = "display";
     public static final String TRANSFORM = "transform";
     public static final String TRANSFORM_ORIGIN = "transform-origin";
@@ -47,35 +53,40 @@ public class CssStyle {
     protected final Map<String, Function<Object, String>> attributeHtml4Mapper;
 
     public CssStyle() {
-        attributeMapper = new HashMap<String, Function<Object, String>>() {{
-            put(FONT_SIZE, CssStyle::produceFontSizeAttribute);
-            put(FONT_WEIGHT, CssStyle::produceDefaultStringAttribute);
-            put(FONT_STYLE, CssStyle::produceDefaultStringAttribute);
-            put(FONT_COLOR, CssStyle::produceDefaultStringAttribute);
-            put(FONT_FAMILY, CssStyle::produceFontFamilyAttribute);
-            put(TEXT_HOR_ALIGN, CssStyle::produceDefaultStringAttribute);
-            put(TEXT_VERT_ALIGN, CssStyle::produceDefaultStringAttribute);
-            put(DISPLAY, CssStyle::produceDefaultStringAttribute);
-            put(TRANSFORM, CssStyle::produceDefaultStringAttribute);
-            put(WIDTH, CssStyle::produceDefaultStringAttribute);
-            put(HEIGHT, CssStyle::produceDefaultStringAttribute);
-            put(TRANSFORM_ORIGIN, CssStyle::produceDefaultStringAttribute);
-            put(BORDER_TOP, CssStyle::produceDefaultStringAttribute);
-            put(BORDER_LEFT, CssStyle::produceDefaultStringAttribute);
-            put(BORDER_RIGHT, CssStyle::produceDefaultStringAttribute);
-            put(BORDER_BOTTOM, CssStyle::produceDefaultStringAttribute);
-            put(BACKGROUND_COLOR, CssStyle::produceDefaultStringAttribute);
-            put(BORDER_COLLAPSE, CssStyle::produceDefaultStringAttribute);
-            put(BORDER, CssStyle::produceDefaultStringAttribute);
-            put(PAGE_BREAK_AFTER, CssStyle::produceDefaultStringAttribute);
-        }};
+        attributeMapper = new MapBuilder<String, Function<Object, String>>()
+            .put(FONT_SIZE, CssStyle::produceFontSizeAttribute)
+            .put(FONT_WEIGHT, CssStyle::produceDefaultStringAttribute)
+            .put(FONT_STYLE, CssStyle::produceDefaultStringAttribute)
+            .put(FONT_COLOR, CssStyle::produceDefaultStringAttribute)
+            .put(FONT_FAMILY, CssStyle::produceFontFamilyAttribute)
+            .put(TEXT_HOR_ALIGN, CssStyle::produceDefaultStringAttribute)
+            .put(TEXT_VERT_ALIGN, CssStyle::produceDefaultStringAttribute)
+            .put(TOP, CssStyle::produceDefaultStringAttribute)
+            .put(LEFT, CssStyle::produceDefaultStringAttribute)
+            .put(RIGHT, CssStyle::produceDefaultStringAttribute)
+            .put(BOTTOM, CssStyle::produceDefaultStringAttribute)
+            .put(POSITION, CssStyle::produceDefaultStringAttribute)
+            .put(DISPLAY, CssStyle::produceDefaultStringAttribute)
+            .put(TRANSFORM, CssStyle::produceDefaultStringAttribute)
+            .put(WIDTH, CssStyle::produceDefaultStringAttribute)
+            .put(HEIGHT, CssStyle::produceDefaultStringAttribute)
+            .put(TRANSFORM_ORIGIN, CssStyle::produceDefaultStringAttribute)
+            .put(BORDER_TOP, CssStyle::produceDefaultStringAttribute)
+            .put(BORDER_LEFT, CssStyle::produceDefaultStringAttribute)
+            .put(BORDER_RIGHT, CssStyle::produceDefaultStringAttribute)
+            .put(BORDER_BOTTOM, CssStyle::produceDefaultStringAttribute)
+            .put(BACKGROUND_COLOR, CssStyle::produceDefaultStringAttribute)
+            .put(BORDER_COLLAPSE, CssStyle::produceDefaultStringAttribute)
+            .put(BORDER, CssStyle::produceDefaultStringAttribute)
+            .put(PAGE_BREAK_AFTER, CssStyle::produceDefaultStringAttribute)
+            .build();
 
-        attributeHtml4Mapper = new HashMap<String, Function<Object, String>>() {{
-            put(BORDER_HTML4, CssStyle::produceBorderHtml4Attribute);
-            put(CELLSPACING_HTML4, CssStyle::produceCellspacingHtml4Attribute);
-            put(BGCOLOR_HTML4, CssStyle::produceDefaultStringAttribute);
-            put(ALIGN_HTML4, CssStyle::produceDefaultStringAttribute);
-        }};
+        attributeHtml4Mapper = new MapBuilder<String, Function<Object, String>>()
+            .put(BORDER_HTML4, CssStyle::produceBorderHtml4Attribute)
+            .put(CELLSPACING_HTML4, CssStyle::produceCellspacingHtml4Attribute)
+            .put(BGCOLOR_HTML4, CssStyle::produceDefaultStringAttribute)
+            .put(ALIGN_HTML4, CssStyle::produceDefaultStringAttribute)
+            .build();
     }
 
     public int getFontSize() {
@@ -104,6 +115,26 @@ public class CssStyle {
 
     public String getTextVertAlign() {
         return (String) attributes.getOrDefault(TEXT_VERT_ALIGN, "middle");
+    }
+
+    public String getTop() {
+        return (String) attributes.getOrDefault(TOP, "auto");
+    }
+
+    public String getLeft() {
+        return (String) attributes.getOrDefault(LEFT, "auto");
+    }
+
+    public String getRight() {
+        return (String) attributes.getOrDefault(RIGHT, "auto");
+    }
+
+    public String getBottom() {
+        return (String) attributes.getOrDefault(BOTTOM, "auto");
+    }
+
+    public String getPosition() {
+        return (String) attributes.getOrDefault(POSITION, "inherit");
     }
 
     public String getDisplay() {
@@ -191,6 +222,38 @@ public class CssStyle {
         return this;
     }
 
+    public CssStyle setTopAlignment(String topAlignment) {
+        if (StringUtils.hasText(topAlignment)) {
+            setPosition("absolute");
+        }
+        attributes.computeIfAbsent(TOP, v -> topAlignment);
+        return this;
+    }
+
+    public CssStyle setLeftAlignment(String leftAlignment) {
+        if (StringUtils.hasText(leftAlignment)) {
+            setPosition("absolute");
+        }
+        attributes.computeIfAbsent(LEFT, v -> leftAlignment);
+        return this;
+    }
+
+    public CssStyle setRightAlignment(String rightAlignment) {
+        if (StringUtils.hasText(rightAlignment)) {
+            setPosition("absolute");
+        }
+        attributes.computeIfAbsent(RIGHT, v -> rightAlignment);
+        return this;
+    }
+
+    public CssStyle setBottomAlignment(String bottomAlignment) {
+        if (StringUtils.hasText(bottomAlignment)) {
+            setPosition("absolute");
+        }
+        attributes.computeIfAbsent(BOTTOM, v -> bottomAlignment);
+        return this;
+    }
+
     public CssStyle setTextHorAlignment(String textHorAlignment) {
         attributes.computeIfAbsent(TEXT_HOR_ALIGN, v -> textHorAlignment);
         return this;
@@ -198,9 +261,34 @@ public class CssStyle {
 
     public CssStyle setTextVertAlignment(String textVertAlignment) {
         if (StringUtils.hasText(textVertAlignment)) {
-            attributes.putIfAbsent(DISPLAY, "table-cell");
+            setDisplay("table-cell");
         }
         attributes.computeIfAbsent(TEXT_VERT_ALIGN, v -> textVertAlignment);
+        return this;
+    }
+
+    public CssStyle setTop(String top) {
+        attributes.computeIfAbsent(TOP, v -> top);
+        return this;
+    }
+
+    public CssStyle setLeft(String left) {
+        attributes.computeIfAbsent(LEFT, v -> left);
+        return this;
+    }
+
+    public CssStyle setRight(String right) {
+        attributes.computeIfAbsent(RIGHT, v -> right);
+        return this;
+    }
+
+    public CssStyle setBottom(String bottom) {
+        attributes.computeIfAbsent(BOTTOM, v -> bottom);
+        return this;
+    }
+
+    public CssStyle setPosition(String position) {
+        attributes.computeIfAbsent(POSITION, v -> position);
         return this;
     }
 

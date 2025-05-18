@@ -20,6 +20,7 @@ import com.model.domain.style.geometry.GeometryDetails;
 import com.model.formatter.excel.XlsDetails;
 import com.model.utils.CastUtils;
 import com.model.utils.LocalizedNumberUtils;
+import com.model.utils.MapBuilder;
 import org.apache.commons.io.IOUtils;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.apache.poi.hssf.usermodel.HSSFPalette;
@@ -27,8 +28,11 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
@@ -56,56 +60,56 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
     private static final int EXCEL_ANGLE_CONST = -60000;
 
     private static final Map<BorderWeight, org.apache.poi.ss.usermodel.BorderStyle> borderMap =
-        new HashMap<BorderWeight, org.apache.poi.ss.usermodel.BorderStyle>() {{
-            put(null, org.apache.poi.ss.usermodel.BorderStyle.NONE);
-            put(BorderWeight.NONE, org.apache.poi.ss.usermodel.BorderStyle.NONE);
-            put(BorderWeight.THIN, org.apache.poi.ss.usermodel.BorderStyle.THIN);
-            put(BorderWeight.MEDIUM, org.apache.poi.ss.usermodel.BorderStyle.MEDIUM);
-            put(BorderWeight.THICK, org.apache.poi.ss.usermodel.BorderStyle.THICK);
-            put(BorderWeight.DOUBLE, org.apache.poi.ss.usermodel.BorderStyle.DOUBLE);
-            put(BorderWeight.DOTTED, org.apache.poi.ss.usermodel.BorderStyle.DOTTED);
-        }};
+        new MapBuilder<BorderWeight, org.apache.poi.ss.usermodel.BorderStyle>()
+            .put(null, org.apache.poi.ss.usermodel.BorderStyle.NONE)
+            .put(BorderWeight.NONE, org.apache.poi.ss.usermodel.BorderStyle.NONE)
+            .put(BorderWeight.THIN, org.apache.poi.ss.usermodel.BorderStyle.THIN)
+            .put(BorderWeight.MEDIUM, org.apache.poi.ss.usermodel.BorderStyle.MEDIUM)
+            .put(BorderWeight.THICK, org.apache.poi.ss.usermodel.BorderStyle.THICK)
+            .put(BorderWeight.DOUBLE, org.apache.poi.ss.usermodel.BorderStyle.DOUBLE)
+            .put(BorderWeight.DOTTED, org.apache.poi.ss.usermodel.BorderStyle.DOTTED)
+            .build();
 
-    private static final Map<HorAlignment, org.apache.poi.ss.usermodel.HorizontalAlignment> horizontalAlignmentMap =
-        new HashMap<HorAlignment, org.apache.poi.ss.usermodel.HorizontalAlignment>() {{
-            put(null, null);
-            put(HorAlignment.GENERAL, org.apache.poi.ss.usermodel.HorizontalAlignment.GENERAL);
-            put(HorAlignment.LEFT, org.apache.poi.ss.usermodel.HorizontalAlignment.LEFT);
-            put(HorAlignment.CENTER, org.apache.poi.ss.usermodel.HorizontalAlignment.CENTER);
-            put(HorAlignment.RIGHT, org.apache.poi.ss.usermodel.HorizontalAlignment.RIGHT);
-        }};
+    private static final Map<HorAlignment, HorizontalAlignment> horizontalAlignmentMap =
+        new MapBuilder<HorAlignment, HorizontalAlignment>()
+            .put(null, null)
+            .put(HorAlignment.GENERAL, HorizontalAlignment.GENERAL)
+            .put(HorAlignment.LEFT, HorizontalAlignment.LEFT)
+            .put(HorAlignment.CENTER, HorizontalAlignment.CENTER)
+            .put(HorAlignment.RIGHT, HorizontalAlignment.RIGHT)
+            .build();
 
-    private static final Map<VertAlignment, org.apache.poi.ss.usermodel.VerticalAlignment> verticalAlignmentMap =
-        new HashMap<VertAlignment, org.apache.poi.ss.usermodel.VerticalAlignment>() {{
-            put(null, null);
-            put(VertAlignment.TOP, org.apache.poi.ss.usermodel.VerticalAlignment.TOP);
-            put(VertAlignment.CENTER, org.apache.poi.ss.usermodel.VerticalAlignment.CENTER);
-            put(VertAlignment.BOTTOM, org.apache.poi.ss.usermodel.VerticalAlignment.BOTTOM);
-        }};
+    private static final Map<VertAlignment, VerticalAlignment> verticalAlignmentMap =
+        new MapBuilder<VertAlignment, VerticalAlignment>()
+            .put(null, null)
+            .put(VertAlignment.TOP, VerticalAlignment.TOP)
+            .put(VertAlignment.CENTER, VerticalAlignment.CENTER)
+            .put(VertAlignment.BOTTOM, VerticalAlignment.BOTTOM)
+            .build();
 
-    private static final Map<FillPattern, org.apache.poi.ss.usermodel.FillPatternType> fillPatternMap =
-        new HashMap<FillPattern, org.apache.poi.ss.usermodel.FillPatternType>() {{
-            put(null, org.apache.poi.ss.usermodel.FillPatternType.NO_FILL);
-            put(FillPattern.NO_FILL, org.apache.poi.ss.usermodel.FillPatternType.NO_FILL);
-            put(FillPattern.FINE_DOTS, org.apache.poi.ss.usermodel.FillPatternType.FINE_DOTS);
-            put(FillPattern.SOLID_FOREGROUND, org.apache.poi.ss.usermodel.FillPatternType.SOLID_FOREGROUND);
-            put(FillPattern.THIN_HORZ_BANDS, org.apache.poi.ss.usermodel.FillPatternType.THIN_HORZ_BANDS);
-            put(FillPattern.THIN_VERT_BANDS, org.apache.poi.ss.usermodel.FillPatternType.THIN_VERT_BANDS);
-            put(FillPattern.THIN_BACKWARD_DIAG, org.apache.poi.ss.usermodel.FillPatternType.THIN_BACKWARD_DIAG);
-            put(FillPattern.THIN_FORWARD_DIAG, org.apache.poi.ss.usermodel.FillPatternType.THIN_FORWARD_DIAG);
-        }};
+    private static final Map<FillPattern, FillPatternType> fillPatternMap =
+        new MapBuilder<FillPattern, FillPatternType>()
+            .put(null, FillPatternType.NO_FILL)
+            .put(FillPattern.NO_FILL, FillPatternType.NO_FILL)
+            .put(FillPattern.FINE_DOTS, FillPatternType.FINE_DOTS)
+            .put(FillPattern.SOLID_FOREGROUND, FillPatternType.SOLID_FOREGROUND)
+            .put(FillPattern.THIN_HORZ_BANDS, FillPatternType.THIN_HORZ_BANDS)
+            .put(FillPattern.THIN_VERT_BANDS, FillPatternType.THIN_VERT_BANDS)
+            .put(FillPattern.THIN_BACKWARD_DIAG, FillPatternType.THIN_BACKWARD_DIAG)
+            .put(FillPattern.THIN_FORWARD_DIAG, FillPatternType.THIN_FORWARD_DIAG)
+            .build();
 
     private static final Map<PictureFormat, Integer> pictureFormatMap =
-        new HashMap<PictureFormat, Integer>() {{
-            put(null, -1);
-            put(PictureFormat.JPG, Workbook.PICTURE_TYPE_JPEG);
-            put(PictureFormat.PNG, Workbook.PICTURE_TYPE_PNG);
-            put(PictureFormat.WMF, Workbook.PICTURE_TYPE_WMF);
-            put(PictureFormat.EMF, Workbook.PICTURE_TYPE_EMF);
-            put(PictureFormat.DIB, Workbook.PICTURE_TYPE_DIB);
-            put(PictureFormat.BMP, Workbook.PICTURE_TYPE_DIB);
-            put(PictureFormat.PICT, Workbook.PICTURE_TYPE_PICT);
-        }};
+        new MapBuilder<PictureFormat, Integer>()
+            .put(null, -1)
+            .put(PictureFormat.JPG, Workbook.PICTURE_TYPE_JPEG)
+            .put(PictureFormat.PNG, Workbook.PICTURE_TYPE_PNG)
+            .put(PictureFormat.WMF, Workbook.PICTURE_TYPE_WMF)
+            .put(PictureFormat.EMF, Workbook.PICTURE_TYPE_EMF)
+            .put(PictureFormat.DIB, Workbook.PICTURE_TYPE_DIB)
+            .put(PictureFormat.BMP, Workbook.PICTURE_TYPE_DIB)
+            .put(PictureFormat.PICT, Workbook.PICTURE_TYPE_PICT)
+            .build();
 
     private static final HSSFPalette palette;
 
@@ -185,8 +189,7 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
         }
     }
 
-    public static org.apache.poi.ss.usermodel.VerticalAlignment
-    toExcelVertAlignment(VertAlignment vertAlignment) {
+    public static VerticalAlignment toExcelVertAlignment(VertAlignment vertAlignment) {
         if (verticalAlignmentMap.containsKey(vertAlignment)) {
             return verticalAlignmentMap.get(vertAlignment);
         } else {
@@ -194,8 +197,7 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
         }
     }
 
-    public static org.apache.poi.ss.usermodel.HorizontalAlignment
-    toExcelHorAlignment(HorAlignment horAlignment) {
+    public static HorizontalAlignment toExcelHorAlignment(HorAlignment horAlignment) {
         if (horizontalAlignmentMap.containsKey(horAlignment)) {
             return horizontalAlignmentMap.get(horAlignment);
         } else {
@@ -203,8 +205,7 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
         }
     }
 
-    public static org.apache.poi.ss.usermodel.FillPatternType
-    toExcelFillPattern(FillPattern fillPattern) {
+    public static FillPatternType toExcelFillPattern(FillPattern fillPattern) {
         if (fillPatternMap.containsKey(fillPattern)) {
             return fillPatternMap.get(fillPattern);
         } else {
@@ -287,39 +288,30 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
         }
     }
 
-    public static void applyAutoWidth(org.apache.poi.ss.usermodel.Cell cell, LayoutStyle layoutStyle) {
+    public static void applyAutoWidth(Cell cell, LayoutStyle layoutStyle) {
         final Boolean isAutoWidth = layoutStyle.isAutoWidth();
         if (isAutoWidth != null && isAutoWidth) {
             cell.getSheet().autoSizeColumn(cell.getColumnIndex());
         }
     }
 
-    public static void convertVerticalAlignment(
-        org.apache.poi.ss.usermodel.CellStyle cellStyle,
-        LayoutStyle layoutStyle
-    ) {
-        final org.apache.poi.ss.usermodel.VerticalAlignment verticalAlignment =
+    public static void convertVerticalAlignment(CellStyle cellStyle, LayoutStyle layoutStyle) {
+        final VerticalAlignment verticalAlignment =
             toExcelVertAlignment(layoutStyle.getVertAlignment());
         if (verticalAlignment != null) {
             cellStyle.setVerticalAlignment(verticalAlignment);
         }
     }
 
-    public static void convertHorizontalAlignment(
-        org.apache.poi.ss.usermodel.CellStyle cellStyle,
-        LayoutStyle layoutStyle
-    ) {
-        final org.apache.poi.ss.usermodel.HorizontalAlignment horizontalAlignment =
+    public static void convertHorizontalAlignment(CellStyle cellStyle, LayoutStyle layoutStyle) {
+        final HorizontalAlignment horizontalAlignment =
             toExcelHorAlignment(layoutStyle.getHorAlignment());
         if (horizontalAlignment != null) {
             cellStyle.setAlignment(toExcelHorAlignment(layoutStyle.getHorAlignment()));
         }
     }
 
-    public static void convertBorders(
-        org.apache.poi.ss.usermodel.CellStyle cellStyle,
-        LayoutStyle layoutStyle
-    ) {
+    public static void convertBorders(CellStyle cellStyle, LayoutStyle layoutStyle) {
         final BorderStyle borderTop = layoutStyle.getBorderTop();
         final BorderStyle borderLeft = layoutStyle.getBorderLeft();
         final BorderStyle borderRight = layoutStyle.getBorderRight();
@@ -338,10 +330,7 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
         }
     }
 
-    public static void convertBorderColors(
-        org.apache.poi.ss.usermodel.CellStyle cellStyle,
-        LayoutStyle layoutStyle
-    ) {
+    public static void convertBorderColors(CellStyle cellStyle, LayoutStyle layoutStyle) {
         final BorderStyle borderTop = layoutStyle.getBorderTop();
         final BorderStyle borderLeft = layoutStyle.getBorderLeft();
         final BorderStyle borderRight = layoutStyle.getBorderRight();
@@ -363,16 +352,12 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
     //See the difference between Foreground and Background colors, the order and conditions for their filling
     // https://stackoverflow.com/questions/38874115/
     // java-apache-poi-how-to-set-background-color-and-borders-at-same-time/46996790#46996790
-    public static void convertGround(
-        org.apache.poi.ss.usermodel.CellStyle cellStyle,
-        LayoutStyle layoutStyle
-    ) {
+    public static void convertGround(CellStyle cellStyle, LayoutStyle layoutStyle) {
         final Short foregroundColor = toExcelColor(layoutStyle.getFillForegroundColor());
         if (foregroundColor != null) {
             cellStyle.setFillForegroundColor(foregroundColor);
         }
-        final org.apache.poi.ss.usermodel.FillPatternType fillPatternType =
-            toExcelFillPattern(layoutStyle.getFillPattern());
+        final FillPatternType fillPatternType = toExcelFillPattern(layoutStyle.getFillPattern());
         if (fillPatternType != null) {
             cellStyle.setFillPattern(fillPatternType);
         }
@@ -407,7 +392,7 @@ public class ExcelStyleService extends StyleService implements XlsDetails {
      * @throws IOException    when can't find/read picture or convert it to byte array
      * @throws Exception      on joining styles
      */
-    public void writeItemToCell(DataItem dataItem, org.apache.poi.ss.usermodel.Cell cellObj)
+    public void writeItemToCell(DataItem dataItem, Cell cellObj)
         throws Exception {
         XSSFPicture xssfPicture = null;
         final Style style = prepareStyleFrom(dataItem);

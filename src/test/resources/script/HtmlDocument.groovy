@@ -10,21 +10,19 @@ import com.model.domain.style.TextStyle
 import com.model.domain.style.constant.Color
 import com.model.formatter.html.style.HtmlStyleService
 
-final Style titleStyle = TextStyle
-    .create()
+final Style titleStyle = TextStyle.create()
     .setFontNameResource("Brush Script MT")
     .setItalic(true)
     .setBold(true)
     .setFontSize((short) 35)
     .setColor(Color.GREEN)
-    .setCondition(StyleCondition.create(Title.class, o -> o instanceof Title));
+    .setStyleCondition(StyleCondition.create(Title.class, o -> o instanceof Title));
 
-final Style paragraphStyle = TextStyle
-    .create()
+final Style paragraphStyle = TextStyle.create()
     .setFontNameResource("Gill Sans")
     .setFontSize((short) 15)
     .setColor(Color.RED)
-    .setCondition(StyleCondition.create(Paragraph.class, o -> o instanceof Paragraph));
+    .setStyleCondition(StyleCondition.create(Paragraph.class, o -> o instanceof Paragraph));
 
 final HtmlStyleService styleService = HtmlStyleService.create()
     .addStyles(titleStyle, paragraphStyle);

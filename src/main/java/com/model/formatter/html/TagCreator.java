@@ -7,7 +7,6 @@ import com.model.domain.style.TextStyle;
 import com.model.formatter.html.style.CssStyle;
 import com.model.formatter.html.style.HtmlStyleService;
 import com.model.formatter.html.tag.Html4Font;
-import com.model.formatter.html.tag.HtmlTable;
 import com.model.formatter.html.tag.HtmlTag;
 import com.model.utils.LocalizedNumberUtils;
 import org.springframework.util.StringUtils;
@@ -36,7 +35,7 @@ public class TagCreator {
     }
 
     public void writeTag(
-        HtmlTag tag,
+        HtmlTag htmlTag,
         String text,
         Style style,
         boolean isUseHtml4Tags,
@@ -45,11 +44,10 @@ public class TagCreator {
         Boolean needCloseTag
     ) throws IOException, ParseException {
         final CssStyle cssStyle = new CssStyle();
-        final boolean isHtmlTable = tag instanceof HtmlTable;
         if (isUseHtml4Tags) {
             final LayoutStyle layoutStyle = LayoutStyle.extractLayoutStyle(style);
-            HtmlStyleService.fillHtml4StyleTagsFromStyle(tag, layoutStyle, isHtmlTable);
-            write(String.format("<%s%s>", tag.getTagName(), tag.attributesToHtmlString(true)));
+            HtmlStyleService.fillHtml4StyleTagsFromStyle(htmlTag, layoutStyle, htmlTag);
+            write(String.format("<%s%s>", htmlTag.getTagName(), htmlTag.attributesToHtmlString(true)));
             if (StringUtils.hasText(text)) {
                 final String formattedText =
                     HtmlStyleService.escapeHtml(
@@ -74,16 +72,16 @@ public class TagCreator {
             }
         } else {
             if (isStyleInHeader) {
-                tag.setClass(htmlStyleId(style));
+                htmlTag.setClass(htmlStyleId(style));
             } else if (isBordersCollapse) {
-                HtmlStyleService.fillCssStyleFromStyle(cssStyle, style, true, false);
+                HtmlStyleService.fillCssStyleFromStyle(cssStyle, style, htmlTag, false);
                 cssStyle.setBorderCollapse("collapse");
-                tag.setStyle(cssStyle);
+                htmlTag.setStyle(cssStyle);
             } else if (style != null) {
-                HtmlStyleService.fillCssStyleFromStyle(cssStyle, style, isHtmlTable, false);
-                tag.setStyle(cssStyle);
+                HtmlStyleService.fillCssStyleFromStyle(cssStyle, style, htmlTag, false);
+                htmlTag.setStyle(cssStyle);
             }
-            write(String.format("<%s%s>", tag.getTagName(), tag.attributesToHtmlString(false)));
+            write(String.format("<%s%s>", htmlTag.getTagName(), htmlTag.attributesToHtmlString(false)));
             if (StringUtils.hasText(text)) {
                 write(
                     HtmlStyleService
@@ -94,7 +92,7 @@ public class TagCreator {
             }
         }
         if (needCloseTag) {
-            write(tag.close());
+            write(htmlTag.close());
         }
     }
 

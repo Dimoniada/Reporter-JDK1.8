@@ -31,6 +31,7 @@ public abstract class Formatter extends FormatterVisitor implements BaseFormatte
      * @return DocumentHolder
      * @throws Throwable can occur while creating/initializing/cleaning up {@link Formatter#resource}
      */
+    @Override
     public DocumentHolder handle(Document document) throws Throwable {
         if (document == null) {
             throw new IllegalArgumentException("Document is not defined");

@@ -36,12 +36,10 @@ public class BaseQueryDocument {
     public LayoutTextStyle rowStyleInterlinear;
 
     public void initDoc() throws Exception {
-        fontService = FontService
-            .create()
+        fontService = FontService.create()
             .initializeFonts();
 
-        final TextStyle textStyle = TextStyle
-            .create()
+        final TextStyle textStyle = TextStyle.create()
             .setFontFamilyStyle(FontFamilyStyle.SERIF)
             .setFontSize((short) 10);
 
@@ -50,12 +48,11 @@ public class BaseQueryDocument {
             .setFontFamilyStyle(FontFamilyStyle.SANS_SERIF)
             .setFontSize((short) 16)
             .setBold(true)
-            .setCondition(StyleCondition.create(Title.class, o -> o instanceof Title));
+            .setStyleCondition(StyleCondition.create(Title.class, o -> o instanceof Title));
 
         final BorderStyle border = BorderStyle.create(Color.GREY_50_PERCENT, BorderWeight.DOUBLE);
 
-        final LayoutStyle layoutStyleNormal = LayoutStyle
-            .create()
+        final LayoutStyle layoutStyleNormal = LayoutStyle.create()
             .setBorderTop(border)
             .setBorderLeft(border)
             .setBorderRight(border)
@@ -75,7 +72,8 @@ public class BaseQueryDocument {
             .setFillForegroundColor(Color.RED_LIGHT);
 
         headerCellStyle = LayoutTextStyle
-            .create(textStyle
+            .create(
+                textStyle
                     .clone()
                     .setFontSize((short) 11).setBold(true),
                 layoutStyleNormal
@@ -83,12 +81,12 @@ public class BaseQueryDocument {
                     .setHorAlignment(HorAlignment.CENTER)
                     .setVertAlignment(VertAlignment.CENTER)
             )
-            .setCondition(StyleCondition.create(TableHeaderCell.class, o -> o instanceof TableHeaderCell));
+            .setStyleCondition(StyleCondition.create(TableHeaderCell.class, o -> o instanceof TableHeaderCell));
 
 
         rowStyleNormal = LayoutTextStyle
             .create(textStyle, layoutStyleNormal)
-            .setCondition(
+            .setStyleCondition(
                 StyleCondition.create(
                     TableRow.class, o -> o instanceof TableRow
                         && ((TableRow) o).getRowIndex() % 2 == 0
@@ -97,7 +95,7 @@ public class BaseQueryDocument {
 
         rowStyleInterlinear = LayoutTextStyle
             .create(textStyle, layoutStyleInterlinear)
-            .setCondition(
+            .setStyleCondition(
                 StyleCondition.create(
                     TableRow.class, o -> o instanceof TableRow
                         && ((TableRow) o).getRowIndex() % 2 != 0
@@ -106,7 +104,7 @@ public class BaseQueryDocument {
 
         rowStyleAlert = LayoutTextStyle
             .create(textStyle, layoutStyleAlert)
-            .setCondition(StyleCondition.create(TableRow.class, o -> {
+            .setStyleCondition(StyleCondition.create(TableRow.class, o -> {
                 if (o instanceof TableRow) {
                     final List<TableCell> cells = (ArrayList<TableCell>) ((TableRow) o).getParts();
                     if (cells.size() > 4) {
@@ -124,7 +122,7 @@ public class BaseQueryDocument {
 
         cellStyle = LayoutTextStyle
             .create(textStyle, layoutStyleNormal.clone().setHorAlignment(HorAlignment.RIGHT))
-            .setCondition(StyleCondition.create(TableCell.class, o -> {
+            .setStyleCondition(StyleCondition.create(TableCell.class, o -> {
                 if (o instanceof TableCell) {
                     final TableCell cell = (TableCell) o;
                     if (StringUtils.hasText(cell.getText())) {
@@ -135,8 +133,7 @@ public class BaseQueryDocument {
                 return false;
             }));
 
-        queryDoc = Document
-            .create()
+        queryDoc = Document.create()
             .setLabel("doc2")
             .addPart(Title
                 .create("Мониторинг трафика 2021-05-26")

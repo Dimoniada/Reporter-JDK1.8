@@ -4,8 +4,8 @@ import com.model.domain.Document;
 import com.model.domain.DocumentCase;
 import com.model.domain.FontService;
 import com.model.domain.Heading;
+import com.model.domain.LineSeparator;
 import com.model.domain.Paragraph;
-import com.model.domain.Separator;
 import com.model.domain.Table;
 import com.model.domain.TableCell;
 import com.model.domain.TableHeaderCell;
@@ -48,8 +48,7 @@ public class BaseDocument {
         final BorderStyle border = BorderStyle.create(Color.BLACK, BorderWeight.DOUBLE);
 
         layoutStyle1 =
-            LayoutStyle
-                .create()
+            LayoutStyle.create()
                 .setBorderTop(border)
                 .setBorderLeft(border)
                 .setBorderRight(border)
@@ -63,8 +62,7 @@ public class BaseDocument {
                 );
 
         textStyle1 =
-            TextStyle
-                .create()
+            TextStyle.create()
                 .setFontSize((short) 14)
                 .setBold(true)
                 .setFontFamilyStyle(FontFamilyStyle.SANS_SERIF)
@@ -84,22 +82,22 @@ public class BaseDocument {
                 .setBold(true)
                 .setFontFamilyStyle(FontFamilyStyle.MONOSPACED)
                 .setFontNameResource("courierNew")
-                .setCondition(StyleCondition.create(TableCell.class));
+                .setStyleCondition(StyleCondition.create(TableCell.class));
 
         styleForHeading =
             LayoutTextStyle
                 .create(textStyleCell, layoutStyle2)
-                .setCondition(StyleCondition.create(Heading.class));
+                .setStyleCondition(StyleCondition.create(Heading.class));
 
         styleForParagraph =
             LayoutTextStyle
                 .create(textStyleCell, layoutStyle2)
-                .setCondition(StyleCondition.create(Paragraph.class));
+                .setStyleCondition(StyleCondition.create(Paragraph.class));
 
         styleForSeparator =
             LayoutTextStyle
                 .create(textStyleCell, layoutStyle2)
-                .setCondition(StyleCondition.create(Separator.class));
+                .setStyleCondition(StyleCondition.create(LineSeparator.class));
 
         fontService = FontService.
             create()
@@ -146,7 +144,7 @@ public class BaseDocument {
             .addPart(documentCase)
             .addParts(
                 Title.create().setText("Test document v.1").setStyle(TextStyle.create().setFontSize((short) 20)),
-                Separator.create(BorderStyle.create(Color.TEAL, BorderWeight.THIN)),
+                LineSeparator.create(BorderStyle.create(Color.TEAL, BorderWeight.THIN)),
                 Heading.create(1).setText("Chapter 1"),
                 Heading.create(2).setText("Chapter 1.1"),
                 Heading.create(3).setText("Chapter 1.1.1"),

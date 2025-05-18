@@ -6,9 +6,9 @@ import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
 import com.itextpdf.kernel.pdf.canvas.parser.listener.ITextExtractionStrategy;
 import com.itextpdf.kernel.pdf.canvas.parser.listener.SimpleTextExtractionStrategy;
 import com.model.domain.Document;
+import com.model.domain.LineSeparator;
 import com.model.domain.Paragraph;
 import com.model.domain.ReportTable;
-import com.model.domain.Separator;
 import com.model.domain.TableHeaderCell;
 import com.model.domain.TableHeaderRow;
 import com.model.domain.style.BorderStyle;
@@ -119,7 +119,7 @@ public class TutorialTest {
         final Locale locale = exportContext.getLocale();
         final List<String> columns = exportContext.getColumns(); //(DB-)Table column names for export
         final String encoding = exportContext.getEncoding();
-        final Character csvDelimiter = exportContext.getCsvDelimiter(); //If format == "csv"
+        final Character csvDelimiter = exportContext.getCsvDelimiter(); //If format is CSV
 
         //Getting data here from db for instance
         final List<?> data = Arrays.asList(
@@ -134,11 +134,11 @@ public class TutorialTest {
             table.setTableHeaderRowFromData(true);      //we can get them automatically from db
         } else {                                        //If we know columns names in db
             final TableHeaderRow tableHeaderRow = TableHeaderRow.create();
-            columns.forEach(c ->                        //then we might customize visual names in report
+            columns.forEach(c ->                //then we might customize visual names in report
                 tableHeaderRow
-                    .addPart(TableHeaderCell
-                        .create(c)                      //Choice of arbitrary table column names in report
-                        .setAliasName(c)                //to be match real column names from db
+                    .addPart(
+                        TableHeaderCell.create(c)       //Set column names in report ("c")
+                        .setAliasName(c)                //matching the column names in the database (also "c" here)
                     )
             );
             table.setTableHeaderRow(tableHeaderRow);
@@ -166,18 +166,16 @@ public class TutorialTest {
         final String formattedDateTime = formatterContext.createFormattedZoneDateTime();
 
         final Document document =                   //Creating all document in report
-            Document
-                .create()
+            Document.create()
                 .setLabel(documentName)                 //File or document name
                 .addParts(
                     table,                              //Put our table here as a part of document
                     Paragraph.create(),
-                    Separator.create(
+                    LineSeparator.create(
                         BorderStyle
                             .create(Color.TEAL, BorderWeight.THIN)
                     ),
-                    Paragraph
-                        .create()
+                    Paragraph.create()
                         .setText(formattedDateTime)
                         .setStyle(formatterContext.createStyleFooter())
                 );
@@ -254,6 +252,10 @@ public class TutorialTest {
                         final String check = sheet.getRow(3).getCell(2).getStringCellValue();
                         wb.close();
                         Assertions.assertEquals("Name3", check);
+                        break;
+                    case "csv":
+                        final String checkCsv = os.toString(StandardCharsets.UTF_8.name());
+                        Assertions.assertTrue(checkCsv.contains("2;абракадабра с \\ЭЭ последовательностью;\"Имя2 с !;№% номерами\""));
                         break;
                     case "html":
                         final String text = os.toString(StandardCharsets.UTF_8.name());

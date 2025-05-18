@@ -4,9 +4,9 @@ import com.model.domain.Document;
 import com.model.domain.DocumentCase;
 import com.model.domain.Footer;
 import com.model.domain.Heading;
+import com.model.domain.LineSeparator;
 import com.model.domain.Paragraph;
 import com.model.domain.Picture;
-import com.model.domain.Separator;
 import com.model.domain.Table;
 import com.model.domain.TableCell;
 import com.model.domain.TableHeaderCell;
@@ -95,9 +95,9 @@ public class FormatterVisitor implements Visitor {
     }
 
     @Override
-    public void visitSeparator(Separator separatorObj) throws Throwable {
-        log.debug("No overriding for visitSeparator: {}", separatorObj);
-        throw new Throwable("No overriding for visitSeparator " + superClassName);
+    public void visitLineSeparator(LineSeparator lineSeparatorObj) throws Throwable {
+        log.debug("No overriding for visitLineSeparator: {}", lineSeparatorObj);
+        throw new Throwable("No overriding for visitLineSeparator " + superClassName);
     }
 
     @Override
