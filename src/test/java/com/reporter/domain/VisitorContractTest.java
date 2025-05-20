@@ -30,8 +30,8 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 
 //Tests to verify the contract between the visitor and domain objects
-@SpringBootTest(classes = {ReporterApplication.class})
 @ExtendWith(MockitoExtension.class)
+@SpringBootTest(classes = {ReporterApplication.class})
 public class VisitorContractTest {
 
     public static final int DEFAULT_DEPTH = 1;
@@ -43,6 +43,8 @@ public class VisitorContractTest {
 
     @BeforeEach
     public void initFormatter() {
+        System.setProperty("spring.profiles.active", "test");
+
         mock = Mockito.mock(
             FormatterVisitor.class,
             invocationOnMock -> {

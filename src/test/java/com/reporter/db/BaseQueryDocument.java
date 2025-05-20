@@ -36,6 +36,8 @@ public class BaseQueryDocument {
     public LayoutTextStyle rowStyleInterlinear;
 
     public void initDoc() throws Exception {
+        System.setProperty("spring.profiles.active", "test");
+
         fontService = FontService.create()
             .initializeFonts();
 
@@ -140,5 +142,4 @@ public class BaseQueryDocument {
                 .setStyle(textTitleStyle)
             );
     }
-
 }

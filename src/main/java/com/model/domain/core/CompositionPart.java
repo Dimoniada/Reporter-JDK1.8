@@ -79,7 +79,7 @@ public abstract class CompositionPart<T, K extends DocumentItem> extends Documen
                     part.setStyle(style.clone());
                 }
                 if (part instanceof CompositionPart<?, ?>) {
-                    int nextDepth = depth == -1 ? -1 : depth - 1;
+                    final int nextDepth = depth == -1 ? -1 : depth - 1;
                     ((CompositionPart<?, ?>) part).spreadStyleToParts(style, nextDepth);
                 }
             }

@@ -1,5 +1,6 @@
 package com.model.domain.db;
 
+import com.config.PropertyConfig;
 import com.google.common.base.MoreObjects;
 import com.model.domain.Table;
 import com.model.domain.TableCell;
@@ -9,7 +10,6 @@ import com.model.domain.TableRow;
 import com.model.domain.style.constant.PictureFormat;
 import com.model.formatter.FormatterVisitor;
 import com.model.utils.PictureUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -29,10 +29,10 @@ import java.util.concurrent.atomic.AtomicReference;
  * <p>
  */
 public class QueryTable extends Table {
-
     protected NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    protected Integer fetchSize = 50;
+    protected Integer fetchSize =
+        PropertyConfig.getProperty("query.table.fetch-size", Integer.class);
     protected Integer rsTypeScroll = ResultSet.TYPE_FORWARD_ONLY;
     protected Integer rsTypeConcurrency = ResultSet.CONCUR_READ_ONLY;
 
@@ -95,7 +95,7 @@ public class QueryTable extends Table {
         namedParameterJdbcTemplate.getJdbcTemplate().setFetchSize(fetchSize);
         final RowCallbackHandler rsLambdaWork =
             rs ->
-                addPart(
+                super.addPart(
                     resultSetToTableRow(
                         rs,
                         getTableHeaderRow().orElse(null)
