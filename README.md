@@ -1,6 +1,6 @@
 # Reporter-JDK1.8
 
-Simple package aimed to write SQL database to resource. Available output formats:
+Tool to write SQL database to resource. Available output formats:
 
 html, pdf<font size=2><sup id="a1">[1](#f1)</sup></font>, xls, xlsx, doc<font size=2><sup id="a2">[2](#f2)</sup></font>,
 docx, csv
