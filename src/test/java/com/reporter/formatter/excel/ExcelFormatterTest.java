@@ -38,7 +38,7 @@ class ExcelFormatterTest extends BaseDocument {
         "5,000,6,000,Test document v.1,,,Chapter 1,,,,,This is an example of text in paragraph,Column 1,Column 2," +
         "Cell 1.1,Cell 1.2,Cell 2.1,Cell 2.2,Cell 3.1,Cell 3.2,Cell 4.1,Cell 4.2,,Chapter 2,,,,,This is an example" +
         " of text in paragraph 2,Column 1,Column 2,Cell 1.1,Cell 1.2,Cell 2.1,Cell 2.2,Title 1,paragraph 1,,," +
-        "столбец1,column2,1,000,2,000,3,000,4 and some escape characters (символы) %;;;;;\\/,5,000,6,000";
+        "столбец1,column2,1,2,3,4 and some escape characters (символы) %;;;;;\\/,5,6";
 
     @BeforeEach
     public void initStyledDoc() throws Exception {

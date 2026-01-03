@@ -204,8 +204,10 @@ public abstract class WordFormatterVisitor extends Formatter implements BaseDeta
     public void visitTableRow(TableRow tableRowObj) throws Throwable {
         final XWPFTableRow row = docxTable.createRow();
         row.getCtRow().setTcArray(new CTTc[0]);
-        row.getTableCells().clear();
-        styleService.extractStyleFor(tableRowObj);
+        final int length = row.getTableCells().size();
+        for (int i = 0; i < length; i++) {
+            row.removeCell(i);
+        }
         visitComposition(tableRowObj);
     }
 
@@ -213,7 +215,7 @@ public abstract class WordFormatterVisitor extends Formatter implements BaseDeta
     public void visitTableCell(TableCell tableCellObj) throws Exception {
         final XWPFTableRow row = docxTable.getRow(docxTable.getNumberOfRows() - 1);
         final XWPFTableCell cell = row.createCell();
-        ((WordStyleService) styleService).handleCustomItem(tableCellObj, cell);
+        handleCustomItem(tableCellObj, cell);
     }
 
     @Override

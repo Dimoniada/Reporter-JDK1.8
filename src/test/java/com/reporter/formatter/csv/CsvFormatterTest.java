@@ -44,9 +44,9 @@ class CsvFormatterTest extends BaseDocument {
             "paragraph 1\n" +
             "shifted heading\n" +
             "столбец1;column2\n" +
-            "1,000;2,000\n" +
-            "3,000;\"4 and some escape characters (символы) %;;;;;\\/\"\n" +
-            "5,000;6,000\n";
+            "1;2\n" +
+            "3;\"4 and some escape characters (символы) %;;;;;\\/\"\n" +
+            "5;6\n";
 
     @BeforeEach
     public void initDoc() throws Exception {

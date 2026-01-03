@@ -14,17 +14,17 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
-public class ImplRowMapper<T> implements RowMapper<T> {
+public class RowMapperImpl<T> implements RowMapper<T> {
 
-    private static final Logger log = LoggerFactory.getLogger(ImplRowMapper.class);
+    private static final Logger log = LoggerFactory.getLogger(RowMapperImpl.class);
     private final Class<T> clazz;
 
-    public ImplRowMapper(Class<T> clazz) {
+    public RowMapperImpl(Class<T> clazz) {
         this.clazz = clazz;
     }
 
-    public static <T> ImplRowMapper<T> create(Class<T> clazz) {
-        return new ImplRowMapper<>(clazz);
+    public static <T> RowMapperImpl<T> create(Class<T> clazz) {
+        return new RowMapperImpl<>(clazz);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.model.formatter.html;
 import com.google.common.base.Objects;
 import com.model.domain.style.LayoutStyle;
 import com.model.domain.style.Style;
+import com.model.domain.style.StyleUtils;
 import com.model.domain.style.TextStyle;
 import com.model.formatter.html.style.CssStyle;
 import com.model.formatter.html.style.HtmlStyleService;
@@ -53,7 +54,7 @@ public class TagCreator {
                     HtmlStyleService.escapeHtml(
                         LocalizedNumberUtils.applyDecimalFormat(text, style, decimalFormat)
                     );
-                final TextStyle textStyle = HtmlStyleService.extractTextStyle(style);
+                final TextStyle textStyle = StyleUtils.extractTextStyle(style);
                 if (textStyle != null) {
                     final Html4Font html4Font = HtmlStyleService.convertHtml4Font(textStyle);
                     write(

@@ -304,16 +304,6 @@ public class HtmlStyleService extends StyleService implements HtmlDetails {
         return create(false, null, true);
     }
 
-    public static TextStyle extractTextStyle(Style style) {
-        TextStyle textStyle = null;
-        if (style instanceof TextStyle) {
-            textStyle = (TextStyle) style;
-        } else if (style instanceof LayoutTextStyle) {
-            textStyle = ((LayoutTextStyle) style).getTextStyle();
-        }
-        return textStyle;
-    }
-
     public static String createHtmlClassInHeader(Style style) {
         return
             "<style type=\"text/css\">" +

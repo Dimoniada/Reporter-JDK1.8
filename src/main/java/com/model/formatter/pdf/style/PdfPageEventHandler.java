@@ -1,10 +1,11 @@
 package com.model.formatter.pdf.style;
 
 import com.google.common.base.MoreObjects;
-import com.itextpdf.kernel.events.Event;
-import com.itextpdf.kernel.events.IEventHandler;
-import com.itextpdf.kernel.events.PdfDocumentEvent;
 import com.itextpdf.kernel.geom.Rectangle;
+import com.itextpdf.kernel.pdf.PdfPage;
+import com.itextpdf.kernel.pdf.event.AbstractPdfDocumentEvent;
+import com.itextpdf.kernel.pdf.event.AbstractPdfDocumentEventHandler;
+import com.itextpdf.kernel.pdf.event.PdfDocumentEvent;
 import com.itextpdf.layout.Canvas;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
@@ -20,7 +21,7 @@ import com.model.domain.style.constant.HorAlignment;
 
 // Handling header and footer additions on pages
 //how-to-add-header-and-footer-to-a-pdf-with-itext-7
-public class PdfPageEventHandler implements IEventHandler {
+public class PdfPageEventHandler extends AbstractPdfDocumentEventHandler {
     private static final int TOP_MARGIN = 10;
     private static final float DEFAULT_MARGIN = 20;
 
@@ -59,16 +60,20 @@ public class PdfPageEventHandler implements IEventHandler {
      * When events occur, a canvas is created that accepts elParagraph formatted text
      * and located at the desired coordinates.
      *
-     * @param currentEvent - event type for rendering header or footer:
+     * @param abstractPdfDocumentEvent - event type for rendering header or footer:
      *                     visiting the beginning of the page or its end
      */
     @Override
-    public void handleEvent(Event currentEvent) {
+    protected void onAcceptedEvent(AbstractPdfDocumentEvent abstractPdfDocumentEvent) {
         if (elParagraph == null) {
             return;
         }
-        final PdfDocumentEvent docEvent = (PdfDocumentEvent) currentEvent;
-        final Rectangle pageSize = docEvent.getPage().getPageSize();
+        final PdfDocumentEvent docEvent = (PdfDocumentEvent) abstractPdfDocumentEvent;
+        final PdfPage pdfPage = docEvent.getPage();
+        if (pdfPage == null) {
+            return;
+        }
+        final Rectangle pageSize = pdfPage.getPageSize();
 
         final float posX = getXPositionOnPageByMiddlePoint(pageSize);
         final float posY = getYPositionOnPageByEvent(pageSize, docEvent);

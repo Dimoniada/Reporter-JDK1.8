@@ -3,12 +3,12 @@ package com.model.formatter.pdf;
 import com.google.common.base.MoreObjects;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
-import com.itextpdf.kernel.events.IEventHandler;
-import com.itextpdf.kernel.events.PdfDocumentEvent;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfDocumentInfo;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.kernel.pdf.canvas.draw.ILineDrawer;
+import com.itextpdf.kernel.pdf.event.AbstractPdfDocumentEventHandler;
+import com.itextpdf.kernel.pdf.event.PdfDocumentEvent;
 import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Image;
@@ -210,7 +210,7 @@ public abstract class PdfFormatterVisitor extends Formatter implements BaseDetai
             ((PdfStyleService) styleService).convertStyleToElement(style, null, image);
         }
 
-        final IEventHandler handler = PdfPageEventHandler.create(elParagraph, document, style);
+        final AbstractPdfDocumentEventHandler handler = PdfPageEventHandler.create(elParagraph, document, style);
         pdf.addEventHandler(PdfDocumentEvent.END_PAGE, handler);
     }
 

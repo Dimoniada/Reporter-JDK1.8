@@ -617,10 +617,10 @@ public final class PdfStyleService extends StyleService implements PdfDetails {
             return;
         }
         if (Boolean.TRUE.equals(textStyle.isBold())) {
-            element.setBold();
+            element.simulateBold();
         }
         if (Boolean.TRUE.equals(textStyle.isItalic())) {
-            element.setItalic();
+            element.simulateItalic();
         }
         if (textStyle.getUnderline() != null && textStyle.getUnderline() != 0) {
             element.setUnderline();

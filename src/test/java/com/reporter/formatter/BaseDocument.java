@@ -25,15 +25,19 @@ import com.model.domain.style.geometry.GeometryDetails;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 
 public class BaseDocument {
 
     public Document doc;
     public TextStyle textStyle1;
+    public TextStyle textStyle2;
     public TextStyle textStyleCell;
     public LayoutStyle layoutStyle1;
     public LayoutStyle layoutStyle2;
-    public LayoutTextStyle layoutTextStyle;
+    public LayoutTextStyle layoutTextStyle1;
+    public LayoutTextStyle layoutTextStyle2;
     public LayoutTextStyle styleForHeading;
     public LayoutTextStyle styleForParagraph;
     public LayoutTextStyle styleForSeparator;
@@ -45,14 +49,15 @@ public class BaseDocument {
 
     public void initDoc() throws Exception {
 
-        final BorderStyle border = BorderStyle.create(Color.BLACK, BorderWeight.DOUBLE);
+        final BorderStyle doubleBorder = BorderStyle.create(Color.BLACK, BorderWeight.DOUBLE);
+        final BorderStyle singleBorder = BorderStyle.create(Color.RED, BorderWeight.THICK);
 
         layoutStyle1 =
             LayoutStyle.create()
-                .setBorderTop(border)
-                .setBorderLeft(border)
-                .setBorderRight(border)
-                .setBorderBottom(border)
+                .setBorderTop(doubleBorder)
+                .setBorderLeft(doubleBorder)
+                .setBorderRight(doubleBorder)
+                .setBorderBottom(doubleBorder)
                 .setAutoWidth(true)
                 .setGeometryDetails(
                     GeometryDetails.create()
@@ -61,6 +66,14 @@ public class BaseDocument {
                         .setAngle(Geometry.create().add("html", "10deg"))
                 );
 
+        layoutStyle2 =
+            LayoutStyle.create()
+                .setBorderTop(singleBorder)
+                .setBorderLeft(singleBorder)
+                .setBorderRight(singleBorder)
+                .setBorderBottom(singleBorder)
+                .setAutoWidth(true);
+
         textStyle1 =
             TextStyle.create()
                 .setFontSize((short) 14)
@@ -68,7 +81,19 @@ public class BaseDocument {
                 .setFontFamilyStyle(FontFamilyStyle.SANS_SERIF)
                 .setFontNameResource("arial");
 
-        layoutTextStyle = LayoutTextStyle.create(textStyle1, layoutStyle1);
+        final DecimalFormat df = new DecimalFormat("0.000");
+        final DecimalFormatSymbols symbols = df.getDecimalFormatSymbols();
+        symbols.setDecimalSeparator(',');
+        df.setDecimalFormatSymbols(symbols);
+
+        textStyle2 =
+            textStyle1
+                .clone()
+                .setBold(false)
+                .setDecimalFormat(df);
+
+        layoutTextStyle1 = LayoutTextStyle.create(textStyle1, layoutStyle1);
+        layoutTextStyle2 = LayoutTextStyle.create(textStyle2, layoutStyle2);
 
         layoutStyle2 =
             LayoutStyle
@@ -112,8 +137,8 @@ public class BaseDocument {
                     .setTableHeaderRow(
                         TableHeaderRow
                             .create().addParts(
-                                TableHeaderCell.create("column1").setStyle(layoutTextStyle),
-                                TableHeaderCell.create("column2 (столбец2)").setStyle(layoutTextStyle)
+                                TableHeaderCell.create("column1").setStyle(layoutTextStyle1),
+                                TableHeaderCell.create("column2 (столбец2)").setStyle(layoutTextStyle1)
                             )
                     )
                     .addParts(
@@ -133,7 +158,7 @@ public class BaseDocument {
                                 TableCell.create("6")
                             )
                     )
-                    .spreadStyleToParts(textStyle1)
+                    .spreadStyleToParts(layoutTextStyle2)
             );
 
         doc = Document
@@ -158,7 +183,7 @@ public class BaseDocument {
                                 TableHeaderCell.create("Column 1"),
                                 TableHeaderCell.create("Column 2")
                             )
-                            .spreadStyleToParts(layoutTextStyle)
+                            .spreadStyleToParts(layoutTextStyle1)
                     )
                     .addParts(
                         TableRow
@@ -200,7 +225,7 @@ public class BaseDocument {
                                 TableHeaderCell.create("Column 1"),
                                 TableHeaderCell.create("Column 2")
                             )
-                            .spreadStyleToParts(layoutTextStyle)
+                            .spreadStyleToParts(layoutTextStyle1)
                     )
                     .addParts(
                         TableRow

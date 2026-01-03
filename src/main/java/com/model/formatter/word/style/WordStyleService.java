@@ -23,6 +23,7 @@ import com.model.formatter.word.DocDetails;
 import com.model.utils.CastUtils;
 import com.model.utils.LocalizedNumberUtils;
 import com.model.utils.MapBuilder;
+import org.apache.poi.common.usermodel.PictureType;
 import org.apache.poi.common.usermodel.fonts.FontCharset;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.Units;
@@ -31,7 +32,6 @@ import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.TableWidthType;
 import org.apache.poi.xwpf.usermodel.TextAlignment;
 import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFPicture;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
@@ -83,8 +83,8 @@ public class WordStyleService extends StyleService implements DocDetails {
         new MapBuilder<BorderWeight, Borders>()
             .put(null, Borders.NONE)
             .put(BorderWeight.NONE, Borders.NONE)
-            .put(BorderWeight.THIN, Borders.THIN_THICK_MEDIUM_GAP)
-            .put(BorderWeight.MEDIUM, Borders.THICK_THIN_MEDIUM_GAP)
+            .put(BorderWeight.THIN, Borders.SINGLE)
+            .put(BorderWeight.MEDIUM, Borders.SINGLE)
             .put(BorderWeight.THICK, Borders.THICK)
             .put(BorderWeight.DOUBLE, Borders.DOUBLE)
             .put(BorderWeight.DOTTED, Borders.DOTTED)
@@ -132,16 +132,16 @@ public class WordStyleService extends StyleService implements DocDetails {
      * Map of native xwpf picture types
      * Key - type PictureFormat, value - integer {@link org.apache.poi.xwpf.usermodel.Document}
      */
-    private static final Map<PictureFormat, Integer> pictureFormatMap =
-        new MapBuilder<PictureFormat, Integer>()
-            .put(null, -1)
-            .put(PictureFormat.JPG, XWPFDocument.PICTURE_TYPE_JPEG)
-            .put(PictureFormat.PNG, XWPFDocument.PICTURE_TYPE_PNG)
-            .put(PictureFormat.WMF, XWPFDocument.PICTURE_TYPE_WMF)
-            .put(PictureFormat.EMF, XWPFDocument.PICTURE_TYPE_EMF)
-            .put(PictureFormat.DIB, XWPFDocument.PICTURE_TYPE_DIB)
-            .put(PictureFormat.BMP, XWPFDocument.PICTURE_TYPE_DIB)
-            .put(PictureFormat.PICT, XWPFDocument.PICTURE_TYPE_PICT)
+    private static final Map<PictureFormat, PictureType> pictureFormatMap =
+        new MapBuilder<PictureFormat, PictureType>()
+            .put(null, PictureType.UNKNOWN)
+            .put(PictureFormat.JPG, PictureType.JPEG)
+            .put(PictureFormat.PNG, PictureType.PNG)
+            .put(PictureFormat.WMF, PictureType.WMF)
+            .put(PictureFormat.EMF, PictureType.EMF)
+            .put(PictureFormat.DIB, PictureType.DIB)
+            .put(PictureFormat.BMP, PictureType.DIB)
+            .put(PictureFormat.PICT, PictureType.PICT)
             .build();
 
     private final FontCharset fontCharset;
@@ -166,7 +166,7 @@ public class WordStyleService extends StyleService implements DocDetails {
         if (dataItem.isDataInheritedFrom(Picture.class)) {
             final Picture picture = (Picture) dataItem;
             final Dimension dimension = GeometryUtils.getPictureDimension(picture, style, EXTENSION);
-            final int picFormat = toWordPictureFormat(picture.getFormat());
+            final PictureType picFormat = toWordPictureFormat(picture.getFormat());
             final XWPFPicture xwpfPicture = run.addPicture(
                 new ByteArrayInputStream(picture.getData()),
                 picFormat,
@@ -647,7 +647,7 @@ public class WordStyleService extends StyleService implements DocDetails {
         }
     }
 
-    public static int toWordPictureFormat(PictureFormat pictureFormat) {
+    public static PictureType toWordPictureFormat(PictureFormat pictureFormat) {
         if (pictureFormatMap.containsKey(pictureFormat)) {
             return pictureFormatMap.get(pictureFormat);
         } else {

@@ -63,7 +63,7 @@ public class WordFormatterTest extends BaseDocument {
     public static final String expectedTextTables = "column1\tcolumn2 (столбец2)\n1,000\t2,000\n" +
         "3,000\t4,000\n5,000\t6,000\n;Column 1\tColumn 2\nCell 1.1\tCell 1.2\nCell 2.1\tCell 2.2\n" +
         "Cell 3.1\tCell 3.2\nCell 4.1\tCell 4.2\n;Column 1\tColumn 2\nCell 1.1\tCell 1.2\nCell 2.1\tCell 2.2\n" +
-        ";столбец1\tcolumn2\n1,000\t2,000\n3,000\t4 and some escape characters (символы) %;;;;;\\/\n5,000\t6,000\n";
+        ";столбец1\tcolumn2\n1\t2\n3\t4 and some escape characters (символы) %;;;;;\\/\n5\t6\n";
 
     @BeforeEach
     public void initStyledDoc() throws Exception {

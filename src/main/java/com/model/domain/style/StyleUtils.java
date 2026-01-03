@@ -17,6 +17,16 @@ import java.util.Objects;
 public abstract class StyleUtils {
     private static final Logger log = LoggerFactory.getLogger(StyleUtils.class);
 
+    public static TextStyle extractTextStyle(Style style) {
+        TextStyle textStyle = null;
+        if (style instanceof TextStyle) {
+            textStyle = (TextStyle) style;
+        } else if (style instanceof LayoutTextStyle) {
+            textStyle = ((LayoutTextStyle) style).getTextStyle();
+        }
+        return textStyle;
+    }
+
     /**
      * Returns the style difference.
      * Accepts 2 styles: The first style is a default instance,

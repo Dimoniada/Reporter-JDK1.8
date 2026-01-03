@@ -28,20 +28,21 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- DEPENDENCY VERSIONS -->
         <guava.version>32.1.1-jre</guava.version>
-        <itextpdf.version>8.0.2</itextpdf.version>
+        <itextpdf.version>9.4.0</itextpdf.version>
         <documents4j.version>1.1.10</documents4j.version>
-        <apache.version>5.3.0</apache.version>
+        <apache.version>5.5.1</apache.version>
         <supercsv.version>2.4.0</supercsv.version>
-        <jdbc.version>5.3.29</jdbc.version>
+        <jdbc.version>5.3.39</jdbc.version>
         <old.spring.version>5.3.39</old.spring.version>
         <springjpa.version>2.7.14</springjpa.version>
         <javax.version>2.2</javax.version>
         <h2.test.version>2.2.220</h2.test.version>
-        <groovy.version>3.0.19</groovy.version>
+        <groovy.version>3.0.25</groovy.version>
         <!-- PMD, CHECKSTYLE PLUGINS-->
         <plugin.pmd.version>3.21.0</plugin.pmd.version>
         <plugin.checkstyle.version>3.1.2</plugin.checkstyle.version>
         <plugin.dependency.checkstyle.version>8.45.1</plugin.dependency.checkstyle.version>
+
         <maven.surefire.version>3.1.2</maven.surefire.version>
     </properties>
     <build>
@@ -56,7 +57,11 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <argLine>-Dfile.encoding=UTF-8</argLine>
+                    <argLine>
+                        -Dfile.encoding=UTF-8
+<!--                                 For Java version >= 9                       -->
+<!--                       &#45;&#45;add-opens java.desktop/java.awt=ALL-UNNAMED -->
+                    </argLine>
                 </configuration>
             </plugin>
 

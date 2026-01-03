@@ -1,6 +1,7 @@
 package com.model.utils;
 
 import com.model.domain.style.Style;
+import com.model.domain.style.StyleUtils;
 import com.model.domain.style.TextStyle;
 import org.springframework.util.StringUtils;
 
@@ -41,15 +42,22 @@ public abstract class LocalizedNumberUtils {
         Style style,
         DecimalFormat decimalFormat
     ) throws ParseException {
-        if (style instanceof TextStyle && StringUtils.hasText(text) && isNumber(text)) {
-            final TextStyle textStyle = (TextStyle) style;
-            final DecimalFormat format =
-                decimalFormat != null
-                    ? decimalFormat
-                    : textStyle.getDecimalFormat();
-            return localizeNumber(text, format, textStyle.getFontLocale());
+        if (!StringUtils.hasText(text)) {
+            return "";
         }
-        return StringUtils.hasText(text) ? text : "";
+        final TextStyle textStyle = StyleUtils.extractTextStyle(style);
+        if (isNumber(text)) {
+            final DecimalFormat format = (decimalFormat != null)
+                ? decimalFormat
+                : textStyle != null
+                    ? textStyle.getDecimalFormat()
+                    : null;
+            final Locale locale = (textStyle != null)
+                ? textStyle.getFontLocale()
+                : null;
+            return localizeNumber(text, format, locale);
+        }
+        return text;
     }
 
     public static Boolean isNumber(String text) {
@@ -66,8 +74,10 @@ public abstract class LocalizedNumberUtils {
         if (format != null) {
             return format.format(format.parse(number).floatValue());
         } else {
-            final DecimalFormat localFormat =
-                (DecimalFormat) NumberFormat.getInstance(locale != null ? locale : Locale.ENGLISH);
+            if (locale == null) {
+                return number;
+            }
+            final DecimalFormat localFormat = (DecimalFormat) NumberFormat.getInstance(locale);
             localFormat.setRoundingMode(RoundingMode.DOWN);
             localFormat.setMinimumFractionDigits(DEFAULT_DECIMAL_FRACTION_DIGITS);
             localFormat.setMaximumFractionDigits(DEFAULT_DECIMAL_FRACTION_DIGITS);
